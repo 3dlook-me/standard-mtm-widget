@@ -1,0 +1,73 @@
+@import '../../scss/utils/index';
+
+$border-width: 2px;
+
+.gender {
+  display: flex;
+  justify-content: space-between;
+  max-width: 240px;
+
+  input {
+    @include visually-hidden();
+  }
+
+  &--invalid &__item {
+    border-color: $error-border-color;
+    background-color: $error-background-color;
+  }
+
+  &__item {
+    height: 127px;
+    background: linear-gradient(223.12deg, #FF8D32 0%, #FFB764 100%);
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-transform: uppercase;
+    width: 100%;
+    cursor: pointer;
+    font-weight: normal;
+    position: relative;
+    color: #000;
+
+    &.checked {
+      color: #fff;
+
+      &:after {
+        display: none;
+      }
+    }
+
+    // &:focus-within {
+    //   outline: -webkit-focus-ring-color auto 5px;
+    // }
+
+    &:after {
+      content: '';
+      position: absolute;
+      display: block;
+      top: $border-width;
+      left: $border-width;
+      bottom: $border-width;
+      right: $border-width;
+      background: #fff;
+      border-radius: 23px;
+    }
+
+    &:first-of-type {
+      margin-right: 28px;
+    }
+
+    span {
+      display: inline-block;
+      margin-top: 15px;
+      margin-bottom: 8px;
+    }
+
+    span,
+    img {
+      position: relative;
+      z-index: 1;
+    }
+  }
+}

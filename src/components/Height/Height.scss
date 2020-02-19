@@ -1,0 +1,134 @@
+@import '../../scss/utils/index';
+
+.height {
+
+  &[data-measure='cm'] .height__measure--cm {
+    display: block;
+  }
+
+  &[data-measure='in'] .height__measure--in {
+    display: flex;
+  }
+
+  &__measure  {
+    display: none;
+    margin: 0 auto;
+  }
+
+  &__input-block {
+    position: relative;
+
+    &:nth-child(2) {
+      margin-left: 18px;
+    }
+
+    &:after {
+      content: attr(data-measure);
+      display: none;
+      position: absolute;
+      top: 50%;
+      right: 0;
+      color: #DDDDDD;
+      text-transform: uppercase;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: rem(12px);
+    }
+  }
+
+  &__input {
+    height: 24px;
+    border: 0;
+    border-bottom: 2px solid #DDDDDD;
+    display: block;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: normal;
+    padding-right: 18px;
+    appearance: none;
+    border-radius: 0;
+
+    &:focus {
+      border-color: $main-color;
+    }
+
+    @include disable-number();
+
+    @include placeholder {
+      color: #DDDDDD;
+    }
+  }
+
+  &__switcher {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+
+    input {
+      @include visually-hidden();
+    }
+
+    label.checked {
+      color: #000;
+    }
+
+    &--cm &-switch:before {
+      left: 2px;
+      display: block;
+    }
+
+    &--in &-switch:before {
+      left: 28px;
+      display: block;
+    }
+  }
+
+  &__switcher-item {
+    color: #DDDDDD;
+    text-transform: uppercase;
+    font-size: rem(12px);
+    width: 40px;
+    text-align: center;
+    cursor: pointer;
+
+    &--cm {
+      order: 1;
+    }
+
+    &--in {
+      order: 3;
+    }
+  }
+
+  &__switcher-switch {
+    height: 26px;
+    width: 52px;
+    border: 2px solid $main-color;
+    border-radius: 25px;
+    order: 2;
+    position: relative;
+    cursor: pointer;
+    background: #fff;
+
+    span {
+      @include visually-hidden();
+    }
+
+    &:before {
+      content: '';
+      display: none;
+      height: 18px;
+      width: 18px;
+      border-radius: 25px;
+      background-color: $main-color;
+      position: absolute;
+      top: 2px;
+      transition: all ease 300ms;
+    }
+  }
+
+  &__desc {
+    height: 14px;
+  }
+}

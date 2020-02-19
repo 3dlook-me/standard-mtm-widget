@@ -1,0 +1,62 @@
+@import '../../scss/utils/index';
+
+.preloader {
+  display: none;
+  text-align: center;
+  position: absolute;
+  top: 65px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  z-index: 1;
+
+  @include breakpoint($mobile) {
+    top: 40px;
+  }
+
+  &.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__title {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: rem(16px);
+    text-align: center;
+    margin-top: 48px;
+    margin-bottom: 144px;
+
+    @include breakpoint($mobile) {
+      margin-top: 56px;
+      margin-bottom: 114px;
+    }
+  }
+
+  &__image {
+    margin: 0 auto;
+    width: 117px;
+    height: 117px;
+    animation: spin 3s linear infinite;
+
+    @include breakpoint($mobile) {
+      width: 112px;
+      height: 112px;
+    }
+  }
+
+  &__text {
+    margin-top: 153px;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

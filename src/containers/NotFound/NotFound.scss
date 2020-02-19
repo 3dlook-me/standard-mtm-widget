@@ -1,0 +1,23 @@
+.not-found {
+  &__title {
+    margin-bottom: 5px;
+  }
+
+  &__text {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  &__text-2 {
+    text-align: center;
+    margin-top: 50px;
+
+    span {
+      font-weight: bold;
+    }
+  }
+
+  &__image {
+    margin: 0 auto;
+  }
+}

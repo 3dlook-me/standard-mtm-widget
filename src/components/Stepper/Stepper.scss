@@ -1,0 +1,19 @@
+@import '../../scss/utils/index';
+
+.stepper {
+  height: 4px;
+  width: 200px;
+  border-radius: 2px;
+  background-color: #F1F1F1;
+  position: absolute;
+  top: 47px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  &__progress {
+    height: 4px;
+    width: 0;
+    border-radius: 2px;
+    background-color: #6FD817;
+  }
+}

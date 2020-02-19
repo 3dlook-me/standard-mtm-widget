@@ -1,0 +1,16 @@
+# set line ending for all file types
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+# use 2 spaces in js, css and scss files
+[*.{jsx,js,css,scss}]
+charset = utf-8
+indent_style = space
+indent_size = 2
+
+# use 2 spaces in html templates files
+[*.html]
+charset = utf-8
+indent_style = space
+indent_size = 2

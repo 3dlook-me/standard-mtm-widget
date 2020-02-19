@@ -1,0 +1,89 @@
+@import '../utils/index';
+
+$border-width: 2px;
+
+.button {
+  display: block;
+  height: 50px;
+  width: 275px;
+  border-radius: 4px;
+  background-color: $main-color;
+  padding: 0;
+  color: #fff;
+  letter-spacing: rem(2px);
+  font-size: rem(13px);
+  text-transform: uppercase;
+  font-weight: normal;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 50px;
+  transition: all ease 300ms;
+  text-align: center;
+
+  @include breakpoint($mobile) {
+    height: 50px;
+    width: 220px;
+    line-height: 50px;
+    border-radius: 25px;
+    font-size: rem(12px);
+    font-weight: 500;
+  }
+
+  @include breakpoint((max-width 320px, max-height 568px)) {
+    height: 40px;
+    width: 150px;
+    line-height: 40px;
+    font-size: rem(12px);
+  }
+
+  &__icon {
+    display: inline-block;
+    margin-left: 4px;
+  }
+
+  &--outline {
+    position: relative;
+    color: $main-color;
+    box-shadow: none;
+
+    @include breakpoint($mobile) {
+      height: auto;
+      line-height: rem(21px);
+      background: #fff;
+      border-radius: 0;
+    }
+
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      top: $border-width;
+      left: $border-width;
+      right: $border-width;
+      bottom: $border-width;
+      background: #fff;
+      border-radius: 20px;
+
+      @include breakpoint($mobile) {
+        display: none;
+      }
+    }
+
+    span {
+      position: relative;
+    }
+  }
+
+  &[disabled],
+  &--disabled {
+    box-shadow: none;
+    pointer-events: none;
+    background: #CECECE;
+    color: #fff;
+
+    &:before {
+      display: none;
+    }
+  }
+}

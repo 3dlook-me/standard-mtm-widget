@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="113px" height="113px" viewBox="0 0 113 113" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 56.3 (101010) - https://sketch.com -->
+    <title>ABE7EF6A-8583-4755-97FF-08E6C1C32371</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <path d="M52,104 C72.6817127,104 90.5434289,91.9261592 98.9210363,74.4425897 C102.176648,67.6483218 104,60.0370943 104,52 C104,23.281193 80.718807,0 52,0 C23.281193,0 0,23.281193 0,52 C0,59.858845 1.7433713,67.3105039 4.86446948,73.9893322 C13.1488915,91.717141 31.1400381,104 52,104 Z" id="path-1"></path>
+        <path d="M99.1295045,74.1350219 C102.434273,67.2775567 104.285156,59.5955329 104.285156,51.4836811 C104.285156,22.4977444 80.6524368,-1 51.5,-1" id="path-3"></path>
+    </defs>
+    <g id="Desktop" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Loading" transform="translate(-244.000000, -279.000000)">
+            <g id="Group-3" transform="translate(248.000000, 284.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Oval" stroke="#F2F2F2" stroke-width="8" xlink:href="#path-1"></use>
+                <mask id="mask-4" fill="white">
+                    <use xlink:href="#path-3"></use>
+                </mask>
+                <use id="Oval" stroke="#FF9940" stroke-width="8" stroke-linecap="round" xlink:href="#path-3"></use>
+            </g>
+        </g>
+    </g>
+</svg>

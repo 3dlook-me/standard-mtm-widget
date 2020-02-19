@@ -1,0 +1,38 @@
+@import '../../scss/utils/index';
+
+.header {
+  height: 61px;
+  padding: 0 28px;
+  padding-top: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &__help,
+  &__close {
+    background: transparent;
+    padding: 2px;
+    border: none;
+    position: relative;
+    z-index: 10;
+  }
+
+  &--white:not(.active) &__help {
+    opacity: 0.8;
+
+    text {
+      fill: #fff;
+    }
+
+    circle {
+      stroke: #fff;
+    }
+  }
+
+  &--white:not(.active) &__close {
+
+    path {
+      stroke: #fff;
+    }
+  }
+}

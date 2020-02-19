@@ -1,0 +1,17 @@
+@import '../../scss/utils/index';
+
+.qrcode {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  &__img {
+    height: 168px;
+    width: 168px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $error-border-color;
+    font-weight: bold;
+  }
+}

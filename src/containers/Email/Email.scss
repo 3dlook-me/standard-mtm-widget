@@ -1,0 +1,57 @@
+@import '../../scss/utils/index';
+
+.email {
+  &__check {
+    margin-bottom: 20px;
+  }
+
+  &__control {
+    margin-top: 133px;
+    margin-bottom: 14px;
+
+    @include breakpoint($mobile) {
+      margin-top: 80px;
+    }
+  }
+
+  &__discount-banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 290px;
+    margin: 18px auto 0;
+  }
+
+  &__discount-logo {
+    margin: 0 20px 0 0;
+
+    img {
+      width: 76px;
+    }
+  }
+
+  &__discount-info {
+    text-align: left;
+
+    p {
+      color: #000000;
+      font-size: 14px;
+      line-height: 21px;
+
+      &:first-child {
+        margin-bottom: 6px;
+        color: #FF9940;
+        font-size: 18px;
+        font-weight: bold;
+        line-height: 21px;
+      }
+
+      &:last-child {
+        color: #000000;
+        font-size: 12px;
+        line-height: 16px;
+      }
+    }
+  }
+}

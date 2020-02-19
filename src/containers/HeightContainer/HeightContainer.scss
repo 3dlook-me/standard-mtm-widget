@@ -1,0 +1,11 @@
+@import '../../scss/utils/index';
+
+.how-tall-are-you {
+  &__control {
+    margin-top: 133px;
+
+    @include breakpoint($mobile) {
+      margin-top: 80px;
+    }
+  }
+}

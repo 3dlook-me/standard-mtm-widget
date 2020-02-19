@@ -1,0 +1,189 @@
+@import '../../scss/utils/index';
+
+.scan-qrcode {
+  text-align: center;
+
+  &__title,
+  &__title-2 {
+    font-size: 16px;
+    margin-top: 15px;
+  }
+
+  &__title-2 {
+    margin-top: 47px;
+    margin-bottom: 9px;
+  }
+
+  &__qrcode {
+    margin-top: 4px;
+  }
+
+  &__help {
+    color: $main-color;
+    font-size: rem(8px);
+    letter-spacing: rem(1.2px);
+    height: 22px;
+    min-width: 91px;
+    padding: 0 5px;
+    line-height: rem(16px);
+    text-transform: uppercase;
+    border-radius: 4px;
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.12);
+    border: 0;
+    user-select: none;
+    margin-top: 43px;
+  }
+
+  &__btn {
+    color: $main-color;
+    text-decoration: underline;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    font-size: rem(11px);
+
+    &--copied {
+      color: #DDDDDD;
+    }
+
+    &--copied &-svg {
+      stroke: #DDDDDD;
+    }
+
+    svg {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 5px;
+    }
+  }
+
+  .selected-flag {
+    padding-left: 0;
+  }
+
+  .intl-tel-input.allow-dropdown.separate-dial-code .selected-flag {
+    background: transparent;
+    padding-bottom: 2px;
+    width: 95px;
+  }
+
+  .intl-tel-input .selected-flag .iti-flag {
+    left: 10px;
+  }
+
+  .intl-tel-input {
+    display: block;
+  }
+
+  .selected-dial-code {
+    font-size: 16px;
+    line-height: 19px;
+    pointer-events: none;
+  }
+
+  .intl-tel-input .country-list .country-name {
+    white-space: normal;
+  }
+
+  .intl-tel-input .country-list {
+    border: 0;
+    box-shadow: 0 2px 6px 0 rgba(0,0,0,0.11);
+    top: calc(100% + 0px);
+  }
+
+  .intl-tel-input.allow-dropdown.separate-dial-code .selected-dial-code {
+    padding: 0;
+    text-align: right;
+    padding-top: 4px;
+    padding-right: 22px;
+    font-size: 16px;
+    line-height: 19px;
+  }
+
+  .intl-tel-input .selected-flag .iti-arrow {
+    border: none;
+    margin: 0;
+    background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMTJweCIgaGVpZ2h0PSI3cHgiIHZpZXdCb3g9IjAgMCAxMiA3IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IHNrZXRjaHRvb2wgNTYuMyAoMTAxMDEwKSAtIGh0dHBzOi8vc2tldGNoLmNvbSAtLT4KICAgIDx0aXRsZT5FRDhGN0Q1RC1EQzUzLTQyMkEtOTU2QS0xMTBBMjI5Q0MxRkZAMXg8L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIHNrZXRjaHRvb2wuPC9kZXNjPgogICAgPGcgaWQ9IkRlc2t0b3AiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgICAgIDxnIGlkPSJTdGVwLXNjYW4tb3ItcGhvbmUtMyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE5OS4wMDAwMDAsIC00NTMuMDAwMDAwKSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjEuNSI+CiAgICAgICAgICAgIDxwb2x5bGluZSBpZD0iUGF0aC0zOS1Db3B5LTIiIHBvaW50cz0iMjAwIDQ1NCAyMDUuMDE1MDMyIDQ1OC43NzE1OTYgMjEwLjAzMDA2NSA0NTQiPjwvcG9seWxpbmU+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=');
+    width: 12px;
+    height: 7px;
+    top: calc(50% - 3px);
+  }
+
+  .intl-tel-input.allow-dropdown.separate-dial-code.iti-sdc-2 .selected-flag {
+    width: 78px;
+  }
+
+  .intl-tel-input.allow-dropdown.separate-dial-code.iti-sdc-3 .selected-flag {
+    width: 90px;
+  }
+
+  .intl-tel-input.allow-dropdown.separate-dial-code.iti-sdc-3 input {
+    padding-left: 90px;
+  }
+
+  &__error {
+    color: #D0021B;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: right;
+    margin-top: 2px;
+    visibility: hidden;
+    opacity: 0;
+
+    &.active {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  &__help-btn {
+    margin-top: 10px;
+    display: none;
+
+    a {
+      color: #FFAB55;
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      line-height: 21px;
+      text-align: center;
+      text-transform: uppercase;
+      border-radius: 4px;
+      background-color: #FFFFFF;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12);
+      padding: 4px 10px;
+      text-decoration: none;
+    }
+  }
+}
+
+.button--sms-pending,
+.button--sms-success,
+.button--sms-pending[disabled],
+.button--sms-success[disabled] {
+  background: #FAFAFA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    margin-right: 12px;
+  }
+
+  img.spin {
+    animation: spin 3s linear infinite;
+  }
+}
+
+.button--sms-pending,
+.button--sms-pending[disabled] {
+  color: $main-color;
+}
+
+.button--sms-success,
+.button--sms-success[disabled] {
+  background: #cecece;
+  color: #fff;
+  text-transform: unset;
+}

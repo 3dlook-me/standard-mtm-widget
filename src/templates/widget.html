@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>SAIA Perfect Fit</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
+</head>
+<body>
+  <div class="widget-container">
+
+    <!-- WIDGET HEADER - START -->
+    <div class="header">
+      <button class="header__help">Help</button>
+
+      <div class="header__logo">
+        <img src="../images/logo.svg" alt="SAIA Perfect Fit Logo">
+      </div>
+
+      <button class="header__close">
+        <img src="../images/close-icon.svg" alt="Close button icon">
+      </button>
+    </div>
+    <!-- WIDGET HEADER - END -->
+
+    <!-- WELCOME SCREEN - START -->
+    <div class="screen screen--welcome" data-screen="1">
+      <div class="screen__content welcome">
+        <div class="welcome__logo">
+          <img src="../images/logo.svg" alt="SAIA Perfect Fit Logo">
+          <p class="welcome__powered">POWERED BY 3DLOOK</p>
+        </div>
+        
+        <p class="welcome__text">After uploading only two photos we will determine your body measurements and select the size that will fit you best</p>
+
+        <button class="button">Start
+          <img class="button__icon" src="../images/arrow.svg" alt="Go next arrow icon">
+        </button>
+      </div>
+    </div>
+    <!-- WELCOME SCREEN - END -->
+
+    <!-- TIPS SCREEN - START -->
+    <div class="screen screen--tips" data-screen="2">
+      <div class="screen__content tips" style="text-align: center">
+        <h2 class="screen__title">Hi, here are some tips</h2>
+        <p class="screen__text">Simply take two photos with any smartphone<br>camera. You can be on any background.</p>
+        <div class="tips__slider slider">
+          <div class="slider__slides">
+            <div class="slider__slide active">
+              <img src="../images/slide1.png" alt="">
+            </div>
+
+            <div class="slider__slide">
+              <img src="../images/slide2.png" alt="">
+            </div>
+
+            <div class="slider__slide">
+              <img src="../images/slide3.png" alt="">
+            </div>
+          </div>
+
+          <div class="slider__bullets">
+            <div class="slider__bullet active"></div>
+            <div class="slider__bullet"></div>
+            <div class="slider__bullet"></div>
+          </div>
+
+          <div class="slider__nav">
+            <button class="slider__back-btn">
+              <img src="../images/slider-next-icon.svg" alt="Prev slide button icon">
+            </button>
+            <button class="slider__next-btn">
+              <img src="../images/slider-next-icon.svg" alt="Next slide button icon">
+            </button>
+          </div>
+        </div>
+        <button class="button">I understand</button>
+      </div>
+    </div>
+    <!-- TIPS SCREEN - END -->
+
+    <!-- UPLOAD SCREEN - START -->
+    <div class="screen screen--upload" data-screen="3">
+      <div class="screen__content upload">
+        <h2 class="screen__title">upload photos</h2>
+        <p class="screen__text">Please upload two full body <br>photos of yourself:</p>
+
+        <div class="upload__files">
+          <!-- file block -->
+          <div class="upload__file-block">
+            <h3 class="upload__file-title">Front</h3>
+
+            <label class="upload__file" for="front" tabindex="0">
+              <input type="file" name="front" id="front" hidden>
+              <div class="upload__file-image upload__file-image--placeholder active">
+                <img src="../images/front.svg" alt="Front image icon">
+                <p class="upload__file-select-text">select file</p>
+              </div>
+              <div class="upload__file-image upload__file-image--preview">
+                <img src="https://gamemag.ru/images/news/c/c4fc5238a07cd07bb3a4c44236135426.png" alt="Front image preview">
+              </div>
+            </label>
+
+            <ul class="upload__file-validation">
+              <li class="upload__file-validation-status upload__file-validation-status--valid">
+                <span class="upload__file-validation-icon">
+                  <img class="valid" src="../images/check.svg" alt="Check icon">
+                  <img class="invalid" src="../images/cross.svg" alt="Cross icon">
+                </span>
+                Correct pose
+              </li>
+              <li class="upload__file-validation-status upload__file-validation-status--invalid">
+                <span class="upload__file-validation-icon">
+                  <img class="valid" src="../images/check.svg" alt="Check icon">
+                  <img class="invalid" src="../images/cross.svg" alt="Cross icon">
+                </span>
+                Full body
+              </li>
+            </ul>
+          </div>
+          <!-- file block -->
+
+          <!-- file block -->
+          <div class="upload__file-block">
+            <h3 class="upload__file-title">Side</h3>
+
+            <label class="upload__file" for="side" tabindex="0">
+              <input type="file" name="side" id="side" hidden>
+              <div class="upload__file-image upload__file-image--placeholder active">
+                <img src="../images/side.svg" alt="side image icon">
+                <p class="upload__file-select-text">select file</p>
+              </div>
+              <div class="upload__file-image upload__file-image--preview">
+                <img src="https://gamemag.ru/images/news/c/c4fc5238a07cd07bb3a4c44236135426.png" alt="side image preview">
+              </div>
+            </label>
+
+            <ul class="upload__file-validation">
+              <li class="upload__file-validation-status upload__file-validation-status--valid">
+                <span class="upload__file-validation-icon">
+                  <img class="valid" src="../images/check.svg" alt="Check icon">
+                  <img class="invalid" src="../images/cross.svg" alt="Cross icon">
+                </span>
+                Correct pose
+              </li>
+              <li class="upload__file-validation-status upload__file-validation-status--invalid">
+                <span class="upload__file-validation-icon">
+                  <img class="valid" src="../images/check.svg" alt="Check icon">
+                  <img class="invalid" src="../images/cross.svg" alt="Cross icon">
+                </span>
+                Full body
+              </li>
+            </ul>
+          </div>
+          <!-- file block -->
+        </div>
+
+        <button class="button">
+          Next step
+          <img class="button__icon" src="../images/arrow.svg" alt="Go next arrow icon">
+        </button>
+      </div>
+    </div>
+    <!-- UPLOAD SCREEN - END -->
+
+    <!-- DATA SCREEN - START -->
+    <div class="screen screen--data" data-screen="4">
+      <div class="screen__content data">
+        <h2 class="screen__title">And the last step</h2>
+        <p class="screen__text">Please select your gender and enter height. <br>
+        We need this information to create your Perfect Fit Profile</p>
+
+        <div class="data__block">
+          <!-- gender -->
+          <div class="data__field">
+            <h3 class="data__field-title">Gender:</h3>
+            <div class="gender">
+              <input type="radio" name="gender" id="gender-female" value="female">
+              <label class="gender__item" for="gender-female">Female</label>
+
+              <input type="radio" name="gender" id="gender-male" value="male">
+              <label class="gender__item" for="gender-male">Male</label>
+            </div>
+          </div>
+          <!-- gender -->
+
+          <!-- height -->
+          <div class="data__field">
+            <h3 class="data__field-title">HeightContainer:</h3>
+
+            <div class="height" data-measure="in">
+
+              <div class="height__measure height__measure--cm">
+                <div class="height__input-block" data-measure="cm">
+                  <input class="height__input" type="text">
+                </div>
+              </div>
+
+              <div class="height__measure height__measure--in">
+                <div class="height__input-block" data-measure="ft">
+                  <input class="height__input" type="text">
+                </div>
+                <div class="height__input-block" data-measure="in">
+                  <input class="height__input" type="text">
+                </div>
+              </div>
+
+              <div class="height__switcher">
+                <input type="radio" name="measure" id="measure-cm" value="cm" checked>
+                <label class="height__switcher-item height__switcher-item--cm" for="measure-cm">cm</label>
+                
+                <input type="radio" name="measure" id="measure-in" value="in">
+                <label class="height__switcher-item height__switcher-item--in" for="measure-in">in</label>
+
+                <div class="height__switcher-switch"></div>
+              </div>
+
+              <p class="height__desc">
+                Your height should be between <br>
+                150-210 cm
+              </p>
+            </div>
+          </div>
+          <!-- height -->
+        </div>
+
+        <button class="button">
+          get your size
+          <img class="button__icon" src="../images/arrow.svg" alt="Go next arrow icon">
+        </button>
+
+        <div class="data__check checkbox">
+          <input type="checkbox" name="agree" id="agree">
+          <label for="agree">I accept <a href="#">Terms and Conditions</a></label>
+        </div>
+      </div>
+    </div>
+    <!-- DATA SCREEN - END -->
+
+    <!-- PRELOADER SCREEN - START -->
+    <div class="screen screen--preloader" data-screen="5">
+      <div class="screen__content preloader">
+        <h2 class="preloader__title screen__title">We’re doing some magic…<br>Please stand by</h2>
+        <img class="preloader__image" src="../images/preloader.svg" alt="Preloader image">
+      </div>
+    </div>
+    <!-- PRELOADER SCREEN - END -->
+
+    <!-- RESULT SCREEN - START -->
+    <div class="screen screen--result active" data-screen="6">
+      <div class="screen__content result">
+        <h2 class="screen__title">your recomended size</h2>
+
+        <div class="result__product">
+          <div class="result__product-img">
+            <img src="../images/product-img.png" alt="">
+          </div>
+          <div class="result__product-info">
+            <h3 class="result__product-title">For this product:</h3>
+            <p class="result__product-desc">The Nike Air Rally Women's Crew</p>
+          </div>
+        </div>
+
+        <div class="result__sizes">
+          <div class="result__size">
+            <h3 class="result__size-num">XS</h3>
+            <p class="result__size-desc">Tight fit</p>
+          </div>
+
+          <div class="result__size result__size--big">
+            <h3 class="result__size-num">S</h3>
+            <p class="result__size-desc">Normal fit</p>
+          </div>
+
+          <div class="result__size">
+            <h3 class="result__size-num">M</h3>
+            <p class="result__size-desc">Loose fit</p>
+          </div>
+        </div>
+
+        <p class="result__text">Your <b>Perfect Fit Profile</b> is completed. <br>
+            Size recommendations for other products are now available.</p>
+
+        <button class="button">
+          back to store
+          <img class="button__icon" src="../images/arrow.svg" alt="Go next arrow icon">
+        </button>
+      </div>
+    </div>
+    <!-- RESULT SCREEN - END -->
+  </div>
+</body>
+</html>

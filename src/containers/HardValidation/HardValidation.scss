@@ -1,0 +1,28 @@
+@import '../../scss/utils/index';
+@import '../SoftValidation/SoftValidation';
+
+.hard-validation {
+  @extend .soft-validation;
+
+  &__title {
+    @extend .soft-validation__title;
+  }
+
+  &__text {
+    @extend .soft-validation__text;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  &__image {
+    @extend .soft-validation__image;
+  }
+
+  &__title-2 {
+    @extend .soft-validation__title-2;
+  }
+
+  &__recommendations {
+    @extend .soft-validation__recommendations;
+  }
+}

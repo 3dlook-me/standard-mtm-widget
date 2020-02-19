@@ -1,0 +1,61 @@
+@import '../utils/index';
+
+.checkbox {
+  font-size: rem(11px);
+  display: flex;
+  justify-content: center;
+
+  @include breakpoint((max-width 320px, max-height 568px)) {
+    font-size: rem(10px);
+  }
+
+  input {
+    @include visually-hidden();
+  }
+
+  label, a {
+    color: #9B9B9B;
+  }
+
+  &__icon {
+    display: inline-block;
+    vertical-align: middle;
+    content: '';
+    height: 17px;
+    width: 17px;
+    border: 1px solid #9B9B9B;
+    border-radius: 1px;
+    margin-right: 7px;
+    cursor: pointer;
+    position: relative;
+
+    &:after {
+      display: none;
+      content: '';
+      background: url('../images/checkbox.svg') no-repeat;
+      width: 11px;
+      height: 8px;
+      position: absolute;
+      top: 4px;
+      left: 2px;
+      pointer-events: none;
+    }
+  }
+
+  // &:focus-within &__icon {
+  //   outline: -webkit-focus-ring-color auto 5px;
+  // }
+
+  &.checked &__icon {
+    background: $main-color;
+    border-color: $main-color;
+
+    &:after {
+      display: block;
+    }
+  }
+
+  &--invalid &__icon {
+    border-color: $error-border-color;
+  }
+}

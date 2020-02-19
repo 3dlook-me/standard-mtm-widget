@@ -1,0 +1,49 @@
+@import "../utils/index";
+
+.widget-container {
+  max-width: 600px;
+  height: 700px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-position: center;
+  background-size: cover;
+
+  @include breakpoint(max-width 768px) {
+    max-width: 100%;
+    width: 100vw;
+    height: auto;
+  }
+
+  &--no-bg {
+    background-image: none !important;
+  }
+
+  &:not(.widget-container--no-bg) {
+    /* .header:not(.active) {
+      .header__svg-fill {
+        stroke: white;
+
+        &--circle {
+          stroke: #dddddd;
+        }
+      }
+    } */
+
+    .screen__footer {
+      .button {
+        &:not(.help__close) {
+          background-color: white;
+          color: $main-color;
+          font-weight: 300;
+
+          @include breakpoint($mobile) {
+            background-color: $main-color;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}

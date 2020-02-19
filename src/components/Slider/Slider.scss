@@ -1,0 +1,46 @@
+.slider {
+
+  &__slide {
+    display: none;
+
+    img {
+      margin: 0 auto;
+      max-width: 100%;
+    }
+
+    &.active {
+      display: block;
+    }
+  }
+
+  &__bullets {
+    display: flex;
+    justify-content: center;
+    margin: 35px 0 27px;
+
+    @include breakpoint($mobile) {
+      margin-top: 30px;
+    }
+
+    @include breakpoint((max-width 320px, max-height 568px)) {
+      margin: 10px 0;
+    }
+  }
+
+  &__bullet {
+    width: 8px;
+    height: 8px;
+    margin: 0 5px;
+    border-radius: 50%;
+    transition: all ease 300ms;
+    background: #CDCDCD;
+
+    &.active {
+      background: #FFAB55;
+    }
+  }
+
+  &__nav {
+
+  }
+}

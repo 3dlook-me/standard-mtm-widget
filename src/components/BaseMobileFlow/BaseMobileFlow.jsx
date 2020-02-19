@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import { route } from 'preact-router';
 
 import { isMobileDevice, parseGetParams } from '../../helpers/utils';
 import FlowService from '../../services/flowService';
@@ -45,6 +46,14 @@ class BaseMobileFlow extends Component {
     setFlowId(matches.id);
     this.flow.setFlowId(matches.id);
 
+    // if (!isMobileDevice()) {
+    //   setIsMobile(false);
+    //
+    //   route('/tutorial', false);
+    //
+    //   return;
+    // }
+
     return this.flow.get()
       .then((flowState) => {
         const brand = flowState.state.brand || TEST_BRAND;
@@ -68,6 +77,12 @@ class BaseMobileFlow extends Component {
         setPhoneNumber(flowState.state.phoneNumber);
         setProductId(flowState.state.productId);
         setUnits(flowState.state.units);
+
+        // setInterval(() => {
+        //   this.flow.updateState({
+        //     lastActiveDate: Date.now(),
+        //   });
+        // }, 3000);
       });
   }
 }

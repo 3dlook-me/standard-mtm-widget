@@ -6,7 +6,13 @@ import classNames from 'classnames';
 import Clipboard from 'clipboard';
 import IntlTelInput from 'react-intl-tel-input';
 
-import './QRCodeContainer.scss';
+import { send, validatePhoneNumberLetters } from '../../helpers/utils';
+import { gaCopyUrl } from '../../helpers/ga';
+
+import actions from '../../store/actions';
+
+import FlowService from '../../services/flowService';
+import SMSService from '../../services/smsService';
 
 import {
   Preloader,
@@ -14,14 +20,7 @@ import {
   Stepper,
 } from '../../components';
 
-import { send } from '../../helpers/utils';
-import {
-  gaCopyUrl,
-} from '../../helpers/ga';
-import actions from '../../store/actions';
-import FlowService from '../../services/flowService';
-import SMSService from '../../services/smsService';
-
+import './QRCodeContainer.scss';
 import smsSendingIcon from '../../images/sms-sending.svg';
 
 /**
@@ -61,6 +60,7 @@ class QRCodeContainer extends Component {
     this.sms = new SMSService(token);
   }
 
+  // TODO *** change
   componentWillReceiveProps(nextProps) {
     this.init(nextProps);
   }
@@ -75,9 +75,10 @@ class QRCodeContainer extends Component {
    */
   changePhoneNumber = (isValid, number, country) => {
     const phoneNumber = `${country.dialCode}${number}`;
+    const noLettersCheck = validatePhoneNumberLetters(phoneNumber);
 
     this.setState({
-      isPhoneNumberValid: isValid,
+      isPhoneNumberValid: isValid && noLettersCheck,
       phoneNumber,
     });
   }
@@ -111,6 +112,20 @@ class QRCodeContainer extends Component {
                   isPending: true,
                 });
               }
+              // if (flowState.state.status === 'opened-on-mobile' && flowState.state.lastActiveDate) {
+              //   this.setState({
+              //     isPending: true,
+              //   });
+              //
+              //   const currentTime = Date.now();
+              //   const widgetWasAliveAt = flowState.state.lastActiveDate;
+              //
+              //   if ((currentTime - widgetWasAliveAt) > 6000) {
+              //     this.setState({
+              //       isPending: false,
+              //     });
+              //   }
+              // }
 
               if (flowState.state.status === 'closed-on-mobile') {
                 this.setState({

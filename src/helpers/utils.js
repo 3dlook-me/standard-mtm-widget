@@ -177,6 +177,17 @@ export const validateEmail = (email) => {
 };
 
 /**
+ * Validate phone number for letters
+ *
+ * @param {string} phone - phone number
+ * @returns {boolean}
+ */
+export const validatePhoneNumberLetters = (phone) => {
+  const re = /^[0-9,\-, , (, ), \+]*$/;
+  return re.test(phone.trim());
+};
+
+/**
 * Get image orientation
 *
 * @async

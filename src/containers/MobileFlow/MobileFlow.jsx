@@ -5,6 +5,7 @@ import { route } from 'preact-router';
 import { gaSwitchToMobileFlow } from '../../helpers/ga';
 import actions from '../../store/actions';
 import { BaseMobileFlow } from '../../components';
+import { isMobileDevice } from '../../helpers/utils';
 
 /**
  * Mobile flow page component
@@ -15,11 +16,21 @@ class MobileFlow extends BaseMobileFlow {
   }
 
   componentDidMount = async () => {
+    const { matches, resetState } = this.props;
+
+    if (!isMobileDevice()) {
+      route(`/tutorial?id=${matches.id}`, true);
+
+      return Promise.resolve();
+    }
+
     await super.componentDidMount();
 
-    const { matches } = this.props;
-
     gaSwitchToMobileFlow();
+
+    resetState();
+
+    this.flow.resetGlobalState();
 
     const flowState = await this.flow.get();
 
@@ -44,4 +55,4 @@ class MobileFlow extends BaseMobileFlow {
   }
 }
 
-export default connect(state => state, actions)(MobileFlow);
+export default connect((state) => state, actions)(MobileFlow);

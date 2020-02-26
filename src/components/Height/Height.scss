@@ -1,12 +1,11 @@
 @import '../../scss/utils/index';
 
 .height {
-
-  &[data-measure='cm'] .height__measure--cm {
+  &[data-measure="cm"] .height__measure--cm {
     display: block;
   }
 
-  &[data-measure='in'] .height__measure--in {
+  &[data-measure="in"] .height__measure--in {
     display: flex;
   }
 
@@ -34,6 +33,22 @@
       pointer-events: none;
       font-size: rem(12px);
     }
+
+    input {
+      padding-right: 40px;
+    }
+  }
+
+  &__input-placeholder {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #DDDDDD;
   }
 
   &__input {
@@ -70,7 +85,11 @@
     }
 
     label.checked {
-      color: #000;
+      p {
+        &:first-child {
+          color: #000;
+        }
+      }
     }
 
     &--cm &-switch:before {
@@ -88,16 +107,23 @@
     color: #DDDDDD;
     text-transform: uppercase;
     font-size: rem(12px);
-    width: 40px;
     text-align: center;
     cursor: pointer;
 
     &--cm {
       order: 1;
+
+      .height__switcher-info {
+        text-align: right;
+      }
     }
 
     &--in {
       order: 3;
+
+      .height__switcher-info {
+        text-align: left;
+      }
     }
   }
 
@@ -131,4 +157,21 @@
   &__desc {
     height: 14px;
   }
+
+  &__switcher-info {
+    padding: 0 10px;
+
+    p {
+      font-size: 12px;
+      line-height: 14px;
+      text-transform: initial;
+
+      &:last-child {
+        font-size: 10px;
+        line-height: 12px;
+        margin-top: 2px;
+      }
+    }
+  }
 }
+

@@ -107,25 +107,20 @@ class QRCodeContainer extends Component {
         this.timer = setInterval(() => {
           this.flow.get()
             .then((flowState) => {
-              if (flowState.state.status === 'opened-on-mobile') {
+              if (flowState.state.status === 'opened-on-mobile' && flowState.state.lastActiveDate) {
                 this.setState({
                   isPending: true,
                 });
+
+                const currentTime = Date.now();
+                const widgetWasAliveAt = flowState.state.lastActiveDate;
+
+                if ((currentTime - widgetWasAliveAt) > 6000) {
+                  this.setState({
+                    isPending: false,
+                  });
+                }
               }
-              // if (flowState.state.status === 'opened-on-mobile' && flowState.state.lastActiveDate) {
-              //   this.setState({
-              //     isPending: true,
-              //   });
-              //
-              //   const currentTime = Date.now();
-              //   const widgetWasAliveAt = flowState.state.lastActiveDate;
-              //
-              //   if ((currentTime - widgetWasAliveAt) > 6000) {
-              //     this.setState({
-              //       isPending: false,
-              //     });
-              //   }
-              // }
 
               if (flowState.state.status === 'closed-on-mobile') {
                 this.setState({

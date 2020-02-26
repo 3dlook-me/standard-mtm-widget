@@ -23,11 +23,11 @@ class HeightContainer extends Component {
 
     this.state = {
       isHeightValid: true,
-      isAgreeValid: true,
       buttonDisabled: true,
     };
 
     const { flowId, token } = this.props;
+
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
   }
@@ -45,56 +45,44 @@ class HeightContainer extends Component {
   onNextScreen = async () => {
     gaOnHeightNext();
 
-    const {
-      gender,
-      height,
-      bodyType,
-      isMobile,
-      email,
-      units,
-    } = this.props;
+    // const {
+    //   gender,
+    //   height,
+    //   bodyType,
+    //   isMobile,
+    //   email,
+    //   units,
+    // } = this.props;
+    //
+    // await this.flow.updateState({
+    //   status: 'set metadata',
+    //   gender,
+    //   bodyType,
+    //   height,
+    //   email,
+    //   units,
+    // });
+    //
+    // if (isMobile) {
+    //   route('/tutorial', false);
+    // } else {
+    //   route('/qrcode', false);
+    // }
 
-    await this.flow.updateState({
-      status: 'set metadata',
-      gender,
-      bodyType,
-      height,
-      email,
-      units,
-    });
-
-    if (isMobile) {
-      route('/tutorial', false);
-    } else {
-      route('/qrcode', false);
-    }
-  };
-
-  /**
-   * Change argee checkbox state handler
-   */
-  changeAgree = (e) => {
-    const { addAgree } = this.props;
-
-    addAgree(e.target.checked);
-
-    this.setState({
-      isAgreeValid: e.target.checked,
-    });
+      route('/weight', false);
   };
 
   /**
    * Set Next button disabled state
    */
   checkButtonState() {
-    const { height, agree } = this.props;
+    const { height } = this.props;
     const {
-      isAgreeValid,
       buttonDisabled,
       isHeightValid,
     } = this.state;
 
-    const isButtonDisabled = !agree || !height || !isAgreeValid || !isHeightValid;
+    const isButtonDisabled = !height || !isHeightValid;
 
     if (isButtonDisabled !== buttonDisabled) {
       this.setState({
@@ -108,9 +96,8 @@ class HeightContainer extends Component {
    */
   changeHeight = (height) => {
     const { addHeight } = this.props;
-
-    let isValueValid = false;
     const numHeight = parseInt(height, 10);
+    let isValueValid = false;
 
     if (numHeight >= 150 && numHeight <= 220) {
       isValueValid = true;
@@ -131,35 +118,22 @@ class HeightContainer extends Component {
 
   render() {
     const {
-      isAgreeValid,
       isHeightValid,
       buttonDisabled,
     } = this.state;
 
-    const {
-      agree,
-    } = this.props;
-
     return (
       <div className="screen active">
-        <div className="screen__content how-tall-are-you">
+        <div className="screen__content height-container">
           <Stepper steps="5" current="1" />
 
-          <div className="how-tall-are-you__control screen__control">
+          <div className="height-container__control screen__control">
             <h3 className="screen__label">How tall are you?</h3>
-            <Height className="how-tall-are-you__height" change={this.changeHeight} isValid={isHeightValid} changeUnits={this.onChangeUnits} />
+            <Height className="height__height" change={this.changeHeight} isValid={isHeightValid} changeUnits={this.onChangeUnits} />
           </div>
 
         </div>
         <div className="screen__footer">
-          <div className={classNames('email__check', 'checkbox', { checked: agree, 'checkbox--invalid': !isAgreeValid })}>
-            <label htmlFor="agree">
-              <input type="checkbox" name="agree" id="agree" onChange={this.changeAgree} checked={agree} />
-              <span className="checkbox__icon" />
-              { 'I accept ' }
-              <a href="https://3dlook.me/terms-of-service/" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>
-            </label>
-          </div>
           <button className="button" onClick={this.onNextScreen} type="button" disabled={buttonDisabled}>Next</button>
         </div>
       </div>

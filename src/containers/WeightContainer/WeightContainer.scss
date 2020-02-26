@@ -1,0 +1,54 @@
+@import '../../scss/utils/index';
+
+.weight-container {
+  &__control {
+    margin-top: 133px;
+
+    @include breakpoint($mobile) {
+      margin-top: 80px;
+    }
+
+    input {
+      padding-right: 34px;
+    }
+  }
+
+  &__units {
+    margin-top: 41px;
+  }
+
+  &__input-wrap {
+    position: relative;
+    margin-bottom: 40px;
+  }
+
+  &__placeholder {
+    position: absolute;
+    bottom: 16px;
+    right: 0;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    color: #ddd;
+  }
+
+  &__txt {
+    color: #9B9B9B;
+    font-size: 14px;
+    line-height: 21px;
+    text-align: center;
+  }
+
+  &__skip-btn {
+    border: none;
+    padding: 0 6px;
+    box-shadow: none;
+    outline: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    text-decoration: underline;
+    color: inherit;
+  }
+}

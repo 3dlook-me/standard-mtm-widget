@@ -57,6 +57,7 @@ $failure: $error-border-color;
     .button {
       margin: 0 auto;
       font-weight: 300;
+      box-shadow: 0 6px 16px 0 rgba(255,119,0,0.5);
 
       @include breakpoint($mobile) {
         width: 100%;

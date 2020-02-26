@@ -1,5 +1,6 @@
 export * from './BodyType';
 export * from './Height';
+export * from './Gender';
 export * from './Header';
 export * from './Help';
 export * from './ImageExample';

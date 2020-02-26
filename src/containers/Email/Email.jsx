@@ -11,9 +11,6 @@ import actions from '../../store/actions';
 
 import './Email.scss';
 
-import discountLogo from '../../images/discount-img.png';
-
-
 /**
  * Email page component
  */
@@ -22,6 +19,7 @@ class Email extends Component {
     super(props);
 
     this.state = {
+      isEmail: false,
       isEmailValid: true,
       isAgreeValid: true,
       buttonDisabled: true,
@@ -42,15 +40,19 @@ class Email extends Component {
     const { setEmail } = this.props;
     const { value } = e.target;
     const isValid = validateEmail(value);
+    const isEmail = value.trim().length > 0;
 
     this.setState({
-      isEmailValid: isValid || !value,
+      isEmailValid: (isValid || !value),
+      isEmail,
     });
 
     if (isValid) {
       setEmail(value);
+    } else if (!isEmail || !isValid) {
+      setEmail(null);
     }
-  }
+  };
 
   /**
    * Change argee checkbox state handler
@@ -71,7 +73,7 @@ class Email extends Component {
   onNextScreen = async () => {
     gaOnEmailNext();
 
-    route('/height', false);
+    route('/gender', false);
   }
 
   /**
@@ -83,9 +85,10 @@ class Email extends Component {
       buttonDisabled,
       isAgreeValid,
       isEmailValid,
+      isEmail,
     } = this.state;
 
-    const isButtonDisabled = !agree || !isAgreeValid || !isEmailValid;
+    const isButtonDisabled = !agree || !isAgreeValid || !isEmailValid || !isEmail;
 
     if (isButtonDisabled !== buttonDisabled) {
       this.setState({
@@ -101,9 +104,7 @@ class Email extends Component {
       buttonDisabled,
     } = this.state;
 
-    const {
-      agree,
-    } = this.props;
+    const { agree } = this.props;
 
     return (
       <div className="screen active">
@@ -120,21 +121,6 @@ class Email extends Component {
             />
             <p className={classNames('screen__control-error', { active: !isEmailValid })}>Invalid email address</p>
           </div>
-
-          <div className="email__discount-banner">
-            <figure className="email__discount-logo">
-              <img src={discountLogo} alt="discount-logo" />
-            </figure>
-            <div className="email__discount-info">
-              <p>
-                Enter your email for a
-              </p>
-              <p>
-                10% discount
-              </p>
-            </div>
-          </div>
-
         </div>
         <div className="screen__footer">
           <div className={classNames('email__check', 'checkbox', { checked: agree, 'checkbox--invalid': !isAgreeValid })}>
@@ -152,4 +138,4 @@ class Email extends Component {
   }
 }
 
-export default connect(state => state, actions)(Email);
+export default connect((state) => state, actions)(Email);

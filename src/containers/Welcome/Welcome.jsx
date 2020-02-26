@@ -82,21 +82,6 @@ class Welcome extends Component {
     return (
       <section className="screen active">
         <div className="screen__content welcome">
-          <div className="email__discount-banner">
-            <figure className="email__discount-logo">
-              <img src={discountLogo} alt="discount-logo" />
-            </figure>
-            <div className="email__discount-info">
-              <p>
-                Get 10% off
-              </p>
-              <p>
-                for your purchase with your
-                <br />
-                personalized size recommendation.
-              </p>
-            </div>
-          </div>
           <div className="screen__intro">
             <h4 className="screen__intro-title">
               Never guess your size again
@@ -107,8 +92,8 @@ class Welcome extends Component {
           </div>
         </div>
         <div className="screen__footer">
-          <Link className="button" href="/height" onClick={gaWelcomeOnContinue} disabled={isButtonDisabled}>
-            <span>next</span>
+          <Link className="button" href="/email" onClick={gaWelcomeOnContinue} disabled={isButtonDisabled}>
+            <span>start</span>
           </Link>
         </div>
       </section>

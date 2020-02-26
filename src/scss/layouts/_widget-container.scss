@@ -21,7 +21,7 @@
   }
 
   &:not(.widget-container--no-bg) {
-    /* .header:not(.active) {
+    .header:not(.active) {
       .header__svg-fill {
         stroke: white;
 
@@ -29,7 +29,7 @@
           stroke: #dddddd;
         }
       }
-    } */
+    }
 
     .screen__footer {
       .button {

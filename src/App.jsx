@@ -20,12 +20,14 @@ import {
  */
 import {
   Welcome,
+  Email,
+  GenderContainer,
   HeightContainer,
+  WeightContainer,
   QRCodeContainer,
   Tutorial,
   Upload,
   Data,
-  Email,
   QRCodeHelp,
   Results,
   SoftValidation,
@@ -56,7 +58,9 @@ class App extends Component {
           <Router history={createHashHistory()}>
             <Welcome path="/" />
             <Email path="/email" />
+            <GenderContainer path="/gender" />
             <HeightContainer path="/height" />
+            <WeightContainer path="/weight" />
             <QRCodeContainer path="/qrcode" />
             <QRCodeHelp path="/qrcode-help" />
             <Data path="/data" />

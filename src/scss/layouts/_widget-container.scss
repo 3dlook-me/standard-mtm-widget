@@ -1,6 +1,7 @@
 @import "../utils/index";
 
 .widget-container {
+  width: 100%;
   max-width: 600px;
   height: 700px;
   background: #fff;
@@ -11,8 +12,6 @@
   background-size: cover;
 
   @include breakpoint(max-width 768px) {
-    max-width: 100%;
-    width: 100vw;
     height: auto;
   }
 
@@ -37,11 +36,6 @@
           background-color: white;
           color: $main-color;
           font-weight: 300;
-
-          @include breakpoint($mobile) {
-            background-color: $main-color;
-            color: white;
-          }
         }
       }
     }

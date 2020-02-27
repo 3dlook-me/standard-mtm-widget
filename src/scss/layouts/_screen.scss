@@ -10,6 +10,7 @@ $failure: $error-border-color;
   &__content {
     margin: 0 auto;
     width: 100%;
+    flex-grow: 1;
     padding-top: 36px;
   }
 
@@ -51,20 +52,13 @@ $failure: $error-border-color;
 
     @include breakpoint($mobile) {
       padding-top: 30px;
-      padding-bottom: 0;
+      padding-bottom: 20px;
     }
 
     .button {
       margin: 0 auto;
       font-weight: 300;
       box-shadow: 0 6px 16px 0 rgba(255,119,0,0.5);
-
-      @include breakpoint($mobile) {
-        width: 100%;
-        padding-bottom: 0;
-        margin-bottom: 0;
-        border-radius: 0;
-      }
     }
   }
 

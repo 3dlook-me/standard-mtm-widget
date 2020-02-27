@@ -10,6 +10,7 @@ export const INITIAL_STATE = {
 
   gender: 'female',
   height: null,
+  weight: null,
   bodyType: null,
 
   frontImage: null,
@@ -54,7 +55,7 @@ export const INITIAL_STATE = {
   camera: null,
   isHelpActive: false,
   isOpenReturnUrlDesktop: false,
-  units: 'in',
+  units: 'cm',
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -245,6 +246,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         units: action.payload,
+      };
+
+    case CONSTANTS.SET_WEIGHT:
+      return {
+        ...state,
+        weight: action.payload,
       };
 
     default:

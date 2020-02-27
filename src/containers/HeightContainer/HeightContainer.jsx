@@ -2,7 +2,6 @@ import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
-import classNames from 'classnames';
 import { gaOnHeightNext } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
@@ -45,31 +44,7 @@ class HeightContainer extends Component {
   onNextScreen = async () => {
     gaOnHeightNext();
 
-    // const {
-    //   gender,
-    //   height,
-    //   bodyType,
-    //   isMobile,
-    //   email,
-    //   units,
-    // } = this.props;
-    //
-    // await this.flow.updateState({
-    //   status: 'set metadata',
-    //   gender,
-    //   bodyType,
-    //   height,
-    //   email,
-    //   units,
-    // });
-    //
-    // if (isMobile) {
-    //   route('/tutorial', false);
-    // } else {
-    //   route('/qrcode', false);
-    // }
-
-      route('/weight', false);
+    route('/weight', false);
   };
 
   /**
@@ -141,4 +116,4 @@ class HeightContainer extends Component {
   }
 }
 
-export default connect(state => state, actions)(HeightContainer);
+export default connect((state) => state, actions)(HeightContainer);

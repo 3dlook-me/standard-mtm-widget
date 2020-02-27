@@ -34,6 +34,7 @@ class BaseMobileFlow extends Component {
       setPhoneNumber,
       setProductId,
       setUnits,
+      setWeight,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -62,6 +63,7 @@ class BaseMobileFlow extends Component {
         setProductUrl(flowState.state.productUrl);
         setIsMobile(isMobileDevice());
         addHeight(flowState.state.height);
+        setWeight(flowState.state.weight);
         addGender(flowState.state.gender);
         addFrontImage(flowState.state.frontImage);
         addSideImage(flowState.state.sideImage);

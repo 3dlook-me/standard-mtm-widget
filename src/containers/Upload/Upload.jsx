@@ -200,6 +200,7 @@ class Upload extends Component {
       origin,
       email,
       returnUrl,
+      weight
     } = this.props;
 
     try {
@@ -243,6 +244,7 @@ class Upload extends Component {
         const createdPersonId = await this.api.person.create({
           gender,
           height,
+          ...(weight && { weight }),
           measurementsType: 'all',
         });
 

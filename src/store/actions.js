@@ -13,6 +13,7 @@ export const CONSTANTS = {
   ADD_SIDE_IMAGE: 'ADD_SIDE_IMAGE',
   ADD_HEIGHT: 'ADD_HEIGHT',
   ADD_GENDER: 'ADD_GENDER',
+  SET_WEIGHT: 'SET_WEIGHT',
   SET_BODY_TYPE: 'SET_BODY_TYPE',
   ADD_AGREE: 'ADD_AGREE',
   SET_FLOW_ID: 'SET_FLOW_ID',
@@ -343,6 +344,16 @@ export const setUnits = (units) => ({
   payload: units,
 });
 
+/**
+ * Set weight
+ *
+ * @param {any} weight - weight object
+ */
+export const setWeight = weight => ({
+  type: CONSTANTS.SET_WEIGHT,
+  payload: weight,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -374,4 +385,5 @@ export default {
   setPhoneNumber,
   setProductId,
   setUnits,
+  setWeight,
 };

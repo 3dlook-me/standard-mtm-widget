@@ -235,23 +235,6 @@ class Results extends BaseMobileFlow {
               now available.
             </p>
           ) : null }
-          <button
-            className="result__promo"
-            style={{ backgroundImage: `url(${promoBg})` }}
-            data-clipboard-text={promoCode}
-            onClick={this.copyPromo}
-            type="button"
-          >
-            <p className="result__promo-title">
-              Here’s your discount code:
-            </p>
-            <h2 className="result__promo-code">
-              {promoCode}
-            </h2>
-            <p className={classNames('scan-qrcode__btn', { 'scan-qrcode__btn--copied': isCopied })}>
-              {(!isCopied) ? 'CLICK TO COPY' : 'COPIED'}
-            </p>
-          </button>
         </div>
         <div className="screen__footer">
           <button className="button" type="button" onClick={this.onClick} disabled={buttonDisabled}>

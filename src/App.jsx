@@ -13,6 +13,7 @@ import './scss/_index.scss';
 import {
   Header,
   Help,
+  Browser,
 } from './components';
 
 /**
@@ -71,6 +72,7 @@ class App extends Component {
             <NotFound path="/not-found" />
             <Results path="/results" />
             <MobileFlow path="/mobile/:id" />
+            <Browser path="/browser" />
           </Router>
         </div>
       </Provider>

@@ -25,7 +25,12 @@
     margin-bottom: 12px;
   }
 
-  &__txt {
+  &__copy-btn {
+    transition: none;
 
+    &--copied {
+      background-color: #CECECE;
+      box-shadow: none !important;
+    }
   }
 }

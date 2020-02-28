@@ -31,8 +31,7 @@ $bottom-position: -30px;
 
     @include breakpoint($mobile) {
       max-width: 286px;
-      border: 0;
-      margin-top: 0;
+      margin-bottom: 10px;
     }
 
     @include breakpoint((max-width 320px, max-height 568px)) {

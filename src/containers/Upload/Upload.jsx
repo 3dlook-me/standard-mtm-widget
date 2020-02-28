@@ -11,12 +11,11 @@ import './Upload.scss';
 
 import {
   Preloader,
-  QRCodeBlock,
   Stepper,
   UploadBlock,
 } from '../../components';
 
-import { send, sendDataToSpreadsheet, transformRecomendations } from '../../helpers/utils';
+import { send, transformRecomendations } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
   gaTutorialDesktop,
@@ -27,9 +26,6 @@ import {
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import store from '../../store';
-
-// assets
-import playIcon from '../../images/play.svg';
 
 /**
  * Upload page component.
@@ -114,7 +110,7 @@ class Upload extends Component {
                 }
               }
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         }, 3000);
       }
     }
@@ -182,7 +178,6 @@ class Upload extends Component {
       bodyPart,
       isFromDesktopToMobile,
       phoneNumber,
-      productId,
     } = props;
 
     let {
@@ -200,7 +195,7 @@ class Upload extends Component {
       origin,
       email,
       returnUrl,
-      weight
+      weight,
     } = this.props;
 
     try {
@@ -244,6 +239,7 @@ class Upload extends Component {
         const createdPersonId = await this.api.person.create({
           gender,
           height,
+          email,
           ...(weight && { weight }),
           measurementsType: 'all',
         });
@@ -350,8 +346,8 @@ class Upload extends Component {
       if (error && error.response && error.response.data && error.response.data.sub_tasks) {
         const subTasks = error.response.data.sub_tasks;
 
-        const frontTask = subTasks.filter(item => item.name.indexOf('front_') !== -1)[0];
-        const sideTask = subTasks.filter(item => item.name.indexOf('side_') !== -1)[0];
+        const frontTask = subTasks.filter((item) => item.name.indexOf('front_') !== -1)[0];
+        const sideTask = subTasks.filter((item) => item.name.indexOf('side_') !== -1)[0];
 
         setHardValidation({
           front: frontTask.message,
@@ -382,16 +378,6 @@ class Upload extends Component {
         route('/not-found', true);
       }
     }
-  }
-
-  openVideo = () => {
-    gaTutorialDesktop();
-
-    route('/tutorial', true);
-  }
-
-  copyUrl = () => {
-    gaCopyUrl();
   }
 
   triggerFrontImage = () => {
@@ -430,7 +416,6 @@ class Upload extends Component {
 
   render() {
     const {
-      qrCodeUrl,
       isPending,
       isFrontImageValid,
       isSideImageValid,
@@ -444,45 +429,29 @@ class Upload extends Component {
       frontImage,
       sideImage,
       gender,
-      isMobile,
       camera,
     } = this.props;
 
-    let title = 'SCAN THIS QR CODE';
+    let title;
 
-    if (isMobile && ((!frontImage && !sideImage) || (!frontImage && sideImage))) {
+    if ((!frontImage && !sideImage) || (!frontImage && sideImage)) {
       title = 'Take Front photo';
-    } else if (isMobile && frontImage && !sideImage) {
+    } else if (frontImage && !sideImage) {
       title = 'Take Side photo';
     }
 
     return (
       <div className="screen active">
-        <div className={classNames('screen__content', 'upload', { 'upload--is-mobile': isMobile })}>
+        <div className="screen__content upload">
           <Stepper steps="5" current={((!frontImage && !sideImage) || (!frontImage && sideImage)) ? 3 : 4} />
 
           <h3 className="screen__title upload__title">{title}</h3>
-          <p>and proceed on your mobile device</p>
-
-          {(!isMobile)
-            ? (
-              <QRCodeBlock className="upload__qrcode" data={qrCodeUrl} onCopy={this.copyUrl} />
-            ) : null }
-
-          <h3 className="screen__title upload__title-2">OR UPLOAD PHOTOS FROM YOUR PC</h3>
 
           <div className="upload__block">
-            <div className="upload__video">
-              <button className="upload__video-btn" type="button" onClick={this.openVideo}>
-                <img src={playIcon} alt="Play icon" />
-                <span>Play</span>
-              </button>
-              <p>View tutorial</p>
-            </div>
             <div className="upload__files">
               <UploadBlock
                 className={classNames({
-                  active: isMobile && ((!frontImage && !sideImage) || (!frontImage && sideImage)),
+                  active: (!frontImage && !sideImage) || (!frontImage && sideImage),
                 })}
                 gender={gender}
                 type="front"
@@ -493,7 +462,7 @@ class Upload extends Component {
               />
               <UploadBlock
                 className={classNames({
-                  active: isMobile && frontImage && !sideImage,
+                  active: frontImage && !sideImage,
                 })}
                 gender={gender}
                 type="side"
@@ -512,7 +481,7 @@ class Upload extends Component {
         <div className="screen__footer">
           <button
             className={classNames('button', 'upload__front-image-btn', {
-              active: isMobile && ((!frontImage && !sideImage) || (!frontImage && sideImage)),
+              active: (!frontImage && !sideImage) || (!frontImage && sideImage),
             })}
             onClick={this.triggerFrontImage}
             type="button"
@@ -522,25 +491,13 @@ class Upload extends Component {
 
           <button
             className={classNames('button', 'upload__side-image-btn', {
-              active: isMobile && frontImage && !sideImage,
+              active: frontImage && !sideImage,
             })}
             onClick={this.triggerSideImage}
             type="button"
           >
             Open camera
           </button>
-
-          {(!isMobile)
-            ? (
-              <button
-                className="button"
-                onClick={this.onNextButtonClick}
-                type="button"
-                disabled={!frontImage || !sideImage}
-              >
-                next
-              </button>
-            ) : null }
         </div>
 
         <Preloader isActive={isPending} />
@@ -550,4 +507,4 @@ class Upload extends Component {
   }
 }
 
-export default connect(state => state, actions)(Upload);
+export default connect((state) => state, actions)(Upload);

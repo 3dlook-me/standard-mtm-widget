@@ -8,6 +8,7 @@ export const CONSTANTS = {
   SET_IS_FROM_DESKTOP_TO_MOBILE: 'SET_IS_FROM_DESKTOP_TO_MOBILE',
   SET_ORIGIN: 'SET_ORIGIN',
   SET_RETURN_URL: 'SET_RETURN_URL',
+  SET_WIDGET_URL: 'SET_WIDGET_URL',
   SET_TOKEN: 'SET_TOKEN',
   ADD_FRONT_IMAGE: 'ADD_FRONT_IMAGE',
   ADD_SIDE_IMAGE: 'ADD_SIDE_IMAGE',
@@ -88,6 +89,16 @@ export const setOrigin = (origin) => ({
 export const setReturnUrl = (returnUrl) => ({
   type: CONSTANTS.SET_RETURN_URL,
   payload: returnUrl,
+});
+
+/**
+ * Set widget url
+ *
+ * @param {string} widgetUrl - widget url
+ */
+export const setWidgetUrl = (widgetUrl) => ({
+  type: CONSTANTS.SET_WIDGET_URL,
+  payload: widgetUrl,
 });
 
 /**
@@ -360,6 +371,7 @@ export default {
   setIsMobile,
   setIsFromDesktopToMobile,
   setReturnUrl,
+  setWidgetUrl,
   setOrigin,
   setToken,
   addFrontImage,

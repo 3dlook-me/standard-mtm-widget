@@ -5,7 +5,7 @@ import { route } from 'preact-router';
 import { gaSwitchToMobileFlow } from '../../helpers/ga';
 import actions from '../../store/actions';
 import { BaseMobileFlow } from '../../components';
-import { isMobileDevice } from '../../helpers/utils';
+import { browserValidation, isMobileDevice } from '../../helpers/utils';
 
 /**
  * Mobile flow page component
@@ -25,6 +25,12 @@ class MobileFlow extends BaseMobileFlow {
     }
 
     await super.componentDidMount();
+
+    if (!browserValidation()) {
+      route('/browser', true);
+
+      return Promise.resolve();
+    }
 
     gaSwitchToMobileFlow();
 

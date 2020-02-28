@@ -1,15 +1,13 @@
 import { h, Component } from 'preact';
-import { Link } from 'preact-router';
+import { Link, route } from 'preact-router';
 import { connect } from 'react-redux';
 
-import { isMobileDevice, parseGetParams } from '../../helpers/utils';
+import { browserValidation, isMobileDevice, parseGetParams } from '../../helpers/utils';
 import { gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 
 import './Welcome.scss';
-
-import discountLogo from '../../images/discount-img.png';
 
 /**
  * Welcome page component
@@ -33,14 +31,25 @@ class Welcome extends Component {
       setFakeSize,
       setIsOpenReturnUrlDesktop,
       setProductId,
+      setWidgetUrl,
     } = this.props;
+
+    this.widgetContainer = document.querySelector('.widget-container');
+    this.widgetContainer.classList.remove('widget-container--no-bg');
+
+    if (isMobileDevice()) {
+      if (!browserValidation()) {
+        setWidgetUrl(window.location.href);
+
+        route('/browser', true);
+
+        return;
+      }
+    }
 
     const token = matches.key || API_KEY || parseGetParams().key;
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;
-
-    this.widgetContainer = document.querySelector('.widget-container');
-    this.widgetContainer.classList.remove('widget-container--no-bg');
 
     setToken(token);
     setBrand(brand);
@@ -69,7 +78,7 @@ class Welcome extends Component {
           isButtonDisabled: false,
         });
       })
-      .catch(err => alert(err.message));
+      .catch((err) => alert(err.message));
   }
 
   componentWillUnmount() {
@@ -101,4 +110,4 @@ class Welcome extends Component {
   }
 }
 
-export default connect(state => state, actions)(Welcome);
+export default connect((state) => state, actions)(Welcome);

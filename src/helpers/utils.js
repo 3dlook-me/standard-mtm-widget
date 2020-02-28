@@ -1,4 +1,5 @@
 import axios from 'axios';
+import platform from 'mini-platform-detect';
 
 const environment = process.env.NODE_ENV;
 
@@ -337,3 +338,35 @@ export const fixOrientation = (blob, orientation) => new Promise((resolve, rejec
  * Check if current browser is Samsung Browser
  */
 export const isSamsungBrowser = () => /SamsungBrowser\/(?!([1-9][1-9]|[2-9][0-9]))/i.test(navigator.userAgent);
+
+/**
+ * Detect needed browser
+ */
+export const browserDetect = () => {
+  if (platform.macos || platform.ios) {
+    return 'safari';
+  }
+
+  return 'chrome';
+};
+
+/**
+ * Detect user browser
+ */
+export const browserValidation = () => {
+  const neededBrowser = browserDetect();
+
+  if (neededBrowser === 'safari') {
+    if (!platform.safari) {
+      return false;
+    }
+  }
+
+  if (neededBrowser === 'chrome') {
+    if (!platform.chrome) {
+      return false;
+    }
+  }
+
+  return true;
+};

@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 
-import { isMobileDevice, parseGetParams } from '../../helpers/utils';
+import { route } from 'preact-router';
+import { isMobileDevice, parseGetParams, browserValidation } from '../../helpers/utils';
 import FlowService from '../../services/flowService';
 
 /**
@@ -27,6 +28,7 @@ class BaseMobileFlow extends Component {
       setPersonId,
       setIsFromDesktopToMobile,
       setReturnUrl,
+      setWidgetUrl,
       setRecommendations,
       setBodyType,
       setFakeSize,
@@ -76,6 +78,12 @@ class BaseMobileFlow extends Component {
         setPhoneNumber(flowState.state.phoneNumber);
         setProductId(flowState.state.productId);
         setUnits(flowState.state.units);
+
+        if (!browserValidation()) {
+          setWidgetUrl(window.location.href);
+
+          return;
+        }
 
         setInterval(() => {
           this.flow.updateState({

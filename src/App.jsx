@@ -13,7 +13,6 @@ import './scss/_index.scss';
 import {
   Header,
   Help,
-  Browser,
 } from './components';
 
 /**
@@ -35,6 +34,7 @@ import {
   HardValidation,
   NotFound,
   MobileFlow,
+  Browser,
 } from './containers';
 
 // welcome screen img bg

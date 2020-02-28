@@ -4,6 +4,7 @@ export const INITIAL_STATE = {
   measurements: null,
   origin: null,
   returnUrl: null,
+  widgetUrl: null,
   isFromDesktopToMobile: false,
   isMobile: false,
   token: null,
@@ -87,6 +88,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         returnUrl: action.payload,
+      };
+
+    case CONSTANTS.SET_WIDGET_URL:
+      return {
+        ...state,
+        widgetUrl: action.payload,
       };
 
     case CONSTANTS.SET_ORIGIN:

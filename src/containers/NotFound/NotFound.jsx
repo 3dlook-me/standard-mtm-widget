@@ -3,7 +3,6 @@ import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
 import { gaSizeNotFound } from '../../helpers/ga';
-import { objectToUrlParams } from '../../helpers/utils';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 
@@ -57,8 +56,8 @@ class NotFound extends Component {
           <img className="not-found__image" src={confusedIcon1x} srcSet={`${confusedIcon1x} 1x, ${confusedIcon2x} 2x`} alt="not found" />
 
           <p className="not-found__text-2">
-            {'We '}
-            <span>can’t find your Perfect Fit</span>
+            {'We can’t find your  '}
+            <span>Perfect Fit</span>
             {' for this item. Please '}
             <br />
             try out other items.

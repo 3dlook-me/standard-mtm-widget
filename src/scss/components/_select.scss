@@ -1,7 +1,6 @@
 @import "../utils/index";
 
 .select {
-  font-size: 16px;
   line-height: 19px;
   padding: 0 15px;
   width: 100%;
@@ -11,6 +10,7 @@
   border-radius: 4px;
   background-color: #FFFFFF;
   -webkit-appearance: none; /* for disable grey line on iphone */
+  font-size: 50px;
 
   @include placeholder {
     color: #D3D3D3;

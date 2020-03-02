@@ -15,11 +15,9 @@ import {
   UploadBlock,
 } from '../../components';
 
-import { send, transformRecomendations } from '../../helpers/utils';
+import { send, transformRecomendations, wait } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
-  gaTutorialDesktop,
-  gaCopyUrl,
   gaOpenCameraFrontPhoto,
   gaOpenCameraSidePhoto,
 } from '../../helpers/ga';
@@ -196,6 +194,7 @@ class Upload extends Component {
       email,
       returnUrl,
       weight,
+      setProcessingStatus,
     } = this.props;
 
     try {
@@ -247,17 +246,42 @@ class Upload extends Component {
         setPersonId(createdPersonId);
         personId = createdPersonId;
 
+        await wait(1000);
+
+        setProcessingStatus('Profile Creation Completed!');
+        await wait(1000);
+
+        setProcessingStatus('Photo Uploading.');
+
         taskSetId = await this.api.person.updateAndCalculate(createdPersonId, {
           ...images,
           measurementsType: 'all',
         });
+
+        await wait(1000);
+
+        setProcessingStatus('Photo Upload Completed!');
+        await wait(1000);
       } else {
+        setProcessingStatus('Photo Uploading.');
+
         await this.api.person.update(personId, images);
+        await wait(1000);
 
         taskSetId = await this.api.person.calculate(personId);
+
+        setProcessingStatus('Photo Upload Completed!');
+        await wait(1000);
       }
 
+      setProcessingStatus('Calculating your Measurements.');
+
       const person = await this.api.queue.getResults(taskSetId, 4000);
+
+      await wait(1000);
+
+      setProcessingStatus('Sending Your Results.');
+      await wait(1000);
 
       const measurements = {
         hips: person.volume_params.high_hips,
@@ -430,6 +454,8 @@ class Upload extends Component {
       sideImage,
       gender,
       camera,
+      status,
+      isMobile
     } = this.props;
 
     let title;
@@ -500,7 +526,7 @@ class Upload extends Component {
           </button>
         </div>
 
-        <Preloader isActive={isPending} />
+        <Preloader isActive={isPending} status={status} isMobile={isMobile} />
       </div>
 
     );

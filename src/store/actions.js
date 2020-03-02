@@ -34,6 +34,7 @@ export const CONSTANTS = {
   SET_PHONE_NUMBER: 'SET_PHONE_NUMBER',
   SET_PRODUCT_ID: 'SET_PRODUCT_ID',
   SET_UNITS: 'SET_UNITS',
+  SET_PROCESSING_STATUS: 'SET_PROCESSING_STATUS',
 };
 
 /**
@@ -365,6 +366,16 @@ export const setWeight = weight => ({
   payload: weight,
 });
 
+/**
+ * Set status
+ *
+ * @param {string} status - weight object
+ */
+export const setProcessingStatus = status => ({
+  type: CONSTANTS.SET_PROCESSING_STATUS,
+  payload: status,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -398,4 +409,5 @@ export default {
   setProductId,
   setUnits,
   setWeight,
+  setProcessingStatus,
 };

@@ -28,6 +28,8 @@ class WeightContainer extends Component {
       placeholder: units === 'cm' ? 'kg' : 'lb',
       defaultValue: units === 'cm' ? 50 : 110,
       weightValues: [...Array(maxWeight + 1).keys()].slice(minWeight),
+      minWeight,
+      maxWeight,
     };
 
     this.flow = new FlowService(token);

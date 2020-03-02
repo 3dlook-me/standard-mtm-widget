@@ -370,3 +370,15 @@ export const browserValidation = () => {
 
   return true;
 };
+
+/**
+ * Make delay
+ *
+ * @async
+ * @param {number} delay - delay in milliseconds
+ */
+export const wait = (delay) => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), delay);
+  });
+};

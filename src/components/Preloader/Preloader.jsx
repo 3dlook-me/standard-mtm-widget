@@ -8,7 +8,7 @@ import strokeImage from '../../images/preloader-stroke.svg';
 /**
  * Preloader component
  */
-const Preloader = ({ isActive }) => (
+const Preloader = ({ isActive, status, isMobile }) => (
   <div className={`preloader ${isActive ? 'active' : ''}`}>
     <h2 className="preloader__title screen__title">
       The magic is happening
@@ -21,11 +21,7 @@ const Preloader = ({ isActive }) => (
     </div>
 
     <p className="preloader__text">
-      {'It might take us up to '}
-      <b>one minute</b>
-      {' to find your '}
-      <br />
-      perfect fit. Thanks for being patient!
+      {isMobile ? { status } : 'It might take us up to one minute to find your perfect fit. Thanks for being patient!'}
     </p>
   </div>
 );

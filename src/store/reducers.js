@@ -261,6 +261,12 @@ export default (state = INITIAL_STATE, action) => {
         weight: action.payload,
       };
 
+    case CONSTANTS.SET_PROCESSING_STATUS:
+      return {
+        ...state,
+        status: action.payload,
+      };
+
     default:
       return state;
   }

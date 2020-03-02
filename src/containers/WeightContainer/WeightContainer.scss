@@ -20,6 +20,25 @@
   &__input-wrap {
     position: relative;
     margin-bottom: 40px;
+
+    select {
+      padding-right: 40px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+
+      + .weight-container__placeholder {
+        height: 100%;
+        bottom: 0;
+      }
+    }
+
+    input[disabled] {
+      opacity: 1;
+    }
   }
 
   &__placeholder {
@@ -32,6 +51,7 @@
     align-items: center;
     padding: 10px;
     color: #ddd;
+    text-transform: uppercase;
   }
 
   &__txt {

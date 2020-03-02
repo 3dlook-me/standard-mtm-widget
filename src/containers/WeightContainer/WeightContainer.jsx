@@ -22,6 +22,7 @@ class WeightContainer extends Component {
     this.state = {
       buttonDisabled: true,
       isWeightValid: true,
+      weightValue: null,
       minWeight: units === 'cm' ? 30 : 66,
       maxWeight: units === 'cm' ? 200 : 441,
     };
@@ -63,6 +64,24 @@ class WeightContainer extends Component {
     if (e.keyCode === 69) {
       e.returnValue = false;
     }
+  }
+
+  /**
+   * Set weight from select component
+   */
+  handleChange = (e) => {
+    const { value } = e.target;
+    const { setWeight, units } = this.props;
+
+    if (units !== 'cm') {
+      setWeight(getWeightKg(+value));
+    } else {
+      setWeight(+value);
+    }
+
+    this.setState({
+      weightValue: value,
+    });
   }
 
   /**
@@ -140,9 +159,13 @@ class WeightContainer extends Component {
   }
 
   render() {
-    const { units } = this.props;
-    const { buttonDisabled, isWeightValid } = this.state;
-    const placeholder = units === 'cm' ? 'KG' : 'LB';
+    const { units, isMobile } = this.props;
+    const {
+      buttonDisabled, isWeightValid, weightValue, minWeight, maxWeight,
+    } = this.state;
+    const placeholder = units === 'cm' ? 'kg' : 'lb';
+    const defaultValue = units === 'cm' ? 50 : 110;
+    const weightValues = [...Array(maxWeight + 1).keys()].slice(minWeight);
 
     return (
       <section className="screen active">
@@ -152,11 +175,31 @@ class WeightContainer extends Component {
           <div className="weight-container__control screen__control">
             <h3 className="screen__label">What’s your weight?</h3>
             <div className="weight-container__input-wrap">
-              <input className="input" type="number" placeholder="0" onBlur={this.changeWeight} onKeyDown={this.handleClick} />
-              <div className="weight-container__placeholder">{placeholder}</div>
-              <p className={classNames('screen__control-error', { active: !isWeightValid })}>
-                {units === 'cm' ? 'Your weight should be between 30-200 KG' : 'Your weight should be between 66 and 441 LB'}
-              </p>
+
+              {isMobile ? (
+                <div className="weight-container__input-wrap">
+                  <input className="input" type="text" placeholder="Select" value={weightValue} disabled />
+                  <select className="select" onChange={this.handleChange}>
+                    {weightValues.map((value) => (
+                      <option value={value} selected={value === defaultValue}>
+                        {value}
+                        {' '}
+                        {placeholder}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="weight-container__placeholder">{placeholder}</div>
+                </div>
+
+              ) : (
+                <div className="weight-container__input-wrap">
+                  <input className="input" type="number" placeholder="0" onBlur={this.changeWeight} onKeyDown={this.handleClick} />
+                  <div className="weight-container__placeholder">{placeholder}</div>
+                  <p className={classNames('screen__control-error', { active: !isWeightValid })}>
+                    {units === 'cm' ? 'Your weight should be between 30-200 KG' : 'Your weight should be between 66 and 441 LB'}
+                  </p>
+                </div>
+              )}
             </div>
             <p className="weight-container__txt">
               We use weight data, so your measurements will be more accurate,

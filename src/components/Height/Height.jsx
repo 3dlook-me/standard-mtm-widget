@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import classNames from 'classnames';
 import { cmToFtIn, getHeightCm } from '../../helpers/utils';
 import './Height.scss';
+import { heightCmValues, heightFtInValues } from '../../helpers/constants';
 
 /**
  * Height component
@@ -9,6 +10,9 @@ import './Height.scss';
 export default class Height extends Component {
   constructor(props) {
     super(props);
+
+    this.defaultValueMetric = 6;
+    this.defaultValueImperial = 6;
 
     this.state = {
       units: 'cm',
@@ -117,6 +121,29 @@ export default class Height extends Component {
   }
 
   /**
+   * Imperial change handler
+   */
+  onImperialSelectChange = (e) => {
+    const { change } = this.props;
+    const { value } = e.target;
+    const { ft } = heightFtInValues[value];
+    const inches = heightFtInValues[value].in;
+
+    // convert value to cm
+    let centimeters = getHeightCm(ft, inches);
+    centimeters = Math.round(centimeters);
+
+    this.setState({
+      cm: centimeters,
+      ft,
+      inches,
+    }, () => {
+      const { cm } = this.state;
+      change(cm);
+    });
+  }
+
+  /**
    * Validate cm value
    */
   validateCm = (e) => {
@@ -131,6 +158,7 @@ export default class Height extends Component {
     const {
       className,
       isValid,
+      isMobile,
     } = this.props;
 
     const {
@@ -150,8 +178,20 @@ export default class Height extends Component {
               value={cm}
               onChange={this.onCmInputChange}
               placeholder="0"
+              disabled={isMobile}
             />
             <p className="height__input-placeholder">CM</p>
+            {isMobile ? (
+              <select onChange={this.onCmInputChange}>
+                {heightCmValues.map((value, index) => (
+                  <option value={value} selected={index === this.defaultValueMetric}>
+                    {value}
+                    {' '}
+                    cm
+                  </option>
+                ))}
+              </select>
+            ) : false}
           </div>
         </div>
 
@@ -173,9 +213,19 @@ export default class Height extends Component {
               value={inches}
               onChange={this.onInInputChange}
               placeholder="0"
+              disabled={isMobile}
             />
             <p className="height__input-placeholder">IN</p>
           </div>
+          {isMobile ? (
+            <select onChange={this.onImperialSelectChange}>
+              {heightFtInValues.map((value, index) => (
+                <option value={index} selected={index === this.defaultValueImperial}>
+                  {`${value.ft} ft ${value.in} in`}
+                </option>
+              ))}
+            </select>
+          ) : false}
         </div>
 
         <p className={classNames('screen__control-error', 'height__desc', { active: !isValid })}>

@@ -18,13 +18,16 @@ class WeightContainer extends Component {
     super(props);
 
     const { flowId, token, units } = this.props;
+    const minWeight = units === 'cm' ? 30 : 66;
+    const maxWeight = units === 'cm' ? 200 : 441;
 
     this.state = {
       buttonDisabled: true,
       isWeightValid: true,
       weightValue: null,
-      minWeight: units === 'cm' ? 30 : 66,
-      maxWeight: units === 'cm' ? 200 : 441,
+      placeholder: units === 'cm' ? 'kg' : 'lb',
+      defaultValue: units === 'cm' ? 50 : 110,
+      weightValues: [...Array(maxWeight + 1).keys()].slice(minWeight),
     };
 
     this.flow = new FlowService(token);
@@ -161,11 +164,8 @@ class WeightContainer extends Component {
   render() {
     const { units, isMobile } = this.props;
     const {
-      buttonDisabled, isWeightValid, weightValue, minWeight, maxWeight,
+      buttonDisabled, isWeightValid, weightValue, weightValues, defaultValue, placeholder,
     } = this.state;
-    const placeholder = units === 'cm' ? 'kg' : 'lb';
-    const defaultValue = units === 'cm' ? 50 : 110;
-    const weightValues = [...Array(maxWeight + 1).keys()].slice(minWeight);
 
     return (
       <section className="screen active">

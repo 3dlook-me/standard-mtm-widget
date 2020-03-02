@@ -7,6 +7,7 @@
 
   &[data-measure="in"] .height__measure--in {
     display: flex;
+    position: relative;
   }
 
   &__measure  {
@@ -172,6 +173,19 @@
         margin-top: 2px;
       }
     }
+  }
+
+  select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+
+  input[disabled] {
+    opacity: 1;
   }
 }
 

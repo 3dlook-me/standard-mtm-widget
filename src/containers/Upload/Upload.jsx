@@ -450,8 +450,6 @@ class Upload extends Component {
       isMobile,
     } = this.props;
 
-    console.log(status)
-
     let title;
 
     if ((!frontImage && !sideImage) || (!frontImage && sideImage)) {

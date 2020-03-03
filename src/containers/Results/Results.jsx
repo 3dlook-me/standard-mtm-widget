@@ -14,7 +14,6 @@ import FlowService from '../../services/flowService';
 import './Result.scss';
 
 import fakeSizeIcon from '../../images/results.svg';
-import promoBg from '../../images/promo-bg.png';
 
 /**
  * Results page component.
@@ -24,13 +23,8 @@ class Results extends BaseMobileFlow {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isEmailValid: true,
-      buttonDisabled: true,
-      isCopied: false,
-    };
-
     const { flowId, token } = this.props;
+
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
 
@@ -44,18 +38,8 @@ class Results extends BaseMobileFlow {
     this.isRecommendationsSent = false;
   }
 
-  /**
-   * Check button state on component update
-   */
-  componentDidUpdate() {
-    this.checkButtonState();
-  }
-
   componentDidMount = async () => {
     await super.componentDidMount();
-
-    // init clipboard
-    this.clipboard = new Clipboard('.result__promo');
 
     const {
       recommendations,
@@ -72,27 +56,6 @@ class Results extends BaseMobileFlow {
     } = nextProps;
 
     this.sendSizeRecommendations(recommendations);
-  }
-
-  /**
-   * Copy promo-code to clipboard
-   */
-  copyPromo = () => {
-    const { onCopy } = this.props;
-
-    if (onCopy) {
-      onCopy();
-    }
-
-    this.setState({
-      isCopied: true,
-    }, () => {
-      const timer = setTimeout(() => {
-        this.setState({
-          isCopied: false,
-        }, () => clearTimeout(timer));
-      }, 3000);
-    });
   }
 
   /**
@@ -122,7 +85,6 @@ class Results extends BaseMobileFlow {
       isFromDesktopToMobile,
       origin,
       personId,
-      email,
       resetState,
       measurements,
       isMobile,
@@ -156,36 +118,11 @@ class Results extends BaseMobileFlow {
     }
   }
 
-  /**
-   * Set Next button disabled state
-   */
-  checkButtonState() {
-    const {
-      buttonDisabled,
-      isEmailValid,
-    } = this.state;
-
-    const isButtonDisabled = !isEmailValid;
-
-    if (isButtonDisabled !== buttonDisabled) {
-      this.setState({
-        buttonDisabled: isButtonDisabled,
-      });
-    }
-  }
-
   render() {
-    const {
-      isCopied,
-      buttonDisabled,
-    } = this.state;
-
     const {
       recommendations,
       fakeSize,
     } = this.props;
-
-    const promoCode = 'LoveMyFit';
 
     return (
       <div className="screen screen--result active">
@@ -237,7 +174,7 @@ class Results extends BaseMobileFlow {
           ) : null }
         </div>
         <div className="screen__footer">
-          <button className="button" type="button" onClick={this.onClick} disabled={buttonDisabled}>
+          <button className="button" type="button" onClick={this.onClick}>
             Go shopping
           </button>
         </div>

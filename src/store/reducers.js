@@ -57,6 +57,7 @@ export const INITIAL_STATE = {
   isHelpActive: false,
   isOpenReturnUrlDesktop: false,
   units: 'cm',
+  status: '',
 };
 
 export default (state = INITIAL_STATE, action) => {

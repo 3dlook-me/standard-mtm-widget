@@ -43,17 +43,7 @@ class Upload extends Component {
       sideImagePose: null,
 
       isPending: false,
-
-      qrCodeUrl: null,
     };
-  }
-
-  componentDidMount() {
-    const { flowId, token } = this.props;
-
-    this.setState({
-      qrCodeUrl: `${window.location.origin}${window.location.pathname}?key=${token}#/mobile/${flowId}`,
-    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -235,6 +225,8 @@ class Upload extends Component {
       }
 
       if (!personId) {
+        setProcessingStatus('Initiating Profile Creation.');
+
         const createdPersonId = await this.api.person.create({
           gender,
           height,
@@ -455,8 +447,10 @@ class Upload extends Component {
       gender,
       camera,
       status,
-      isMobile
+      isMobile,
     } = this.props;
+
+    console.log(status)
 
     let title;
 

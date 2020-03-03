@@ -21,7 +21,7 @@ const Preloader = ({ isActive, status, isMobile }) => (
     </div>
 
     <p className="preloader__text">
-      {isMobile ? { status } : 'It might take us up to one minute to find your perfect fit. Thanks for being patient!'}
+      {isMobile ? `${status}` : 'It might take us up to one minute to find your perfect fit. Thanks for being patient!'}
     </p>
   </div>
 );

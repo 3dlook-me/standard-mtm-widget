@@ -357,13 +357,17 @@ export const browserValidation = () => {
   const neededBrowser = browserDetect();
 
   if (neededBrowser === 'safari') {
-    if (!platform.safari) {
+    const isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+
+    if (!isSafari) {
       return false;
     }
   }
 
   if (neededBrowser === 'chrome') {
-    if (!platform.chrome) {
+    const isChrome = navigator.userAgent.indexOf('Chrome') !== -1;
+
+    if (!(isChrome && !isSamsungBrowser())) {
       return false;
     }
   }
@@ -377,8 +381,6 @@ export const browserValidation = () => {
  * @async
  * @param {number} delay - delay in milliseconds
  */
-export const wait = (delay) => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), delay);
-  });
-};
+export const wait = (delay) => new Promise((resolve) => {
+  setTimeout(() => resolve(), delay);
+});

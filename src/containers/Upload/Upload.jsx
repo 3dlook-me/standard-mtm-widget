@@ -492,8 +492,8 @@ class Upload extends Component {
                 value={sideImage}
               />
 
-              {(camera === 'front') ? <Camera type={camera} change={this.saveFrontFile} /> : null}
-              {(camera === 'side') ? <Camera type={camera} change={this.saveSideFile} /> : null}
+              {(camera === 'front') ? <Camera type={camera} gender={gender} change={this.saveFrontFile} /> : null}
+              {(camera === 'side') ? <Camera type={camera} gender={gender} change={this.saveSideFile} /> : null}
             </div>
           </div>
 

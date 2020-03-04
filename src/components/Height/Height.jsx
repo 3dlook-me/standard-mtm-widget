@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component, createRef } from 'preact';
 import classNames from 'classnames';
 import { cmToFtIn, getHeightCm } from '../../helpers/utils';
 import './Height.scss';
@@ -8,6 +8,10 @@ import { heightCmValues, heightFtInValues } from '../../helpers/constants';
  * Height component
  */
 export default class Height extends Component {
+  $heightCmEl = createRef();
+
+  $heightFtEl = createRef();
+
   constructor(props) {
     super(props);
 
@@ -20,6 +24,15 @@ export default class Height extends Component {
       ft: null,
       inches: null,
     };
+  }
+
+  /**
+   * Add event
+   */
+  componentDidMount() {
+    // for set default select value to input after first click
+    if (this.$heightCmEl.current) this.$heightCmEl.current.addEventListener('click', this.onCmInputChange, { once: true });
+    if (this.$heightFtEl.current) this.$heightFtEl.current.addEventListener('click', this.onImperialSelectChange, { once: true });
   }
 
   /**
@@ -143,17 +156,6 @@ export default class Height extends Component {
     });
   }
 
-  /**
-   * Validate cm value
-   */
-  validateCm = (e) => {
-    const { value } = e.target;
-    // TODO: create regexp to validate numbers
-    // value = value.replace(/^(?![1-2]|[1-2][0-9]|1[5-9][0-9]|2[0-1][0-9]|2[1-2]0)$/g, '');
-
-    e.target.value = value;
-  }
-
   render() {
     const {
       className,
@@ -182,7 +184,7 @@ export default class Height extends Component {
             />
             <p className="height__input-placeholder">CM</p>
             {isMobile ? (
-              <select onChange={this.onCmInputChange}>
+              <select onChange={this.onCmInputChange} ref={this.$heightCmEl}>
                 {heightCmValues.map((value, index) => (
                   <option value={value} selected={index === this.defaultValueMetric}>
                     {value}
@@ -218,7 +220,7 @@ export default class Height extends Component {
             <p className="height__input-placeholder">IN</p>
           </div>
           {isMobile ? (
-            <select onChange={this.onImperialSelectChange}>
+            <select onChange={this.onImperialSelectChange} ref={this.$heightFtEl}>
               {heightFtInValues.map((value, index) => (
                 <option value={index} selected={index === this.defaultValueImperial}>
                   {`${value.ft} ft ${value.in} in`}

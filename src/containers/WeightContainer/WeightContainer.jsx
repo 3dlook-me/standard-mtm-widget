@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component, createRef } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
@@ -14,6 +14,8 @@ import './WeightContainer.scss';
  * Size not found page component
  */
 class WeightContainer extends Component {
+  $weightEl = createRef();
+
   constructor(props) {
     super(props);
 
@@ -41,6 +43,14 @@ class WeightContainer extends Component {
    */
   componentDidUpdate() {
     this.checkButtonState();
+  }
+
+  /**
+   * Add event
+   */
+  componentDidMount() {
+    // for set default select value to input after first click
+    if (this.$weightEl.current) this.$weightEl.current.addEventListener('click', this.handleChange, { once: true });
   }
 
   /**
@@ -181,7 +191,7 @@ class WeightContainer extends Component {
               {isMobile ? (
                 <div className="weight-container__input-wrap">
                   <input className="input" type="text" placeholder="Select" value={weightValue} disabled />
-                  <select className="select" onChange={this.handleChange}>
+                  <select className="select" onChange={this.handleChange} ref={this.$weightEl}>
                     {weightValues.map((value) => (
                       <option value={value} selected={value === defaultValue}>
                         {value}

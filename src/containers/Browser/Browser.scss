@@ -4,6 +4,10 @@
   padding-top: 114px;
   text-align: center;
 
+  @include breakpoint($iphoneSE) {
+    padding-top: 20px;
+  }
+
   &__img {
     display: flex;
     justify-content: center;

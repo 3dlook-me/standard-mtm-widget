@@ -114,9 +114,15 @@ $failure: $error-border-color;
       margin-bottom: 40px;
     }
 
+    @include breakpoint($iphoneSE) {
+      top: 32px;
+    }
+
     span {
       &.success {
         color: $success;
+
+
       }
 
       &.warning {

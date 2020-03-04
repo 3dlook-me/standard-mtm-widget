@@ -12,6 +12,10 @@
     @include breakpoint($mobile) {
       margin-top: 80px;
     }
+
+    @include breakpoint($iphoneSE) {
+      margin-top: 20px;
+    }
   }
 
   &__discount-banner {

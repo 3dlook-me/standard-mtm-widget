@@ -8,6 +8,10 @@
       margin-top: 80px;
     }
 
+    @include breakpoint($iphoneSE) {
+      margin-top: 20px;
+    }
+
     input {
       padding-right: 34px;
     }

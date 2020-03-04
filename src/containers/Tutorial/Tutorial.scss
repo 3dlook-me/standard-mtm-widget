@@ -11,15 +11,7 @@
 
   &__video-wrapper {
     position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-    margin-top: 0;
-
-    @include breakpoint($mobile) {
-      margin-top: 0;
-      padding: 0;
-      height: 300px;
-    }
+    height: 57vw;
   }
 
   &__text {

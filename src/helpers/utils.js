@@ -1,6 +1,5 @@
 import axios from 'axios';
 import platform from 'mini-platform-detect';
-import { INITIAL_STATE } from '../store/reducers';
 
 const environment = process.env.NODE_ENV;
 

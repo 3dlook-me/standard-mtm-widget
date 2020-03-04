@@ -13,6 +13,10 @@ $bottom-position: -30px;
     margin-top: 29px;
     margin-bottom: 60px;
 
+    @include breakpoint($iphoneSE) {
+      margin: 10px 0 30px;
+    }
+
     &--complete {
       margin-bottom: 16px;
     }

@@ -55,4 +55,17 @@ $border-width: 2px;
       z-index: 1;
     }
   }
+
+  &__control {
+    margin-top: 133px;
+    margin-bottom: 14px;
+
+    @include breakpoint($mobile) {
+      margin-top: 80px;
+    }
+
+    @include breakpoint($iphoneSE) {
+      margin-top: 20px;
+    }
+  }
 }

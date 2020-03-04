@@ -8,6 +8,10 @@
   justify-content: space-between;
   align-items: center;
 
+  @include breakpoint($iphoneSE) {
+    padding: 10px 10px 0;
+  }
+
   &__help,
   &__close {
     background: transparent;

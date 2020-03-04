@@ -8,9 +8,16 @@ $mobile-image-height: 340px;
   transition: all ease 300ms;
   overflow: hidden;
   margin: 0 auto;
-  height: $mobile-image-height;
   width: 100%;
   max-width: 200px;
+
+  @include breakpoint($mobile) {
+    height: 76vw;
+  }
+
+  @include breakpoint($iphoneSE) {
+    height: 150px;
+  }
 
   &__image {
     width: 100%;

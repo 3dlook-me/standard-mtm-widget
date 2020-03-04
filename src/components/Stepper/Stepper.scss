@@ -10,6 +10,10 @@
   left: 50%;
   transform: translateX(-50%);
 
+  @include breakpoint($iphoneSE) {
+    top: 34px;
+  }
+
   &__progress {
     height: 4px;
     width: 0;

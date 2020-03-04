@@ -9,6 +9,10 @@
   justify-content: center;
   flex-direction: column;
 
+  @include breakpoint($iphoneSE) {
+    justify-content: flex-start;
+  }
+
   &__title {
     margin-bottom: 20px;
   }

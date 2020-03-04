@@ -2,8 +2,8 @@ import { h, render, Component } from 'preact';
 import Router from 'preact-router';
 import { createHashHistory } from 'history';
 import { Provider } from 'react-redux';
-import store from './store';
 import { gaStart } from './helpers/ga';
+import { store } from './store';
 
 import './scss/_index.scss';
 
@@ -45,6 +45,8 @@ console.log(`%cVERSION: ${VERSION}, COMMITHASH: ${COMMITHASH}, BRANCH: ${BRANCH}
 class App extends Component {
   constructor(props) {
     super(props);
+
+    // console.log('tyt bydet 4itat');
 
     gaStart();
   }

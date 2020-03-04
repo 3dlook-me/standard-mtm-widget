@@ -1,5 +1,6 @@
 import axios from 'axios';
 import platform from 'mini-platform-detect';
+import { INITIAL_STATE } from '../store/reducers';
 
 const environment = process.env.NODE_ENV;
 
@@ -384,3 +385,54 @@ export const browserValidation = () => {
 export const wait = (delay) => new Promise((resolve) => {
   setTimeout(() => resolve(), delay);
 });
+
+
+/**
+ * Throttle function
+ *
+ * @param {callback} callback - your function
+ * @param {number} limit - your function
+ */
+export const throttle = (callback, limit) => {
+  let pause = false;
+
+  return () => {
+    if (!pause) {
+      callback.call();
+      pause = true;
+
+      setTimeout(() => {
+        pause = false;
+      }, limit);
+    }
+  };
+};
+
+/**
+ * Save data store to browser storage
+ */
+export const loadState = () => {
+  try {
+    const serializedState = sessionStorage.getItem('widgetPf');
+    if (serializedState === null) {
+      return undefined;
+    }
+    return JSON.parse(serializedState);
+  } catch (err) {
+    return undefined;
+  }
+};
+
+/**
+ * Save data store to browser storage
+ *
+ * @param {Object} state - current store
+ */
+export const saveState = (state) => {
+  try {
+    const serializedState = JSON.stringify(state);
+    sessionStorage.setItem('widgetPf', serializedState);
+  } catch {
+    // ignore write errors
+  }
+};

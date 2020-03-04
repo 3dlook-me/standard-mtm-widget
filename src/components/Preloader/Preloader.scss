@@ -68,6 +68,8 @@
 
     @include breakpoint($mobile) {
       margin: 0 auto auto;
+      font-size: 14px;
+      line-height: 18px;
     }
   }
 

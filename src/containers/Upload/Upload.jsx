@@ -23,7 +23,7 @@ import {
 } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-import store from '../../store';
+import { store } from '../../store';
 
 /**
  * Upload page component.

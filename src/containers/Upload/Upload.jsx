@@ -182,7 +182,6 @@ class Upload extends Component {
       setBodyType,
       origin,
       email,
-      returnUrl,
       weight,
       setProcessingStatus,
     } = this.props;
@@ -281,6 +280,7 @@ class Upload extends Component {
         waist: person.volume_params.waist,
         thigh: person.volume_params.thigh,
         low_hips: person.volume_params.low_hips,
+        inseam: person.front_params.inseam,
         gender,
         height,
       };
@@ -306,6 +306,7 @@ class Upload extends Component {
         waist: person.volume_params.waist,
         thigh: person.volume_params.thigh,
         low_hips: person.volume_params.low_hips,
+        inseam: person.front_params.inseam,
         brand,
         body_part: bodyPart,
       });

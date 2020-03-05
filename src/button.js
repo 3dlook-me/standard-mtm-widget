@@ -171,6 +171,10 @@ class SaiaButton {
         personId: parseFloat(params.personId),
       };
 
+      if (params.inseam) {
+        data.inseam = parseFloat(params.inseam);
+      }
+
       send('data', data, window.location.origin);
     }
   }

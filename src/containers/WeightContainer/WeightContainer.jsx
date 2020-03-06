@@ -164,7 +164,7 @@ class WeightContainer extends Component {
   skipAndNextHandler = async () => {
     const { setWeight } = this.props;
 
-    setWeight(null);
+    await setWeight(null);
 
     this.toNextScreen();
   }

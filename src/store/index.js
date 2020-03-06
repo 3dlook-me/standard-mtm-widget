@@ -17,4 +17,4 @@ store.subscribe(throttle(() => {
   saveState({
     ...store.getState(),
   });
-}, 500));
+}, 300));

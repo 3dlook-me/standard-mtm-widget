@@ -2,7 +2,6 @@
 import { h, Component } from 'preact';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import Clipboard from 'clipboard';
 
 import {
   send, sendDataToSpreadsheet, objectToUrlParams,

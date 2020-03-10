@@ -115,15 +115,28 @@ class WeightContainer extends Component {
       this.setState({
         isWeightValid: true,
       });
-    } else {
+
+      return;
+    }
+
+    if (val.trim().length === 0) {
       setWeight(null);
 
       this.setState({
-        isWeightValid: false,
+        isWeightValid: true,
         buttonDisabled: true,
       });
+
+      return;
     }
-  }
+
+    setWeight(null);
+
+    this.setState({
+      isWeightValid: false,
+      buttonDisabled: true,
+    });
+  };
 
   /**
    * Check is weight valid and set

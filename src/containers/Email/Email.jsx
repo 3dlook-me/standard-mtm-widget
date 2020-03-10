@@ -104,7 +104,7 @@ class Email extends Component {
       buttonDisabled,
     } = this.state;
 
-    const { agree } = this.props;
+    const { agree, isMobile } = this.props;
 
     return (
       <div className="screen active">
@@ -115,7 +115,8 @@ class Email extends Component {
             <h3 className="screen__label">Enter your email</h3>
             <input
               className={classNames('input', { 'input--invalid': !isEmailValid })}
-              onBlur={this.changeEmail}
+              onBlur={!isMobile ? this.changeEmail : false}
+              onChange={isMobile ? this.changeEmail : false}
               type="email"
               placeholder="email@address.com"
             />

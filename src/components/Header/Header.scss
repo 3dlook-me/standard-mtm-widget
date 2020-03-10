@@ -19,6 +19,10 @@
     border: none;
     position: relative;
     z-index: 10;
+
+    &--hide {
+      display: none;
+    }
   }
 
   &--white:not(.active) &__help {

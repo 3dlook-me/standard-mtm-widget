@@ -14,6 +14,18 @@ import { isMobileDevice } from '../../helpers/utils';
  * Tutorial video page component
  */
 class Tutorial extends BaseMobileFlow {
+  state = {
+    isDesktop: !isMobileDevice(),
+  }
+
+  componentDidMount() {
+    const { isDesktop } = this.state;
+
+    if (isDesktop) {
+      document.querySelector('.header__close').classList.add('header__close--hide');
+    }
+  }
+
   back = () => {
     const { isMobile } = this.props;
 
@@ -27,7 +39,7 @@ class Tutorial extends BaseMobileFlow {
   }
 
   render() {
-    const isDesktop = !isMobileDevice();
+    const { isDesktop } = this.state;
 
     return (
       <div className="screen active">
@@ -54,7 +66,7 @@ class Tutorial extends BaseMobileFlow {
 
             <p className="tutorial__text">We take your privacy very seriously and do not store photos.</p>
           </div>
-          )}
+        )}
 
         {isDesktop ? true : (
           <div className="screen__footer">
@@ -66,4 +78,4 @@ class Tutorial extends BaseMobileFlow {
   }
 }
 
-export default connect(state => state, actions)(Tutorial);
+export default connect((state) => state, actions)(Tutorial);

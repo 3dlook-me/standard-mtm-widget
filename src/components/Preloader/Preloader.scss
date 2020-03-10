@@ -13,6 +13,7 @@
 
   @include breakpoint($mobile) {
     top: 40px;
+    justify-content: space-between;
   }
 
   @media screen and (max-width: 374px) {
@@ -67,7 +68,7 @@
     margin: 0 auto;
 
     @include breakpoint($mobile) {
-      margin: 0 auto auto;
+      margin: 0 auto 60px;
       font-size: 14px;
       line-height: 18px;
     }
@@ -78,10 +79,10 @@
     width: 94px;
     height: 251px;
     overflow: hidden;
-    margin-bottom: 44px;
+    margin-bottom: 84px;
 
     @include breakpoint($mobile) {
-      margin-bottom: auto;
+      margin-bottom: 44px;
     }
 
     @media screen and (max-width: 374px) {

@@ -224,7 +224,7 @@ class Upload extends Component {
       }
 
       if (!personId) {
-        setProcessingStatus('Initiating Profile Creation.');
+        setProcessingStatus('Initiating Profile Creation');
 
         const createdPersonId = await this.api.person.create({
           gender,
@@ -242,7 +242,7 @@ class Upload extends Component {
         setProcessingStatus('Profile Creation Completed!');
         await wait(1000);
 
-        setProcessingStatus('Photo Uploading.');
+        setProcessingStatus('Photo Uploading');
 
         taskSetId = await this.api.person.updateAndCalculate(createdPersonId, {
           ...images,
@@ -254,7 +254,7 @@ class Upload extends Component {
         setProcessingStatus('Photo Upload Completed!');
         await wait(1000);
       } else {
-        setProcessingStatus('Photo Uploading.');
+        setProcessingStatus('Photo Uploading');
 
         await this.api.person.update(personId, images);
         await wait(1000);
@@ -265,13 +265,13 @@ class Upload extends Component {
         await wait(1000);
       }
 
-      setProcessingStatus('Calculating your Measurements.');
+      setProcessingStatus('Calculating your Measurements');
 
       const person = await this.api.queue.getResults(taskSetId, 4000);
 
       await wait(1000);
 
-      setProcessingStatus('Sending Your Results.');
+      setProcessingStatus('Sending Your Results');
       await wait(1000);
 
       const measurements = {

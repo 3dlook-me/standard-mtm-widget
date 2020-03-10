@@ -1,6 +1,10 @@
 @import '../../scss/utils/index';
 
 .tutorial {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
   &__video {
     position: absolute;
     top: 0;

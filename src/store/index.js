@@ -1,6 +1,6 @@
 import { createStore } from 'redux';
 import reducer, { INITIAL_STATE } from './reducers';
-import { loadState, saveState, throttle } from '../helpers/utils';
+import { loadState, saveState } from '../helpers/utils';
 
 const persistedState = loadState() || INITIAL_STATE;
 
@@ -13,8 +13,8 @@ export const store = createStore(
     : undefined,
 );
 
-store.subscribe(throttle(() => {
+store.subscribe(() => {
   saveState({
     ...store.getState(),
   });
-}, 300));
+});

@@ -398,37 +398,21 @@ class Upload extends Component {
   }
 
   triggerFrontImage = () => {
+    const { setHeaderIconsStyle, setCamera } = this.props;
+
     gaOpenCameraFrontPhoto();
 
-    const { isMobile, setHeaderIconsStyle, setCamera } = this.props;
-
-    if (isMobile) {
-      setCamera('front');
-
-      setHeaderIconsStyle('white');
-
-      return;
-    }
-
-    const frontFile = document.getElementById('front');
-    frontFile.click();
+    setCamera('front');
+    setHeaderIconsStyle('white');
   }
 
   triggerSideImage = () => {
+    const { setHeaderIconsStyle, setCamera } = this.props;
+
     gaOpenCameraSidePhoto();
 
-    const { isMobile, setHeaderIconsStyle, setCamera } = this.props;
-
-    if (isMobile) {
-      setCamera('side');
-
-      setHeaderIconsStyle('white');
-
-      return;
-    }
-
-    const sideFile = document.getElementById('side');
-    sideFile.click();
+    setCamera('side');
+    setHeaderIconsStyle('white');
   }
 
   render() {

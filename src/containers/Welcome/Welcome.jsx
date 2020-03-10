@@ -32,6 +32,7 @@ class Welcome extends Component {
       setIsOpenReturnUrlDesktop,
       setProductId,
       setWidgetUrl,
+      resetState,
     } = this.props;
 
     this.widgetContainer = document.querySelector('.widget-container');
@@ -50,6 +51,8 @@ class Welcome extends Component {
     const token = matches.key || API_KEY || parseGetParams().key;
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;
+
+    resetState();
 
     setToken(token);
     setBrand(brand);

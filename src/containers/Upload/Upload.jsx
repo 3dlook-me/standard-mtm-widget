@@ -15,7 +15,9 @@ import {
   UploadBlock,
 } from '../../components';
 
-import { send, transformRecomendations, wait } from '../../helpers/utils';
+import {
+  send, transformRecomendations, wait, activeFlowInMobile,
+} from '../../helpers/utils';
 import {
   gaUploadOnContinue,
   gaOpenCameraFrontPhoto,
@@ -59,9 +61,6 @@ class Upload extends Component {
     const {
       token,
       flowId,
-      isMobile,
-      setRecommendations,
-      origin,
     } = props;
 
     if (token && flowId && !this.api && !this.flow) {
@@ -73,34 +72,17 @@ class Upload extends Component {
       this.flow = new FlowService(token);
       this.flow.setFlowId(flowId);
 
-      if (!isMobile) {
-        this.timer = setInterval(() => {
-          this.flow.get()
-            .then((flowState) => {
-              if (flowState.state.status === 'opened-on-mobile') {
-                this.setState({
-                  isPending: true,
-                });
-              }
-
-              if (flowState.state.status === 'finished') {
-                const { recommendations } = flowState.state;
-                setRecommendations(recommendations);
-
-                send('recommendations', recommendations, origin);
-
-                if (!recommendations.normal
-                  && !recommendations.tight
-                  && !recommendations.loose) {
-                  route('/not-found', true);
-                } else {
-                  route('/results', true);
-                }
-              }
-            })
-            .catch((err) => console.log(err));
-        }, 3000);
-      }
+      // setTimeout(() => {
+      //   this.flow.get()
+      //     .then((flowState) => {
+      //       const widgetWasAliveAt = flowState.state.lastActiveDate;
+      //
+      //       if (widgetWasAliveAt === 0) {
+      //         activeFlowInMobile(this.flow);
+      //       }
+      //     })
+      //     .catch((err) => console.log(err));
+      // }, 6000);
     }
   }
 

@@ -1,7 +1,8 @@
 import { h, Component } from 'preact';
 
-import { route } from 'preact-router';
-import { isMobileDevice, parseGetParams, browserValidation } from '../../helpers/utils';
+import {
+  isMobileDevice, parseGetParams, browserValidation, activeFlowInMobile,
+} from '../../helpers/utils';
 import FlowService from '../../services/flowService';
 
 /**
@@ -84,6 +85,8 @@ class BaseMobileFlow extends Component {
 
           return;
         }
+
+        // activeFlowInMobile(this.flow);
 
         setInterval(() => {
           this.flow.updateState({

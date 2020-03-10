@@ -14,16 +14,14 @@ import { isMobileDevice } from '../../helpers/utils';
  * Tutorial video page component
  */
 class Tutorial extends BaseMobileFlow {
-  state = {
-    isDesktop: !isMobileDevice(),
-  }
-
   componentDidMount() {
-    const { isDesktop } = this.state;
+    const isDesktop = !isMobileDevice();
 
     if (isDesktop) {
       document.querySelector('.header__close').classList.add('header__close--hide');
     }
+
+    return super.componentDidMount();
   }
 
   back = () => {
@@ -39,7 +37,7 @@ class Tutorial extends BaseMobileFlow {
   }
 
   render() {
-    const { isDesktop } = this.state;
+    const isDesktop = !isMobileDevice();
 
     return (
       <div className="screen active">

@@ -119,6 +119,10 @@ class QRCodeContainer extends Component {
                   this.setState({
                     isPending: false,
                   });
+
+                  // this.flow.updateState({
+                  //   lastActiveDate: 0,
+                  // });
                 }
               }
 

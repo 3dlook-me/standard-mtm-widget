@@ -435,3 +435,13 @@ export const saveState = (state) => {
     // ignore write errors
   }
 };
+
+export const activeFlowInMobile = (flow) => {
+  flow.updateState({ status: 'opened-on-mobile' });
+
+  setInterval(() => {
+    flow.updateState({
+      lastActiveDate: Date.now(),
+    });
+  }, 3000);
+};

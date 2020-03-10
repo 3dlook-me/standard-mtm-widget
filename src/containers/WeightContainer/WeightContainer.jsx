@@ -153,9 +153,9 @@ class WeightContainer extends Component {
       gender,
       height,
       weight,
-      bodyType,
       isMobile,
       units,
+      email,
     } = this.props;
 
     if (isMobile) {
@@ -164,9 +164,9 @@ class WeightContainer extends Component {
       await this.flow.updateState({
         status: 'set metadata',
         gender,
-        bodyType,
         height,
         units,
+        email,
         ...(weight && { weight }),
       });
 

@@ -1,9 +1,4 @@
-export const heightCmValues = [150, 153, 155, 158,
-  160, 163, 165, 168, 170, 173, 175, 178,
-  180, 183, 185, 168, 190, 193, 195, 198,
-  201, 203, 206, 208, 211, 213, 216, 218,
-  220,
-];
+export const heightCmValues = [...Array(220 + 1).keys()].slice(150);
 
 export const heightFtInValues = [{
   ft: 4,

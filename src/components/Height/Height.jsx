@@ -15,7 +15,7 @@ export default class Height extends Component {
   constructor(props) {
     super(props);
 
-    this.defaultValueMetric = 6;
+    this.defaultValueMetric = 15;
     this.defaultValueImperial = 6;
 
     this.state = {

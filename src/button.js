@@ -247,6 +247,8 @@ class SaiaButton {
    */
   async getSize() {
     const data = JSON.parse(localStorage.getItem('saia-pf-widget-data'));
+    // const data = parseGetParams();
+
     const measurements = {
       ...data,
     };

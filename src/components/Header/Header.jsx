@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import './Header.scss'
+import './Header.scss';
 
 import FlowService from '../../services/flowService';
 import { send, sendDataToSpreadsheet, objectToUrlParams } from '../../helpers/utils';
@@ -38,16 +38,20 @@ class Header extends Component {
     } = this.props;
 
     if (isFromDesktopToMobile) {
-      await this.flow.updateState({
-        status: 'closed-on-mobile',
-      });
+      if (confirm('Are you sure that you want to close widget? ')) {
+        await this.flow.updateState({
+          status: 'closed-on-mobile',
+        });
+      }
     }
 
     if (isMobile) {
-      if (measurements) {
-        window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
-      } else {
-        window.location = returnUrl;
+      if (confirm('Are you sure that you want to close widget? ')) {
+        if (measurements) {
+          window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
+        } else {
+          window.location = returnUrl;
+        }
       }
     } else {
       resetState();
@@ -71,13 +75,13 @@ class Header extends Component {
       <header className={classNames('header', `header--${headerIconsStyle}`, { active: isHelpActive })}>
         <button className="header__help" onClick={this.onHelpButtonClick} type="button">
           <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
-            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
               <g transform="translate(-29.000000, -19.000000)">
                 <g transform="translate(30.000000, 20.000000)">
-                  <text font-family="Avenir-Black, Avenir" font-size="12" font-weight="700" letter-spacing="1" fill="#DDDDDD">
+                  <text fontFamily="Avenir-Black, Avenir" fontSize="12" fontWeight="700" letterSpacing="1" fill="#DDDDDD">
                     <tspan x="7.44" y="13">i</tspan>
                   </text>
-                  <circle className="header__svg-fill header__svg-fill--circle" stroke="#DDDDDD" stroke-width="1.5" cx="9" cy="9" r="9" />
+                  <circle className="header__svg-fill header__svg-fill--circle" stroke="#DDDDDD" strokeWidth="1.5" cx="9" cy="9" r="9" />
                 </g>
               </g>
             </g>
@@ -86,8 +90,8 @@ class Header extends Component {
 
         <button className="header__close" onClick={this.onCloseButtonClick} type="button">
           <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
-            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
-              <g transform="translate(-567.000000, -20.000000)" stroke="#000000" stroke-width="2">
+            <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
+              <g transform="translate(-567.000000, -20.000000)" stroke="#000000" strokeWidth="2">
                 <g className="header__svg-fill" transform="translate(574.727922, 27.727922) rotate(-315.000000) translate(-574.727922, -27.727922) translate(565.727922, 18.727922)">
                   <path d="M18,9 L0,9" />
                   <path d="M9,0 L9,18" />
@@ -101,4 +105,4 @@ class Header extends Component {
   }
 }
 
-export default connect(state => state, actions)(Header);
+export default connect((state) => state, actions)(Header);

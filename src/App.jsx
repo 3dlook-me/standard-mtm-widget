@@ -39,6 +39,7 @@ import {
 
 // welcome screen img bg
 import bgImage from './images/welcome-bg.png';
+import landscapeView from './images/landscape-view.png';
 
 console.log(`%cVERSION: ${VERSION}, COMMITHASH: ${COMMITHASH}, BRANCH: ${BRANCH}`, 'background: #f00; color: #fff; font-size: 20px;');
 
@@ -53,6 +54,9 @@ class App extends Component {
     return (
       <Provider store={store}>
         <div className="widget-container widget-container--no-bg" style={{ backgroundImage: `url(${bgImage})` }}>
+          <div className="landscape-view">
+            <img src={landscapeView} alt="landscapeView" />
+          </div>
           <Header help={this.toggleHelp} />
           <Help />
 

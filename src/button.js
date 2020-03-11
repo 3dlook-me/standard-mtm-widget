@@ -246,8 +246,13 @@ class SaiaButton {
    * @returns {Object|null} recomendations
    */
   async getSize() {
-    const data = JSON.parse(localStorage.getItem('saia-pf-widget-data'));
-    // const data = parseGetParams();
+    let data;
+
+    data = parseGetParams();
+
+    if (Object.keys(data).length <= 1) {
+      data = JSON.parse(localStorage.getItem('saia-pf-widget-data'));
+    }
 
     const measurements = {
       ...data,

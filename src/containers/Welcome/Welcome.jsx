@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import { Link, route } from 'preact-router';
 import { connect } from 'react-redux';
 
@@ -8,6 +8,7 @@ import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 
 import './Welcome.scss';
+import { Browser } from '..';
 
 /**
  * Welcome page component
@@ -15,6 +16,7 @@ import './Welcome.scss';
 class Welcome extends Component {
   state = {
     isButtonDisabled: true,
+    invalidBrowser: false,
   }
 
   componentDidMount() {
@@ -35,24 +37,29 @@ class Welcome extends Component {
       resetState,
     } = this.props;
 
+    resetState();
+
     this.widgetContainer = document.querySelector('.widget-container');
-    this.widgetContainer.classList.remove('widget-container--no-bg');
 
     if (isMobileDevice()) {
       if (!browserValidation()) {
+        setIsMobile(true);
         setWidgetUrl(window.location.href);
+        setReturnUrl(matches.returnUrl);
 
-        route('/browser', true);
+        this.setState({
+          invalidBrowser: true,
+        });
 
         return;
       }
     }
 
+    this.widgetContainer.classList.remove('widget-container--no-bg');
+
     const token = matches.key || API_KEY || parseGetParams().key;
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;
-
-    resetState();
 
     setToken(token);
     setBrand(brand);
@@ -89,26 +96,33 @@ class Welcome extends Component {
   }
 
   render() {
-    const { isButtonDisabled } = this.state;
+    const { isButtonDisabled, invalidBrowser } = this.state;
 
     return (
-      <section className="screen active">
-        <div className="screen__content welcome">
-          <div className="screen__intro">
-            <h4 className="screen__intro-title">
-              Never guess your size again
-            </h4>
-            <p className="screen__intro-txt">
-              Get personalized size recommendation in under one minute. No measuring tape required
-            </p>
-          </div>
-        </div>
-        <div className="screen__footer">
-          <Link className="button" href="/email" onClick={gaWelcomeOnContinue} disabled={isButtonDisabled}>
-            <span>start</span>
-          </Link>
-        </div>
-      </section>
+      <Fragment>
+        { invalidBrowser ? (
+          <Browser />
+        ) : (
+          <section className="screen active">
+            <div className="screen__content welcome">
+              <div className="screen__intro">
+                <h4 className="screen__intro-title">
+                  Never guess your size again
+                </h4>
+                <p className="screen__intro-txt">
+                  Get personalized size recommendation in under one minute.
+                  No measuring tape required
+                </p>
+              </div>
+            </div>
+            <div className="screen__footer">
+              <Link className="button" href="/email" onClick={gaWelcomeOnContinue} disabled={isButtonDisabled}>
+                <span>start</span>
+              </Link>
+            </div>
+          </section>
+        )}
+      </Fragment>
     );
   }
 }

@@ -1,5 +1,6 @@
 import axios from 'axios';
-import platform from 'mini-platform-detect';
+// import platform from 'mini-platform-detect';
+import { detectOS, browserName } from 'detect-browser';
 
 const environment = process.env.NODE_ENV;
 
@@ -343,7 +344,9 @@ export const isSamsungBrowser = () => /SamsungBrowser\/(?!([1-9][1-9]|[2-9][0-9]
  * Detect needed browser
  */
 export const browserDetect = () => {
-  if (platform.macos || platform.ios) {
+  const system = detectOS(navigator.userAgent);
+
+  if (system === 'Mac OS' || system === 'iOS') {
     return 'safari';
   }
 
@@ -355,24 +358,13 @@ export const browserDetect = () => {
  */
 export const browserValidation = () => {
   const neededBrowser = browserDetect();
+  const currentBrowser = browserName(navigator.userAgent);
 
-  if (neededBrowser === 'safari') {
-    const isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
-
-    if (!isSafari) {
-      return false;
-    }
+  if (neededBrowser === 'safari' && currentBrowser !== 'safari' && currentBrowser !== 'ios') {
+    return false;
   }
 
-  if (neededBrowser === 'chrome') {
-    const isChrome = navigator.userAgent.indexOf('Chrome') !== -1;
-
-    if (!(isChrome && !isSamsungBrowser())) {
-      return false;
-    }
-  }
-
-  return true;
+  return !(neededBrowser === 'chrome' && currentBrowser !== 'chrome');
 };
 
 /**

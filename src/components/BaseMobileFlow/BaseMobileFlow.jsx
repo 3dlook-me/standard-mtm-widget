@@ -81,8 +81,6 @@ class BaseMobileFlow extends Component {
         setUnits(flowState.state.units);
 
         if (!browserValidation()) {
-          setWidgetUrl(window.location.href);
-
           return;
         }
 

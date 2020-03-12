@@ -39,7 +39,7 @@ import {
 
 // welcome screen img bg
 import bgImage from './images/welcome-bg.png';
-import landscapeView from './images/landscape-view.png';
+import landscapeView from './images/landscape-view.svg';
 
 console.log(`%cVERSION: ${VERSION}, COMMITHASH: ${COMMITHASH}, BRANCH: ${BRANCH}`, 'background: #f00; color: #fff; font-size: 20px;');
 
@@ -53,10 +53,13 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <div className="widget-container widget-container--no-bg" style={{ backgroundImage: `url(${bgImage})` }}>
-          <div className="landscape-view">
+        <div className="landscape-view">
+          <figure className="landscape-view__img">
             <img src={landscapeView} alt="landscapeView" />
-          </div>
+          </figure>
+          <p className="landscape-view__txt">Please turn your device</p>
+        </div>
+        <div className="widget-container widget-container--no-bg" style={{ backgroundImage: `url(${bgImage})` }}>
           <Header help={this.toggleHelp} />
           <Help />
 

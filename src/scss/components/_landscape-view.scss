@@ -1,0 +1,43 @@
+@import "../utils/index";
+
+.landscape-view {
+  display: none;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #1D252D;
+  text-transform: uppercase;
+
+  @include breakpoint($tablet) {
+    @media (orientation: landscape) {
+      display: flex;
+    }
+  }
+
+  &__txt {
+    font-size: 18px;
+  }
+}
+
+body {
+  @include breakpoint($tablet) {
+    @media (orientation: landscape) {
+      overflow: hidden;
+    }
+  }
+}
+
+.widget-container {
+  @include breakpoint($tablet) {
+    @media (orientation: landscape) {
+      opacity: 0;
+    }
+  }
+}

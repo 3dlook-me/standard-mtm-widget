@@ -12,6 +12,7 @@ import './HardValidation.scss';
 
 import cryingIcon1x from '../../images/crying.png';
 import cryingIcon2x from '../../images/crying@2x.png';
+import { mobileFlowStatusUpdate } from '../../helpers/utils';
 
 /**
  * Hard validation page component
@@ -23,10 +24,33 @@ class HardValidation extends Component {
     const { flowId, token } = this.props;
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
+
+    const { setPageReloadStatus } = props;
+
+    this.reloadListener = () => {
+      setPageReloadStatus(true);
+    };
+
+    window.addEventListener('unload', this.reloadListener);
   }
 
-  componentDidMount() {
+  componentWillUnmount() {
+    window.removeEventListener('unload', this.reloadListener);
+  }
+
+  async componentDidMount() {
     gaHardValidationError();
+
+    const { pageReloadStatus, isFromDesktopToMobile } = this.props;
+
+    // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
+    if (pageReloadStatus && isFromDesktopToMobile) {
+      const { setPageReloadStatus, flowState } = this.props;
+
+      setPageReloadStatus(false);
+
+      mobileFlowStatusUpdate(this.flow, flowState);
+    }
   }
 
   componentWillReceiveProps = async (nextProps) => {
@@ -176,8 +200,7 @@ class HardValidation extends Component {
                   {(sideInTheFront || cannotDetectBodyFront || bodyIsNotFullFront || wrongFrontPose) ? <ImageExample type="front" isMobile={isMobile} /> : null}
                 </li>
               )
-              : null
-            }
+              : null}
 
             {(side)
               ? (
@@ -186,8 +209,7 @@ class HardValidation extends Component {
                   {(sideInTheSide || cannotDetectBodySide || bodyIsNotFullSide || wrongSidePose) ? <ImageExample type="side" isMobile={isMobile} /> : null}
                 </li>
               )
-              : null
-            }
+              : null}
           </ol>
 
         </div>
@@ -199,4 +221,4 @@ class HardValidation extends Component {
   }
 }
 
-export default connect(state => state, actions)(HardValidation);
+export default connect((state) => state, actions)(HardValidation);

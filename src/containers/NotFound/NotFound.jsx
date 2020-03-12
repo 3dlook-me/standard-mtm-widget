@@ -10,11 +10,28 @@ import './NotFound.scss';
 
 import confusedIcon1x from '../../images/confused.png';
 import confusedIcon2x from '../../images/confused@2x.png';
+import { mobileFlowStatusUpdate } from '../../helpers/utils';
 
 /**
  * Size not found page component
  */
 class NotFound extends Component {
+  constructor(props) {
+    super(props);
+
+    const { setPageReloadStatus } = props;
+
+    this.reloadListener = () => {
+      setPageReloadStatus(true);
+    };
+
+    window.addEventListener('unload', this.reloadListener);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('unload', this.reloadListener);
+  }
+
   componentDidMount = async () => {
     gaSizeNotFound();
 
@@ -23,6 +40,8 @@ class NotFound extends Component {
       addSideImage,
       token,
       flowId,
+      pageReloadStatus,
+      isFromDesktopToMobile,
     } = this.props;
 
     addFrontImage(null);
@@ -30,6 +49,15 @@ class NotFound extends Component {
 
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
+
+    // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
+    if (pageReloadStatus && isFromDesktopToMobile) {
+      const { flowState, setPageReloadStatus } = this.props;
+
+      setPageReloadStatus(false);
+
+      mobileFlowStatusUpdate(this.flow, flowState);
+    }
   }
 
   close = async () => {
@@ -71,4 +99,4 @@ class NotFound extends Component {
   }
 }
 
-export default connect(state => state, actions)(NotFound);
+export default connect((state) => state, actions)(NotFound);

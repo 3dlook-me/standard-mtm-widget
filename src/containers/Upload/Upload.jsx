@@ -16,7 +16,7 @@ import {
 } from '../../components';
 
 import {
-  send, transformRecomendations, wait, activeFlowInMobile,
+  send, transformRecomendations, wait, activeFlowInMobile, mobileFlowStatusUpdate,
 } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
@@ -46,6 +46,14 @@ class Upload extends Component {
 
       isPending: false,
     };
+
+    const { setPageReloadStatus } = props;
+
+    this.reloadListener = () => {
+      setPageReloadStatus(true);
+    };
+
+    window.addEventListener('unload', this.reloadListener);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -55,12 +63,15 @@ class Upload extends Component {
   componentWillUnmount() {
     if (this.unsubscribe) this.unsubscribe();
     clearInterval(this.timer);
+    window.removeEventListener('unload', this.reloadListener);
   }
 
-  init(props) {
+  async init(props) {
     const {
       token,
       flowId,
+      pageReloadStatus,
+      isFromDesktopToMobile,
     } = props;
 
     if (token && flowId && !this.api && !this.flow) {
@@ -72,17 +83,21 @@ class Upload extends Component {
       this.flow = new FlowService(token);
       this.flow.setFlowId(flowId);
 
-      // setTimeout(() => {
-      //   this.flow.get()
-      //     .then((flowState) => {
-      //       const widgetWasAliveAt = flowState.state.lastActiveDate;
-      //
-      //       if (widgetWasAliveAt === 0) {
-      //         activeFlowInMobile(this.flow);
-      //       }
-      //     })
-      //     .catch((err) => console.log(err));
-      // }, 6000);
+      // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
+      if (pageReloadStatus && isFromDesktopToMobile) {
+        const { flowState, setPageReloadStatus, camera } = this.props;
+
+        setPageReloadStatus(false);
+
+        // if camera is active when page refreshed
+        if (camera) {
+          const { setCamera } = this.props;
+
+          setCamera(null);
+        }
+
+        mobileFlowStatusUpdate(this.flow, flowState);
+      }
     }
   }
 
@@ -413,7 +428,7 @@ class Upload extends Component {
       sideImage,
       gender,
       camera,
-      status,
+      sendDataStatus,
       isMobile,
     } = this.props;
 
@@ -485,7 +500,7 @@ class Upload extends Component {
           </button>
         </div>
 
-        <Preloader isActive={isPending} status={status} isMobile={isMobile} />
+        <Preloader isActive={isPending} status={sendDataStatus} isMobile={isMobile} />
       </div>
 
     );

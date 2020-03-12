@@ -19,6 +19,7 @@ export const INITIAL_STATE = {
 
   flowId: null,
   personId: null,
+  flowState: null,
 
   brand: null,
   bodyPart: null,
@@ -49,6 +50,7 @@ export const INITIAL_STATE = {
   },
 
   email: null,
+  units: 'cm',
   phoneNumber: null,
   fakeSize: false,
 
@@ -56,8 +58,8 @@ export const INITIAL_STATE = {
   camera: null,
   isHelpActive: false,
   isOpenReturnUrlDesktop: false,
-  units: 'cm',
-  status: '',
+  sendDataStatus: '',
+  pageReloadStatus: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -265,7 +267,19 @@ export default (state = INITIAL_STATE, action) => {
     case CONSTANTS.SET_PROCESSING_STATUS:
       return {
         ...state,
-        status: action.payload,
+        sendDataStatus: action.payload,
+      };
+
+    case CONSTANTS.SET_PAGE_RELOAD_STATUS:
+      return {
+        ...state,
+        pageReloadStatus: action.payload,
+      };
+
+    case CONSTANTS.SET_FLOW_STATE:
+      return {
+        ...state,
+        flowState: action.payload,
       };
 
     default:

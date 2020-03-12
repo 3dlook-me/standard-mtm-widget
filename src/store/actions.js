@@ -35,6 +35,8 @@ export const CONSTANTS = {
   SET_PRODUCT_ID: 'SET_PRODUCT_ID',
   SET_UNITS: 'SET_UNITS',
   SET_PROCESSING_STATUS: 'SET_PROCESSING_STATUS',
+  SET_PAGE_RELOAD_STATUS: 'SET_PAGE_RELOAD_STATUS',
+  SET_FLOW_STATE: 'SET_FLOW_STATE',
 };
 
 /**
@@ -361,19 +363,39 @@ export const setUnits = (units) => ({
  *
  * @param {any} weight - weight object
  */
-export const setWeight = weight => ({
+export const setWeight = (weight) => ({
   type: CONSTANTS.SET_WEIGHT,
   payload: weight,
 });
 
 /**
- * Set status
+ * Set sendDataStatus
  *
  * @param {string} status - weight object
  */
-export const setProcessingStatus = status => ({
+export const setProcessingStatus = (status) => ({
   type: CONSTANTS.SET_PROCESSING_STATUS,
   payload: status,
+});
+
+/**
+ * Set status
+ *
+ * @param {boolean} status - true if page reloaded
+ */
+export const setPageReloadStatus = (status) => ({
+  type: CONSTANTS.SET_PAGE_RELOAD_STATUS,
+  payload: status,
+});
+
+/**
+ * Set flow state
+ *
+ * @param {Object} state - flow state
+ */
+export const setFlowState = (state) => ({
+  type: CONSTANTS.SET_FLOW_STATE,
+  payload: state,
 });
 
 export default {
@@ -410,4 +432,6 @@ export default {
   setUnits,
   setWeight,
   setProcessingStatus,
+  setPageReloadStatus,
+  setFlowState,
 };

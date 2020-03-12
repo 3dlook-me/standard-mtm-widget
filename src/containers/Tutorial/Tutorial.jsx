@@ -14,14 +14,43 @@ import { isMobileDevice } from '../../helpers/utils';
  * Tutorial video page component
  */
 class Tutorial extends BaseMobileFlow {
-  componentDidMount() {
+  constructor(props) {
+    super(props);
+
+    const { setPageReloadStatus } = props;
+
+    this.reloadListener = () => {
+      setPageReloadStatus(true);
+    };
+
+    window.addEventListener('unload', this.reloadListener);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('unload', this.reloadListener);
+  }
+
+  async componentDidMount() {
     const isDesktop = !isMobileDevice();
 
     if (isDesktop) {
       document.querySelector('.header__close').classList.add('header__close--hide');
     }
 
-    return super.componentDidMount();
+    await super.componentDidMount();
+
+    const {
+      isFromDesktopToMobile, pageReloadStatus,
+    } = this.props;
+
+    // PAGE RELOAD: update flowState
+    if (pageReloadStatus && isFromDesktopToMobile) {
+      const { setPageReloadStatus, flowState } = this.props;
+
+      setPageReloadStatus(false);
+
+      await this.flow.updateState(flowState);
+    }
   }
 
   back = () => {

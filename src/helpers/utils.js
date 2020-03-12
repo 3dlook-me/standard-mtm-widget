@@ -428,12 +428,20 @@ export const saveState = (state) => {
   }
 };
 
-export const activeFlowInMobile = (flow) => {
-  flow.updateState({ status: 'opened-on-mobile' });
+/**
+ * Update flow data after page reload
+ *
+ * @param {Object} flow - active flow
+ * @param {Object} state - flow state
+ */
+export const mobileFlowStatusUpdate = (flow, state) => {
+  flow.updateState({
+    ...state,
+  }).then(() => Promise.resolve());
 
   setInterval(() => {
     flow.updateState({
       lastActiveDate: Date.now(),
-    });
+    }).then(() => Promise.resolve());
   }, 3000);
 };

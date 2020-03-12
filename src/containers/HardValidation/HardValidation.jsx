@@ -38,7 +38,7 @@ class HardValidation extends Component {
     window.removeEventListener('unload', this.reloadListener);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     gaHardValidationError();
 
     const { pageReloadStatus, isFromDesktopToMobile } = this.props;

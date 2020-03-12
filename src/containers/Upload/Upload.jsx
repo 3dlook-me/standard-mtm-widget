@@ -66,7 +66,7 @@ class Upload extends Component {
     window.removeEventListener('unload', this.reloadListener);
   }
 
-  async init(props) {
+  init(props) {
     const {
       token,
       flowId,

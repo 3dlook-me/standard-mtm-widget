@@ -28,6 +28,22 @@ export default class SMSService {
         link,
       },
     })
-      .then(response => response.data);
+      .then((response) => response.data);
+  }
+
+  /**
+   * Get short link for copy link btn
+   * @async
+   * @param {string} link - mobile flow url
+   */
+  getShortLink(link) {
+    return this.axios({
+      url: `${API_HOST}/api/v2/measurements/shorting-link/`,
+      method: 'POST',
+      data: {
+        long_link: link,
+      },
+    })
+      .then((response) => response.data);
   }
 }

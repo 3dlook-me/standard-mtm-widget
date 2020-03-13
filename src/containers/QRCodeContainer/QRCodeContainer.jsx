@@ -49,15 +49,17 @@ class QRCodeContainer extends Component {
 
   componentDidMount() {
     const { flowId, token } = this.props;
+    const mobileFlowUrl = `${window.location.origin}${window.location.pathname}?key=${token}#/mobile/${flowId}`;
 
     this.setState({
-      qrCodeUrl: `${window.location.origin}${window.location.pathname}?key=${token}#/mobile/${flowId}`,
+      qrCodeUrl: mobileFlowUrl,
     });
 
     // init clipboard
     this.clipboard = new Clipboard('.scan-qrcode__btn');
 
     this.sms = new SMSService(token);
+    this.sms.getShortLink(mobileFlowUrl).then(() => Promise.resolve());
   }
 
   // TODO *** change

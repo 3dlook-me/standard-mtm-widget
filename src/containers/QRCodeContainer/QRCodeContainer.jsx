@@ -22,6 +22,7 @@ import {
 
 import './QRCodeContainer.scss';
 import smsSendingIcon from '../../images/sms-sending.svg';
+import qrPreloader from '../../images/preloader.svg';
 
 /**
  * ScanQRCode page component.
@@ -38,6 +39,8 @@ class QRCodeContainer extends Component {
       isSMSSuccess: false,
 
       qrCodeUrl: null,
+      copyUrl: null,
+      isShortUrlFetching: true,
       isCopied: false,
 
       isPhoneNumberValid: true,
@@ -59,7 +62,13 @@ class QRCodeContainer extends Component {
     this.clipboard = new Clipboard('.scan-qrcode__btn');
 
     this.sms = new SMSService(token);
-    this.sms.getShortLink(mobileFlowUrl).then(() => Promise.resolve());
+    this.sms.getShortLink(mobileFlowUrl)
+      .then((res) => {
+        this.setState({
+          copyUrl: res.short_link,
+          isShortUrlFetching: false,
+        });
+      }).catch(() => { this.setState({ isShortUrlFetching: false }); });
   }
 
   // TODO *** change
@@ -121,10 +130,6 @@ class QRCodeContainer extends Component {
                   this.setState({
                     isPending: false,
                   });
-
-                  // this.flow.updateState({
-                  //   lastActiveDate: 0,
-                  // });
                 }
               }
 
@@ -275,7 +280,11 @@ class QRCodeContainer extends Component {
       isSMSPending,
       isSMSSuccess,
       resendTime,
+      copyUrl,
+      isShortUrlFetching,
     } = this.state;
+
+    const qrCopyUrl = copyUrl || qrCodeUrl;
 
     return (
       <div className="screen active">
@@ -295,9 +304,16 @@ class QRCodeContainer extends Component {
             </Link>
           </div>
 
-          <QRCodeBlock className="scan-qrcode__qrcode" data={qrCodeUrl} />
+          <div className={classNames('scan-qrcode__qrcode-wrap', { 'scan-qrcode__qrcode-wrap--hidden': isShortUrlFetching })}>
+            <QRCodeBlock className="scan-qrcode__qrcode" data={qrCopyUrl} />
+            {isShortUrlFetching ? (
+              <div className="scan-qrcode__qrcode-loader">
+                <img src={qrPreloader} alt="loader" />
+              </div>
+            ) : false}
+          </div>
 
-          <button className={classNames('scan-qrcode__btn', { 'scan-qrcode__btn--copied': isCopied })} type="button" data-clipboard-text={qrCodeUrl} onClick={this.copyUrl}>
+          <button className={classNames('scan-qrcode__btn', { 'scan-qrcode__btn--copied': isCopied })} disabled={isShortUrlFetching} type="button" data-clipboard-text={qrCopyUrl} onClick={this.copyUrl}>
             {(!isCopied) ? 'Copy link' : 'Link copied'}
             <svg width="11px" height="14px" viewBox="0 0 11 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">

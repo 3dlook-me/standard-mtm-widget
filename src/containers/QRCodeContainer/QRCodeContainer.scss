@@ -1,6 +1,9 @@
 @import '../../scss/utils/index';
 
 .scan-qrcode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 
   &__title,
@@ -16,6 +19,33 @@
 
   &__qrcode {
     margin-top: 4px;
+  }
+
+  &__qrcode-wrap {
+    position: relative;
+
+    &--hidden {
+      .scan-qrcode__qrcode {
+        opacity: 0;
+      }
+    }
+  }
+
+  &__qrcode-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
   }
 
   &__help {
@@ -55,6 +85,14 @@
       display: inline-block;
       vertical-align: middle;
       margin-left: 5px;
+    }
+
+    &[disabled] {
+      color: #DDDDDD;
+
+      .qrcode__btn-svg {
+        stroke: #DDDDDD;
+      }
     }
   }
 
@@ -186,4 +224,13 @@
   background: #cecece;
   color: #fff;
   text-transform: unset;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

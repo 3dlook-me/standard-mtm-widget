@@ -34,14 +34,14 @@ export default class SMSService {
   /**
    * Get short link for copy link btn
    * @async
-   * @param {string} link - mobile flow url
+   * @param {string} link - mobile flow long url
    */
   getShortLink(link) {
     return this.axios({
       url: `${API_HOST}/api/v2/measurements/shorting-link/`,
       method: 'POST',
       data: {
-        long_link: link,
+        link,
       },
     })
       .then((response) => response.data);

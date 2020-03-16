@@ -44,7 +44,7 @@
     img {
       width: 60px;
       height: 60px;
-      animation: spin 1s linear infinite;
+      animation: qr-spin 1s linear infinite;
     }
   }
 
@@ -210,7 +210,7 @@
   }
 
   img.spin {
-    animation: spin 3s linear infinite;
+    animation: qr-spin 3s linear infinite;
   }
 }
 
@@ -226,7 +226,7 @@
   text-transform: unset;
 }
 
-@keyframes spin {
+@keyframes qr-spin {
   0% {
     transform: rotate(0deg);
   }

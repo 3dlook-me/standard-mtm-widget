@@ -2,7 +2,6 @@ import { h, Component, createRef } from 'preact';
 import classNames from 'classnames';
 import { cmToFtIn, getHeightCm } from '../../helpers/utils';
 import './Height.scss';
-import { heightCmValues, heightFtInValues } from '../../helpers/constants';
 
 /**
  * Height component
@@ -24,6 +23,33 @@ export default class Height extends Component {
       ft: null,
       inches: null,
     };
+
+    const generateFtInValues = () => {
+      const result = [];
+
+      for (let i = 4; i <= 7; i++) {
+        if (i === 4) {
+          result.push({ ft: i, in: 11 });
+        }
+
+        if (i === 5 || i === 6) {
+          for (let a = 0; a <= 11; a++) {
+            result.push({ ft: i, in: a });
+          }
+        }
+
+        if (i === 7) {
+          for (let b = 0; b <= 2; b++) {
+            result.push({ ft: i, in: b });
+          }
+        }
+      }
+
+      return result;
+    };
+
+    this.heightCmValues = [...Array(220 + 1).keys()].slice(150);
+    this.heightFtInValues = generateFtInValues();
   }
 
   /**
@@ -139,8 +165,8 @@ export default class Height extends Component {
   onImperialSelectChange = (e) => {
     const { change } = this.props;
     const { value } = e.target;
-    const { ft } = heightFtInValues[value];
-    const inches = heightFtInValues[value].in;
+    const { ft } = this.heightFtInValues[value];
+    const inches = this.heightFtInValues[value].in;
 
     // convert value to cm
     let centimeters = getHeightCm(ft, inches);
@@ -185,7 +211,7 @@ export default class Height extends Component {
             <p className="height__input-placeholder">CM</p>
             {isMobile ? (
               <select onChange={this.onCmInputChange} ref={this.$heightCmEl}>
-                {heightCmValues.map((value, index) => (
+                {this.heightCmValues.map((value, index) => (
                   <option value={value} selected={index === this.defaultValueMetric}>
                     {value}
                     {' '}
@@ -221,7 +247,7 @@ export default class Height extends Component {
           </div>
           {isMobile ? (
             <select onChange={this.onImperialSelectChange} ref={this.$heightFtEl}>
-              {heightFtInValues.map((value, index) => (
+              {this.heightFtInValues.map((value, index) => (
                 <option value={index} selected={index === this.defaultValueImperial}>
                   {`${value.ft} ft ${value.in} in`}
                 </option>

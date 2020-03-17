@@ -29,13 +29,14 @@ class WeightContainer extends Component {
       weightValue: null,
       placeholder: units === 'cm' ? 'kg' : 'lb',
       defaultValue: units === 'cm' ? 50 : 110,
-      weightValues: [...Array(maxWeight + 1).keys()].slice(minWeight),
       minWeight,
       maxWeight,
     };
 
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
+
+    this.weightValues = [...Array(maxWeight + 1).keys()].slice(minWeight);
   }
 
   /**
@@ -189,7 +190,7 @@ class WeightContainer extends Component {
   render() {
     const { units, isMobile } = this.props;
     const {
-      buttonDisabled, isWeightValid, weightValue, weightValues, defaultValue, placeholder,
+      buttonDisabled, isWeightValid, weightValue, defaultValue, placeholder,
     } = this.state;
 
     return (
@@ -205,7 +206,7 @@ class WeightContainer extends Component {
                 <div className="weight-container__input-wrap">
                   <input className="input" type="text" placeholder="Select" value={weightValue} disabled />
                   <select className="select" onChange={this.handleChange} ref={this.$weightEl}>
-                    {weightValues.map((value) => (
+                    {this.weightValues.map((value) => (
                       <option value={value} selected={value === defaultValue}>
                         {value}
                         {' '}

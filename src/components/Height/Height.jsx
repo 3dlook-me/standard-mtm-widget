@@ -143,7 +143,13 @@ export default class Height extends Component {
     const { ft } = this.state;
 
     // get inches
-    const { value } = e.target;
+    let { value } = e.target;
+
+    if (ft > 4 && ft < 8) {
+      if (value === '') {
+        value = 0;
+      }
+    }
 
     // convert value to cm
     let centimeters = getHeightCm(ft || 0, value);

@@ -50,7 +50,7 @@ export const INITIAL_STATE = {
   },
 
   email: null,
-  units: 'cm',
+  units: 'in',
   phoneNumber: null,
   fakeSize: false,
 

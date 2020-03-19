@@ -18,7 +18,7 @@ export default class Height extends Component {
     this.defaultValueImperial = 6;
 
     this.state = {
-      units: 'cm',
+      units: 'in',
       cm: null,
       ft: null,
       inches: null,
@@ -204,7 +204,7 @@ export default class Height extends Component {
               className="input"
               type="number"
               value={cm}
-              onChange={this.onCmInputChange}
+              onBlur={this.onCmInputChange}
               placeholder="0"
               disabled={isMobile}
             />
@@ -229,7 +229,7 @@ export default class Height extends Component {
               className="input"
               type="number"
               value={ft}
-              onChange={this.onFtInputChange}
+              onBlur={this.onFtInputChange}
               placeholder="0"
             />
             <p className="height__input-placeholder">FT</p>
@@ -239,7 +239,7 @@ export default class Height extends Component {
               className="input"
               type="number"
               value={inches}
-              onChange={this.onInInputChange}
+              onBlur={this.onInInputChange}
               placeholder="0"
               disabled={isMobile}
             />

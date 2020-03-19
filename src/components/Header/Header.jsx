@@ -38,11 +38,30 @@ class Header extends Component {
     } = this.props;
 
     if (isFromDesktopToMobile) {
+      const flowState = await this.flow.get();
+      const flowStateStatus = flowState.state.status;
+
+      await this.flow.updateState({
+        status: 'close-confirm',
+      });
+
       if (confirm('Are you sure that you want to close widget? ')) {
         await this.flow.updateState({
           status: 'closed-on-mobile',
         });
+
+        if (measurements) {
+          window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
+        } else {
+          window.location = returnUrl;
+        }
+      } else {
+        await this.flow.updateState({
+          status: flowStateStatus,
+        });
       }
+
+      return;
     }
 
     if (isMobile) {

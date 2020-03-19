@@ -118,6 +118,10 @@ class QRCodeContainer extends Component {
         this.timer = setInterval(() => {
           this.flow.get()
             .then((flowState) => {
+              if (flowState.state.status === 'close-confirm') {
+                return;
+              }
+
               if (flowState.state.status === 'opened-on-mobile' && flowState.state.lastActiveDate) {
                 this.setState({
                   isPending: true,

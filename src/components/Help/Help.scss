@@ -15,6 +15,12 @@
 
   &.active {
     display: flex;
+
+    & + .screen {
+      .widget-camera__warning {
+        z-index: 0;
+      }
+    }
   }
 
   &__footer {

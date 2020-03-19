@@ -353,6 +353,23 @@ export const browserDetect = () => {
   return 'chrome';
 };
 
+const someBrowsersDetect = () => {
+  // Mint Browser
+  if (window.navigator.userAgent.includes('Mint Browser')) return false;
+  // UC Browser
+  if (window.navigator.userAgent.includes('UCBrowser')) return false;
+  // Opera Touch
+  if (window.navigator.userAgent.includes('OPT')) return false;
+  // Edge
+  if (window.navigator.userAgent.includes('EdgA')) return false;
+  // Mi Browser
+  if (window.navigator.userAgent.includes('MiuiBrowser')) return false;
+  // Puffin
+  if (window.navigator.userAgent.includes('Puffin')) return false;
+
+  return true;
+};
+
 /**
  * Detect user browser
  */
@@ -361,6 +378,10 @@ export const browserValidation = () => {
   const currentBrowser = browserName(navigator.userAgent);
 
   if (neededBrowser === 'safari' && currentBrowser !== 'safari' && currentBrowser !== 'ios') {
+    return false;
+  }
+
+  if (!someBrowsersDetect()) {
     return false;
   }
 

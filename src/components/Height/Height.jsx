@@ -104,7 +104,7 @@ export default class Height extends Component {
     this.setState({
       cm: value,
       ft: ftIn.ft,
-      inches: ftIn.in,
+      inches: (ftIn.ft === 7 && ftIn.in === 3) ? 2 : value,
     }, () => {
       const { cm } = this.state;
       change(cm);

@@ -106,7 +106,7 @@ class WeightContainer extends Component {
   weightValidation = (val, min, max) => {
     const { setWeight, units } = this.props;
 
-    if (val.trim() >= min && val.trim() < max) {
+    if (val.trim() >= min && val.trim() <= max) {
       if (units !== 'cm') {
         setWeight(getWeightKg(+val));
       } else {

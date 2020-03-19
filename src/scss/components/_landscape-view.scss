@@ -17,7 +17,9 @@
 
   @include breakpoint($tablet) {
     @media (orientation: landscape) {
-      display: flex;
+      @media screen and (min-height: 320px) and (min-width: 568px){
+        display: flex;
+      }
     }
   }
 
@@ -29,7 +31,9 @@
 body {
   @include breakpoint($tablet) {
     @media (orientation: landscape) {
-      overflow: hidden;
+      @media screen and (min-height: 320px) and (min-width: 568px){
+        overflow: hidden;
+      }
     }
   }
 }
@@ -37,7 +41,9 @@ body {
 .widget-container {
   @include breakpoint($tablet) {
     @media (orientation: landscape) {
-      opacity: 0;
+      @media screen and (min-height: 320px) and (min-width: 568px){
+        opacity: 0;
+      }
     }
   }
 }

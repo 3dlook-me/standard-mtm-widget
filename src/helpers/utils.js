@@ -366,6 +366,8 @@ const someBrowsersDetect = () => {
   if (window.navigator.userAgent.includes('MiuiBrowser')) return false;
   // Puffin
   if (window.navigator.userAgent.includes('Puffin')) return false;
+  // Duck
+  if (window.navigator.userAgent.includes('DuckDuckGo')) return false;
 
   return true;
 };

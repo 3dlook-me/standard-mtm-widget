@@ -46,10 +46,6 @@ class Header extends Component {
       });
 
       if (confirm('Are you sure that you want to close widget? ')) {
-        await this.flow.updateState({
-          status: 'closed-on-mobile',
-        });
-
         if (measurements) {
           window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
         } else {

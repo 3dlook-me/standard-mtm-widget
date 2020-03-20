@@ -137,12 +137,6 @@ class QRCodeContainer extends Component {
                 }
               }
 
-              if (flowState.state.status === 'closed-on-mobile') {
-                this.setState({
-                  isPending: false,
-                });
-              }
-
               if (flowState.state.status === 'finished') {
                 const {
                   recommendations,

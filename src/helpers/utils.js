@@ -366,8 +366,6 @@ const someBrowsersDetect = () => {
   if (window.navigator.userAgent.includes('MiuiBrowser')) return false;
   // Puffin
   if (window.navigator.userAgent.includes('Puffin')) return false;
-  // Duck
-  if (window.navigator.userAgent.includes('DuckDuckGo')) return false;
 
   return true;
 };
@@ -379,13 +377,11 @@ export const browserValidation = () => {
   const neededBrowser = browserDetect();
   const currentBrowser = browserName(navigator.userAgent);
 
-  alert(navigator.userAgent)
-
-  if (neededBrowser === 'safari' && currentBrowser !== 'safari' && currentBrowser !== 'ios') {
+  if (!someBrowsersDetect()) {
     return false;
   }
 
-  if (!someBrowsersDetect()) {
+  if (neededBrowser === 'safari' && currentBrowser !== 'safari' && currentBrowser !== 'ios') {
     return false;
   }
 

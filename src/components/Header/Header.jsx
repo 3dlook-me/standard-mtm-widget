@@ -31,7 +31,6 @@ class Header extends Component {
       returnUrl,
       isFromDesktopToMobile,
       origin,
-      email,
       resetState,
       measurements,
       isMobile,
@@ -46,15 +45,16 @@ class Header extends Component {
       });
 
       if (confirm('Are you sure that you want to close widget? ')) {
+        await this.flow.updateState({
+          status: flowStateStatus,
+          ...flowState,
+        });
+
         if (measurements) {
           window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
         } else {
           window.location = returnUrl;
         }
-      } else {
-        await this.flow.updateState({
-          status: flowStateStatus,
-        });
       }
 
       return;

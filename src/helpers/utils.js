@@ -377,6 +377,8 @@ export const browserValidation = () => {
   const neededBrowser = browserDetect();
   const currentBrowser = browserName(navigator.userAgent);
 
+  alert(navigator.userAgent)
+
   if (neededBrowser === 'safari' && currentBrowser !== 'safari' && currentBrowser !== 'ios') {
     return false;
   }

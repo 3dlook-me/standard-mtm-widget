@@ -29,6 +29,7 @@ class WeightContainer extends Component {
       weightValue: null,
       placeholder: units === 'cm' ? 'kg' : 'lb',
       defaultValue: units === 'cm' ? 50 : 110,
+      skipWeight: false,
       minWeight,
       maxWeight,
     };
@@ -175,12 +176,16 @@ class WeightContainer extends Component {
     }
   }
 
-  skipAndNextHandler = async () => {
+  skipAndNextHandler = () => {
     const { setWeight } = this.props;
 
-    await setWeight(null);
+    this.setState({
+      skipWeight: true,
+    }, async () => {
+      await setWeight(null);
 
-    this.toNextScreen();
+      this.toNextScreen();
+    });
   }
 
   nextButtonClick = async () => {
@@ -190,7 +195,12 @@ class WeightContainer extends Component {
   render() {
     const { units, isMobile } = this.props;
     const {
-      buttonDisabled, isWeightValid, weightValue, defaultValue, placeholder,
+      buttonDisabled,
+      isWeightValid,
+      weightValue,
+      defaultValue,
+      placeholder,
+      skipWeight,
     } = this.state;
 
     return (
@@ -221,7 +231,7 @@ class WeightContainer extends Component {
                 <div className="weight-container__input-wrap">
                   <input className="input" type="number" placeholder="0" onBlur={this.changeWeight} onKeyDown={this.handleClick} />
                   <div className="weight-container__placeholder">{placeholder}</div>
-                  <p className={classNames('screen__control-error', { active: !isWeightValid })}>
+                  <p className={classNames('screen__control-error', { active: !isWeightValid && !skipWeight })}>
                     {units === 'cm' ? 'Your weight should be between 30-200 KG' : 'Your weight should be between 66 and 441 LB'}
                   </p>
                 </div>
@@ -230,7 +240,7 @@ class WeightContainer extends Component {
             <p className="weight-container__txt">
               We use weight data, so your measurements will be more accurate,
               but if you want you can
-              <button className="weight-container__skip-btn" type="button" onClick={this.skipAndNextHandler}>skip</button>
+              <button className="weight-container__skip-btn" type="button" onMouseDown={this.skipAndNextHandler}>skip</button>
               this step.
             </p>
           </div>

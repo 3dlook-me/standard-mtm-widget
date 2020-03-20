@@ -18,6 +18,7 @@ import {
   Preloader,
   QRCodeBlock,
   Stepper,
+  Loader,
 } from '../../components';
 
 import './QRCodeContainer.scss';
@@ -304,11 +305,11 @@ class QRCodeContainer extends Component {
 
           <div className={classNames('scan-qrcode__qrcode-wrap', { 'scan-qrcode__qrcode-wrap--hidden': isShortUrlFetching })}>
             <QRCodeBlock className="scan-qrcode__qrcode" data={qrCopyUrl} />
+
             {isShortUrlFetching ? (
-              <div className="scan-qrcode__qrcode-loader">
-                <img src={qrPreloader} alt="loader" />
-              </div>
+              <Loader />
             ) : false}
+
           </div>
 
           <button className={classNames('scan-qrcode__btn', { 'scan-qrcode__btn--copied': isCopied })} disabled={isShortUrlFetching} type="button" data-clipboard-text={qrCopyUrl} onClick={this.copyUrl}>

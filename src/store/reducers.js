@@ -9,7 +9,7 @@ export const INITIAL_STATE = {
   isMobile: false,
   token: null,
 
-  gender: 'female',
+  gender: null,
   height: null,
   weight: null,
   bodyType: null,

@@ -23,6 +23,7 @@ class Email extends Component {
       isEmailValid: true,
       isAgreeValid: true,
       buttonDisabled: true,
+      email: null,
     };
   }
 
@@ -31,6 +32,29 @@ class Email extends Component {
    */
   componentDidUpdate() {
     this.checkButtonState();
+  }
+
+  componentDidMount() {
+    const { email, agree } = this.props;
+
+    if (email && agree) {
+      this.setState({
+        email,
+        buttonDisabled: false,
+        isEmailValid: true,
+        isEmail: true,
+      });
+
+      return;
+    }
+
+    if (email) {
+      this.setState({
+        email,
+        isEmailValid: true,
+        isEmail: true,
+      });
+    }
   }
 
   /**
@@ -45,6 +69,7 @@ class Email extends Component {
     this.setState({
       isEmailValid: (isValid || !value),
       isEmail,
+      email: value,
     });
 
     if (isValid) {
@@ -102,6 +127,7 @@ class Email extends Component {
       isEmailValid,
       isAgreeValid,
       buttonDisabled,
+      email,
     } = this.state;
 
     const { agree, isMobile } = this.props;
@@ -119,6 +145,7 @@ class Email extends Component {
               onChange={isMobile ? this.changeEmail : false}
               type="email"
               placeholder="email@address.com"
+              value={email}
             />
             <p className={classNames('screen__control-error', { active: !isEmailValid })}>Invalid email address</p>
           </div>

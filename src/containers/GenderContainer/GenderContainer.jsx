@@ -29,6 +29,16 @@ class GenderContainer extends Component {
     this.flow.setFlowId(flowId);
   }
 
+  componentDidMount() {
+    const { gender } = this.props;
+
+    if (gender) {
+      this.setState({
+        buttonDisabled: false,
+      });
+    }
+  }
+
   /**
    * Change gender handler
    */
@@ -59,6 +69,7 @@ class GenderContainer extends Component {
 
   render() {
     const { buttonDisabled } = this.state;
+    const { gender } = this.props;
 
     return (
       <section className="screen active">
@@ -66,7 +77,7 @@ class GenderContainer extends Component {
           <Stepper steps="6" current={1} />
           <div className="gender__control screen__control">
             <h3 className="screen__label">Select your gender</h3>
-            <Gender className="select-your-gender__gender" change={this.changeGender} />
+            <Gender className="select-your-gender__gender" change={this.changeGender} gender={gender} />
           </div>
         </div>
         <div className="screen__footer">

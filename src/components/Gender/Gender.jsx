@@ -9,6 +9,16 @@ export default class Gender extends Component {
     value: null,
   }
 
+  componentDidMount() {
+    const { gender } = this.props;
+
+    if (gender) {
+      this.setState({
+        value: gender,
+      });
+    }
+  }
+
   /**
    * Gender change event handler
    */

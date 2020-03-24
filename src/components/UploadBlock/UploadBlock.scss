@@ -3,12 +3,6 @@
 .upload-block {
   display: none;
 
-  &:last-child {
-    .upload-file {
-      transform: scaleX(-1);
-    }
-  }
-
   &.active {
     display: block;
   }

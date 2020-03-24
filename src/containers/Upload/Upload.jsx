@@ -66,6 +66,17 @@ class Upload extends Component {
     window.removeEventListener('unload', this.reloadListener);
   }
 
+  componentDidMount() {
+    const { camera } = this.props;
+
+    // if camera is active when page refreshed
+    if (camera) {
+      const { setCamera } = this.props;
+
+      setCamera(null);
+    }
+  }
+
   init(props) {
     const {
       token,
@@ -85,16 +96,9 @@ class Upload extends Component {
 
       // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
       if (pageReloadStatus && isFromDesktopToMobile) {
-        const { flowState, setPageReloadStatus, camera } = this.props;
+        const { flowState, setPageReloadStatus } = this.props;
 
         setPageReloadStatus(false);
-
-        // if camera is active when page refreshed
-        if (camera) {
-          const { setCamera } = this.props;
-
-          setCamera(null);
-        }
 
         mobileFlowStatusUpdate(this.flow, flowState);
       }

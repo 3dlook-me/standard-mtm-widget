@@ -34,7 +34,7 @@ class HeightContainer extends Component {
   componentDidMount() {
     const { height } = this.props;
 
-    if (height) {
+    if (height && (height >= 150 && height <= 220)) {
       this.setState({
         buttonDisabled: false,
       });

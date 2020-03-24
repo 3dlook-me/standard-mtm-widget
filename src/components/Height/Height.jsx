@@ -62,7 +62,7 @@ export default class Height extends Component {
     if (this.$heightCmEl.current) this.$heightCmEl.current.addEventListener('click', this.onCmInputChange, { once: true });
     if (this.$heightFtEl.current) this.$heightFtEl.current.addEventListener('click', this.onImperialSelectChange, { once: true });
 
-    if (height) {
+    if (height && (height >= 150 && height <= 220)) {
       const ftIn = cmToFtIn(height);
 
       this.setState({
@@ -71,7 +71,13 @@ export default class Height extends Component {
         ft: ftIn.ft,
         inches: (ftIn.ft === 7 && ftIn.in === 3) ? 2 : ftIn.in,
       });
+
+      return;
     }
+
+    this.setState({
+      units,
+    });
   }
 
   /**

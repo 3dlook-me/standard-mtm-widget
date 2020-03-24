@@ -12,6 +12,7 @@ export const INITIAL_STATE = {
   gender: null,
   height: null,
   weight: null,
+  weightLb: null,
   bodyType: null,
 
   frontImage: null,
@@ -262,6 +263,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         weight: action.payload,
+      };
+
+    case CONSTANTS.SET_WEIGHT_LB:
+      return {
+        ...state,
+        weightLb: action.payload,
       };
 
     case CONSTANTS.SET_PROCESSING_STATUS:

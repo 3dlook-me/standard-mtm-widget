@@ -56,9 +56,22 @@ export default class Height extends Component {
    * Add event
    */
   componentDidMount() {
+    const { height, units } = this.props;
+
     // for set default select value to input after first click
     if (this.$heightCmEl.current) this.$heightCmEl.current.addEventListener('click', this.onCmInputChange, { once: true });
     if (this.$heightFtEl.current) this.$heightFtEl.current.addEventListener('click', this.onImperialSelectChange, { once: true });
+
+    if (height) {
+      const ftIn = cmToFtIn(height);
+
+      this.setState({
+        units,
+        cm: height,
+        ft: ftIn.ft,
+        inches: (ftIn.ft === 7 && ftIn.in === 3) ? 2 : ftIn.in,
+      });
+    }
   }
 
   /**

@@ -15,6 +15,7 @@ export const CONSTANTS = {
   ADD_HEIGHT: 'ADD_HEIGHT',
   ADD_GENDER: 'ADD_GENDER',
   SET_WEIGHT: 'SET_WEIGHT',
+  SET_WEIGHT_LB: 'SET_WEIGHT_LB',
   SET_BODY_TYPE: 'SET_BODY_TYPE',
   ADD_AGREE: 'ADD_AGREE',
   SET_FLOW_ID: 'SET_FLOW_ID',
@@ -369,9 +370,19 @@ export const setWeight = (weight) => ({
 });
 
 /**
+ * Set weight
+ *
+ * @param {any} weight - weight object
+ */
+export const setWeightLb = (weightLb) => ({
+  type: CONSTANTS.SET_WEIGHT_LB,
+  payload: weightLb,
+});
+
+/**
  * Set sendDataStatus
  *
- * @param {string} status - weight object
+ * @param {string} status - status string
  */
 export const setProcessingStatus = (status) => ({
   type: CONSTANTS.SET_PROCESSING_STATUS,
@@ -431,6 +442,7 @@ export default {
   setProductId,
   setUnits,
   setWeight,
+  setWeightLb,
   setProcessingStatus,
   setPageReloadStatus,
   setFlowState,

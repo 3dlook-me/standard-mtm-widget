@@ -51,8 +51,16 @@ class WeightContainer extends Component {
    * Add event
    */
   componentDidMount() {
+    const { weight, weightLb, units } = this.props;
+
     // for set default select value to input after first click
     if (this.$weightEl.current) this.$weightEl.current.addEventListener('click', this.handleChange, { once: true });
+
+    if (weight) {
+      this.setState({
+        weightValue: units !== 'cm' ? weightLb : weight,
+      });
+    }
   }
 
   /**
@@ -88,10 +96,11 @@ class WeightContainer extends Component {
    */
   handleChange = (e) => {
     const { value } = e.target;
-    const { setWeight, units } = this.props;
+    const { setWeight, setWeightLb, units } = this.props;
 
     if (units !== 'cm') {
       setWeight(getWeightKg(+value));
+      setWeightLb((+value));
     } else {
       setWeight(+value);
     }
@@ -105,11 +114,16 @@ class WeightContainer extends Component {
    * Check is weight valid and set
    */
   weightValidation = (val, min, max) => {
-    const { setWeight, units } = this.props;
+    const { setWeight, setWeightLb, units } = this.props;
+
+    this.setState({
+      weightValue: val,
+    });
 
     if (val.trim() >= min && val.trim() <= max) {
       if (units !== 'cm') {
         setWeight(getWeightKg(+val));
+        setWeightLb((+val));
       } else {
         setWeight(+val);
       }
@@ -180,6 +194,7 @@ class WeightContainer extends Component {
     const { setWeight } = this.props;
 
     this.setState({
+      weightValue: null,
       skipWeight: true,
     }, async () => {
       await setWeight(null);
@@ -229,7 +244,14 @@ class WeightContainer extends Component {
 
               ) : (
                 <div className="weight-container__input-wrap">
-                  <input className="input" type="number" placeholder="0" onBlur={this.changeWeight} onKeyDown={this.handleClick} />
+                  <input
+                    className="input"
+                    type="number"
+                    placeholder="0"
+                    onBlur={this.changeWeight}
+                    onKeyDown={this.handleClick}
+                    value={weightValue}
+                  />
                   <div className="weight-container__placeholder">{placeholder}</div>
                   <p className={classNames('screen__control-error', { active: !isWeightValid && !skipWeight })}>
                     {units === 'cm' ? 'Your weight should be between 30-200 KG' : 'Your weight should be between 66 and 441 LB'}

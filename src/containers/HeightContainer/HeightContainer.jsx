@@ -31,6 +31,16 @@ class HeightContainer extends Component {
     this.flow.setFlowId(flowId);
   }
 
+  componentDidMount() {
+    const { height } = this.props;
+
+    if (height) {
+      this.setState({
+        buttonDisabled: false,
+      });
+    }
+  }
+
   /**
    * Check button state on component update
    */
@@ -99,6 +109,8 @@ class HeightContainer extends Component {
 
     const {
       isMobile,
+      height,
+      units,
     } = this.props;
 
     return (
@@ -108,7 +120,15 @@ class HeightContainer extends Component {
 
           <div className="height-container__control screen__control">
             <h3 className="screen__label">How tall are you?</h3>
-            <Height className="height__height" change={this.changeHeight} isValid={isHeightValid} isMobile={isMobile} changeUnits={this.onChangeUnits} />
+            <Height
+              className="height__height"
+              change={this.changeHeight}
+              isValid={isHeightValid}
+              isMobile={isMobile}
+              changeUnits={this.onChangeUnits}
+              height={height}
+              units={units}
+            />
           </div>
 
         </div>

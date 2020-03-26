@@ -14,36 +14,32 @@
   align-items: center;
   background-color: #1D252D;
   text-transform: uppercase;
+}
 
-  @include breakpoint($tablet) {
+body.mobile-device {
+  @media (orientation: landscape) {
+    @media screen and (min-width: 568px){
+      overflow: hidden;
+    }
+  }
+
+  .widget-container {
+    @media (orientation: landscape) {
+      @media screen and (min-width: 568px){
+        opacity: 0;
+      }
+    }
+  }
+
+  .landscape-view {
     @media (orientation: landscape) {
       @media screen and (min-width: 568px){
         display: flex;
       }
     }
-  }
 
-  &__txt {
-    font-size: 18px;
-  }
-}
-
-body {
-  @include breakpoint($tablet) {
-    @media (orientation: landscape) {
-      @media screen and (min-width: 568px){
-        overflow: hidden;
-      }
-    }
-  }
-}
-
-.widget-container {
-  @include breakpoint($tablet) {
-    @media (orientation: landscape) {
-      @media screen and (min-width: 568px){
-        opacity: 0;
-      }
+    &__txt {
+      font-size: 18px;
     }
   }
 }

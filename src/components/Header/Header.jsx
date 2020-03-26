@@ -4,7 +4,12 @@ import classNames from 'classnames';
 import './Header.scss';
 
 import FlowService from '../../services/flowService';
-import { send, sendDataToSpreadsheet, objectToUrlParams } from '../../helpers/utils';
+import {
+  send,
+  sendDataToSpreadsheet,
+  objectToUrlParams,
+  isMobileDevice,
+} from '../../helpers/utils';
 import { gaHelpOnClick, gaCloseOnClick } from '../../helpers/ga';
 import actions from '../../store/actions';
 
@@ -12,6 +17,12 @@ import actions from '../../store/actions';
  * Widget header component
  */
 class Header extends Component {
+  componentDidMount() {
+    if (isMobileDevice()) {
+      document.body.classList.add('mobile-device');
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     const { flowId, token } = nextProps;
 

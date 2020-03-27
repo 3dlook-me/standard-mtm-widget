@@ -23,7 +23,6 @@ import {
 
 import './QRCodeContainer.scss';
 import smsSendingIcon from '../../images/sms-sending.svg';
-import qrPreloader from '../../images/preloader.svg';
 
 /**
  * ScanQRCode page component.
@@ -69,7 +68,15 @@ class QRCodeContainer extends Component {
           copyUrl: res.short_link,
           isShortUrlFetching: false,
         });
-      }).catch(() => { this.setState({ isShortUrlFetching: false }); });
+      })
+      .catch(() => { this.setState({ isShortUrlFetching: false }); })
+      .finally(async () => {
+        const { copyUrl, qrCodeUrl } = this.state;
+
+        await this.flow.updateState({
+          widgetUrl: copyUrl || qrCodeUrl,
+        });
+      });
   }
 
   // TODO *** change

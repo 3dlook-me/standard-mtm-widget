@@ -29,6 +29,7 @@ class BaseMobileFlow extends Component {
       setPersonId,
       setIsFromDesktopToMobile,
       setReturnUrl,
+      setWidgetUrl,
       setRecommendations,
       setBodyType,
       setFakeSize,
@@ -66,6 +67,8 @@ class BaseMobileFlow extends Component {
           setFlowState(flowStateResult.state);
         }
 
+        console.log(flowStateResult.state);
+
         setPersonId(flowStateResult.person);
         setBrand(brand);
         setBodyPart(bodyPart);
@@ -77,6 +80,7 @@ class BaseMobileFlow extends Component {
         addFrontImage(flowStateResult.state.frontImage);
         addSideImage(flowStateResult.state.sideImage);
         setIsFromDesktopToMobile(true);
+        setWidgetUrl(flowStateResult.state.widgetUrl);
         setReturnUrl(flowStateResult.state.returnUrl);
         setRecommendations(flowStateResult.state.recommendations);
         setBodyType(flowStateResult.state.bodyType);

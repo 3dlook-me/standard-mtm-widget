@@ -37,6 +37,17 @@
           background-color: white;
           color: $main-color;
           font-weight: 300;
+
+          &[disabled] {
+            box-shadow: none;
+            pointer-events: none;
+            background-color: #CECECE;
+            color: #fff;
+
+            &:before {
+              display: none;
+            }
+          }
         }
       }
     }

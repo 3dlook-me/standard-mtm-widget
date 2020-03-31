@@ -91,7 +91,7 @@ const plugins = [
   new TransferWebpackPlugin([
     {
       from: 'node_modules/@3dlook/camera/dist/widget-assets',
-      to: path.join(__dirname, 'dist/widget-assets'),
+      to: 'widget-assets',
     },
   ]),
 ];

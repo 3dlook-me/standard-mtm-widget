@@ -4,7 +4,7 @@ import { route } from 'preact-router';
 
 import { gaSwitchToMobileFlow } from '../../helpers/ga';
 import actions from '../../store/actions';
-import { BaseMobileFlow } from '../../components';
+import { BaseMobileFlow, Loader } from '../../components';
 import { browserValidation, isMobileDevice } from '../../helpers/utils';
 
 /**
@@ -56,7 +56,7 @@ class MobileFlow extends BaseMobileFlow {
 
   render() {
     return (
-      <div />
+      <Loader />
     );
   }
 }

@@ -10,9 +10,15 @@ import strokeImage from '../../images/preloader-stroke.svg';
  */
 const Preloader = ({ isActive, status, isMobile }) => (
   <div className={`preloader ${isActive ? 'active' : ''}`}>
-    <h2 className="preloader__title screen__title">
-      The magic is happening
-    </h2>
+    <div className="preloader__title-wrap">
+      <h2 className="preloader__title screen__title">
+        The magic is happening
+      </h2>
+
+      {isMobile ? (
+        <p className="preloader__warning-txt">Please, do not lock your phone until we find your perfect fit</p>
+      ) : null}
+    </div>
 
     <div className="preloader__anim">
       <img className="preloader__dots" src={dotsImage} alt="dots" />
@@ -21,7 +27,13 @@ const Preloader = ({ isActive, status, isMobile }) => (
     </div>
 
     <p className="preloader__text">
-      {isMobile ? `${status}` : 'It might take us up to one minute to find your perfect fit. Thanks for being patient!'}
+      {isMobile ? `${status}` : (
+        <span>
+          It might take us up to
+          <b> one minute </b>
+          to find your perfect fit. Thanks for being patient!
+        </span>
+      )}
     </p>
   </div>
 );

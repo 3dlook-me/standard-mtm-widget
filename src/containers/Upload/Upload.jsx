@@ -27,6 +27,8 @@ import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { store } from '../../store';
 
+let isPhoneLocked = false;
+
 /**
  * Upload page component.
  */
@@ -64,10 +66,15 @@ class Upload extends Component {
     if (this.unsubscribe) this.unsubscribe();
     clearInterval(this.timer);
     window.removeEventListener('unload', this.reloadListener);
+
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    document.removeEventListener('webkitvisibilitychange', this.handleVisibilityChange);
   }
 
   componentDidMount() {
     const { camera } = this.props;
+    let hidden;
+    let visibilityChange;
 
     // if camera is active when page refreshed
     if (camera) {
@@ -75,6 +82,25 @@ class Upload extends Component {
 
       setCamera(null);
     }
+
+    // is phone locked detect
+    if (typeof document.hidden !== 'undefined') {
+      hidden = 'hidden';
+      visibilityChange = 'visibilitychange';
+    } else if (typeof document.webkitHidden !== 'undefined') {
+      hidden = 'webkitHidden';
+      visibilityChange = 'webkitvisibilitychange';
+    }
+
+    this.handleVisibilityChange = async () => {
+      if (document[hidden]) {
+        isPhoneLocked = true;
+
+        await window.location.reload();
+      }
+    };
+
+    document.addEventListener(visibilityChange, this.handleVisibilityChange);
   }
 
   init(props) {
@@ -360,40 +386,42 @@ class Upload extends Component {
         isPending: false,
       });
 
-      // hard validation part
-      if (error && error.response && error.response.data && error.response.data.sub_tasks) {
-        const subTasks = error.response.data.sub_tasks;
+      if (!isPhoneLocked) {
+        // hard validation part
+        if (error && error.response && error.response.data && error.response.data.sub_tasks) {
+          const subTasks = error.response.data.sub_tasks;
 
-        const frontTask = subTasks.filter((item) => item.name.indexOf('front_') !== -1)[0];
-        const sideTask = subTasks.filter((item) => item.name.indexOf('side_') !== -1)[0];
+          const frontTask = subTasks.filter((item) => item.name.indexOf('front_') !== -1)[0];
+          const sideTask = subTasks.filter((item) => item.name.indexOf('side_') !== -1)[0];
 
-        setHardValidation({
-          front: frontTask.message,
-          side: sideTask.message,
-        });
+          setHardValidation({
+            front: frontTask.message,
+            side: sideTask.message,
+          });
 
-        // reset front image if there is hard validation error
-        // in the front image
-        if (frontTask.message) {
-          addFrontImage(null);
+          // reset front image if there is hard validation error
+          // in the front image
+          if (frontTask.message) {
+            addFrontImage(null);
+          }
+
+          // reset side image if there is hard validation error
+          // in the side image
+          if (sideTask.message) {
+            addSideImage(null);
+          }
+
+          route('/hard-validation', true);
+        } else if (error && error.response && error.response.status === 400) {
+          route('/not-found', true);
+        } else if (error && error.response && error.response.data) {
+          const { detail, brand: brandError, body_part: bodyPartError } = error.response.data;
+          alert(detail || brandError || bodyPartError);
+          route('/not-found', true);
+        } else {
+          alert(error);
+          route('/not-found', true);
         }
-
-        // reset side image if there is hard validation error
-        // in the side image
-        if (sideTask.message) {
-          addSideImage(null);
-        }
-
-        route('/hard-validation', true);
-      } else if (error && error.response && error.response.status === 400) {
-        route('/not-found', true);
-      } else if (error && error.response && error.response.data) {
-        const { detail, brand: brandError, body_part: bodyPartError } = error.response.data;
-        alert(detail || brandError || bodyPartError);
-        route('/not-found', true);
-      } else {
-        alert(error);
-        route('/not-found', true);
       }
     }
   }

@@ -46,6 +46,10 @@
     line-height: 19px;
     text-align: center;
     text-transform: unset;
+    margin-bottom: 14px;
+  }
+
+  &__title-wrap {
     margin-bottom: 74px;
 
     @include breakpoint($mobile) {
@@ -72,6 +76,13 @@
       font-size: 14px;
       line-height: 18px;
     }
+  }
+
+  &__warning-txt {
+    width: 100%;
+    max-width: 320px;
+    font-weight: 500;
+    margin-bottom: -42px;
   }
 
   &__anim {

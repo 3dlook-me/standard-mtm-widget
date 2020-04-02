@@ -1,5 +1,4 @@
 module.exports = {
-  API_DENIM_HOST: 'https://wlb-denim.3dlook.me',
   // saia api host url
   API_HOST: 'https://saia.3dlook.me',
   // client api key

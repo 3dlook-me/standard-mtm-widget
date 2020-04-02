@@ -1,14 +1,27 @@
-import { h, Component } from 'preact';
+import {
+  h,
+  Component,
+  createRef,
+} from 'preact';
 import classNames from 'classnames';
-import './Height.scss';
+
 import { cmToFtIn, getHeightCm } from '../../helpers/utils';
+
+import './Height.scss';
 
 /**
  * Height component
  */
 export default class Height extends Component {
+  $heightCmEl = createRef();
+
+  $heightFtEl = createRef();
+
   constructor(props) {
     super(props);
+
+    this.defaultValueMetric = 15;
+    this.defaultValueImperial = 6;
 
     this.state = {
       units: 'in',
@@ -16,6 +29,61 @@ export default class Height extends Component {
       ft: null,
       inches: null,
     };
+
+    const generateFtInValues = () => {
+      const result = [];
+
+      for (let i = 4; i <= 7; i++) {
+        if (i === 4) {
+          result.push({ ft: i, in: 11 });
+        }
+
+        if (i === 5 || i === 6) {
+          for (let a = 0; a <= 11; a++) {
+            result.push({ ft: i, in: a });
+          }
+        }
+
+        if (i === 7) {
+          for (let b = 0; b <= 2; b++) {
+            result.push({ ft: i, in: b });
+          }
+        }
+      }
+
+      return result;
+    };
+
+    this.heightCmValues = [...Array(220 + 1).keys()].slice(150);
+    this.heightFtInValues = generateFtInValues();
+  }
+
+  /**
+   * Add event
+   */
+  componentDidMount() {
+    const { height, units } = this.props;
+
+    // for set default select value to input after first click
+    if (this.$heightCmEl.current) this.$heightCmEl.current.addEventListener('click', this.onCmInputChange, { once: true });
+    if (this.$heightFtEl.current) this.$heightFtEl.current.addEventListener('click', this.onImperialSelectChange, { once: true });
+
+    if (height && (height >= 150 && height <= 220)) {
+      const ftIn = cmToFtIn(height);
+
+      this.setState({
+        units,
+        cm: height,
+        ft: ftIn.ft,
+        inches: (ftIn.ft === 7 && ftIn.in === 3) ? 2 : ftIn.in,
+      });
+
+      return;
+    }
+
+    this.setState({
+      units,
+    });
   }
 
   /**
@@ -61,7 +129,7 @@ export default class Height extends Component {
     this.setState({
       cm: value,
       ft: ftIn.ft,
-      inches: ftIn.in,
+      inches: (ftIn.ft === 7 && ftIn.in === 3) ? 2 : ftIn.in,
     }, () => {
       const { cm } = this.state;
       change(cm);
@@ -100,7 +168,13 @@ export default class Height extends Component {
     const { ft } = this.state;
 
     // get inches
-    const { value } = e.target;
+    let { value } = e.target;
+
+    if (ft > 4 && ft < 8) {
+      if (value === '') {
+        value = 0;
+      }
+    }
 
     // convert value to cm
     let centimeters = getHeightCm(ft || 0, value);
@@ -117,20 +191,33 @@ export default class Height extends Component {
   }
 
   /**
-   * Validate cm value
+   * Imperial change handler
    */
-  validateCm = (e) => {
+  onImperialSelectChange = (e) => {
+    const { change } = this.props;
     const { value } = e.target;
-    // TODO: create regexp to validate numbers
-    // value = value.replace(/^(?![1-2]|[1-2][0-9]|1[5-9][0-9]|2[0-1][0-9]|2[1-2]0)$/g, '');
+    const { ft } = this.heightFtInValues[value];
+    const inches = this.heightFtInValues[value].in;
 
-    e.target.value = value;
+    // convert value to cm
+    let centimeters = getHeightCm(ft, inches);
+    centimeters = Math.round(centimeters);
+
+    this.setState({
+      cm: centimeters,
+      ft,
+      inches,
+    }, () => {
+      const { cm } = this.state;
+      change(cm);
+    });
   }
 
   render() {
     const {
       className,
       isValid,
+      isMobile,
     } = this.props;
 
     const {
@@ -148,9 +235,22 @@ export default class Height extends Component {
               className="input"
               type="number"
               value={cm}
-              onChange={this.onCmInputChange}
+              onBlur={this.onCmInputChange}
               placeholder="0"
+              disabled={isMobile}
             />
+            <p className="height__input-placeholder">CM</p>
+            {isMobile ? (
+              <select onChange={this.onCmInputChange} ref={this.$heightCmEl}>
+                {this.heightCmValues.map((value, index) => (
+                  <option value={value} selected={index === this.defaultValueMetric}>
+                    {value}
+                    {' '}
+                    cm
+                  </option>
+                ))}
+              </select>
+            ) : false}
           </div>
         </div>
 
@@ -160,19 +260,31 @@ export default class Height extends Component {
               className="input"
               type="number"
               value={ft}
-              onChange={this.onFtInputChange}
+              onBlur={this.onFtInputChange}
               placeholder="0"
             />
+            <p className="height__input-placeholder">FT</p>
           </div>
           <div className="height__input-block" data-measure="in">
             <input
               className="input"
               type="number"
               value={inches}
-              onChange={this.onInInputChange}
+              onBlur={this.onInInputChange}
               placeholder="0"
+              disabled={isMobile}
             />
+            <p className="height__input-placeholder">IN</p>
           </div>
+          {isMobile ? (
+            <select onChange={this.onImperialSelectChange} ref={this.$heightFtEl}>
+              {this.heightFtInValues.map((value, index) => (
+                <option value={index} selected={index === this.defaultValueImperial}>
+                  {`${value.ft} ft ${value.in} in`}
+                </option>
+              ))}
+            </select>
+          ) : false}
         </div>
 
         <p className={classNames('screen__control-error', 'height__desc', { active: !isValid })}>
@@ -183,12 +295,18 @@ export default class Height extends Component {
         <div className={classNames('height__switcher', { 'height__switcher--cm': units === 'cm', 'height__switcher--in': units === 'in' })}>
           <label className={classNames('height__switcher-item', 'height__switcher-item--cm', { checked: units === 'cm' })} htmlFor="measure-cm" tabIndex="-1">
             <input type="radio" name="measure" id="measure-cm" value="cm" onChange={this.onUnitsChange} checked={units === 'cm'} />
-            cm
+            <div className="height__switcher-info">
+              <p>Metric system</p>
+              <p>CM/KG</p>
+            </div>
           </label>
 
           <label className={classNames('height__switcher-item', 'height__switcher-item--in', { checked: units === 'in' })} htmlFor="measure-in" tabIndex="-1">
             <input type="radio" name="measure" id="measure-in" value="in" onChange={this.onUnitsChange} checked={units === 'in'} />
-            ft
+            <div className="height__switcher-info">
+              <p>Imperial system</p>
+              <p>IN/LB</p>
+            </div>
           </label>
 
           <button className="height__switcher-switch" onClick={this.onSwitchClick} type="button">

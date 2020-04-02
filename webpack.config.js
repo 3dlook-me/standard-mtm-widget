@@ -79,7 +79,7 @@ const plugins = [
     template: path.resolve('src/index.html'),
     inject: true,
     inlineSource: 'widget.(js|css)$',
-    excludeChunks: ['saia-pf-button', 'saia-pf-shopify'],
+    excludeChunks: ['saia-pf-button', 'saia-pf-shopify', 'integration'],
     minify: {
       removeComments: mode === 'production',
       collapseWhitespace: mode === 'production',
@@ -91,7 +91,7 @@ const plugins = [
   new TransferWebpackPlugin([
     {
       from: 'node_modules/@3dlook/camera/dist/widget-assets',
-      to: path.join(__dirname, 'dist/widget-assets'),
+      to: 'widget-assets',
     },
   ]),
 ];
@@ -138,6 +138,7 @@ module.exports = {
   entry: {
     'saia-pf-button': path.resolve(`${__dirname}/src/button.js`),
     'saia-pf-shopify': path.resolve(`${__dirname}/src/shopify-initializer.js`),
+    integration: path.resolve(`${__dirname}/src/integration.js`),
     'saia-pf-widget': path.resolve(`${__dirname}/src/App.jsx`),
   },
   output: {

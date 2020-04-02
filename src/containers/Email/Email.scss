@@ -12,6 +12,10 @@
     @include breakpoint($mobile) {
       margin-top: 80px;
     }
+
+    @include breakpoint($iphoneSE) {
+      margin-top: 20px;
+    }
   }
 
   &__discount-banner {
@@ -41,7 +45,7 @@
 
       &:first-child {
         margin-bottom: 6px;
-        color: #FF9940;
+        color: $main-color;
         font-size: 18px;
         font-weight: bold;
         line-height: 21px;

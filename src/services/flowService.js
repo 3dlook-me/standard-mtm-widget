@@ -1,7 +1,12 @@
 import axios from 'axios';
 
-let globalState = {
+// initial flow state value
+const globalInitialValue = {
   status: 'created',
+};
+
+let globalState = {
+  ...globalInitialValue,
 };
 
 /**
@@ -14,6 +19,15 @@ export default class FlowService {
     this.axios = axios.create();
     this.axios.defaults.headers = {
       Authorization: `APIKey ${key}`,
+    };
+  }
+
+  /**
+   * Reset cached global flow state
+   */
+  resetGlobalState() {
+    globalState = {
+      ...globalInitialValue,
     };
   }
 

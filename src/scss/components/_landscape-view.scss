@@ -1,0 +1,45 @@
+@import "../utils/index";
+
+.landscape-view {
+  display: none;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #1D252D;
+  text-transform: uppercase;
+}
+
+body.mobile-device {
+  @media (orientation: landscape) {
+    @media screen and (min-width: 568px){
+      overflow: hidden;
+    }
+  }
+
+  .widget-container {
+    @media (orientation: landscape) {
+      @media screen and (min-width: 568px){
+        opacity: 0;
+      }
+    }
+  }
+
+  .landscape-view {
+    @media (orientation: landscape) {
+      @media screen and (min-width: 568px){
+        display: flex;
+      }
+    }
+
+    &__txt {
+      font-size: 18px;
+    }
+  }
+}

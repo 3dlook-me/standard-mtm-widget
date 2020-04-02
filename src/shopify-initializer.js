@@ -23,16 +23,8 @@ import SaiaButton from './button';
   const button = new SaiaButton({
     key: API_KEY,
     widgetUrl: WIDGET_HOST,
-    brand: 'butter denim highrise',
-    bodyPart: 'bottom',
-    productId: 4382980800644,
   });
 
   button.init();
 
-  const recomendations = await button.getSize();
-
-  if (recomendations) {
-    button.displaySize(recomendations);
-  }
 })();

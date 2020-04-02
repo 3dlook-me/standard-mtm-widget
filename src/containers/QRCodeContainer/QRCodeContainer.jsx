@@ -6,22 +6,19 @@ import classNames from 'classnames';
 import Clipboard from 'clipboard';
 import IntlTelInput from 'react-intl-tel-input';
 
-import './QRCodeContainer.scss';
-
+import actions from '../../store/actions';
+import FlowService from '../../services/flowService';
+import SMSService from '../../services/smsService';
+import { send, validatePhoneNumberLetters } from '../../helpers/utils';
+import { gaCopyUrl } from '../../helpers/ga';
 import {
   Preloader,
   QRCodeBlock,
   Stepper,
+  Loader,
 } from '../../components';
 
-import { send } from '../../helpers/utils';
-import {
-  gaCopyUrl,
-} from '../../helpers/ga';
-import actions from '../../store/actions';
-import FlowService from '../../services/flowService';
-import SMSService from '../../services/smsService';
-
+import './QRCodeContainer.scss';
 import smsSendingIcon from '../../images/sms-sending.svg';
 
 /**
@@ -39,6 +36,8 @@ class QRCodeContainer extends Component {
       isSMSSuccess: false,
 
       qrCodeUrl: null,
+      copyUrl: null,
+      isShortUrlFetching: true,
       isCopied: false,
 
       isPhoneNumberValid: true,
@@ -50,15 +49,31 @@ class QRCodeContainer extends Component {
 
   componentDidMount() {
     const { flowId, token } = this.props;
+    const mobileFlowUrl = `${window.location.origin}${window.location.pathname}?key=${token}#/mobile/${flowId}`;
 
     this.setState({
-      qrCodeUrl: `${window.location.origin}${window.location.pathname}?key=${token}#/mobile/${flowId}`,
+      qrCodeUrl: mobileFlowUrl,
     });
 
     // init clipboard
     this.clipboard = new Clipboard('.scan-qrcode__btn');
 
     this.sms = new SMSService(token);
+    this.sms.getShortLink(mobileFlowUrl)
+      .then((res) => {
+        this.setState({
+          copyUrl: res.short_link,
+          isShortUrlFetching: false,
+        });
+      })
+      .catch(() => { this.setState({ isShortUrlFetching: false }); })
+      .finally(async () => {
+        const { copyUrl, qrCodeUrl } = this.state;
+
+        await this.flow.updateState({
+          widgetUrl: copyUrl || qrCodeUrl,
+        });
+      });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -75,9 +90,10 @@ class QRCodeContainer extends Component {
    */
   changePhoneNumber = (isValid, number, country) => {
     const phoneNumber = `${country.dialCode}${number}`;
+    const noLettersCheck = validatePhoneNumberLetters(phoneNumber);
 
     this.setState({
-      isPhoneNumberValid: isValid,
+      isPhoneNumberValid: isValid && noLettersCheck,
       phoneNumber,
     });
   }
@@ -87,10 +103,7 @@ class QRCodeContainer extends Component {
       token,
       flowId,
       isMobile,
-      setRecommendations,
-      setPersonId,
-      origin,
-      setBodyType,
+      setMeasurements,
     } = props;
 
     if (token && flowId && !this.api && !this.flow) {
@@ -106,42 +119,30 @@ class QRCodeContainer extends Component {
         this.timer = setInterval(() => {
           this.flow.get()
             .then((flowState) => {
-              if (flowState.state.status === 'opened-on-mobile') {
+              if (flowState.state.status === 'close-confirm') {
+                return;
+              }
+
+              if (flowState.state.status === 'opened-on-mobile' && flowState.state.lastActiveDate) {
                 this.setState({
                   isPending: true,
                 });
-              }
 
-              if (flowState.state.status === 'closed-on-mobile') {
-                this.setState({
-                  isPending: false,
-                });
+                const currentTime = Date.now();
+                const widgetWasAliveAt = flowState.state.lastActiveDate;
+
+                if ((currentTime - widgetWasAliveAt) > 9000) {
+                  this.setState({
+                    isPending: false,
+                  });
+                }
               }
 
               if (flowState.state.status === 'finished') {
-                const {
-                  recommendations,
-                  measurements,
-                  saiaPersonId,
-                  bodyType,
-                } = flowState.state;
-                setRecommendations(recommendations);
+                const { measurements } = flowState.state;
+                setMeasurements(measurements);
 
-                send('recommendations', recommendations, origin);
-                send('data', {
-                  ...measurements,
-                  personId: saiaPersonId,
-                }, origin);
-                setPersonId(saiaPersonId);
-                setBodyType(bodyType);
-
-                if (!recommendations.normal
-                  && !recommendations.tight
-                  && !recommendations.loose) {
-                  route('/not-found', true);
-                } else {
-                  route('/results', true);
-                }
+                route('/results', true);
               }
             })
             .catch((err) => console.log(err));
@@ -259,7 +260,11 @@ class QRCodeContainer extends Component {
       isSMSPending,
       isSMSSuccess,
       resendTime,
+      copyUrl,
+      isShortUrlFetching,
     } = this.state;
+
+    const qrCopyUrl = copyUrl || qrCodeUrl;
 
     return (
       <div className="screen active">
@@ -279,9 +284,16 @@ class QRCodeContainer extends Component {
             </Link>
           </div>
 
-          <QRCodeBlock className="scan-qrcode__qrcode" data={qrCodeUrl} />
+          <div className={classNames('scan-qrcode__qrcode-wrap', { 'scan-qrcode__qrcode-wrap--hidden': isShortUrlFetching })}>
+            <QRCodeBlock className="scan-qrcode__qrcode" data={qrCopyUrl} />
 
-          <button className={classNames('scan-qrcode__btn', { 'scan-qrcode__btn--copied': isCopied })} type="button" data-clipboard-text={qrCodeUrl} onClick={this.copyUrl}>
+            {isShortUrlFetching ? (
+              <Loader />
+            ) : false}
+
+          </div>
+
+          <button className={classNames('scan-qrcode__btn', { 'scan-qrcode__btn--copied': isCopied })} disabled={isShortUrlFetching} type="button" data-clipboard-text={qrCopyUrl} onClick={this.copyUrl}>
             {(!isCopied) ? 'Copy link' : 'Link copied'}
             <svg width="11px" height="14px" viewBox="0 0 11 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">

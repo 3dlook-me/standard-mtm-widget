@@ -1,6 +1,7 @@
 @import "../utils/index";
 
 .widget-container {
+  width: 100%;
   max-width: 600px;
   height: 700px;
   background: #fff;
@@ -11,9 +12,8 @@
   background-size: cover;
 
   @include breakpoint(max-width 768px) {
-    max-width: 100%;
-    width: 100vw;
     height: auto;
+    max-width: 100%;
   }
 
   &--no-bg {
@@ -21,15 +21,19 @@
   }
 
   &:not(.widget-container--no-bg) {
-    /* .header:not(.active) {
+    .header:not(.active) {
+      text {
+        fill: black;
+      }
+
       .header__svg-fill {
-        stroke: white;
+        stroke: black;
 
         &--circle {
-          stroke: #dddddd;
+          stroke: black;
         }
       }
-    } */
+    }
 
     .screen__footer {
       .button {
@@ -38,9 +42,15 @@
           color: $main-color;
           font-weight: 300;
 
-          @include breakpoint($mobile) {
-            background-color: $main-color;
-            color: white;
+          &[disabled] {
+            box-shadow: none;
+            pointer-events: none;
+            background-color: #CECECE;
+            color: #fff;
+
+            &:before {
+              display: none;
+            }
           }
         }
       }

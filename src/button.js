@@ -1,4 +1,5 @@
 import API from '@3dlook/saia-sdk/lib/api';
+
 import {
   transformRecomendations,
   parseGetParams,
@@ -7,7 +8,6 @@ import {
 } from './helpers/utils';
 
 require('./scss/components/_saia-button.scss');
-
 const buttonTemplate = require('./templates/button.html');
 const modalTemplate = require('./templates/modal-drop.html');
 
@@ -106,6 +106,7 @@ class SaiaButton {
     modal = document.querySelector('.saia-pf-drop');
     this.modal = modal;
     this.buttonEl = document.querySelector(`.saia-pf-button--${this.defaults.id}`);
+    this.buttonEl.type = 'button';
 
     this.buttonEl.addEventListener('click', () => this.showWidget());
 
@@ -170,6 +171,10 @@ class SaiaButton {
         height: parseFloat(params.height),
         personId: parseFloat(params.personId),
       };
+
+      if (params.inseam) {
+        data.inseam = parseFloat(params.inseam);
+      }
 
       send('data', data, window.location.origin);
     }
@@ -242,7 +247,14 @@ class SaiaButton {
    * @returns {Object|null} recomendations
    */
   async getSize() {
-    const data = JSON.parse(localStorage.getItem('saia-pf-widget-data'));
+    let data;
+
+    data = parseGetParams();
+
+    if (Object.keys(data).length <= 1) {
+      data = JSON.parse(localStorage.getItem('saia-pf-widget-data'));
+    }
+
     const measurements = {
       ...data,
     };

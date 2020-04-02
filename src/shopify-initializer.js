@@ -26,5 +26,4 @@ import SaiaButton from './button';
   });
 
   button.init();
-
 })();

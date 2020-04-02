@@ -1,7 +1,7 @@
 {
-  "name": "saia-pf-widget",
-  "version": "2.3.3",
-  "description": "SAIA Perfect Fit Widget",
+  "name": "standart-pf-widget",
+  "version": "1.0.0",
+  "description": "Standart SAIA Perfect Fit Widget",
   "engines": {
     "node": ">=12.0.0"
   },
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/3dlook-me/saia-pf-widget.git"
+    "url": "git@bitbucket.org:Skiminojek/standard-pf-widget.git"
   },
   "keywords": [
     "saia",
@@ -31,7 +31,7 @@
   ],
   "author": "3DLOOK",
   "license": "ISC",
-  "homepage": "https://github.com/3dlook-me/saia-pf-widget#readme",
+  "homepage": "https://bitbucket.org/Skiminojek/standard-pf-widget",
   "devDependencies": {
     "@babel/core": "^7.8.4",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -91,13 +91,14 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "@3dlook/camera": "^1.0.0",
-    "@3dlook/saia-sdk": "^2.9.0",
+    "@3dlook/camera": "^1.0.2",
+    "@3dlook/saia-sdk": "^2.10.0",
     "@babel/polyfill": "^7.8.3",
     "@babel/runtime": "^7.8.4",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "clipboard": "^2.0.4",
+    "detect-browser": "^5.0.0",
     "history": "^4.10.1",
     "normalize.css": "^8.0.1",
     "preact": "^10.3.1",

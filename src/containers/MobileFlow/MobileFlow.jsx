@@ -2,9 +2,10 @@ import { h } from 'preact';
 import { connect } from 'react-redux';
 import { route } from 'preact-router';
 
-import { gaSwitchToMobileFlow } from '../../helpers/ga';
 import actions from '../../store/actions';
-import { BaseMobileFlow } from '../../components';
+import { gaSwitchToMobileFlow } from '../../helpers/ga';
+import { browserValidation, isMobileDevice } from '../../helpers/utils';
+import { BaseMobileFlow, Loader } from '../../components';
 
 /**
  * Mobile flow page component
@@ -15,11 +16,27 @@ class MobileFlow extends BaseMobileFlow {
   }
 
   componentDidMount = async () => {
+    const { matches, resetState } = this.props;
+
+    if (!isMobileDevice()) {
+      route(`/tutorial?id=${matches.id}`, true);
+
+      return Promise.resolve();
+    }
+
     await super.componentDidMount();
 
-    const { matches } = this.props;
+    if (!browserValidation()) {
+      route('/browser', true);
+
+      return Promise.resolve();
+    }
 
     gaSwitchToMobileFlow();
+
+    resetState();
+
+    this.flow.resetGlobalState();
 
     const flowState = await this.flow.get();
 
@@ -39,9 +56,9 @@ class MobileFlow extends BaseMobileFlow {
 
   render() {
     return (
-      <div />
+      <Loader />
     );
   }
 }
 
-export default connect(state => state, actions)(MobileFlow);
+export default connect((state) => state, actions)(MobileFlow);

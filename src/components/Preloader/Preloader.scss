@@ -9,54 +9,126 @@
   right: 0;
   bottom: 0;
   background: #fff;
-  z-index: 1;
+  padding-top: 56px;
 
   @include breakpoint($mobile) {
     top: 40px;
+    justify-content: space-between;
+  }
+
+  @media screen and (max-width: 374px) {
+    top: 14px;
   }
 
   &.active {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
+    z-index: 1;
 
-  &__title {
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: rem(16px);
-    text-align: center;
-    margin-top: 48px;
-    margin-bottom: 144px;
-
-    @include breakpoint($mobile) {
-      margin-top: 56px;
-      margin-bottom: 114px;
+    &::after {
+      content: '';
+      position: absolute;
+      width: 200px;
+      height: 20px;
+      top: -20px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      background-color: white;
     }
   }
 
-  &__image {
-    margin: 0 auto;
-    width: 117px;
-    height: 117px;
-    animation: spin 3s linear infinite;
+  &__title {
+    color: #000000;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 19px;
+    text-align: center;
+    text-transform: unset;
+    margin-bottom: 14px;
+  }
+
+  &__title-wrap {
+    margin-bottom: 74px;
 
     @include breakpoint($mobile) {
-      width: 112px;
-      height: 112px;
+      margin-bottom: 40px;
+    }
+
+    @media screen and (max-width: 374px) {
+      margin-bottom: 14px;
     }
   }
 
   &__text {
-    margin-top: 153px;
+    width: 100%;
+    max-width: 320px;
+    color: #000000;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: center;
+    margin: 0 auto;
+
+    @include breakpoint($mobile) {
+      margin: 0 auto 60px;
+      font-size: 14px;
+      line-height: 18px;
+    }
+  }
+
+  &__warning-txt {
+    width: 100%;
+    max-width: 320px;
+    font-weight: 500;
+    margin-bottom: -42px;
+  }
+
+  &__anim {
+    position: relative;
+    width: 94px;
+    height: 251px;
+    overflow: hidden;
+    margin-bottom: 84px;
+
+    @include breakpoint($mobile) {
+      margin-bottom: 44px;
+    }
+
+    @media screen and (max-width: 374px) {
+      width: 82px;
+      height: 219px;
+      margin-bottom: 30px;
+    }
+
+    img {
+      width: 100%;
+      position: absolute;
+    }
+  }
+
+  &__dots {
+    animation: spin 5s ease infinite;
+    will-change: transform;
+  }
+
+  &__percentage {
+    color: #000000;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 29px;
   }
 }
 
 @keyframes spin {
   0% {
-    transform: rotate(0deg);
+    top: -60px;
+  }
+  50% {
+    top: 255px;
   }
   100% {
-    transform: rotate(360deg);
+    top: -60px;
   }
 }

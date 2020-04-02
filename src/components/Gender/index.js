@@ -1,1 +1,1 @@
-console.log('hello world');
+export { default as Gender } from './Gender.jsx';

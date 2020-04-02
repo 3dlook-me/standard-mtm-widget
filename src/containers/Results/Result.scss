@@ -1,5 +1,7 @@
 @import '../../scss/utils/index';
 
+$bottom-position: -30px;
+
 .result {
   text-align: center;
   padding-top: 6px;
@@ -9,7 +11,11 @@
 
   &__title {
     margin-top: 29px;
-    margin-bottom: 12px;
+    margin-bottom: 60px;
+
+    @include breakpoint($iphoneSE) {
+      margin: 10px 0 30px;
+    }
 
     &--complete {
       margin-bottom: 16px;
@@ -25,12 +31,11 @@
   &__text {
     width: 100%;
     max-width: 315px;
-    margin: 0 auto 50px;
+    margin: auto auto 50px;
 
     @include breakpoint($mobile) {
       max-width: 286px;
-      border: 0;
-      margin-top: 0;
+      margin-bottom: 10px;
     }
 
     @include breakpoint((max-width 320px, max-height 568px)) {
@@ -67,6 +72,7 @@
     opacity: 0;
     visibility: hidden;
     margin-top: 20px;
+    position: relative;
 
     &.active {
       opacity: 1;
@@ -89,7 +95,7 @@
     }
 
     &--normal &-desc {
-      font-size: rem(18px);
+      font-weight: 600;
     }
 
     &--loose &-num {
@@ -105,6 +111,22 @@
     &--loose {
       right: 0;
       left: auto;
+
+      &::after {
+        content: '/';
+        position: absolute;
+        left: 0;
+        bottom: $bottom-position;
+      }
+    }
+
+    &--tight {
+      &::after {
+        content: '/';
+        position: absolute;
+        right: 0;
+        bottom: $bottom-position;
+      }
     }
   }
 
@@ -124,8 +146,12 @@
   }
 
   &__size-desc {
-    font-size: rem(12px);
-    font-weight: bold;
+    position: absolute;
+    bottom: $bottom-position;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    font-size: 14px;
   }
 
   &__email {

@@ -1,6 +1,9 @@
 @import '../../scss/utils/index';
 
 .scan-qrcode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 
   &__title,
@@ -18,6 +21,16 @@
     margin-top: 4px;
   }
 
+  &__qrcode-wrap {
+    position: relative;
+
+    &--hidden {
+      .scan-qrcode__qrcode {
+        opacity: 0;
+      }
+    }
+  }
+  
   &__help {
     color: $main-color;
     font-size: rem(8px);
@@ -55,6 +68,14 @@
       display: inline-block;
       vertical-align: middle;
       margin-left: 5px;
+    }
+
+    &[disabled] {
+      color: #DDDDDD;
+
+      .qrcode__btn-svg {
+        stroke: #DDDDDD;
+      }
     }
   }
 
@@ -172,7 +193,7 @@
   }
 
   img.spin {
-    animation: spin 3s linear infinite;
+    animation: qr-spin 3s linear infinite;
   }
 }
 
@@ -187,3 +208,4 @@
   color: #fff;
   text-transform: unset;
 }
+

@@ -34,4 +34,10 @@
       font-size: rem(14px);
     }
   }
+
+  + .screen__footer {
+    .button {
+      box-shadow: none;
+    }
+  }
 }

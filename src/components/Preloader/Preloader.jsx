@@ -29,9 +29,9 @@ const Preloader = ({ isActive, status, isMobile }) => (
     <p className="preloader__text">
       {isMobile ? `${status}` : (
         <span>
-          It might take us up to
-          <b> one minute </b>
-          to find your perfect fit. Thanks for being patient!
+          Please give us
+          <b> a minute </b>
+          to check your photos and generate your measurements. Thanks for your patience!
         </span>
       )}
     </p>

@@ -6,7 +6,7 @@ module.exports = {
   // shopify host url
   SHOPIFY_HOST: 'shopify.3dlook.me',
   // widget host url
-  WIDGET_HOST: 'https://pf-widget.3dlook.me',
+  WIDGET_HOST: 'https://mtm-widget.3dlook.me',
   // path to widget assets for url configuration
   // should end with /
   WIDGET_ASSETS_URL: '/',

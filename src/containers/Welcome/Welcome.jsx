@@ -1,23 +1,31 @@
 import { h, Component, Fragment } from 'preact';
-import { Link, route } from 'preact-router';
+import { Link } from 'preact-router';
 import { connect } from 'react-redux';
 
-import { browserValidation, isMobileDevice, parseGetParams } from '../../helpers/utils';
+import {
+  browserValidation,
+  isMobileDevice,
+  parseGetParams,
+} from '../../helpers/utils';
 import { gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-
-import './Welcome.scss';
 import { Browser } from '..';
 import SettingsService from '../../services/settingsService';
+
+import './Welcome.scss';
 
 /**
  * Welcome page component
  */
 class Welcome extends Component {
-  state = {
-    isButtonDisabled: true,
-    invalidBrowser: false,
+  constructor() {
+    super();
+
+    this.state = {
+      isButtonDisabled: true,
+      invalidBrowser: false,
+    };
   }
 
   componentDidMount() {

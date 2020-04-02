@@ -9,6 +9,7 @@ import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
 import { BaseMobileFlow, Measurements, Guide } from '../../components';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
+
 import './Result.scss';
 import emoji from '../../images/emoji-heart-eyes.png';
 

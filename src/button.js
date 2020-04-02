@@ -1,4 +1,5 @@
 import API from '@3dlook/saia-sdk/lib/api';
+
 import {
   transformRecomendations,
   parseGetParams,
@@ -7,7 +8,6 @@ import {
 } from './helpers/utils';
 
 require('./scss/components/_saia-button.scss');
-
 const buttonTemplate = require('./templates/button.html');
 const modalTemplate = require('./templates/modal-drop.html');
 
@@ -106,6 +106,7 @@ class SaiaButton {
     modal = document.querySelector('.saia-pf-drop');
     this.modal = modal;
     this.buttonEl = document.querySelector(`.saia-pf-button--${this.defaults.id}`);
+    this.buttonEl.type = 'button';
 
     this.buttonEl.addEventListener('click', () => this.showWidget());
 

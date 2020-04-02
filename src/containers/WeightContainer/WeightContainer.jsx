@@ -1,13 +1,13 @@
 import { h, Component, createRef } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
-
 import classNames from 'classnames';
+
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { getWeightKg } from '../../helpers/utils';
-
 import { Stepper } from '../../components';
+
 import './WeightContainer.scss';
 
 /**

@@ -3,11 +3,10 @@ import { route } from 'preact-router';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 
-import { Stepper } from '../../components';
-
+import actions from '../../store/actions';
 import { gaOnEmailNext } from '../../helpers/ga';
 import { validateEmail } from '../../helpers/utils';
-import actions from '../../store/actions';
+import { Stepper } from '../../components';
 
 import './Email.scss';
 

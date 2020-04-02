@@ -2,22 +2,16 @@ import { h, render, Component } from 'preact';
 import Router from 'preact-router';
 import { createHashHistory } from 'history';
 import { Provider } from 'react-redux';
-import { gaStart } from './helpers/ga';
-import { store } from './store';
 
+// main file have to be here
 import './scss/_index.scss';
 
-/**
- * Components
- */
+import { store } from './store';
+import { gaStart } from './helpers/ga';
 import {
   Header,
   Help,
 } from './components';
-
-/**
- * Containers
- */
 import {
   Welcome,
   Email,
@@ -27,17 +21,14 @@ import {
   QRCodeContainer,
   Tutorial,
   Upload,
-  Data,
   QRCodeHelp,
   Results,
-  SoftValidation,
   HardValidation,
   NotFound,
   MobileFlow,
   Browser,
 } from './containers';
 
-// welcome screen img bg
 import bgImage from './images/welcome-bg.png';
 import landscapeView from './images/landscape-view.svg';
 
@@ -71,10 +62,8 @@ class App extends Component {
             <WeightContainer path="/weight" />
             <QRCodeContainer path="/qrcode" />
             <QRCodeHelp path="/qrcode-help" />
-            <Data path="/data" />
             <Upload path="/upload" />
             <Tutorial path="/tutorial" />
-            <SoftValidation path="/soft-validation" />
             <HardValidation path="/hard-validation" />
             <NotFound path="/not-found" />
             <Results path="/results" />

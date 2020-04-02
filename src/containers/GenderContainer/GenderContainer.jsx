@@ -2,10 +2,13 @@ import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
-import { gaDataMale, gaDataFemale, gaOnWeightNext } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-
+import {
+  gaDataMale,
+  gaDataFemale,
+  gaOnWeightNext,
+} from '../../helpers/ga';
 import {
   Stepper,
   Gender,

@@ -1,6 +1,12 @@
-import { h, Component, createRef } from 'preact';
+import {
+  h,
+  Component,
+  createRef,
+} from 'preact';
 import classNames from 'classnames';
+
 import { cmToFtIn, getHeightCm } from '../../helpers/utils';
+
 import './Height.scss';
 
 /**

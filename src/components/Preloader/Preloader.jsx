@@ -1,6 +1,6 @@
 import { h } from 'preact';
-import './Preloader.scss';
 
+import './Preloader.scss';
 import bgImage from '../../images/preloader-bg.svg';
 import dotsImage from '../../images/preloader-dots.svg';
 import strokeImage from '../../images/preloader-stroke.svg';

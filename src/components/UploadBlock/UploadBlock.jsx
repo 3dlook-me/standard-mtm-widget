@@ -1,8 +1,9 @@
 import { h, Component } from 'preact';
 import classNames from 'classnames';
-import './UploadBlock.scss';
 
 import { UploadFile } from '..';
+
+import './UploadBlock.scss';
 
 /**
  * Upload file block component

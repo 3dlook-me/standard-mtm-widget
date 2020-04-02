@@ -6,14 +6,11 @@ import classNames from 'classnames';
 import Clipboard from 'clipboard';
 import IntlTelInput from 'react-intl-tel-input';
 
-import { send, validatePhoneNumberLetters } from '../../helpers/utils';
-import { gaCopyUrl } from '../../helpers/ga';
-
 import actions from '../../store/actions';
-
 import FlowService from '../../services/flowService';
 import SMSService from '../../services/smsService';
-
+import { send, validatePhoneNumberLetters } from '../../helpers/utils';
+import { gaCopyUrl } from '../../helpers/ga';
 import {
   Preloader,
   QRCodeBlock,
@@ -79,7 +76,6 @@ class QRCodeContainer extends Component {
       });
   }
 
-  // TODO *** change
   componentWillReceiveProps(nextProps) {
     this.init(nextProps);
   }

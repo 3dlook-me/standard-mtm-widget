@@ -2,16 +2,15 @@ import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
-import { gaOnHeightNext } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-
-import './HeightContainer.scss';
-
+import { gaOnHeightNext } from '../../helpers/ga';
 import {
   Height,
   Stepper,
 } from '../../components';
+
+import './HeightContainer.scss';
 
 /**
  * HeightContainer page component

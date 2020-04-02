@@ -5,8 +5,12 @@ import classNames from 'classnames';
  * Gender component
  */
 export default class Gender extends Component {
-  state = {
-    value: null,
+  constructor() {
+    super();
+
+    this.state = {
+      value: null,
+    };
   }
 
   componentDidMount() {

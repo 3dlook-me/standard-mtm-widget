@@ -2,13 +2,12 @@ import { h } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
+import actions from '../../store/actions';
+import { gaTutorialMobile, gaTutorialBack } from '../../helpers/ga';
+import { isMobileDevice } from '../../helpers/utils';
 import { Stepper, BaseMobileFlow } from '../../components';
 
-import { gaTutorialMobile, gaTutorialBack } from '../../helpers/ga';
-import actions from '../../store/actions';
-
 import './Tutorial.scss';
-import { isMobileDevice } from '../../helpers/utils';
 
 /**
  * Tutorial video page component

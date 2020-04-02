@@ -162,16 +162,6 @@ export const isMobileDevice = () => {
   return isMobile;
 };
 
-export const sendDataToSpreadsheet = (params) => {
-  if (environment === 'development') {
-    return Promise.resolve();
-  }
-
-  return axios.get('https://script.google.com/macros/s/AKfycby8njuF4_tXZIKoS1A27VRfMX83Qss9Dw4Z-7-liCa4LeQbbgl6/exec', {
-    params,
-  });
-};
-
 /**
  * Validate email address
  *

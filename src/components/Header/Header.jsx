@@ -6,7 +6,6 @@ import './Header.scss';
 import FlowService from '../../services/flowService';
 import {
   send,
-  sendDataToSpreadsheet,
   objectToUrlParams,
   isMobileDevice,
 } from '../../helpers/utils';

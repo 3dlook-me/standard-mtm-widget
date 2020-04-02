@@ -1,4 +1,5 @@
 import { h } from 'preact';
+
 import './Loader.scss';
 import loaderImg from '../../images/preloader.svg';
 

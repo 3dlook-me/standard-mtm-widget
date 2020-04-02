@@ -194,6 +194,7 @@ class Upload extends Component {
       bodyPart,
       isFromDesktopToMobile,
       phoneNumber,
+      productUrl,
     } = props;
 
     let {
@@ -326,18 +327,32 @@ class Upload extends Component {
       }
 
       let recommendations;
+      let originalRecommendations;
 
-      const originalRecommendations = await this.api.sizechart.getSize({
-        gender,
-        hips: person.volume_params.high_hips,
-        chest: person.volume_params.chest,
-        waist: person.volume_params.waist,
-        thigh: person.volume_params.thigh,
-        low_hips: person.volume_params.low_hips,
-        inseam: person.front_params.inseam,
-        brand,
-        body_part: bodyPart,
-      });
+      if (brand && bodyPart) {
+        originalRecommendations = await this.api.sizechart.getSize({
+          gender,
+          hips: person.volume_params.high_hips,
+          chest: person.volume_params.chest,
+          waist: person.volume_params.waist,
+          thigh: person.volume_params.thigh,
+          low_hips: person.volume_params.low_hips,
+          inseam: person.front_params.inseam,
+          brand,
+          body_part: bodyPart,
+        });
+      } else {
+        originalRecommendations = await this.api.product.getRecommendations({
+          gender,
+          hips: person.volume_params.high_hips,
+          chest: person.volume_params.chest,
+          waist: person.volume_params.waist,
+          thigh: person.volume_params.thigh,
+          low_hips: person.volume_params.low_hips,
+          inseam: person.front_params.inseam,
+          url: productUrl,
+        });
+      }
 
       if (originalRecommendations) {
         recommendations = transformRecomendations(originalRecommendations);

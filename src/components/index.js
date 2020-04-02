@@ -1,5 +1,5 @@
-export * from './BodyType';
 export * from './Height';
+export * from './Gender';
 export * from './Header';
 export * from './Help';
 export * from './ImageExample';
@@ -10,3 +10,4 @@ export * from './UploadBlock';
 export * from './UploadFile';
 export * from './UploadValidation';
 export * from './BaseMobileFlow';
+export * from './Loader';

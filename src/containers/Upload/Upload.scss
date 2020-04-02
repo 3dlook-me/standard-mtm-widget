@@ -3,6 +3,15 @@
 .upload {
   text-align: center;
   padding-top: 18px;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  @include breakpoint($iphoneSE) {
+    justify-content: flex-start;
+  }
 
   &__title {
     margin-bottom: 20px;
@@ -18,13 +27,13 @@
   }
 
   &--is-mobile &__title-2 {
-    @include breakpoint($mobile) {
+    @include breakpoint($tablet) {
       display: none;
     }
   }
 
   &--is-mobile > p {
-    @include breakpoint($mobile) {
+    @include breakpoint($tablet) {
       display: none;
     }
   }
@@ -72,7 +81,7 @@
   }
 
   &--is-mobile &__video {
-    @include breakpoint($mobile) {
+    @include breakpoint($tablet) {
       display: none;
     }
   }
@@ -90,7 +99,7 @@
   }
 
   &--is-mobile &__files {
-    @include breakpoint($mobile) {
+    @include breakpoint($tablet) {
       width: 100%;
       justify-content: center;
     }
@@ -101,7 +110,7 @@
     display: none;
 
     &.active {
-      @include breakpoint($mobile) {
+      @include breakpoint($tablet) {
         display: block;
       }
     }

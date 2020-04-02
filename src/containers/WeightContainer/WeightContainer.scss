@@ -1,0 +1,79 @@
+@import '../../scss/utils/index';
+
+.weight-container {
+  &__control {
+    margin-top: 133px;
+
+    @include breakpoint($mobile) {
+      margin-top: 80px;
+    }
+
+    @include breakpoint($iphoneSE) {
+      margin-top: 20px;
+    }
+
+    input {
+      padding-right: 34px;
+    }
+  }
+
+  &__units {
+    margin-top: 41px;
+  }
+
+  &__input-wrap {
+    position: relative;
+    margin-bottom: 40px;
+
+    select {
+      padding-right: 40px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+
+      + .weight-container__placeholder {
+        height: 100%;
+        bottom: 0;
+      }
+    }
+
+    input[disabled] {
+      opacity: 1;
+    }
+  }
+
+  &__placeholder {
+    position: absolute;
+    bottom: 16px;
+    right: 0;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    color: #ddd;
+    text-transform: uppercase;
+  }
+
+  &__txt {
+    color: #9B9B9B;
+    font-size: 14px;
+    line-height: 21px;
+    text-align: center;
+  }
+
+  &__skip-btn {
+    border: none;
+    padding: 0 6px;
+    box-shadow: none;
+    outline: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    text-decoration: underline;
+    color: inherit;
+    background-color: transparent;
+  }
+}

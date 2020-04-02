@@ -10,9 +10,11 @@
   border: 2px solid $main-color;
   border-radius: 4px;
   background-color: #FFFFFF;
+  -webkit-appearance: none; /* for disable grey line on iphone */
 
   @include placeholder {
     color: #D3D3D3;
+    font-weight: 300;
   }
 
   &--invalid,

@@ -1,7 +1,9 @@
 import { h, Component } from 'preact';
 
-import { isMobileDevice, parseGetParams } from '../../helpers/utils';
 import FlowService from '../../services/flowService';
+import {
+  isMobileDevice, parseGetParams, browserValidation,
+} from '../../helpers/utils';
 
 /**
  * Mobile flow page component
@@ -27,6 +29,7 @@ class BaseMobileFlow extends Component {
       setPersonId,
       setIsFromDesktopToMobile,
       setReturnUrl,
+      setWidgetUrl,
       setRecommendations,
       setBodyType,
       setFakeSize,
@@ -34,7 +37,16 @@ class BaseMobileFlow extends Component {
       setPhoneNumber,
       setProductId,
       setUnits,
+      setWeight,
+      setFlowState,
+      flowState,
     } = this.props;
+
+    if (!isMobileDevice()) {
+      setIsMobile(false);
+
+      return;
+    }
 
     const token = matches.key || API_KEY || parseGetParams().key;
     setToken(token);
@@ -46,28 +58,45 @@ class BaseMobileFlow extends Component {
     this.flow.setFlowId(matches.id);
 
     return this.flow.get()
-      .then((flowState) => {
-        const brand = flowState.state.brand || TEST_BRAND;
-        const bodyPart = flowState.state.bodyPart || TEST_BODY_PART;
+      .then((flowStateResult) => {
+        const brand = flowStateResult.state.brand || TEST_BRAND;
+        const bodyPart = flowStateResult.state.bodyPart || TEST_BODY_PART;
 
-        setPersonId(flowState.person);
+        // FOR PAGE RELOAD
+        if (!flowState) {
+          setFlowState(flowStateResult.state);
+        }
+
+        setPersonId(flowStateResult.person);
         setBrand(brand);
         setBodyPart(bodyPart);
-        setProductUrl(flowState.state.productUrl);
+        setProductUrl(flowStateResult.state.productUrl);
         setIsMobile(isMobileDevice());
-        addHeight(flowState.state.height);
-        addGender(flowState.state.gender);
-        addFrontImage(flowState.state.frontImage);
-        addSideImage(flowState.state.sideImage);
+        addHeight(flowStateResult.state.height);
+        setWeight(flowStateResult.state.weight);
+        addGender(flowStateResult.state.gender);
+        addFrontImage(flowStateResult.state.frontImage);
+        addSideImage(flowStateResult.state.sideImage);
         setIsFromDesktopToMobile(true);
-        setReturnUrl(flowState.state.returnUrl);
-        setRecommendations(flowState.state.recommendations);
-        setBodyType(flowState.state.bodyType);
-        setFakeSize(flowState.state.fakeSize);
-        setEmail(flowState.state.email);
-        setPhoneNumber(flowState.state.phoneNumber);
-        setProductId(flowState.state.productId);
-        setUnits(flowState.state.units);
+        setWidgetUrl(flowStateResult.state.widgetUrl);
+        setReturnUrl(flowStateResult.state.returnUrl);
+        setRecommendations(flowStateResult.state.recommendations);
+        setBodyType(flowStateResult.state.bodyType);
+        setFakeSize(flowStateResult.state.fakeSize);
+        setEmail(flowStateResult.state.email);
+        setPhoneNumber(flowStateResult.state.phoneNumber);
+        setProductId(flowStateResult.state.productId);
+        setUnits(flowStateResult.state.units);
+
+        if (!browserValidation()) {
+          return;
+        }
+
+        setInterval(() => {
+          this.flow.updateState({
+            lastActiveDate: Date.now(),
+          });
+        }, 3000);
       });
   }
 }

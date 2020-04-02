@@ -1,5 +1,6 @@
 import { h } from 'preact';
-import './Stepper.scss'
+
+import './Stepper.scss';
 
 /**
  * Stepper component

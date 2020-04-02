@@ -23,9 +23,8 @@ import SaiaButton from './button';
   const button = new SaiaButton({
     key: API_KEY,
     widgetUrl: WIDGET_HOST,
-    brand: 'butter denim highrise',
+    brand: 'butter denim midrise',
     bodyPart: 'bottom',
-    productId: 4382980800644,
   });
 
   button.init();

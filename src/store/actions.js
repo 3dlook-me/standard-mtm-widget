@@ -8,11 +8,14 @@ export const CONSTANTS = {
   SET_IS_FROM_DESKTOP_TO_MOBILE: 'SET_IS_FROM_DESKTOP_TO_MOBILE',
   SET_ORIGIN: 'SET_ORIGIN',
   SET_RETURN_URL: 'SET_RETURN_URL',
+  SET_WIDGET_URL: 'SET_WIDGET_URL',
   SET_TOKEN: 'SET_TOKEN',
   ADD_FRONT_IMAGE: 'ADD_FRONT_IMAGE',
   ADD_SIDE_IMAGE: 'ADD_SIDE_IMAGE',
   ADD_HEIGHT: 'ADD_HEIGHT',
   ADD_GENDER: 'ADD_GENDER',
+  SET_WEIGHT: 'SET_WEIGHT',
+  SET_WEIGHT_LB: 'SET_WEIGHT_LB',
   SET_BODY_TYPE: 'SET_BODY_TYPE',
   ADD_AGREE: 'ADD_AGREE',
   SET_FLOW_ID: 'SET_FLOW_ID',
@@ -32,6 +35,9 @@ export const CONSTANTS = {
   SET_PHONE_NUMBER: 'SET_PHONE_NUMBER',
   SET_PRODUCT_ID: 'SET_PRODUCT_ID',
   SET_UNITS: 'SET_UNITS',
+  SET_PROCESSING_STATUS: 'SET_PROCESSING_STATUS',
+  SET_PAGE_RELOAD_STATUS: 'SET_PAGE_RELOAD_STATUS',
+  SET_FLOW_STATE: 'SET_FLOW_STATE',
 };
 
 /**
@@ -87,6 +93,16 @@ export const setOrigin = (origin) => ({
 export const setReturnUrl = (returnUrl) => ({
   type: CONSTANTS.SET_RETURN_URL,
   payload: returnUrl,
+});
+
+/**
+ * Set widget url
+ *
+ * @param {string} widgetUrl - widget url
+ */
+export const setWidgetUrl = (widgetUrl) => ({
+  type: CONSTANTS.SET_WIDGET_URL,
+  payload: widgetUrl,
 });
 
 /**
@@ -343,12 +359,63 @@ export const setUnits = (units) => ({
   payload: units,
 });
 
+/**
+ * Set weight
+ *
+ * @param {any} weight - weight object
+ */
+export const setWeight = (weight) => ({
+  type: CONSTANTS.SET_WEIGHT,
+  payload: weight,
+});
+
+/**
+ * Set weight
+ *
+ * @param {any} weight - weight object
+ */
+export const setWeightLb = (weightLb) => ({
+  type: CONSTANTS.SET_WEIGHT_LB,
+  payload: weightLb,
+});
+
+/**
+ * Set sendDataStatus
+ *
+ * @param {string} status - status string
+ */
+export const setProcessingStatus = (status) => ({
+  type: CONSTANTS.SET_PROCESSING_STATUS,
+  payload: status,
+});
+
+/**
+ * Set status
+ *
+ * @param {boolean} status - true if page reloaded
+ */
+export const setPageReloadStatus = (status) => ({
+  type: CONSTANTS.SET_PAGE_RELOAD_STATUS,
+  payload: status,
+});
+
+/**
+ * Set flow state
+ *
+ * @param {Object} state - flow state
+ */
+export const setFlowState = (state) => ({
+  type: CONSTANTS.SET_FLOW_STATE,
+  payload: state,
+});
+
 export default {
   setMeasurements,
   resetState,
   setIsMobile,
   setIsFromDesktopToMobile,
   setReturnUrl,
+  setWidgetUrl,
   setOrigin,
   setToken,
   addFrontImage,
@@ -374,4 +441,9 @@ export default {
   setPhoneNumber,
   setProductId,
   setUnits,
+  setWeight,
+  setWeightLb,
+  setProcessingStatus,
+  setPageReloadStatus,
+  setFlowState,
 };

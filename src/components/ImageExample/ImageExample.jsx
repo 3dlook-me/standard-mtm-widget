@@ -1,12 +1,9 @@
 import { h, Component } from 'preact';
 import classNames from 'classnames';
+
 import './ImageExample.scss';
-
-import exampleSide1x from '../../images/example-side.png';
-import exampleSide2x from '../../images/example-side@2x.png';
-
-import exampleFront1x from '../../images/example-front.png';
-import exampleFront2x from '../../images/example-front@2x.png';
+import exampleSide from '../../images/example-side.png';
+import exampleFront from '../../images/example-front.png';
 
 /**
  * Help component.
@@ -17,108 +14,28 @@ class ImageExample extends Component {
     super(props);
 
     this.state = {
-      imageX: 0,
-      imageY: 0,
       isImageActive: false,
     };
   }
 
-  showImage(target) {
-    const { isMobile } = this.props;
-    const { imageX, imageY } = this.state;
-
-    const rect = target.getBoundingClientRect();
-
-    let newImageX;
-
-    if (isMobile) {
-      newImageX = rect.left;
-    } else {
-      newImageX = rect.left + target.offsetWidth / 2;
-    }
-
-    const newImageY = rect.top - 366 - 8;
-
-    const updatedState = {};
-
-    if (imageX !== newImageX || imageY !== newImageY) {
-      updatedState.imageX = newImageX;
-      updatedState.imageY = newImageY;
-    }
-
-    updatedState.isImageActive = true;
-
-    this.setState(updatedState);
-  }
-
-  hideImage() {
+  hideImage = () => {
     this.setState({
       isImageActive: false,
     });
   }
 
   /**
-   * Show example image on mouse enter event
-   *
-   * @param {MouseEvent} event - mouse event object
-   */
-  onMouseEnter = ({ target }) => {
-    const { isMobile } = this.props;
-
-    if (isMobile) {
-      return;
-    }
-
-    this.showImage(target);
-  }
-
-  /**
-   * Hide example image on mouse leave event
-   *
-   * @param {MouseEvent} event - mouse event object
-   */
-  onMouseLeave = () => {
-    const { isMobile } = this.props;
-
-    if (isMobile) {
-      return;
-    }
-
-    this.hideImage();
-  }
-
-  /**
    * Show example image on touch start event
    *
-   * @param {TouchEvent} event - mouse event object
    */
-  onTouchStart = ({ target }) => {
-    const { isMobile } = this.props;
-
-    if (!isMobile) {
-      return;
-    }
-
-    this.showImage(target);
-  }
-
-  /**
-   * Hide example image on touch end event
-   *
-   * @param {TouchEvent} event - mouse event object
-   */
-  onTouchEnd = () => {
-    const { isMobile } = this.props;
-
-    if (!isMobile) {
-      return;
-    }
-
-    this.hideImage();
+  onClick = () => {
+    this.setState({
+      isImageActive: true,
+    });
   }
 
   render() {
-    const { type, isMobile } = this.props;
+    const { type } = this.props;
     const { imageX, imageY, isImageActive } = this.state;
 
     const imageStyle = {
@@ -127,21 +44,32 @@ class ImageExample extends Component {
     };
 
     return (
-      <div className={classNames('image-example', { 'image-example--mobile': isMobile })}>
+      <div className="image-example image-example--mobile">
         <button
           className="image-example__btn"
           type="button"
-          onMouseEnter={this.onMouseEnter}
-          onMouseLeave={this.onMouseLeave}
-          onTouchStart={this.onTouchStart}
-          onTouchEnd={this.onTouchEnd}
+          onClick={this.onClick}
         >
           See example
         </button>
         <div className={classNames('image-example__img', { active: isImageActive })} style={imageStyle}>
-          {(type === 'side')
-            ? <img src={exampleSide1x} srcSet={`${exampleSide1x} 1x, ${exampleSide2x} 2x`} alt="Side example" />
-            : <img src={exampleFront1x} srcSet={`${exampleFront1x} 1x, ${exampleFront2x} 2x`} alt="Front example" /> }
+          <figure className="image-example__img-wrap">
+            <button className="image-example__close-btn" type="button" onClick={this.hideImage}>
+              <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
+                  <g transform="translate(-567.000000, -20.000000)" stroke="darkgrey" strokeWidth="2">
+                    <g className="header__svg-fill" transform="translate(574.727922, 27.727922) rotate(-315.000000) translate(-574.727922, -27.727922) translate(565.727922, 18.727922)">
+                      <path d="M18,9 L0,9" />
+                      <path d="M9,0 L9,18" />
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            </button>
+            {(type === 'side')
+              ? <img src={exampleSide} alt="Side example" />
+              : <img src={exampleFront} alt="Front example" /> }
+          </figure>
         </div>
       </div>
     );

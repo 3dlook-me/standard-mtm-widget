@@ -3,16 +3,12 @@ import { route } from 'preact-router';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 
-import { Stepper } from '../../components';
-
+import actions from '../../store/actions';
 import { gaOnEmailNext } from '../../helpers/ga';
 import { validateEmail } from '../../helpers/utils';
-import actions from '../../store/actions';
+import { Stepper } from '../../components';
 
 import './Email.scss';
-
-import discountLogo from '../../images/discount-img.png';
-
 
 /**
  * Email page component
@@ -22,9 +18,11 @@ class Email extends Component {
     super(props);
 
     this.state = {
+      isEmail: false,
       isEmailValid: true,
       isAgreeValid: true,
       buttonDisabled: true,
+      email: null,
     };
   }
 
@@ -35,6 +33,29 @@ class Email extends Component {
     this.checkButtonState();
   }
 
+  componentDidMount() {
+    const { email, agree } = this.props;
+
+    if (email && agree) {
+      this.setState({
+        email,
+        buttonDisabled: false,
+        isEmailValid: true,
+        isEmail: true,
+      });
+
+      return;
+    }
+
+    if (email) {
+      this.setState({
+        email,
+        isEmailValid: true,
+        isEmail: true,
+      });
+    }
+  }
+
   /**
    * Change email address
    */
@@ -42,15 +63,20 @@ class Email extends Component {
     const { setEmail } = this.props;
     const { value } = e.target;
     const isValid = validateEmail(value);
+    const isEmail = value.trim().length > 0;
 
     this.setState({
-      isEmailValid: isValid || !value,
+      isEmailValid: (isValid || !value),
+      isEmail,
+      email: value,
     });
 
     if (isValid) {
       setEmail(value);
+    } else if (!isEmail || !isValid) {
+      setEmail(null);
     }
-  }
+  };
 
   /**
    * Change argee checkbox state handler
@@ -71,7 +97,7 @@ class Email extends Component {
   onNextScreen = async () => {
     gaOnEmailNext();
 
-    route('/height', false);
+    route('/gender', false);
   }
 
   /**
@@ -83,9 +109,10 @@ class Email extends Component {
       buttonDisabled,
       isAgreeValid,
       isEmailValid,
+      isEmail,
     } = this.state;
 
-    const isButtonDisabled = !agree || !isAgreeValid || !isEmailValid;
+    const isButtonDisabled = !agree || !isAgreeValid || !isEmailValid || !isEmail;
 
     if (isButtonDisabled !== buttonDisabled) {
       this.setState({
@@ -99,11 +126,10 @@ class Email extends Component {
       isEmailValid,
       isAgreeValid,
       buttonDisabled,
+      email,
     } = this.state;
 
-    const {
-      agree,
-    } = this.props;
+    const { agree, isMobile } = this.props;
 
     return (
       <div className="screen active">
@@ -114,27 +140,14 @@ class Email extends Component {
             <h3 className="screen__label">Enter your email</h3>
             <input
               className={classNames('input', { 'input--invalid': !isEmailValid })}
-              onBlur={this.changeEmail}
+              onBlur={!isMobile ? this.changeEmail : false}
+              onChange={isMobile ? this.changeEmail : false}
               type="email"
               placeholder="email@address.com"
+              value={email}
             />
             <p className={classNames('screen__control-error', { active: !isEmailValid })}>Invalid email address</p>
           </div>
-
-          <div className="email__discount-banner">
-            <figure className="email__discount-logo">
-              <img src={discountLogo} alt="discount-logo" />
-            </figure>
-            <div className="email__discount-info">
-              <p>
-                Enter your email for a
-              </p>
-              <p>
-                10% discount
-              </p>
-            </div>
-          </div>
-
         </div>
         <div className="screen__footer">
           <div className={classNames('email__check', 'checkbox', { checked: agree, 'checkbox--invalid': !isAgreeValid })}>
@@ -152,4 +165,4 @@ class Email extends Component {
   }
 }
 
-export default connect(state => state, actions)(Email);
+export default connect((state) => state, actions)(Email);

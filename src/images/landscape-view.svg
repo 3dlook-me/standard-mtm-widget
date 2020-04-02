@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="66px" height="66px" viewBox="0 0 66 66" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63 (92445) - https://sketch.com -->
+    <title>Group 3</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Step-6_3-Copy" transform="translate(-157.000000, -227.000000)">
+            <g id="Group-3" transform="translate(156.000000, 226.000000)">
+                <g id="Group" transform="translate(34.000000, 50.000000) rotate(-90.000000) translate(-34.000000, -50.000000) translate(17.000000, 17.000000)" opacity="0.4">
+                    <g id="Phone">
+                        <rect id="Rectangle" fill="#FFFFFF" x="0" y="0" width="34" height="66" rx="5"></rect>
+                        <rect id="Rectangle-Copy-2" fill="#433D3E" x="2" y="2" width="30" height="62" rx="4"></rect>
+                        <path d="M8,0 L26,0 L25.1893661,3.24253563 C25.0780743,3.68770263 24.6780912,4 24.2192236,4 L9.78077641,4 C9.32190876,4 8.92192566,3.68770263 8.81063391,3.24253563 L8,0 L8,0 Z" id="Rectangle" fill="#FFFFFF"></path>
+                    </g>
+                </g>
+                <g id="Group-Copy" transform="translate(33.000000, 1.000000)">
+                    <g id="Phone-Copy">
+                        <rect id="Rectangle" fill="#FFFFFF" x="0" y="0" width="34" height="66" rx="5"></rect>
+                        <rect id="Rectangle-Copy-2" fill="#433D3E" x="2" y="2" width="30" height="62" rx="4"></rect>
+                        <path d="M8,0 L26,0 L25.1893661,3.24253563 C25.0780743,3.68770263 24.6780912,4 24.2192236,4 L9.78077641,4 C9.32190876,4 8.92192566,3.68770263 8.81063391,3.24253563 L8,0 L8,0 Z" id="Rectangle" fill="#FFFFFF"></path>
+                        <polygon id="Path-13" fill="#FFFFFF" opacity="0.50125558" points="13 3.367208 33.2423404 41.2662662 33.2423404 4.19520707 32.4185636 2.19520707 29.8721685 1 13 1 13 2.19520707"></polygon>
+                    </g>
+                </g>
+                <path d="M12.3763631,3 L25,5.309985 L18.5731141,16.951305 L17.0619385,13.49409 C10.5991355,16.458555 5.9532019,22.61523 5.81645115,30 C3.15287122,21.259965 7.30381505,12.226035 13.955648,6.537135 L12.3763631,3 Z" id="Path" fill="#FFFFFF" fill-rule="nonzero" transform="translate(15.000000, 16.500000) rotate(21.000000) translate(-15.000000, -16.500000) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

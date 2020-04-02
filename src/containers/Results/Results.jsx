@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 
 import {
-  send, sendDataToSpreadsheet, objectToUrlParams,
+  send, objectToUrlParams,
 } from '../../helpers/utils';
 import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
 import { BaseMobileFlow } from '../../components';

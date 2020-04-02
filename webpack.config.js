@@ -79,7 +79,7 @@ const plugins = [
     template: path.resolve('src/index.html'),
     inject: true,
     inlineSource: 'widget.(js|css)$',
-    excludeChunks: ['saia-pf-button', 'saia-pf-shopify'],
+    excludeChunks: ['saia-pf-button', 'saia-pf-shopify', 'integration'],
     minify: {
       removeComments: mode === 'production',
       collapseWhitespace: mode === 'production',

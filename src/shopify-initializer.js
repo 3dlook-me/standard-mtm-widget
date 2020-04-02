@@ -25,6 +25,12 @@ import SaiaButton from './button';
     widgetUrl: WIDGET_HOST,
   });
 
+  const isButtonVisible = await button.checkButtonVisibility();
+
+  if (!isButtonVisible) {
+    return;
+  }
+
   button.init();
 
 })();

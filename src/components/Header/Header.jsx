@@ -46,38 +46,38 @@ class Header extends Component {
       isMobile,
     } = this.props;
 
-    if (isFromDesktopToMobile) {
-      const flowState = await this.flow.get();
-      const flowStateStatus = flowState.state.status;
-
-      await this.flow.updateState({
-        status: 'close-confirm',
-      });
-
-      if (confirm('Are you sure that you want to close widget? ')) {
-        await this.flow.updateState({
-          status: flowStateStatus,
-          ...flowState,
-        });
-
-        if (measurements) {
-          window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
-        } else {
-          window.location = returnUrl;
-        }
-      }
-
-      return;
-    }
+    // if (isFromDesktopToMobile) {
+    //   const flowState = await this.flow.get();
+    //   const flowStateStatus = flowState.state.status;
+    //
+    //   await this.flow.updateState({
+    //     status: 'close-confirm',
+    //   });
+    //
+    //   if (confirm('Are you sure that you want to close widget? ')) {
+    //     if (measurements) {
+    //       window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
+    //     } else {
+    //       window.location = returnUrl;
+    //     }
+    //   }
+    //
+    //   await this.flow.updateState({
+    //     status: flowStateStatus,
+    //     ...flowState,
+    //   });
+    //
+    //   return;
+    // }
 
     if (isMobile) {
-      if (confirm('Are you sure that you want to close widget? ')) {
-        if (measurements) {
-          window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
-        } else {
-          window.location = returnUrl;
-        }
+      // if (confirm('Are you sure that you want to close widget? ')) {
+      if (measurements) {
+        window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
+      } else {
+        window.location = returnUrl;
       }
+      // }
     } else {
       resetState();
       send('close', {}, origin);

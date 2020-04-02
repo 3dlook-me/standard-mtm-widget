@@ -1,13 +1,14 @@
 import { h, Component } from 'preact';
 import Clipboard from 'clipboard';
+import classNames from 'classnames';
+import { connect } from 'react-redux';
 import { browserDetect } from '../../helpers/utils';
+
+import actions from '../../store/actions';
 
 import './Browser.scss';
 import chrome from '../../images/chrome.svg';
 import safari from '../../images/safari.svg';
-import classNames from 'classnames';
-import { connect } from 'react-redux';
-import actions from '../../store/actions';
 
 class Browser extends Component {
   constructor() {

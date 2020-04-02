@@ -1,9 +1,9 @@
 import { h, Component } from 'preact';
 
-import {
-  isMobileDevice, parseGetParams, browserValidation, activeFlowInMobile,
-} from '../../helpers/utils';
 import FlowService from '../../services/flowService';
+import {
+  isMobileDevice, parseGetParams, browserValidation,
+} from '../../helpers/utils';
 
 /**
  * Mobile flow page component

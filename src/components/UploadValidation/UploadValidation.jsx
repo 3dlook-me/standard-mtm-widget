@@ -1,7 +1,6 @@
 import { h } from 'preact';
 
 import classNames from 'classnames';
-
 import crossIcon from '../../images/cross.svg';
 import checkIcon from '../../images/check.svg';
 

@@ -2,10 +2,10 @@ import { h } from 'preact';
 import { connect } from 'react-redux';
 import { route } from 'preact-router';
 
-import { gaSwitchToMobileFlow } from '../../helpers/ga';
 import actions from '../../store/actions';
-import { BaseMobileFlow, Loader } from '../../components';
+import { gaSwitchToMobileFlow } from '../../helpers/ga';
 import { browserValidation, isMobileDevice } from '../../helpers/utils';
+import { BaseMobileFlow, Loader } from '../../components';
 
 /**
  * Mobile flow page component

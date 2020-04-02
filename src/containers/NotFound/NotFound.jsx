@@ -2,15 +2,14 @@ import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
-import { gaSizeNotFound } from '../../helpers/ga';
 import actions from '../../store/actions';
+import { gaSizeNotFound } from '../../helpers/ga';
+import { mobileFlowStatusUpdate } from '../../helpers/utils';
 import FlowService from '../../services/flowService';
 
 import './NotFound.scss';
-
 import confusedIcon1x from '../../images/confused.png';
 import confusedIcon2x from '../../images/confused@2x.png';
-import { mobileFlowStatusUpdate } from '../../helpers/utils';
 
 /**
  * Size not found page component

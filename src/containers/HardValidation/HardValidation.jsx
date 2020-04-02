@@ -2,17 +2,15 @@ import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
-import { ImageExample } from '../../components';
-
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { gaHardValidationError, gaRetakePhotoError } from '../../helpers/ga';
+import { mobileFlowStatusUpdate } from '../../helpers/utils';
+import { ImageExample } from '../../components';
 
 import './HardValidation.scss';
-
 import cryingIcon1x from '../../images/crying.png';
 import cryingIcon2x from '../../images/crying@2x.png';
-import { mobileFlowStatusUpdate } from '../../helpers/utils';
 
 /**
  * Hard validation page component

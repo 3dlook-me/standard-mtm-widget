@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import classNames from 'classnames';
 import QRCode from 'qrcode';
+
 import './QRCodeBlock.scss';
 
 /**
@@ -39,7 +40,7 @@ export default class QRCodeBlock extends Component {
             imageData,
           });
         })
-        .catch(err => this.setState({ error: err.message }));
+        .catch((err) => this.setState({ error: err.message }));
     }
   }
 
@@ -58,8 +59,7 @@ export default class QRCodeBlock extends Component {
         <div className="qrcode__img">
           {(!error)
             ? <img src={imageData} alt="QR Code" />
-            : <p>{error}</p>
-          }
+            : <p>{error}</p>}
         </div>
       </div>
     );

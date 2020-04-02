@@ -3,15 +3,15 @@ import { h, Component } from 'preact';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 
+import actions from '../../store/actions';
+import FlowService from '../../services/flowService';
+import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
 import {
   send, objectToUrlParams,
 } from '../../helpers/utils';
-import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
 import { BaseMobileFlow } from '../../components';
-import actions from '../../store/actions';
-import FlowService from '../../services/flowService';
-import './Result.scss';
 
+import './Result.scss';
 import fakeSizeIcon from '../../images/results.svg';
 
 /**
@@ -182,4 +182,4 @@ class Results extends BaseMobileFlow {
   }
 }
 
-export default connect(state => state, actions)(Results);
+export default connect((state) => state, actions)(Results);

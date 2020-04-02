@@ -3,29 +3,30 @@ import { route } from 'preact-router';
 import API from '@3dlook/saia-sdk/lib/api';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-
 import Camera from '@3dlook/camera';
 import '@3dlook/camera/dist/style.css';
 
-import './Upload.scss';
-
+import actions from '../../store/actions';
+import FlowService from '../../services/flowService';
+import { store } from '../../store';
 import {
-  Preloader,
-  Stepper,
-  UploadBlock,
-} from '../../components';
-
-import {
-  send, transformRecomendations, wait, activeFlowInMobile, mobileFlowStatusUpdate,
+  send,
+  transformRecomendations,
+  wait,
+  mobileFlowStatusUpdate,
 } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
   gaOpenCameraFrontPhoto,
   gaOpenCameraSidePhoto,
 } from '../../helpers/ga';
-import actions from '../../store/actions';
-import FlowService from '../../services/flowService';
-import { store } from '../../store';
+import {
+  Preloader,
+  Stepper,
+  UploadBlock,
+} from '../../components';
+
+import './Upload.scss';
 
 let isPhoneLocked = false;
 
@@ -339,12 +340,6 @@ class Upload extends Component {
       });
 
       if (originalRecommendations) {
-        const { normal } = originalRecommendations;
-
-        if (normal && normal.size === '23') {
-          normal.size = '24';
-        }
-
         recommendations = transformRecomendations(originalRecommendations);
 
         setRecommendations(recommendations);

@@ -23,9 +23,13 @@ import SaiaButton from './button';
   const button = new SaiaButton({
     key: API_KEY,
     widgetUrl: WIDGET_HOST,
-    brand: 'butter denim midrise',
-    bodyPart: 'bottom',
   });
+
+  const isButtonVisible = await button.checkButtonVisibility();
+
+  if (!isButtonVisible) {
+    return;
+  }
 
   button.init();
 

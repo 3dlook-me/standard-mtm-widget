@@ -17,7 +17,6 @@ $failure: $error-border-color;
   &__intro {
     width: 100%;
     max-width: 490px;
-    padding: 0 26px;
     margin: auto auto 54px;
 
     @include breakpoint($mobile) {

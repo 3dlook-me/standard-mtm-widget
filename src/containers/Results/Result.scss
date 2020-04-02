@@ -8,6 +8,7 @@ $bottom-position: -30px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   &__title {
     margin-top: 29px;
@@ -51,214 +52,20 @@ $bottom-position: -30px;
     margin-bottom: 70px;
   }
 
-  &__sizes {
-    display: flex;
-    justify-content: center;
-    margin: 0 auto;
-    margin-bottom: 40px;
-    max-width: 300px;
-    position: relative;
+  &__thanks {
+    margin: auto;
 
-    @include breakpoint($mobile) {
-      margin-bottom: 45px;
-    }
-
-    @include breakpoint((max-width 320px, max-height 568px)) {
-      margin-bottom: 28px;
+    img {
+      margin: 0 auto 20px;
     }
   }
 
-  &__size {
-    opacity: 0;
-    visibility: hidden;
-    margin-top: 20px;
-    position: relative;
-
-    &.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    &--normal {
-      margin: 0;
-      margin-top: 0;
-      position: static;
-    }
-
-    &--normal &-num {
-      height: 100px;
-      width: 100px;
-      font-size: rem(45px);
-      margin-bottom: 11px;
-      background: #000;
-      color: #fff;
-    }
-
-    &--normal &-desc {
-      font-weight: 600;
-    }
-
-    &--loose &-num {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-
-    &--tight &-num {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-
-    &--loose {
-      right: 0;
-      left: auto;
-
-      &::after {
-        content: '/';
-        position: absolute;
-        left: 0;
-        bottom: $bottom-position;
-      }
-    }
-
-    &--tight {
-      &::after {
-        content: '/';
-        position: absolute;
-        right: 0;
-        bottom: $bottom-position;
-      }
-    }
-  }
-
-  &__size-num {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60px;
-    width: 85px;
-    border-radius: 4px;
-    font-weight: bold;
+  &__thanks-title {
     text-transform: uppercase;
-    font-size: rem(20px);
-    margin-bottom: 10px;
-    background: #E5E7EB;
-    color: #000;
+    margin-bottom: 12px;
   }
 
-  &__size-desc {
-    position: absolute;
-    bottom: $bottom-position;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    font-size: 14px;
-  }
-
-  &__email {
-    height: 24px;
-    border: 0;
-    border-bottom: 2px solid #DDDDDD;
-    display: block;
-    width: 100%;
-    font-size: 1rem;
-    font-weight: normal;
-    padding-right: 18px;
-    appearance: none;
-    border-radius: 0;
-    max-width: 300px;
-    margin: 0 auto;
-    text-align: center;
-    margin-top: 40px;
-
-    &:focus {
-      border-color: #FFAB55;
-    }
-
-    @include disable-number();
-
-    @include placeholder {
-      color: #DDDDDD;
-    }
-  }
-
-  &--fake &__title {
-    margin-bottom: 5px;
-
-    @include breakpoint($mobile) {
-      max-width: 250px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-
-  &--fake &__text2 {
-    margin-top: 12px;
-    margin-bottom: 91px;
-  }
-
-  &--fake &__sizes {
-    display: none;
-  }
-
-  &--fake &__email {
-    margin-top: 12px;
-
-    @include breakpoint($mobile) {
-      margin-top: 35px;
-    }
-  }
-
-  &--fake img {
-    margin: 0 auto;
-    margin-bottom: 45px;
-    max-width: 204px;
-
-    @include breakpoint($mobile) {
-      max-width: 175px;
-      margin-bottom: 17px;
-    }
-  }
-
-  &__email-wrap {
-    width: 100%;
-    max-width: 275px;
-    margin: 0 auto 24px;
-  }
-
-  + .screen__footer {
-    @include breakpoint((max-width 320px, max-height 568px)) {
-      padding-top: 0;
-    }
-  }
-
-  &__promo {
-    width: 100%;
-    max-width: 290px;
-    margin: 0 auto;
-    border: none;
-    box-shadow: none;
-    background-color: transparent;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    .scan-qrcode__btn {
-      text-decoration: none;
-      font-size: 10px;
-      line-height: 21px;
-    }
-  }
-
-  &__promo-title {
-    margin-bottom: 30px;
-  }
-
-  &__promo-code {
-    margin-bottom: 10px;
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    line-height: 22px;
-    text-align: center;
+  .screen__subtitle {
+    top: -16px;
   }
 }

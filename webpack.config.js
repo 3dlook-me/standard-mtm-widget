@@ -138,6 +138,7 @@ module.exports = {
   entry: {
     'saia-pf-button': path.resolve(`${__dirname}/src/button.js`),
     'saia-pf-shopify': path.resolve(`${__dirname}/src/shopify-initializer.js`),
+    integration: path.resolve(`${__dirname}/src/integration.js`),
     'saia-pf-widget': path.resolve(`${__dirname}/src/App.jsx`),
   },
   output: {

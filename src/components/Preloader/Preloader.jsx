@@ -16,7 +16,7 @@ const Preloader = ({ isActive, status, isMobile }) => (
       </h2>
 
       {isMobile ? (
-        <p className="preloader__warning-txt">Please, do not lock your phone until we find your perfect fit</p>
+        <p className="preloader__warning-txt">Please, do not lock your phone until we calculate your measurements</p>
       ) : null}
     </div>
 

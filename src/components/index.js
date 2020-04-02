@@ -11,4 +11,6 @@ export * from './UploadBlock';
 export * from './UploadFile';
 export * from './UploadValidation';
 export * from './BaseMobileFlow';
+export * from './Measurements';
+export * from './Guide';
 export * from './Loader';

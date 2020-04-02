@@ -172,6 +172,7 @@ class WeightContainer extends Component {
       isMobile,
       units,
       email,
+      settings,
     } = this.props;
 
     if (isMobile) {
@@ -183,6 +184,7 @@ class WeightContainer extends Component {
         height,
         units,
         email,
+        settings,
         ...(weight && { weight }),
       });
 
@@ -190,7 +192,7 @@ class WeightContainer extends Component {
     }
   }
 
-  skipAndNextHandler = () => {
+  skipAndNextHandler = async () => {
     const { setWeight } = this.props;
 
     this.setState({
@@ -262,7 +264,7 @@ class WeightContainer extends Component {
             <p className="weight-container__txt">
               We use weight data, so your measurements will be more accurate,
               but if you want you can
-              <button className="weight-container__skip-btn" type="button" onMouseDown={this.skipAndNextHandler}>skip</button>
+              <button className="weight-container__skip-btn" type="button" onClick={this.skipAndNextHandler}>skip</button>
               this step.
             </p>
           </div>

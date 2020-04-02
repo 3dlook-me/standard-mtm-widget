@@ -1,18 +1,16 @@
 /* eslint class-methods-use-this: off */
 import { h, Component } from 'preact';
-import classNames from 'classnames';
 import { connect } from 'react-redux';
 
 import {
-  send, sendDataToSpreadsheet, objectToUrlParams,
+  send, objectToUrlParams,
 } from '../../helpers/utils';
 import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
-import { BaseMobileFlow } from '../../components';
+import { BaseMobileFlow, Measurements, Guide } from '../../components';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import './Result.scss';
-
-import fakeSizeIcon from '../../images/results.svg';
+import emoji from '../../images/emoji-heart-eyes.png';
 
 /**
  * Results page component.
@@ -21,6 +19,12 @@ import fakeSizeIcon from '../../images/results.svg';
 class Results extends BaseMobileFlow {
   constructor(props) {
     super(props);
+
+    this.state = {
+      openGuide: false,
+      measurementsType: null,
+      measurement: null,
+    };
 
     const { flowId, token } = this.props;
 
@@ -40,42 +44,45 @@ class Results extends BaseMobileFlow {
   componentDidMount = async () => {
     await super.componentDidMount();
 
-    const {
-      recommendations,
-    } = this.props;
+    const { measurements } = this.props;
 
-    this.sendSizeRecommendations(recommendations);
+    this.sendMeasurements(measurements);
 
     gaSuccess();
   }
 
   componentWillReceiveProps = async (nextProps) => {
     const {
-      recommendations,
+      measurements,
     } = nextProps;
 
-    this.sendSizeRecommendations(recommendations);
+    this.sendMeasurements(measurements);
   }
 
   /**
    * Send size recommendations to flow api
    *
-   * @param {Object} recommendations - size recommendation object
-   * @param {string} [recommendations.tight] - tight size
-   * @param {string} [recommendations.normal] - normal size
-   * @param {string} [recommendations.loose] - loose size
+   * @param {Object} measurements - measurements object
    */
-  sendSizeRecommendations = async (recommendations) => {
-    if (recommendations.tight
-        || recommendations.normal
-        || recommendations.loose) {
-      this.isRecommendationsSent = true;
+  sendMeasurements = async (measurements) => {
+    await this.flow.updateState({
+      status: 'finished',
+      measurements,
+    });
+  }
 
-      await this.flow.updateState({
-        status: 'finished',
-        recommendations,
-      });
-    }
+  openGuide = (index, type) => {
+    this.setState({
+      openGuide: true,
+      measurementsType: type,
+      measurement: index,
+    });
+  }
+
+  helpBtnToggle = (status) => {
+    const { setHelpBtnStatus } = this.props;
+
+    setHelpBtnStatus(status);
   }
 
   onClick = async () => {
@@ -88,7 +95,20 @@ class Results extends BaseMobileFlow {
       measurements,
       isMobile,
       isOpenReturnUrlDesktop,
+      setHelpBtnStatus,
     } = this.props;
+
+    const { openGuide } = this.state;
+
+    if (openGuide) {
+      setHelpBtnStatus(true);
+
+      this.setState({
+        openGuide: false,
+      });
+
+      return;
+    }
 
     gaResultsOnContinue();
 
@@ -119,62 +139,58 @@ class Results extends BaseMobileFlow {
 
   render() {
     const {
-      recommendations,
-      fakeSize,
+      measurements,
+      settings,
+      units,
+      gender,
     } = this.props;
+
+    const { openGuide, measurementsType, measurement } = this.state;
+
+    const results = settings.results_screen;
 
     return (
       <div className="screen screen--result active">
-        <div className={classNames('screen__content', 'result', { 'result--fake': fakeSize })}>
+        <div className="screen__content result">
+
+          {openGuide ? (
+            <Guide gender={gender} measurementsType={measurementsType} measurement={measurement} />
+          ) : null}
+
           <h2 className="screen__subtitle">
-            <span className="success">Complete</span>
+            <span className="success">
+              Complete
+            </span>
           </h2>
 
-          {(!fakeSize) ? <h3 className="screen__title result__title">your recommended size</h3> : null }
-          {(fakeSize) ? (
-            <h3 className="screen__title result__title result__title--complete">
-              YOUR PERFECT FIT PROFILE
-              <br />
-              IS COMPLETED
-            </h3>
-          ) : null }
+          {(results === 'measurements') ? (
+            <h3 className="screen__title result__title">your Measurements</h3>
+          ) : null}
 
-          {(fakeSize) ? <p className="result__text2">Check product pages for size recommendation</p> : null }
+          {(results === 'measurements') ? (
+            <Measurements
+              measurements={measurements}
+              units={units}
+              openGuide={this.openGuide}
+              helpBtnToggle={this.helpBtnToggle}
+            />
+          ) : null}
 
-          {(fakeSize) ? <img src={fakeSizeIcon} alt="Size icon" /> : null }
-
-          <div className="result__sizes">
-            <div className={classNames('result__size', 'result__size--tight', { active: recommendations.tight })}>
-              <h3 className="result__size-num">{recommendations.tight}</h3>
-              <p className="result__size-desc">Snug</p>
+          {(results === 'thanks') ? (
+            <div className="result__thanks">
+              <img src={emoji} alt="emoji" />
+              <h3 className="result__thanks-title">Thank you!</h3>
+              <p className="result__thanks-text">
+                We got your measurements and
+                <br />
+                we’ll contact you soon.
+              </p>
             </div>
-
-            <div className={classNames('result__size', 'result__size--normal', { active: recommendations.normal })}>
-              <h3 className="result__size-num">{recommendations.normal}</h3>
-              <p className="result__size-desc">Perfect</p>
-            </div>
-
-            <div className={classNames('result__size', 'result__size--loose', { active: recommendations.loose })}>
-              <h3 className="result__size-num">{recommendations.loose}</h3>
-              <p className="result__size-desc">Loose</p>
-            </div>
-          </div>
-
-          {(!fakeSize) ? (
-            <p className="result__text">
-              {'Your '}
-              <b>Perfect Fit Profile</b>
-              {' is completed.'}
-              <br />
-              Size recommendations for other products are
-              <br />
-              now available.
-            </p>
-          ) : null }
+          ) : null}
         </div>
         <div className="screen__footer">
           <button className="button" type="button" onClick={this.onClick}>
-            Go shopping
+            {openGuide ? 'BACK TO RESULTS' : 'ok'}
           </button>
         </div>
       </div>
@@ -182,4 +198,4 @@ class Results extends BaseMobileFlow {
   }
 }
 
-export default connect(state => state, actions)(Results);
+export default connect((state) => state, actions)(Results);

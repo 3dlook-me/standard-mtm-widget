@@ -30,7 +30,7 @@ class BaseMobileFlow extends Component {
       setIsFromDesktopToMobile,
       setReturnUrl,
       setWidgetUrl,
-      setRecommendations,
+      setMeasurements,
       setBodyType,
       setFakeSize,
       setEmail,
@@ -40,6 +40,7 @@ class BaseMobileFlow extends Component {
       setWeight,
       setFlowState,
       flowState,
+      setSettings,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -67,6 +68,7 @@ class BaseMobileFlow extends Component {
           setFlowState(flowStateResult.state);
         }
 
+        setMeasurements(flowStateResult.state.measurements);
         setPersonId(flowStateResult.person);
         setBrand(brand);
         setBodyPart(bodyPart);
@@ -78,9 +80,9 @@ class BaseMobileFlow extends Component {
         addFrontImage(flowStateResult.state.frontImage);
         addSideImage(flowStateResult.state.sideImage);
         setIsFromDesktopToMobile(true);
-        setWidgetUrl(flowStateResult.state.widgetUrl);
         setReturnUrl(flowStateResult.state.returnUrl);
-        setRecommendations(flowStateResult.state.recommendations);
+        setSettings(flowStateResult.state.settings);
+        setWidgetUrl(flowStateResult.state.widgetUrl);
         setBodyType(flowStateResult.state.bodyType);
         setFakeSize(flowStateResult.state.fakeSize);
         setEmail(flowStateResult.state.email);

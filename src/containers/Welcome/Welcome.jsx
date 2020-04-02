@@ -9,6 +9,7 @@ import FlowService from '../../services/flowService';
 
 import './Welcome.scss';
 import { Browser } from '..';
+import SettingsService from '../../services/settingsService';
 
 /**
  * Welcome page component
@@ -35,6 +36,7 @@ class Welcome extends Component {
       setProductId,
       setWidgetUrl,
       resetState,
+      setSettings,
     } = this.props;
 
     resetState();
@@ -89,6 +91,14 @@ class Welcome extends Component {
         });
       })
       .catch((err) => alert(err.message));
+
+    const settingsService = new SettingsService(token);
+
+    settingsService.getSettings()
+      .then((res) => {
+        setSettings(res);
+      })
+      .catch((err) => alert(err.message));
   }
 
   componentWillUnmount() {
@@ -107,11 +117,12 @@ class Welcome extends Component {
             <div className="screen__content welcome">
               <div className="screen__intro">
                 <h4 className="screen__intro-title">
-                  Never guess your size again
+                  Forget about measuring tape or appointments.
                 </h4>
                 <p className="screen__intro-txt">
-                  Get personalized size recommendation in under one minute.
-                  No measuring tape required
+                  Get measured at your home with our advanced mobile
+                  <br />
+                  measuring technology
                 </p>
               </div>
             </div>

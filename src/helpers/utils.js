@@ -468,3 +468,11 @@ export const mobileFlowStatusUpdate = (flow, state) => {
     }).then(() => Promise.resolve());
   }, 3000);
 };
+
+/**
+ * Convert centimeters to inches
+ *
+ * @param {number} cm - centimeters
+ * @returns {number} inches value
+ */
+export const cm2in = (cm) => cm / 2.54;

@@ -31,6 +31,7 @@ export const CONSTANTS = {
   SET_HEADER_ICONS_STYLE: 'SET_HEADER_ICONS_STYLE',
   SET_CAMERA: 'SET_CAMERA',
   SET_HELP_IS_ACTIVE: 'SET_HELP_IS_ACTIVE',
+  SET_HELP_BUTTON_STATUS: 'SET_HELP_BUTTON_STATUS',
   SET_IS_OPEN_RETURN_URL_DESKTOP: 'SET_IS_OPEN_RETURN_URL_DESKTOP',
   SET_PHONE_NUMBER: 'SET_PHONE_NUMBER',
   SET_PRODUCT_ID: 'SET_PRODUCT_ID',
@@ -38,6 +39,7 @@ export const CONSTANTS = {
   SET_PROCESSING_STATUS: 'SET_PROCESSING_STATUS',
   SET_PAGE_RELOAD_STATUS: 'SET_PAGE_RELOAD_STATUS',
   SET_FLOW_STATE: 'SET_FLOW_STATE',
+  SET_SETTINGS: 'SET_SETTINGS',
 };
 
 /**
@@ -320,9 +322,19 @@ export const setHelpIsActive = (isActive) => ({
 });
 
 /**
- * Set help is active
+ * Set help btn status
  *
- * @param {string} isActive - is help active
+ * @param {Boolean} status - is to show btn
+ */
+export const setHelpBtnStatus = (status) => ({
+  type: CONSTANTS.SET_HELP_BUTTON_STATUS,
+  payload: status,
+});
+
+/**
+ * Set is redirect
+ *
+ * @param {Boolean} isRedirect - is redirect
  */
 export const setIsOpenReturnUrlDesktop = (isRedirect) => ({
   type: CONSTANTS.SET_IS_OPEN_RETURN_URL_DESKTOP,
@@ -370,10 +382,10 @@ export const setWeight = (weight) => ({
 });
 
 /**
- * Set weight
- *
- * @param {any} weight - weight object
- */
+  * Set weight
+  *
+  * @param {any} weightLb - weight object
+  */
 export const setWeightLb = (weightLb) => ({
   type: CONSTANTS.SET_WEIGHT_LB,
   payload: weightLb,
@@ -382,7 +394,7 @@ export const setWeightLb = (weightLb) => ({
 /**
  * Set sendDataStatus
  *
- * @param {string} status - status string
+ * @param {string} status - status text
  */
 export const setProcessingStatus = (status) => ({
   type: CONSTANTS.SET_PROCESSING_STATUS,
@@ -407,6 +419,16 @@ export const setPageReloadStatus = (status) => ({
 export const setFlowState = (state) => ({
   type: CONSTANTS.SET_FLOW_STATE,
   payload: state,
+});
+
+/**
+ * Set widget settings
+ *
+ * @param {string} settings - widget settings
+ */
+export const setSettings = (settings) => ({
+  type: CONSTANTS.SET_SETTINGS,
+  payload: settings,
 });
 
 export default {
@@ -446,4 +468,6 @@ export default {
   setProcessingStatus,
   setPageReloadStatus,
   setFlowState,
+  setSettings,
+  setHelpBtnStatus,
 };

@@ -1,6 +1,6 @@
-# SAIA Perfect Fit Widget
+# SAIA MTM Widget
 
-Widget, that implements getting garment size for user based on SAIA Perfect Fit API.
+Widget, that implements getting garment size for user based on SAIA MTM API.
 
 ## How to run
 
@@ -102,21 +102,21 @@ dist/
 --widget-assets/
 ....*image assets*
 --index.html
---saia-pf-button.js
+--saia-mtm-button.js
 ..ignore other files
 ```
 
-Then you should upload the content of dist folder to your hosting in the folder, that you have already specified in the configuration file (```WIDGET_ASSETS_URL```). saia-pf-button.js should be included on the pages, on which you want to display a button and widget modal. This file could be included with this code:
+Then you should upload the content of dist folder to your hosting in the folder, that you have already specified in the configuration file (```WIDGET_ASSETS_URL```). saia-mtm-button.js should be included on the pages, on which you want to display a button and widget modal. This file could be included with this code:
 
 ```html
-<script src="/wp-content/my-widget-build/saia-pf-button.js"></script>
+<script src="/wp-content/my-widget-build/saia-mtm-button.js"></script>
 ```
 
 After this tag you can initialize the button. Example code:
 
 ```js
 (async () => {
-  const button = new SaiaButton({
+  const button = new SaiaMTMButton({
     // widget container element selector
     container: '.product-single__meta',
     // your SAIA API key
@@ -153,26 +153,26 @@ After this tag you can initialize the button. Example code:
 
 ```
 
-After that you will get "Your perfect fit" button on the page.
+After that you will get "Your MTM" button on the page.
 
-<a name="SaiaButton"></a>
+<a name="SaiaMTMButton"></a>
 
-## SaiaButton
+## SaiaMTMButton
 **Kind**: global class  
 
-* [SaiaButton](#SaiaButton)
-    * [new SaiaButton(options)](#new_SaiaButton_new)
-    * [.init()](#SaiaButton+init)
-    * [.checkGetParamsForMeasurements()](#SaiaButton+checkGetParamsForMeasurements)
-    * [.checkButtonVisibility()](#SaiaButton+checkButtonVisibility)
-    * [.showWidget()](#SaiaButton+showWidget)
-    * [.getSize()](#SaiaButton+getSize) ⇒ <code>Object</code> \| <code>null</code>
-    * [.displaySize(recomendations)](#SaiaButton+displaySize)
+* [SaiaMTMButton](#SaiaMTMButton)
+    * [new SaiaMTMButton(options)](#new_SaiaMTMButton_new)
+    * [.init()](#SaiaMTMButton+init)
+    * [.checkGetParamsForMeasurements()](#SaiaMTMButton+checkGetParamsForMeasurements)
+    * [.checkButtonVisibility()](#SaiaMTMButton+checkButtonVisibility)
+    * [.showWidget()](#SaiaMTMButton+showWidget)
+    * [.getSize()](#SaiaMTMButton+getSize) ⇒ <code>Object</code> \| <code>null</code>
+    * [.displaySize(recomendations)](#SaiaMTMButton+displaySize)
 
-<a name="new_SaiaButton_new"></a>
+<a name="new_SaiaMTMButton_new"></a>
 
-### new SaiaButton(options)
-SaiaButton constructor
+### new SaiaMTMButton(options)
+SaiaMTMButton constructor
 
 
 | Param | Type | Description |
@@ -191,43 +191,43 @@ SaiaButton constructor
 | [options.id] | <code>number</code> \| <code>string</code> | unique id of the button |
 | [options.returnUrl] | <code>string</code> | product page url on which user will be redirected after he pressing close button at results screen after he complite the mobile flow |
 
-<a name="SaiaButton+init"></a>
+<a name="SaiaMTMButton+init"></a>
 
-### saiaButton.init()
+### saiaMTMButton.init()
 Init widget
 
-**Kind**: instance method of [<code>SaiaButton</code>](#SaiaButton)  
-<a name="SaiaButton+checkGetParamsForMeasurements"></a>
+**Kind**: instance method of [<code>SaiaMTMButton</code>](#SaiaMTMButton)  
+<a name="SaiaMTMButton+checkGetParamsForMeasurements"></a>
 
-### saiaButton.checkGetParamsForMeasurements()
+### saiaMTMButton.checkGetParamsForMeasurements()
 Get persons data from get parameters and save them to localStorage
 
-**Kind**: instance method of [<code>SaiaButton</code>](#SaiaButton)  
-<a name="SaiaButton+checkButtonVisibility"></a>
+**Kind**: instance method of [<code>SaiaMTMButton</code>](#SaiaMTMButton)  
+<a name="SaiaMTMButton+checkButtonVisibility"></a>
 
-### saiaButton.checkButtonVisibility()
+### saiaMTMButton.checkButtonVisibility()
 Check should we display button for current product page or not
 
-**Kind**: instance method of [<code>SaiaButton</code>](#SaiaButton)  
-<a name="SaiaButton+showWidget"></a>
+**Kind**: instance method of [<code>SaiaMTMButton</code>](#SaiaMTMButton)  
+<a name="SaiaMTMButton+showWidget"></a>
 
-### saiaButton.showWidget()
+### saiaMTMButton.showWidget()
 Show widget
 
-**Kind**: instance method of [<code>SaiaButton</code>](#SaiaButton)  
-<a name="SaiaButton+getSize"></a>
+**Kind**: instance method of [<code>SaiaMTMButton</code>](#SaiaMTMButton)  
+<a name="SaiaMTMButton+getSize"></a>
 
-### saiaButton.getSize() ⇒ <code>Object</code> \| <code>null</code>
+### saiaMTMButton.getSize() ⇒ <code>Object</code> \| <code>null</code>
 Get size for current product if measurements presaved in localstorage
 
-**Kind**: instance method of [<code>SaiaButton</code>](#SaiaButton)  
+**Kind**: instance method of [<code>SaiaMTMButton</code>](#SaiaMTMButton)  
 **Returns**: <code>Object</code> \| <code>null</code> - recomendations  
-<a name="SaiaButton+displaySize"></a>
+<a name="SaiaMTMButton+displaySize"></a>
 
-### saiaButton.displaySize(recomendations)
+### saiaMTMButton.displaySize(recomendations)
 Display sizes on the button
 
-**Kind**: instance method of [<code>SaiaButton</code>](#SaiaButton)  
+**Kind**: instance method of [<code>SaiaMTMButton</code>](#SaiaMTMButton)  
 
 | Param | Type | Description |
 | --- | --- | --- |

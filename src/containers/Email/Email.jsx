@@ -27,13 +27,6 @@ class Email extends Component {
     };
   }
 
-  /**
-   * Check button state on component update
-   */
-  componentDidUpdate() {
-    this.checkButtonState();
-  }
-
   componentDidMount() {
     const { email, agree } = this.props;
 
@@ -55,6 +48,13 @@ class Email extends Component {
         isEmail: true,
       });
     }
+  }
+
+  /**
+   * Check button state on component update
+   */
+  componentDidUpdate() {
+    this.checkButtonState();
   }
 
   /**

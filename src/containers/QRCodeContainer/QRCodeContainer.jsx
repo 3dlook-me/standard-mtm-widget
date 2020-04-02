@@ -107,10 +107,7 @@ class QRCodeContainer extends Component {
       token,
       flowId,
       isMobile,
-      setRecommendations,
-      setPersonId,
-      origin,
-      setBodyType,
+      setMeasurements,
     } = props;
 
     if (token && flowId && !this.api && !this.flow) {
@@ -146,29 +143,10 @@ class QRCodeContainer extends Component {
               }
 
               if (flowState.state.status === 'finished') {
-                const {
-                  recommendations,
-                  measurements,
-                  saiaPersonId,
-                  bodyType,
-                } = flowState.state;
-                setRecommendations(recommendations);
+                const { measurements } = flowState.state;
+                setMeasurements(measurements);
 
-                send('recommendations', recommendations, origin);
-                send('data', {
-                  ...measurements,
-                  personId: saiaPersonId,
-                }, origin);
-                setPersonId(saiaPersonId);
-                setBodyType(bodyType);
-
-                if (!recommendations.normal
-                  && !recommendations.tight
-                  && !recommendations.loose) {
-                  route('/not-found', true);
-                } else {
-                  route('/results', true);
-                }
+                route('/results', true);
               }
             })
             .catch((err) => console.log(err));

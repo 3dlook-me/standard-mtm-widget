@@ -88,7 +88,6 @@ class Tutorial extends BaseMobileFlow {
                 title="tutorial video"
                 src={`https://www.youtube.com/embed/j4hYBfykfQo?autoplay=1&origin=${window.location.origin}&enablejsapi=1&rel=0&showinfo=0&autohide=1`}
                 frameBorder="0"
-                allowFullScreen
               />
             </div>
 

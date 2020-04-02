@@ -65,8 +65,8 @@ class Upload extends Component {
   componentWillUnmount() {
     if (this.unsubscribe) this.unsubscribe();
     clearInterval(this.timer);
-    window.removeEventListener('unload', this.reloadListener);
 
+    window.removeEventListener('unload', this.reloadListener);
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     document.removeEventListener('webkitvisibilitychange', this.handleVisibilityChange);
   }
@@ -189,9 +189,6 @@ class Upload extends Component {
       sideImage,
       height,
       gender,
-      brand,
-      bodyPart,
-      isFromDesktopToMobile,
       phoneNumber,
     } = props;
 
@@ -200,16 +197,15 @@ class Upload extends Component {
     } = props;
 
     const {
-      setRecommendations,
       setHardValidation,
       addFrontImage,
       addSideImage,
       setPersonId,
       setMeasurements,
-      setBodyType,
       origin,
       email,
       weight,
+      units,
       setProcessingStatus,
     } = this.props;
 
@@ -253,12 +249,19 @@ class Upload extends Component {
       if (!personId) {
         setProcessingStatus('Initiating Profile Creation');
 
-        const createdPersonId = await this.api.person.create({
+        const mtmClientParams = {
+          unit: units,
+          ...(phoneNumber && { phoneNumber }),
+          source: 'widget',
+        };
+
+        const mtmClientId = await this.api.mtmClient.create(mtmClientParams);
+
+        const createdPersonId = await this.api.mtmClient.createPerson(mtmClientId, {
           gender,
           height,
           email,
           ...(weight && { weight }),
-          measurementsType: 'all',
         });
 
         setPersonId(createdPersonId);
@@ -301,86 +304,19 @@ class Upload extends Component {
       setProcessingStatus('Sending Your Results');
       await wait(1000);
 
-      const measurements = {
-        hips: person.volume_params.high_hips,
-        chest: person.volume_params.chest,
-        waist: person.volume_params.waist,
-        thigh: person.volume_params.thigh,
-        low_hips: person.volume_params.low_hips,
-        inseam: person.front_params.inseam,
-        gender,
-        height,
-      };
+      const measurements = { ...person };
 
-      setBodyType(person.volume_params.body_type);
+      send('data', measurements, origin);
+
       setMeasurements(measurements);
 
-      await this.flow.updateState({
+      await this.flow.update({
         measurements,
-        bodyType: person.volume_params.body_type,
       });
-
-      if (isFromDesktopToMobile) {
-        localStorage.setItem('saia-pf-widget-data', JSON.stringify(measurements));
-      }
-
-      let recommendations;
-
-      const originalRecommendations = await this.api.sizechart.getSize({
-        gender,
-        hips: person.volume_params.high_hips,
-        chest: person.volume_params.chest,
-        waist: person.volume_params.waist,
-        thigh: person.volume_params.thigh,
-        low_hips: person.volume_params.low_hips,
-        inseam: person.front_params.inseam,
-        brand,
-        body_part: bodyPart,
-      });
-
-      if (originalRecommendations) {
-        const { normal } = originalRecommendations;
-
-        if (normal && normal.size === '23') {
-          normal.size = '24';
-        }
-
-        recommendations = transformRecomendations(originalRecommendations);
-
-        setRecommendations(recommendations);
-      }
-
-      send('recommendations', recommendations, origin);
 
       gaUploadOnContinue();
 
-      if (!recommendations || (!recommendations.normal
-        && !recommendations.tight
-        && !recommendations.loose)) {
-        route('/not-found', true);
-      // ok, show just recommendations
-      } else {
-        const {
-          id,
-        } = person;
-
-        const customerData = {};
-
-        if (phoneNumber) {
-          customerData.phone = phoneNumber;
-        }
-
-        send('data', {
-          ...measurements,
-          personId,
-        }, origin);
-
-        await this.flow.updateState({
-          saiaPersonId: id,
-        }).then(() => {
-          route('/results', true);
-        });
-      }
+      route('/results', true);
     } catch (error) {
       this.setState({
         isPending: false,

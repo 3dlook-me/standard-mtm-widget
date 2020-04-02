@@ -22,11 +22,15 @@
 
   &:not(.widget-container--no-bg) {
     .header:not(.active) {
+      text {
+        fill: black;
+      }
+
       .header__svg-fill {
-        stroke: white;
+        stroke: black;
 
         &--circle {
-          stroke: #dddddd;
+          stroke: black;
         }
       }
     }

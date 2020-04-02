@@ -1,7 +1,11 @@
 import { CONSTANTS } from './actions';
 
 export const INITIAL_STATE = {
-  measurements: null,
+  measurements: {
+    front_params: {},
+    side_params: {},
+    volume_params: {},
+  },
   origin: null,
   returnUrl: null,
   widgetUrl: null,
@@ -55,12 +59,17 @@ export const INITIAL_STATE = {
   phoneNumber: null,
   fakeSize: false,
 
+  settings: {
+    results_screen: 'measurements',
+  },
+
   headerIconsStyle: 'default',
   camera: null,
   isHelpActive: false,
   isOpenReturnUrlDesktop: false,
   sendDataStatus: '',
   pageReloadStatus: false,
+  helpBtnStatus: true,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -287,6 +296,21 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         flowState: action.payload,
+      };
+
+    case CONSTANTS.SET_SETTINGS:
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          ...action.payload,
+        },
+      };
+
+    case CONSTANTS.SET_HELP_BUTTON_STATUS:
+      return {
+        ...state,
+        helpBtnStatus: action.payload,
       };
 
     default:

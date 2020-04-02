@@ -5,8 +5,15 @@
   padding: 0 28px;
   padding-top: 36px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+
+  @include breakpoint($iphoneSE) {
+    padding: 10px 10px 0;
+  }
+
+  &__close {
+    margin-left: auto;
+  }
 
   &__help,
   &__close {
@@ -15,6 +22,10 @@
     border: none;
     position: relative;
     z-index: 10;
+
+    &--hide {
+      display: none;
+    }
   }
 
   &--white:not(.active) &__help {

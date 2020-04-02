@@ -4,17 +4,19 @@ $mobile-image-height: 340px;
 .upload-file {
   display: flex;
   cursor: pointer;
-  height: 123px;
-  width: 96px;
-  border: 2px solid #F88E32;
-  border-radius: 25px;
   background: #FFFFFF;
   transition: all ease 300ms;
   overflow: hidden;
   margin: 0 auto;
+  width: 100%;
+  max-width: 200px;
 
-  &:hover {
-    box-shadow: 0 4px 10px 0 rgba(0,0,0,0.11);
+  @include breakpoint($mobile) {
+    height: 76vw;
+  }
+
+  @include breakpoint($iphoneSE) {
+    height: 150px;
   }
 
   &__image {
@@ -35,32 +37,14 @@ $mobile-image-height: 340px;
       height: 100%;
       object-fit: cover;
     }
+
+    &--placeholder svg {
+      width: 200px;
+      height: $mobile-image-height;
+    }
   }
 
   input {
     @include visually-hidden;
-  }
-}
-
-.upload--is-mobile {
-  .upload-file {
-
-    @include breakpoint($mobile) {
-      border: 0;
-      border-radius: 0;
-      height: $mobile-image-height;
-      width: 100%;
-      max-width: 200px;
-    }
-
-    &__image {
-
-      &--placeholder svg {
-        @include breakpoint($mobile) {
-          width: 200px;
-          height: $mobile-image-height;
-        }
-      }
-    }
   }
 }

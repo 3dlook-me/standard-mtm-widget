@@ -1,22 +1,31 @@
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import { Link } from 'preact-router';
 import { connect } from 'react-redux';
 
-import { isMobileDevice, parseGetParams } from '../../helpers/utils';
+import {
+  browserValidation,
+  isMobileDevice,
+  parseGetParams,
+} from '../../helpers/utils';
 import { gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
+import { Browser } from '..';
+import SettingsService from '../../services/settingsService';
 
 import './Welcome.scss';
-
-import discountLogo from '../../images/discount-img.png';
 
 /**
  * Welcome page component
  */
 class Welcome extends Component {
-  state = {
-    isButtonDisabled: true,
+  constructor() {
+    super();
+
+    this.state = {
+      isButtonDisabled: true,
+      invalidBrowser: false,
+    };
   }
 
   componentDidMount() {
@@ -33,14 +42,34 @@ class Welcome extends Component {
       setFakeSize,
       setIsOpenReturnUrlDesktop,
       setProductId,
+      setWidgetUrl,
+      resetState,
+      setSettings,
     } = this.props;
+
+    resetState();
+
+    this.widgetContainer = document.querySelector('.widget-container');
+
+    if (isMobileDevice()) {
+      if (!browserValidation()) {
+        setIsMobile(true);
+        setWidgetUrl(window.location.href);
+        setReturnUrl(matches.returnUrl);
+
+        this.setState({
+          invalidBrowser: true,
+        });
+
+        return;
+      }
+    }
+
+    this.widgetContainer.classList.remove('widget-container--no-bg');
 
     const token = matches.key || API_KEY || parseGetParams().key;
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;
-
-    this.widgetContainer = document.querySelector('.widget-container');
-    this.widgetContainer.classList.remove('widget-container--no-bg');
 
     setToken(token);
     setBrand(brand);
@@ -69,7 +98,15 @@ class Welcome extends Component {
           isButtonDisabled: false,
         });
       })
-      .catch(err => alert(err.message));
+      .catch((err) => alert(err.message));
+
+    const settingsService = new SettingsService(token);
+
+    settingsService.getSettings()
+      .then((res) => {
+        setSettings(res);
+      })
+      .catch((err) => alert(err.message));
   }
 
   componentWillUnmount() {
@@ -77,43 +114,36 @@ class Welcome extends Component {
   }
 
   render() {
-    const { isButtonDisabled } = this.state;
+    const { isButtonDisabled, invalidBrowser } = this.state;
 
     return (
-      <section className="screen active">
-        <div className="screen__content welcome">
-          <div className="email__discount-banner">
-            <figure className="email__discount-logo">
-              <img src={discountLogo} alt="discount-logo" />
-            </figure>
-            <div className="email__discount-info">
-              <p>
-                Get 10% off
-              </p>
-              <p>
-                for your purchase with your
-                <br />
-                personalized size recommendation.
-              </p>
+      <Fragment>
+        { invalidBrowser ? (
+          <Browser />
+        ) : (
+          <section className="screen active">
+            <div className="screen__content welcome">
+              <div className="screen__intro">
+                <h4 className="screen__intro-title">
+                  Forget about measuring tape or appointments.
+                </h4>
+                <p className="screen__intro-txt">
+                  Get measured at your home with our advanced mobile
+                  <br />
+                  measuring technology
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="screen__intro">
-            <h4 className="screen__intro-title">
-              Never guess your size again
-            </h4>
-            <p className="screen__intro-txt">
-              Get personalized size recommendation in under one minute. No measuring tape required
-            </p>
-          </div>
-        </div>
-        <div className="screen__footer">
-          <Link className="button" href="/height" onClick={gaWelcomeOnContinue} disabled={isButtonDisabled}>
-            <span>next</span>
-          </Link>
-        </div>
-      </section>
+            <div className="screen__footer">
+              <Link className="button" href="/email" onClick={gaWelcomeOnContinue} disabled={isButtonDisabled}>
+                <span>start</span>
+              </Link>
+            </div>
+          </section>
+        )}
+      </Fragment>
     );
   }
 }
 
-export default connect(state => state, actions)(Welcome);
+export default connect((state) => state, actions)(Welcome);

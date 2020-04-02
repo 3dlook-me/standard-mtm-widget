@@ -2,13 +2,12 @@ import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
-import { gaSizeNotFound } from '../../helpers/ga';
-import { objectToUrlParams } from '../../helpers/utils';
 import actions from '../../store/actions';
+import { gaSizeNotFound } from '../../helpers/ga';
+import { mobileFlowStatusUpdate } from '../../helpers/utils';
 import FlowService from '../../services/flowService';
 
 import './NotFound.scss';
-
 import confusedIcon1x from '../../images/confused.png';
 import confusedIcon2x from '../../images/confused@2x.png';
 
@@ -16,6 +15,22 @@ import confusedIcon2x from '../../images/confused@2x.png';
  * Size not found page component
  */
 class NotFound extends Component {
+  constructor(props) {
+    super(props);
+
+    const { setPageReloadStatus } = props;
+
+    this.reloadListener = () => {
+      setPageReloadStatus(true);
+    };
+
+    window.addEventListener('unload', this.reloadListener);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('unload', this.reloadListener);
+  }
+
   componentDidMount = async () => {
     gaSizeNotFound();
 
@@ -24,6 +39,8 @@ class NotFound extends Component {
       addSideImage,
       token,
       flowId,
+      pageReloadStatus,
+      isFromDesktopToMobile,
     } = this.props;
 
     addFrontImage(null);
@@ -31,6 +48,15 @@ class NotFound extends Component {
 
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
+
+    // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
+    if (pageReloadStatus && isFromDesktopToMobile) {
+      const { flowState, setPageReloadStatus } = this.props;
+
+      setPageReloadStatus(false);
+
+      mobileFlowStatusUpdate(this.flow, flowState);
+    }
   }
 
   close = async () => {
@@ -57,8 +83,8 @@ class NotFound extends Component {
           <img className="not-found__image" src={confusedIcon1x} srcSet={`${confusedIcon1x} 1x, ${confusedIcon2x} 2x`} alt="not found" />
 
           <p className="not-found__text-2">
-            {'We '}
-            <span>can’t find your Perfect Fit</span>
+            {'We can’t find your  '}
+            <span>Perfect Fit</span>
             {' for this item. Please '}
             <br />
             try out other items.
@@ -72,4 +98,4 @@ class NotFound extends Component {
   }
 }
 
-export default connect(state => state, actions)(NotFound);
+export default connect((state) => state, actions)(NotFound);

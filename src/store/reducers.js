@@ -1,15 +1,22 @@
 import { CONSTANTS } from './actions';
 
 export const INITIAL_STATE = {
-  measurements: null,
+  measurements: {
+    front_params: {},
+    side_params: {},
+    volume_params: {},
+  },
   origin: null,
   returnUrl: null,
+  widgetUrl: null,
   isFromDesktopToMobile: false,
   isMobile: false,
   token: null,
 
-  gender: 'female',
+  gender: null,
   height: null,
+  weight: null,
+  weightLb: null,
   bodyType: null,
 
   frontImage: null,
@@ -17,6 +24,7 @@ export const INITIAL_STATE = {
 
   flowId: null,
   personId: null,
+  flowState: null,
 
   brand: null,
   bodyPart: null,
@@ -47,14 +55,21 @@ export const INITIAL_STATE = {
   },
 
   email: null,
+  units: 'in',
   phoneNumber: null,
   fakeSize: false,
+
+  settings: {
+    results_screen: 'measurements',
+  },
 
   headerIconsStyle: 'default',
   camera: null,
   isHelpActive: false,
   isOpenReturnUrlDesktop: false,
-  units: 'in',
+  sendDataStatus: '',
+  pageReloadStatus: false,
+  helpBtnStatus: true,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -86,6 +101,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         returnUrl: action.payload,
+      };
+
+    case CONSTANTS.SET_WIDGET_URL:
+      return {
+        ...state,
+        widgetUrl: action.payload,
       };
 
     case CONSTANTS.SET_ORIGIN:
@@ -245,6 +266,51 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         units: action.payload,
+      };
+
+    case CONSTANTS.SET_WEIGHT:
+      return {
+        ...state,
+        weight: action.payload,
+      };
+
+    case CONSTANTS.SET_WEIGHT_LB:
+      return {
+        ...state,
+        weightLb: action.payload,
+      };
+
+    case CONSTANTS.SET_PROCESSING_STATUS:
+      return {
+        ...state,
+        sendDataStatus: action.payload,
+      };
+
+    case CONSTANTS.SET_PAGE_RELOAD_STATUS:
+      return {
+        ...state,
+        pageReloadStatus: action.payload,
+      };
+
+    case CONSTANTS.SET_FLOW_STATE:
+      return {
+        ...state,
+        flowState: action.payload,
+      };
+
+    case CONSTANTS.SET_SETTINGS:
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          ...action.payload,
+        },
+      };
+
+    case CONSTANTS.SET_HELP_BUTTON_STATUS:
+      return {
+        ...state,
+        helpBtnStatus: action.payload,
       };
 
     default:

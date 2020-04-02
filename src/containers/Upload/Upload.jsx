@@ -11,7 +11,6 @@ import FlowService from '../../services/flowService';
 import { store } from '../../store';
 import {
   send,
-  transformRecomendations,
   wait,
   mobileFlowStatusUpdate,
 } from '../../helpers/utils';
@@ -252,6 +251,7 @@ class Upload extends Component {
 
         const mtmClientParams = {
           unit: units,
+          email,
           ...(phoneNumber && { phoneNumber }),
           source: 'widget',
         };

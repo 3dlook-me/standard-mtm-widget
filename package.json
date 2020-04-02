@@ -13,7 +13,6 @@
     "build:prod": "cross-env NODE_ENV=production CONFIG=production webpack --progress",
     "build:3dlook": "cross-env NODE_ENV=production CONFIG=3dlook webpack --progress",
     "build:shopify": "cross-env NODE_ENV=production CONFIG=shopify webpack --progress",
-    "build:sales-demo": "cross-env NODE_ENV=production CONFIG=sales-demo webpack --progress",
     "test": "karma start karma.config.js --log-level debug --single-run",
     "docs": "jsdoc -r src/button.js -c .jsdoc.json -d docs",
     "readme": "jsdoc2md --template ./.jsdoc2md/readme.hbs --files src/button.js -c .jsdoc.json > README.md",

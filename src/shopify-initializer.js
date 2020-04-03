@@ -1,4 +1,4 @@
-import SaiaButton from './button';
+import SaiaMTMButton from './button';
 
 /**
  * Get your fit button
@@ -20,7 +20,7 @@ import SaiaButton from './button';
     parentDiv.insertBefore(cont, cartAdd);
   }
 
-  const button = new SaiaButton({
+  const button = new SaiaMTMButton({
     key: API_KEY,
     widgetUrl: WIDGET_HOST,
   });

@@ -2,7 +2,7 @@ import API from '@3dlook/saia-sdk/lib/api';
 
 import {
   transformRecomendations,
-  parseGetParams,
+  parseHashParams,
   isMobileDevice,
   send,
 } from './helpers/utils';
@@ -152,28 +152,33 @@ class SaiaButton {
    * Get persons data from get parameters and save them to localStorage
    */
   checkGetParamsForMeasurements() {
-    const params = parseGetParams();
+    const params = parseHashParams();
 
     if (params.chest
       && params.height
       && params.hips
       && params.waist
-      && params.low_hips
-      && params.thigh
       && params.gender) {
       const data = {
         hips: parseFloat(params.hips),
         chest: parseFloat(params.chest),
         waist: parseFloat(params.waist),
-        low_hips: parseFloat(params.low_hips),
-        thigh: parseFloat(params.thigh),
         gender: params.gender,
         height: parseFloat(params.height),
         personId: parseFloat(params.personId),
       };
 
+      // optional params
       if (params.inseam) {
         data.inseam = parseFloat(params.inseam);
+      }
+
+      if (params.low_hips) {
+        data.low_hips = parseFloat(params.low_hips);
+      }
+
+      if (params.thigh) {
+        data.thigh = parseFloat(params.thigh);
       }
 
       send('data', data, window.location.origin);

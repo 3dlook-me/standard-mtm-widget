@@ -94,7 +94,7 @@ class Results extends BaseMobileFlow {
 
     if (isFromDesktopToMobile) {
       // pass measurements via hash get params to the destination page
-      window.location = `${returnUrl}?${objectToUrlParams({
+      window.location = `${returnUrl}#/?${objectToUrlParams({
         ...measurements,
         personId,
       })}`;
@@ -102,7 +102,7 @@ class Results extends BaseMobileFlow {
 
     if (isMobile) {
       if (measurements) {
-        window.location = `${returnUrl}?${objectToUrlParams({
+        window.location = `${returnUrl}#/?${objectToUrlParams({
           ...measurements,
           personId,
         })}`;

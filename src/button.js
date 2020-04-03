@@ -2,7 +2,7 @@ import API from '@3dlook/saia-sdk/lib/api';
 
 import {
   transformRecomendations,
-  parseGetParams,
+  parseHashParams,
   isMobileDevice,
   send,
 } from './helpers/utils';
@@ -152,31 +152,36 @@ class SaiaMTMButton {
    * Get persons data from get parameters and save them to localStorage
    */
   checkGetParamsForMeasurements() {
-    const params = parseGetParams();
+    const params = parseHashParams();
 
     if (params.chest
       && params.height
       && params.hips
       && params.waist
-      && params.low_hips
-      && params.thigh
       && params.gender) {
       const data = {
         hips: parseFloat(params.hips),
         chest: parseFloat(params.chest),
         waist: parseFloat(params.waist),
-        low_hips: parseFloat(params.low_hips),
-        thigh: parseFloat(params.thigh),
         gender: params.gender,
         height: parseFloat(params.height),
         personId: parseFloat(params.personId),
       };
 
+      // optional params
       if (params.inseam) {
         data.inseam = parseFloat(params.inseam);
       }
 
-      send('data', data, window.location.origin);
+      if (params.low_hips) {
+        data.low_hips = parseFloat(params.low_hips);
+      }
+
+      if (params.thigh) {
+        data.thigh = parseFloat(params.thigh);
+      }
+
+      localStorage.setItem('saia-pf-widget-data', JSON.stringify(data));
     }
   }
 
@@ -247,37 +252,29 @@ class SaiaMTMButton {
    * @returns {Object|null} recomendations
    */
   async getSize() {
-    let data;
-
-    data = parseGetParams();
-
-    if (Object.keys(data).length <= 1) {
-      data = JSON.parse(localStorage.getItem('saia-pf-widget-data'));
-    }
-
-    const measurements = {
-      ...data,
-    };
-
-    delete measurements.personId;
+    const measurements = JSON.parse(localStorage.getItem('saia-pf-widget-data'));
 
     if (measurements) {
-      let recomendations;
+      delete measurements.personId;
 
-      const originalRecommendations = await this.api.sizechart.getSize({
-        ...measurements,
-        brand: this.defaults.brand,
-        body_part: this.defaults.bodyPart,
-      });
+      let recomendations;
+      let originalRecommendations;
+
+      if (this.defaults.brand && this.defaults.bodyPart) {
+        originalRecommendations = await this.api.sizechart.getSize({
+          ...measurements,
+          brand: this.defaults.brand,
+          body_part: this.defaults.bodyPart,
+        });
+      } else {
+        originalRecommendations = await this.api.product.getRecommendations({
+          ...measurements,
+          url: this.defaults.product.url,
+        });
+      }
 
 
       if (originalRecommendations) {
-        const { normal } = originalRecommendations;
-
-        if (normal && normal.size === '23') {
-          normal.size = '24';
-        }
-
         recomendations = transformRecomendations(originalRecommendations);
       }
 

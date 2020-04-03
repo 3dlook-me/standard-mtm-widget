@@ -181,7 +181,7 @@ class SaiaButton {
         data.thigh = parseFloat(params.thigh);
       }
 
-      send('data', data, window.location.origin);
+      localStorage.setItem('saia-pf-widget-data', JSON.stringify(data));
     }
   }
 

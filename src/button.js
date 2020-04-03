@@ -13,9 +13,9 @@ const modalTemplate = require('./templates/modal-drop.html');
 
 let uid = 0;
 
-class SaiaButton {
+class SaiaMTMButton {
   /**
-   * SaiaButton constructor
+   * SaiaMTMButton constructor
    *
    * @param {Object} options - parameters
    * @param {string} options.container - selector for button container
@@ -90,22 +90,22 @@ class SaiaButton {
    */
   init() {
     this.checkGetParamsForMeasurements();
-    const buttonClasses = `saia-pf-button--${this.defaults.id}`;
+    const buttonClasses = `saia-mtm-button--${this.defaults.id}`;
     const buttonTemplateClasses = buttonTemplate.replace('classes', buttonClasses);
     const container = document.querySelector(this.defaults.container);
     container.insertAdjacentHTML('beforeend', buttonTemplateClasses);
 
     // check if modal container is exists
-    let modal = document.querySelector('.saia-pf-drop');
+    let modal = document.querySelector('.saia-mtm-drop');
     if (!modal) {
       // append modal drop to body
       document.body.insertAdjacentHTML('beforeend', modalTemplate);
     }
 
     // get modal and button elements by their selectors
-    modal = document.querySelector('.saia-pf-drop');
+    modal = document.querySelector('.saia-mtm-drop');
     this.modal = modal;
-    this.buttonEl = document.querySelector(`.saia-pf-button--${this.defaults.id}`);
+    this.buttonEl = document.querySelector(`.saia-mtm-button--${this.defaults.id}`);
     this.buttonEl.type = 'button';
 
     this.buttonEl.addEventListener('click', () => this.showWidget());
@@ -299,6 +299,6 @@ class SaiaButton {
   }
 }
 
-window.SaiaButton = SaiaButton;
+window.SaiaMTMButton = SaiaMTMButton;
 
-export default SaiaButton;
+export default SaiaMTMButton;

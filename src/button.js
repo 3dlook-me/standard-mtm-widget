@@ -263,21 +263,23 @@ class SaiaButton {
 
     if (measurements) {
       let recomendations;
+      let originalRecommendations;
 
-      const originalRecommendations = await this.api.sizechart.getSize({
-        ...measurements,
-        brand: this.defaults.brand,
-        body_part: this.defaults.bodyPart,
-      });
+      if (this.defaults.brand && this.defaults.bodyPart) {
+        originalRecommendations = await this.api.sizechart.getSize({
+          ...measurements,
+          brand: this.defaults.brand,
+          body_part: this.defaults.bodyPart,
+        });
+      } else {
+        originalRecommendations = await this.api.product.getRecommendations({
+          ...measurements,
+          url: this.defaults.product.url,
+        });
+      }
 
 
       if (originalRecommendations) {
-        const { normal } = originalRecommendations;
-
-        if (normal && normal.size === '23') {
-          normal.size = '24';
-        }
-
         recomendations = transformRecomendations(originalRecommendations);
       }
 

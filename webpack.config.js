@@ -10,7 +10,6 @@ const RenameOutputPlugin = require('rename-output-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackCleanPlugin = require('webpack-clean');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
-const TransferWebpackPlugin = require('transfer-webpack-plugin');
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
@@ -88,12 +87,6 @@ const plugins = [
   }),
   new HtmlWebpackInlineSourcePlugin(),
   new CleanWebpackPlugin(),
-  new TransferWebpackPlugin([
-    {
-      from: 'node_modules/@3dlook/camera/dist/widget-assets',
-      to: 'widget-assets',
-    },
-  ]),
 ];
 
 // set plugins for shopify build
@@ -178,7 +171,6 @@ module.exports = {
 
       {
         test: /\.jsx$/,
-        exclude: /node_modules/,
         use: [
           {
             loader: 'babel-loader',

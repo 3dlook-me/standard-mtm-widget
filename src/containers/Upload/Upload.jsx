@@ -3,8 +3,7 @@ import { route } from 'preact-router';
 import API from '@3dlook/saia-sdk/lib/api';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import Camera from '@3dlook/camera';
-import '@3dlook/camera/dist/style.css';
+import Camera from '@3dlook/camera/src/Camera';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';

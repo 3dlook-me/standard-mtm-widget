@@ -1,11 +1,11 @@
 /* eslint-disable */
 import { expect } from 'chai';
-import SaiaButton from '../src/button';
+import SaiaMTMButton from '../src/button';
 import sinon from 'sinon';
 
 window.API_HOST = 'https://saia-test.3dlook.me/api/v2/';
 
-describe('SaiaButton', () => {
+describe('SaiaMTMButton', () => {
 
   let button = null;
 
@@ -16,7 +16,7 @@ describe('SaiaButton', () => {
 
     document.body.appendChild(container);
 
-    button = new SaiaButton({
+    button = new SaiaMTMButton({
       container: '.container',
       key: 'test api key',
       widgetUrl: 'test widget url',
@@ -24,18 +24,18 @@ describe('SaiaButton', () => {
   });
 
   it('should throw an error if container is not provided', () => {
-    expect(() => new SaiaButton({ container: '' })).to.throw();
+    expect(() => new SaiaMTMButton({ container: '' })).to.throw();
   });
 
   it('should throw an error if key is not provided', () => {
-    expect(() => new SaiaButton({
+    expect(() => new SaiaMTMButton({
       container: '.fake-container-selector',
       key: '',
     })).to.throw();
   });
 
   it('should throw an error if widgetUrl is not provided', () => {
-    expect(() => new SaiaButton({
+    expect(() => new SaiaMTMButton({
       container: '.fake-container-selector',
       key: 'fake api key',
     })).to.throw();

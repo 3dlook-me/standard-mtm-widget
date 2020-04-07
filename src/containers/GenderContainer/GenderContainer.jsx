@@ -7,7 +7,7 @@ import FlowService from '../../services/flowService';
 import {
   gaDataMale,
   gaDataFemale,
-  gaOnWeightNext,
+  gaGenderOnContinue,
 } from '../../helpers/ga';
 import {
   Stepper,
@@ -65,7 +65,7 @@ class GenderContainer extends Component {
    * Go to the next screen
    */
   next = async () => {
-    gaOnWeightNext();
+    gaGenderOnContinue();
 
     route('/height', false);
   }

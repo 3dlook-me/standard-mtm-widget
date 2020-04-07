@@ -3,7 +3,7 @@ import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
 import actions from '../../store/actions';
-import { gaTutorialMobile, gaTutorialBack } from '../../helpers/ga';
+import { gaTutorialMobile } from '../../helpers/ga';
 import { isMobileDevice } from '../../helpers/utils';
 import { Stepper, BaseMobileFlow } from '../../components';
 
@@ -53,13 +53,7 @@ class Tutorial extends BaseMobileFlow {
   }
 
   back = () => {
-    const { isMobile } = this.props;
-
-    if (isMobile) {
-      gaTutorialMobile();
-    } else {
-      gaTutorialBack();
-    }
+    gaTutorialMobile();
 
     route('/upload', true);
   }

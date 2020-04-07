@@ -69,6 +69,7 @@ const plugins = [
     TEST_BODY_PART: JSON.stringify(config.TEST_BODY_PART),
     SHOPIFY_HOST: JSON.stringify(config.SHOPIFY_HOST),
     WIDGET_HOST: JSON.stringify(config.WIDGET_HOST),
+    GA_TRACKING_ID: JSON.stringify(config.GA_TRACKING_ID),
     VERSION: JSON.stringify(gitRevisionPlugin.version()),
     COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
     BRANCH: JSON.stringify(gitRevisionPlugin.branch()),

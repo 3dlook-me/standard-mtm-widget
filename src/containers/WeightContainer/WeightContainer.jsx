@@ -7,6 +7,7 @@ import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { getWeightKg } from '../../helpers/utils';
 import { Stepper } from '../../components';
+import { gaOnWeightNext } from '../../helpers/ga';
 
 import './WeightContainer.scss';
 
@@ -165,6 +166,8 @@ class WeightContainer extends Component {
   }
 
   toNextScreen = async () => {
+    gaOnWeightNext();
+
     const {
       gender,
       height,
@@ -174,18 +177,18 @@ class WeightContainer extends Component {
       email,
     } = this.props;
 
+    await this.flow.updateState({
+      status: 'set metadata',
+      gender,
+      height,
+      units,
+      email,
+      ...(weight && { weight }),
+    });
+
     if (isMobile) {
       route('/tutorial', false);
     } else {
-      await this.flow.updateState({
-        status: 'set metadata',
-        gender,
-        height,
-        units,
-        email,
-        ...(weight && { weight }),
-      });
-
       route('/qrcode', false);
     }
   }

@@ -1,3 +1,12 @@
+import ReactGA from 'react-ga';
+
+if (GA_TRACKING_ID) {
+  ReactGA.initialize(GA_TRACKING_ID);
+  ReactGA.pageview(window.location.pathname + window.location.search);
+} else {
+  const ga = () => true;
+}
+
 export const gaStart = () => ga('send', {
   hitType: 'event',
   eventCategory: 'widget',
@@ -7,6 +16,12 @@ export const gaStart = () => ga('send', {
 export const gaWelcomeOnContinue = () => ga('send', {
   hitType: 'event',
   eventCategory: 'start',
+  eventAction: 'continue',
+});
+
+export const gaGenderOnContinue = () => ga('send', {
+  hitType: 'event',
+  eventCategory: 'gender',
   eventAction: 'continue',
 });
 
@@ -42,31 +57,11 @@ export const gaOnHeightNext = () => ga('send', {
   eventAction: 'continue',
 });
 
-export const gaDataOnContinue = () => ga('send', {
-  hitType: 'event',
-  eventCategory: 'gender',
-  eventAction: 'continue',
-});
-
 export const gaTutorialMobile = () => ga('send', {
   hitType: 'event',
   eventCategory: 'tutorial',
   eventAction: 'next',
   eventLabel: 'mobile',
-});
-
-export const gaTutorialDesktop = () => ga('send', {
-  hitType: 'event',
-  eventCategory: 'tutorial',
-  eventAction: 'view',
-  eventLabel: 'desktop',
-});
-
-export const gaTutorialBack = () => ga('send', {
-  hitType: 'event',
-  eventCategory: 'tutorial',
-  eventAction: 'back',
-  eventLabel: 'desktop',
 });
 
 export const gaCopyUrl = () => ga('send', {

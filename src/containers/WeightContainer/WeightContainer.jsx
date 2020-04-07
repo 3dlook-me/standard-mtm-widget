@@ -7,6 +7,7 @@ import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { getWeightKg } from '../../helpers/utils';
 import { Stepper } from '../../components';
+import { gaOnWeightNext } from '../../helpers/ga';
 
 import './WeightContainer.scss';
 
@@ -165,6 +166,8 @@ class WeightContainer extends Component {
   }
 
   toNextScreen = async () => {
+    gaOnWeightNext();
+
     const {
       gender,
       height,

@@ -2,8 +2,6 @@
 module.exports = {
   // saia api host url
   API_HOST: 'https://saia-test.3dlook.me',
-  // saia api host url
-  API_DENIM_HOST: 'https://wlb-denim-test.3dlook.me',
   // client api key
   API_KEY: '123',
   // shopify host url

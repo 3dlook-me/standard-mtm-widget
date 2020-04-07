@@ -4,7 +4,7 @@ if (GA_TRACKING_ID) {
   ReactGA.initialize(GA_TRACKING_ID);
   ReactGA.pageview(window.location.pathname + window.location.search);
 } else {
-  const ga = () => true;
+  window.ga = () => true;
 }
 
 export const gaStart = () => ga('send', {

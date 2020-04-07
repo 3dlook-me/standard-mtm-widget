@@ -178,19 +178,19 @@ class WeightContainer extends Component {
       settings,
     } = this.props;
 
+    await this.flow.updateState({
+      status: 'set metadata',
+      gender,
+      height,
+      units,
+      email,
+      settings,
+      ...(weight && { weight }),
+    });
+
     if (isMobile) {
       route('/tutorial', false);
     } else {
-      await this.flow.updateState({
-        status: 'set metadata',
-        gender,
-        height,
-        units,
-        email,
-        settings,
-        ...(weight && { weight }),
-      });
-
       route('/qrcode', false);
     }
   }

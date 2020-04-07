@@ -7,7 +7,7 @@ if (GA_TRACKING_ID) {
   const ga = () => true;
 }
 
-export const gaStart = () => ReactGA.ga('send', {
+export const gaStart = () => ga('send', {
   hitType: 'event',
   eventCategory: 'widget',
   eventAction: 'initiate',

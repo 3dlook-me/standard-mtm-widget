@@ -175,7 +175,7 @@ export default class Height extends Component {
     const { value } = e.target;
 
     // convert value to cm
-    let centimeters = getHeightCm(ft || 0, value);
+    let centimeters = getHeightCm(ft || 0, value || 0);
     centimeters = centimeters.toFixed(0);
 
     this.setState({

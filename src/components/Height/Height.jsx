@@ -231,7 +231,6 @@ export default class Height extends Component {
               className="input"
               type="number"
               value={cm}
-              data-value={cm}
               onBlur={this.onCmInputChange}
               placeholder="0"
               disabled={isMobile}
@@ -257,7 +256,6 @@ export default class Height extends Component {
               className="input"
               type="number"
               value={ft}
-              data-value={ft}
               onBlur={this.onFtInputChange}
               placeholder="0"
             />
@@ -268,7 +266,6 @@ export default class Height extends Component {
               className="input"
               type="number"
               value={inches}
-              data-value={inches}
               onBlur={this.onInInputChange}
               placeholder="0"
               disabled={isMobile}

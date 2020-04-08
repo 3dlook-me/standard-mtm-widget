@@ -22,6 +22,8 @@ export default class Height extends Component {
 
     this.defaultValueMetric = 15;
     this.defaultValueImperial = 6;
+    this.minHeightCm = 150;
+    this.maxHeightCm = 220;
 
     this.state = {
       units: 'in',
@@ -54,7 +56,7 @@ export default class Height extends Component {
       return result;
     };
 
-    this.heightCmValues = [...Array(220 + 1).keys()].slice(150);
+    this.heightCmValues = [...Array(this.maxHeightCm + 1).keys()].slice(this.minHeightCm);
     this.heightFtInValues = generateFtInValues();
   }
 
@@ -68,14 +70,14 @@ export default class Height extends Component {
     if (this.$heightCmEl.current) this.$heightCmEl.current.addEventListener('click', this.onCmInputChange, { once: true });
     if (this.$heightFtEl.current) this.$heightFtEl.current.addEventListener('click', this.onImperialSelectChange, { once: true });
 
-    if (height && (height >= 150 && height <= 220)) {
+    if (height && (height >= this.minHeightCm && height <= this.maxHeightCm)) {
       const ftIn = cmToFtIn(height);
 
       this.setState({
         units,
-        cm: height,
-        ft: ftIn.ft,
-        inches: (ftIn.ft === 7 && ftIn.in === 3) ? 2 : ftIn.in,
+        cm: height || null,
+        ft: ftIn.ft || null,
+        inches: (ftIn.ft === 7 && ftIn.in === 3) ? 2 : ftIn.in || null,
       });
 
       return;
@@ -126,10 +128,12 @@ export default class Height extends Component {
     // get ft and in
     const ftIn = cmToFtIn(value);
 
+    console.dir(ftIn);
+
     this.setState({
-      cm: value,
-      ft: ftIn.ft,
-      inches: (ftIn.ft === 7 && ftIn.in === 3) ? 2 : ftIn.in,
+      cm: value || null,
+      ft: ftIn.ft || null,
+      inches: (ftIn.ft === 7 && ftIn.in === 3) ? 2 : ftIn.in || null,
     }, () => {
       const { cm } = this.state;
       change(cm);
@@ -151,9 +155,9 @@ export default class Height extends Component {
     centimeters = centimeters.toFixed(0);
 
     this.setState({
-      cm: centimeters,
-      ft: value,
-      inches: inches || 0,
+      cm: centimeters || null,
+      ft: value || null,
+      inches: inches || null,
     }, () => {
       const { cm } = this.state;
       change(cm);
@@ -168,22 +172,16 @@ export default class Height extends Component {
     const { ft } = this.state;
 
     // get inches
-    let { value } = e.target;
-
-    if (ft > 4 && ft < 8) {
-      if (value === '') {
-        value = 0;
-      }
-    }
+    const { value } = e.target;
 
     // convert value to cm
     let centimeters = getHeightCm(ft || 0, value);
     centimeters = centimeters.toFixed(0);
 
     this.setState({
-      cm: centimeters,
-      ft: ft || 0,
-      inches: value,
+      cm: centimeters || null,
+      ft: ft || null,
+      inches: value || null,
     }, () => {
       const { cm } = this.state;
       change(cm);
@@ -235,6 +233,7 @@ export default class Height extends Component {
               className="input"
               type="number"
               value={cm}
+              data-value={cm}
               onBlur={this.onCmInputChange}
               placeholder="0"
               disabled={isMobile}
@@ -260,6 +259,7 @@ export default class Height extends Component {
               className="input"
               type="number"
               value={ft}
+              data-value={ft}
               onBlur={this.onFtInputChange}
               placeholder="0"
             />
@@ -270,6 +270,7 @@ export default class Height extends Component {
               className="input"
               type="number"
               value={inches}
+              data-value={inches}
               onBlur={this.onInInputChange}
               placeholder="0"
               disabled={isMobile}

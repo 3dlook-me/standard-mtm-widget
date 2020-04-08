@@ -77,7 +77,7 @@ export default class Height extends Component {
         units,
         cm: height || null,
         ft: ftIn.ft || null,
-        inches: (ftIn.ft === 7 && ftIn.in === 3) ? 2 : ftIn.in || null,
+        inches: this.setInches(ftIn),
       });
 
       return;
@@ -87,6 +87,14 @@ export default class Height extends Component {
       units,
     });
   }
+
+  setInches = (data) => {
+    if (data.ft === 7 && data.in === 3) {
+      return 2;
+    }
+
+    return data.in || null;
+  };
 
   /**
    * Units change handler
@@ -125,20 +133,12 @@ export default class Height extends Component {
     const { value } = e.target;
     // get ft and in
 
-    const setInches = (data) => {
-      if (data.ft === 7 && data.in === 3) {
-        return 2;
-      }
-
-      return data.in || null;
-    };
-
     const ftIn = cmToFtIn(value);
 
     this.setState({
       cm: value || null,
       ft: ftIn.ft || null,
-      inches: setInches(ftIn),
+      inches: this.setInches(ftIn),
     }, () => {
       const { cm } = this.state;
       change(cm);

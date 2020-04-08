@@ -157,7 +157,8 @@ export default class Height extends Component {
 
     // convert value to cm
     let centimeters = getHeightCm(value, inches || 0);
-    centimeters = +centimeters.toFixed(0);
+
+    centimeters = Math.floor(centimeters);
 
     this.setState({
       cm: centimeters || null,
@@ -181,7 +182,8 @@ export default class Height extends Component {
 
     // convert value to cm
     let centimeters = getHeightCm(ft || 0, value || 0);
-    centimeters = +centimeters.toFixed(0);
+
+    centimeters = Math.floor(centimeters);
 
     this.setState({
       cm: centimeters || null,
@@ -189,6 +191,7 @@ export default class Height extends Component {
       inches: value || null,
     }, () => {
       const { cm } = this.state;
+
       change(cm);
     });
   }
@@ -204,6 +207,7 @@ export default class Height extends Component {
 
     // convert value to cm
     let centimeters = getHeightCm(ft, inches);
+
     centimeters = Math.round(centimeters);
 
     this.setState({
@@ -212,6 +216,7 @@ export default class Height extends Component {
       inches,
     }, () => {
       const { cm } = this.state;
+
       change(cm);
     });
   }

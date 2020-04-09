@@ -84,7 +84,7 @@ class NotFound extends Component {
 
           <p className="not-found__text-2">
             We can’t calculate your
-            <b>measurements</b>
+            <b> measurements </b>
             right now.
             <br />
             Please try little bit later

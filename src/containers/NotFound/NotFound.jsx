@@ -83,11 +83,11 @@ class NotFound extends Component {
           <img className="not-found__image" src={confusedIcon1x} srcSet={`${confusedIcon1x} 1x, ${confusedIcon2x} 2x`} alt="not found" />
 
           <p className="not-found__text-2">
-            {'We can’t find your  '}
-            <span>Perfect Fit</span>
-            {' for this item. Please '}
+            We can’t calculate your
+            <b>measurements</b>
+            right now.
             <br />
-            try out other items.
+            Please try little bit later
           </p>
         </div>
         <div className="screen__footer">

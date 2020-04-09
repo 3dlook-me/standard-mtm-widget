@@ -193,7 +193,7 @@
   }
 
   img.spin {
-    animation: qr-spin 3s linear infinite;
+    animation: sms-spin 3s linear infinite;
   }
 }
 
@@ -208,3 +208,13 @@
   color: #fff;
   text-transform: unset;
 }
+
+@keyframes sms-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+

@@ -7,7 +7,7 @@ import {
   isMobileDevice,
   parseGetParams,
 } from '../../helpers/utils';
-import { gaStart, gaWelcomeOnContinue } from '../../helpers/ga';
+import { gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { Browser } from '..';
@@ -91,8 +91,6 @@ class Welcome extends Component {
       productId: parseInt(matches.productId, 10),
     })
       .then((res) => {
-        gaStart();
-
         setFlowId(res);
 
         this.setState({

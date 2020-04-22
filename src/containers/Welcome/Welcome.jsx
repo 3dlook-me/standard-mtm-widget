@@ -40,10 +40,15 @@ class Welcome extends Component {
       setReturnUrl,
       setFakeSize,
       setIsOpenReturnUrlDesktop,
+      setIsFromDesktopToMobile,
       setProductId,
       setWidgetUrl,
       resetState,
     } = this.props;
+
+    const token = matches.key || API_KEY || parseGetParams().key;
+    const brand = matches.brand || TEST_BRAND;
+    const bodyPart = matches.body_part || TEST_BODY_PART;
 
     this.widgetContainer = document.querySelector('.widget-container');
 
@@ -52,6 +57,8 @@ class Welcome extends Component {
         setIsMobile(true);
         setWidgetUrl(window.location.href);
         setReturnUrl(matches.returnUrl);
+        setToken(token);
+        setIsFromDesktopToMobile(false);
 
         this.setState({
           invalidBrowser: true,
@@ -69,10 +76,6 @@ class Welcome extends Component {
       });
 
       resetState();
-
-      const token = matches.key || API_KEY || parseGetParams().key;
-      const brand = matches.brand || TEST_BRAND;
-      const bodyPart = matches.body_part || TEST_BODY_PART;
 
       setToken(token);
       setBrand(brand);

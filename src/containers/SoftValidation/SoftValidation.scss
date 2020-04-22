@@ -42,7 +42,7 @@
     max-height: 145px;
 
     @include breakpoint($mobile) {
-      max-height: 90px;
+      max-height: 28vh;
     }
 
     li {

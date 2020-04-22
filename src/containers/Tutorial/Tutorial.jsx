@@ -42,7 +42,7 @@ class Tutorial extends BaseMobileFlow {
       isFromDesktopToMobile, pageReloadStatus,
     } = this.props;
 
-    // PAGE RELOAD: update flowState
+    // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
     if (pageReloadStatus && isFromDesktopToMobile) {
       const { setPageReloadStatus, flowState } = this.props;
 

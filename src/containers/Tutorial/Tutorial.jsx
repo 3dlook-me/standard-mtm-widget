@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import actions from '../../store/actions';
 import { gaTutorialMobile } from '../../helpers/ga';
-import { isMobileDevice } from '../../helpers/utils';
+import { isMobileDevice, mobileFlowStatusUpdate } from '../../helpers/utils';
 import { Stepper, BaseMobileFlow } from '../../components';
 
 import './Tutorial.scss';
@@ -48,7 +48,7 @@ class Tutorial extends BaseMobileFlow {
 
       setPageReloadStatus(false);
 
-      await this.flow.updateState(flowState);
+      mobileFlowStatusUpdate(this.flow, flowState);
     }
   }
 

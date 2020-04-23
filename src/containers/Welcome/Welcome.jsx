@@ -22,7 +22,7 @@ class Welcome extends Component {
     super();
 
     this.state = {
-      isButtonDisabled: true,
+      isButtonDisabled: false,
       invalidBrowser: false,
     };
   }
@@ -40,12 +40,15 @@ class Welcome extends Component {
       setReturnUrl,
       setFakeSize,
       setIsOpenReturnUrlDesktop,
+      setIsFromDesktopToMobile,
       setProductId,
       setWidgetUrl,
       resetState,
     } = this.props;
 
-    resetState();
+    const token = matches.key || API_KEY || parseGetParams().key;
+    const brand = matches.brand || TEST_BRAND;
+    const bodyPart = matches.body_part || TEST_BODY_PART;
 
     this.widgetContainer = document.querySelector('.widget-container');
 
@@ -54,6 +57,8 @@ class Welcome extends Component {
         setIsMobile(true);
         setWidgetUrl(window.location.href);
         setReturnUrl(matches.returnUrl);
+        setToken(token);
+        setIsFromDesktopToMobile(false);
 
         this.setState({
           invalidBrowser: true,
@@ -65,39 +70,43 @@ class Welcome extends Component {
 
     this.widgetContainer.classList.remove('widget-container--no-bg');
 
-    const token = matches.key || API_KEY || parseGetParams().key;
-    const brand = matches.brand || TEST_BRAND;
-    const bodyPart = matches.body_part || TEST_BODY_PART;
+    window.addEventListener('load', () => {
+      this.setState({
+        isButtonDisabled: true,
+      });
 
-    setToken(token);
-    setBrand(brand);
-    setBodyPart(bodyPart);
-    setProductUrl(matches.product);
-    setOrigin(matches.origin);
-    setIsMobile(isMobileDevice());
-    setReturnUrl(matches.returnUrl);
-    setIsOpenReturnUrlDesktop(!!matches.returnUrlDesktop);
-    setFakeSize(!!matches.fakeSize);
-    setProductId(parseInt(matches.productId, 10));
+      resetState();
 
-    this.flow = new FlowService(token);
-    this.flow.create({
-      status: 'created',
-      productUrl: matches.product,
-      brand: matches.brand,
-      bodyPart: matches.body_part,
-      returnUrl: matches.returnUrl,
-      fakeSize: !!matches.fakeSize,
-      productId: parseInt(matches.productId, 10),
-    })
-      .then((res) => {
-        setFlowId(res);
+      setToken(token);
+      setBrand(brand);
+      setBodyPart(bodyPart);
+      setProductUrl(matches.product);
+      setOrigin(matches.origin);
+      setIsMobile(isMobileDevice());
+      setReturnUrl(matches.returnUrl);
+      setIsOpenReturnUrlDesktop(!!matches.returnUrlDesktop);
+      setFakeSize(!!matches.fakeSize);
+      setProductId(parseInt(matches.productId, 10));
 
-        this.setState({
-          isButtonDisabled: false,
-        });
+      this.flow = new FlowService(token);
+      this.flow.create({
+        status: 'created',
+        productUrl: matches.product,
+        brand: matches.brand,
+        bodyPart: matches.body_part,
+        returnUrl: matches.returnUrl,
+        fakeSize: !!matches.fakeSize,
+        productId: parseInt(matches.productId, 10),
       })
-      .catch((err) => alert(err.message));
+        .then((res) => {
+          setFlowId(res);
+
+          this.setState({
+            isButtonDisabled: false,
+          });
+        })
+        .catch((err) => alert(err.message));
+    }, { once: true });
   }
 
   componentWillUnmount() {

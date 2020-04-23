@@ -59,15 +59,21 @@ class NotFound extends Component {
     }
   }
 
-  close = async () => {
-    await this.flow.updateState({
-      status: 'created',
-    });
+  close = () => {
+    const { isNetwork } = this.props;
 
-    route('/tutorial');
+    if (isNetwork) {
+      route('/tutorial');
+    } else {
+      route('/upload');
+    }
   }
 
   render() {
+    const { isNetwork } = this.props;
+    const btnText = isNetwork ? 'ok' : 'try again';
+    const text = isNetwork ? 'try out other items.' : 'check your internet connection and try again.';
+
     return (
       <section className="screen active">
         <div className="screen__content not-found">
@@ -80,18 +86,20 @@ class NotFound extends Component {
             Something went wrong
           </p>
 
-          <img className="not-found__image" src={confusedIcon1x} srcSet={`${confusedIcon1x} 1x, ${confusedIcon2x} 2x`} alt="not found" />
+          {isNetwork ? (
+            <img className="not-found__image" src={confusedIcon1x} srcSet={`${confusedIcon1x} 1x, ${confusedIcon2x} 2x`} alt="not found" />
+          ) : null}
 
           <p className="not-found__text-2">
-            {'We can’t find your  '}
-            <span>Perfect Fit</span>
-            {' for this item. Please '}
+            We can’t find your
+            <span> Perfect Fit </span>
+            for this item. Please
             <br />
-            try out other items.
+            {text}
           </p>
         </div>
         <div className="screen__footer">
-          <button className="button" onClick={this.close} type="button">ok</button>
+          <button className="button" onClick={this.close} type="button">{btnText}</button>
         </div>
       </section>
     );

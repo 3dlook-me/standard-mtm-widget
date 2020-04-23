@@ -9,6 +9,7 @@ import actions from '../../store/actions';
 import './Browser.scss';
 import chrome from '../../images/chrome.svg';
 import safari from '../../images/safari.svg';
+import SMSService from '../../services/smsService';
 
 class Browser extends Component {
   constructor() {
@@ -17,11 +18,43 @@ class Browser extends Component {
     this.neededBrowser = browserDetect();
 
     this.state = {
+      url: null,
+      buttonDisabled: true,
       isCopied: false,
       browser: this.neededBrowser === 'safari' ? ' Safari ' : ' Chrome ',
     };
 
     this.clipboard = new Clipboard('.browser__copy-btn');
+  }
+
+  componentDidMount() {
+    const {
+      isFromDesktopToMobile, token, widgetUrl,
+    } = this.props;
+
+    if (!isFromDesktopToMobile) {
+      this.sms = new SMSService(token);
+      this.sms.getShortLink(widgetUrl)
+        .then((res) => {
+          this.setState({
+            url: res.short_link,
+            buttonDisabled: false,
+          });
+        })
+        .catch(() => {
+          this.setState({
+            url: widgetUrl,
+            buttonDisabled: false,
+          });
+        });
+
+      return;
+    }
+
+    this.setState({
+      url: widgetUrl,
+      buttonDisabled: false,
+    });
   }
 
   copyWidgetUrl = () => {
@@ -37,8 +70,9 @@ class Browser extends Component {
   }
 
   render() {
-    const { browser, isCopied } = this.state;
-    const { widgetUrl } = this.props;
+    const {
+      browser, isCopied, url, buttonDisabled,
+    } = this.state;
     const browserIcon = this.neededBrowser === 'safari' ? safari : chrome;
 
     return (
@@ -65,8 +99,9 @@ class Browser extends Component {
           <button
             className={classNames('button browser__copy-btn', { 'browser__copy-btn--copied': isCopied })}
             type="button"
-            data-clipboard-text={widgetUrl}
+            data-clipboard-text={url}
             onClick={this.copyWidgetUrl}
+            disabled={buttonDisabled}
           >
             {(!isCopied) ? 'Copy link' : 'Link copied'}
           </button>

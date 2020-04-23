@@ -50,8 +50,16 @@ class MobileFlow extends BaseMobileFlow {
     if (flowState.state.status === 'finished') {
       route(`/results?id=${matches.id}`, true);
     } else {
+      setInterval(() => {
+        this.flow.updateState({
+          lastActiveDate: Date.now(),
+        });
+      }, 3000);
+
       route(`/tutorial?id=${matches.id}`, true);
     }
+
+    return Promise.resolve();
   }
 
   render() {

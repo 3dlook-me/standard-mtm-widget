@@ -61,6 +61,8 @@ export const INITIAL_STATE = {
   isOpenReturnUrlDesktop: false,
   sendDataStatus: '',
   pageReloadStatus: false,
+
+  isNetwork: true,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -287,6 +289,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         flowState: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_NETWORK:
+      return {
+        ...state,
+        isNetwork: action.payload,
       };
 
     default:

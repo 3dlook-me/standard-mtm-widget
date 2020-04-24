@@ -195,6 +195,7 @@ class Upload extends Component {
       gender,
       phoneNumber,
       productUrl,
+      source,
     } = props;
 
     let {
@@ -258,7 +259,7 @@ class Upload extends Component {
           unit: units,
           email,
           ...(phoneNumber && { phoneNumber }),
-          source: 'widget',
+          source,
         };
 
         const mtmClientId = await this.api.mtmClient.create(mtmClientParams);

@@ -41,6 +41,7 @@ export const CONSTANTS = {
   SET_FLOW_STATE: 'SET_FLOW_STATE',
   SET_SETTINGS: 'SET_SETTINGS',
   SET_IS_NETWORK: 'SET_IS_NETWORK',
+  SET_SOURCE: 'SET_SOURCE',
 };
 
 /**
@@ -442,6 +443,16 @@ export const setIsNetwork = (isStable) => ({
   payload: isStable,
 });
 
+/**
+ * Set source
+ *
+ * @param {string} source - source
+ */
+export const setSource = (source) => ({
+  type: CONSTANTS.SET_SOURCE,
+  payload: source,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -481,5 +492,6 @@ export default {
   setFlowState,
   setSettings,
   setHelpBtnStatus,
-  setIsNetwork
+  setIsNetwork,
+  setSource,
 };

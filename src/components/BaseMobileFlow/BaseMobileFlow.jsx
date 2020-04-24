@@ -39,6 +39,7 @@ class BaseMobileFlow extends Component {
       setFlowState,
       flowState,
       setSettings,
+      setSource,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -87,6 +88,7 @@ class BaseMobileFlow extends Component {
         setPhoneNumber(flowStateResult.state.phoneNumber);
         setProductId(flowStateResult.state.productId);
         setUnits(flowStateResult.state.units);
+        setSource(flowStateResult.state.source);
       });
   }
 }

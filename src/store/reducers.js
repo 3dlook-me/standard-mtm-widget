@@ -70,6 +70,8 @@ export const INITIAL_STATE = {
   sendDataStatus: '',
   pageReloadStatus: false,
   helpBtnStatus: true,
+
+  isNetwork: true,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -311,6 +313,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         helpBtnStatus: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_NETWORK:
+      return {
+        ...state,
+        isNetwork: action.payload,
       };
 
     default:

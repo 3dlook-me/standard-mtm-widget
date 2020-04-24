@@ -318,7 +318,10 @@ class Upload extends Component {
       setMeasurements(measurements);
 
       await this.flow.update({
-        measurements,
+        person: person.id,
+        state: {
+          measurements,
+        },
       });
 
       gaUploadOnContinue();

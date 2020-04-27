@@ -24,6 +24,7 @@ export const INITIAL_STATE = {
 
   flowId: null,
   personId: null,
+  mtmClientId: null,
   flowState: null,
 
   brand: null,
@@ -327,6 +328,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         source: action.payload || 'widget',
+      };
+
+    case CONSTANTS.SET_MTM_CLIENT_ID:
+      return {
+        ...state,
+        mtmClientId: action.payload,
       };
 
     default:

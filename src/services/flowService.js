@@ -76,7 +76,16 @@ export default class FlowService {
       url: `${API_HOST}/api/v2/persons/widget/${flowId}/`,
       method: 'GET',
     })
-      .then((response) => response.data);
+      .then((response) => {
+        const { state } = response.data;
+
+        globalState = {
+          ...globalState,
+          ...state,
+        };
+
+        return response.data;
+      });
   }
 
   /**

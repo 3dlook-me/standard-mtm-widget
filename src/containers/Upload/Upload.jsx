@@ -72,7 +72,7 @@ class Upload extends Component {
   }
 
   componentDidMount() {
-    const { camera } = this.props;
+    const { camera, setIsNetwork, isNetwork } = this.props;
     let hidden;
     let visibilityChange;
 
@@ -81,6 +81,11 @@ class Upload extends Component {
       const { setCamera } = this.props;
 
       setCamera(null);
+    }
+
+    if (!isNetwork) {
+      // after not found page, if was network error
+      setIsNetwork(true);
     }
 
     // is phone locked detect
@@ -428,7 +433,20 @@ class Upload extends Component {
           alert(detail || brandError || bodyPartError);
           route('/not-found', true);
         } else {
+          if (error.message === 'Network Error') {
+            const { setIsNetwork } = this.props;
+
+            alert('Check your internet connection and try again');
+
+            setIsNetwork(false);
+
+            route('/not-found', true);
+
+            return;
+          }
+
           alert(error);
+
           route('/not-found', true);
         }
       }

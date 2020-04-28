@@ -5,13 +5,14 @@
   display: inline;
 
   &__img {
+    z-index: -1; /* for iphone */
     position: fixed;
     opacity: 0;
     visibility: hidden;
     width: 100%;
     height: 100%;
     top: 0;
-    left: 100vw;
+    left: 100vw;  /* for iphone */
     display: flex;
     justify-content: center;
     align-items: center;

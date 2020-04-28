@@ -52,6 +52,10 @@
   &__title-wrap {
     margin-bottom: 74px;
 
+    @media screen and (max-height: 650px) {
+      margin-bottom: 40px;
+    }
+
     @include breakpoint($mobile) {
       margin-bottom: 40px;
     }
@@ -91,6 +95,14 @@
     height: 251px;
     overflow: hidden;
     margin-bottom: 84px;
+
+    @media screen and (max-width: 374px) {
+      top: 14px;
+    }
+
+    @media screen and (max-height: 650px) {
+      margin-bottom: 44px;
+    }
 
     @include breakpoint($mobile) {
       margin-bottom: 44px;

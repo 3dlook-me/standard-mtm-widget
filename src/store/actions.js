@@ -38,6 +38,7 @@ export const CONSTANTS = {
   SET_PROCESSING_STATUS: 'SET_PROCESSING_STATUS',
   SET_PAGE_RELOAD_STATUS: 'SET_PAGE_RELOAD_STATUS',
   SET_FLOW_STATE: 'SET_FLOW_STATE',
+  SET_IS_NETWORK: 'SET_IS_NETWORK',
 };
 
 /**
@@ -409,6 +410,16 @@ export const setFlowState = (state) => ({
   payload: state,
 });
 
+/**
+ * Set network error
+ *
+ * @param {boolean} isStable - network status
+ */
+export const setIsNetwork = (isStable) => ({
+  type: CONSTANTS.SET_IS_NETWORK,
+  payload: isStable,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -446,4 +457,5 @@ export default {
   setProcessingStatus,
   setPageReloadStatus,
   setFlowState,
+  setIsNetwork
 };

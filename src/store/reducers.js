@@ -70,6 +70,10 @@ export const INITIAL_STATE = {
   sendDataStatus: '',
   pageReloadStatus: false,
   helpBtnStatus: true,
+
+  isNetwork: true,
+
+  source: 'widget',
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -311,6 +315,18 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         helpBtnStatus: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_NETWORK:
+      return {
+        ...state,
+        isNetwork: action.payload,
+      };
+
+    case CONSTANTS.SET_SOURCE:
+      return {
+        ...state,
+        source: action.payload || 'widget',
       };
 
     default:

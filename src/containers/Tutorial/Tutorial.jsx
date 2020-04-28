@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import actions from '../../store/actions';
 import { gaTutorialMobile } from '../../helpers/ga';
-import { isMobileDevice } from '../../helpers/utils';
+import { isMobileDevice, mobileFlowStatusUpdate } from '../../helpers/utils';
 import { Stepper, BaseMobileFlow } from '../../components';
 
 import './Tutorial.scss';
@@ -42,13 +42,13 @@ class Tutorial extends BaseMobileFlow {
       isFromDesktopToMobile, pageReloadStatus,
     } = this.props;
 
-    // PAGE RELOAD: update flowState
+    // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
     if (pageReloadStatus && isFromDesktopToMobile) {
       const { setPageReloadStatus, flowState } = this.props;
 
       setPageReloadStatus(false);
 
-      await this.flow.updateState(flowState);
+      mobileFlowStatusUpdate(this.flow, flowState);
     }
   }
 

@@ -1,9 +1,7 @@
 import { h, Component } from 'preact';
 
 import FlowService from '../../services/flowService';
-import {
-  isMobileDevice, parseGetParams, browserValidation,
-} from '../../helpers/utils';
+import { isMobileDevice, parseGetParams } from '../../helpers/utils';
 
 /**
  * Mobile flow page component
@@ -41,6 +39,7 @@ class BaseMobileFlow extends Component {
       setFlowState,
       flowState,
       setSettings,
+      setSource,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -89,16 +88,7 @@ class BaseMobileFlow extends Component {
         setPhoneNumber(flowStateResult.state.phoneNumber);
         setProductId(flowStateResult.state.productId);
         setUnits(flowStateResult.state.units);
-
-        if (!browserValidation()) {
-          return;
-        }
-
-        setInterval(() => {
-          this.flow.updateState({
-            lastActiveDate: Date.now(),
-          });
-        }, 3000);
+        setSource(flowStateResult.state.source);
       });
   }
 }

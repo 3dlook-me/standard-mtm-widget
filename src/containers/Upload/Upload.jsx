@@ -194,8 +194,9 @@ class Upload extends Component {
       height,
       gender,
       phoneNumber,
-      productUrl,
+      firstName,
       source,
+      notes,
     } = props;
 
     let {
@@ -213,6 +214,7 @@ class Upload extends Component {
       weight,
       units,
       setProcessingStatus,
+      setMtmClientId,
     } = this.props;
 
     try {
@@ -239,6 +241,7 @@ class Upload extends Component {
       });
 
       let taskSetId;
+      let mtmClientId;
 
       // use only real images
       // ignore booleans for mobile flow
@@ -258,11 +261,15 @@ class Upload extends Component {
         const mtmClientParams = {
           unit: units,
           email,
-          ...(phoneNumber && { phoneNumber }),
+          phone: phoneNumber,
+          firstName,
           source,
+          notes,
         };
 
-        const mtmClientId = await this.api.mtmClient.create(mtmClientParams);
+        mtmClientId = await this.api.mtmClient.create(mtmClientParams);
+
+        setMtmClientId(mtmClientId);
 
         const createdPersonId = await this.api.mtmClient.createPerson(mtmClientId, {
           gender,
@@ -319,9 +326,6 @@ class Upload extends Component {
 
       await this.flow.update({
         person: person.id,
-        state: {
-          measurements,
-        },
       });
 
       gaUploadOnContinue();

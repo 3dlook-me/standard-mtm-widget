@@ -53,7 +53,7 @@ class Measurements extends Component {
     const { paramName } = e;
     const measurementsParamName = measurements[e.paramGroup][paramName];
 
-    if (units === 'in' && measurementsParamName && paramName !== 'shoulder_slope') {
+    if (units === 'in' && paramName !== 'shoulder_slope') {
       return `${cm2in(measurementsParamName).toFixed(1)}"`;
     }
 
@@ -62,6 +62,7 @@ class Measurements extends Component {
 
   render() {
     const { measurementsLoading } = this.state;
+    const { measurements } = this.props;
     const groups = ['Volumetric measurements', 'Linear measurements'];
     const parameters = [VOLUMETRIC_PARAMS, LINEAR_PARAMS];
 
@@ -80,7 +81,7 @@ class Measurements extends Component {
               {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
               <ul className="measurements__list" onClick={this.handleClick}>
 
-                {parameters[i].map((e, index) => (
+                {parameters[i].map((e, index) => (measurements[e.paramGroup][e.paramName] ? (
                   <li className="measurements__measurement">
                     <button
                       className="measurements__measurement-label"
@@ -94,7 +95,7 @@ class Measurements extends Component {
                       {this.getMeasurements(e)}
                     </span>
                   </li>
-                ))}
+                ) : null))}
 
               </ul>
             </div>

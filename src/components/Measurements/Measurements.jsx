@@ -53,7 +53,7 @@ class Measurements extends Component {
     const { paramName } = e;
     const measurementsParamName = measurements[e.paramGroup][paramName];
 
-    if (units === 'in' && paramName !== 'shoulder_slope') {
+    if (units === 'in' && measurementsParamName && paramName !== 'shoulder_slope') {
       return `${cm2in(measurementsParamName).toFixed(1)}"`;
     }
 

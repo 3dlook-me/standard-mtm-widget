@@ -53,7 +53,7 @@ class Measurements extends Component {
     const { paramName } = e;
     const measurementsParamName = measurements[e.paramGroup][paramName];
 
-    if (units === 'in' && measurementsParamName && paramName !== 'shoulder_slope') {
+    if (units === 'in' && paramName !== 'shoulder_slope') {
       return `${cm2in(measurementsParamName).toFixed(1)}"`;
     }
 
@@ -81,21 +81,22 @@ class Measurements extends Component {
               {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
               <ul className="measurements__list" onClick={this.handleClick}>
 
-                {parameters[i].map((e, index) => (measurements[e.paramGroup] ? (
-                  <li className="measurements__measurement">
-                    <button
-                      className="measurements__measurement-label"
-                      data-key={index}
-                      data-measurement={e.paramGroup}
-                      type="button"
-                    >
-                      {e.name}
-                    </button>
-                    <span className="measurements__measurement-value">
-                      {this.getMeasurements(e)}
-                    </span>
-                  </li>
-                ) : null))}
+                {parameters[i].map((e, index) => (
+                  measurements[e.paramGroup] && measurements[e.paramGroup][e.paramName] ? (
+                    <li className="measurements__measurement">
+                      <button
+                        className="measurements__measurement-label"
+                        data-key={index}
+                        data-measurement={e.paramGroup}
+                        type="button"
+                      >
+                        {e.name}
+                      </button>
+                      <span className="measurements__measurement-value">
+                        {this.getMeasurements(e)}
+                      </span>
+                    </li>
+                  ) : null))}
 
               </ul>
             </div>

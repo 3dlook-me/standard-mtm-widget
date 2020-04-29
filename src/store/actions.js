@@ -42,6 +42,9 @@ export const CONSTANTS = {
   SET_SETTINGS: 'SET_SETTINGS',
   SET_IS_NETWORK: 'SET_IS_NETWORK',
   SET_SOURCE: 'SET_SOURCE',
+  SET_MTM_CLIENT_ID: 'SET_MTM_CLIENT_ID',
+  SET_FIRST_NAME: 'SET_FIRST_NAME',
+  SET_NOTES: 'SET_NOTES',
 };
 
 /**
@@ -453,6 +456,36 @@ export const setSource = (source) => ({
   payload: source,
 });
 
+/**
+ * Set mtm client id
+ *
+ * @param {string} id - mtm client id
+ */
+export const setMtmClientId = (id) => ({
+  type: CONSTANTS.SET_MTM_CLIENT_ID,
+  payload: id,
+});
+
+/**
+ * Set mtm client first name
+ *
+ * @param {string} firstName - mtm client first name
+ */
+export const setFirstName = (firstName) => ({
+  type: CONSTANTS.SET_FIRST_NAME,
+  payload: firstName,
+});
+
+/**
+ * Set mtm client notes
+ *
+ * @param {string} notes - mtm client notes
+ */
+export const setNotes = (notes) => ({
+  type: CONSTANTS.SET_NOTES,
+  payload: notes,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -494,4 +527,7 @@ export default {
   setHelpBtnStatus,
   setIsNetwork,
   setSource,
+  setMtmClientId,
+  setFirstName,
+  setNotes,
 };

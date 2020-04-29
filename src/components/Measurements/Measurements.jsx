@@ -81,7 +81,7 @@ class Measurements extends Component {
               {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
               <ul className="measurements__list" onClick={this.handleClick}>
 
-                {parameters[i].map((e, index) => (measurements[e.paramGroup][e.paramName] ? (
+                {parameters[i].map((e, index) => (measurements[e.paramGroup] ? (
                   <li className="measurements__measurement">
                     <button
                       className="measurements__measurement-label"

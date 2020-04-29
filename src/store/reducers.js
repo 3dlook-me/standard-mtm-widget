@@ -57,7 +57,9 @@ export const INITIAL_STATE = {
 
   email: null,
   units: 'in',
+  firstName: null,
   phoneNumber: null,
+  notes: null,
   fakeSize: false,
 
   settings: {
@@ -334,6 +336,18 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         mtmClientId: action.payload,
+      };
+
+    case CONSTANTS.SET_FIRST_NAME:
+      return {
+        ...state,
+        firstName: action.payload,
+      };
+
+    case CONSTANTS.SET_NOTES:
+      return {
+        ...state,
+        notes: action.payload,
       };
 
     default:

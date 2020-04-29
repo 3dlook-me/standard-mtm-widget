@@ -194,8 +194,9 @@ class Upload extends Component {
       height,
       gender,
       phoneNumber,
+      firstName,
       source,
-      mtmClientId: mtmClientIdFromState,
+      notes,
     } = props;
 
     let {
@@ -260,8 +261,10 @@ class Upload extends Component {
         const mtmClientParams = {
           unit: units,
           email,
-          ...(phoneNumber && { phoneNumber }),
+          phone: phoneNumber,
+          firstName,
           source,
+          notes,
         };
 
         mtmClientId = await this.api.mtmClient.create(mtmClientParams);
@@ -323,10 +326,6 @@ class Upload extends Component {
 
       await this.flow.update({
         person: person.id,
-        state: {
-          measurements,
-          mtmClientId: mtmClientId || mtmClientIdFromState,
-        },
       });
 
       gaUploadOnContinue();

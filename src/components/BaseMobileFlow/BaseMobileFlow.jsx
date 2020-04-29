@@ -41,6 +41,8 @@ class BaseMobileFlow extends Component {
       setSettings,
       setSource,
       setMtmClientId,
+      setFirstName,
+      setNotes,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -91,6 +93,8 @@ class BaseMobileFlow extends Component {
         setUnits(flowStateResult.state.units);
         setSource(flowStateResult.state.source);
         setMtmClientId(flowStateResult.state.mtmClientId);
+        setFirstName(flowStateResult.state.firstName);
+        setNotes(flowStateResult.state.notes);
       });
   }
 }

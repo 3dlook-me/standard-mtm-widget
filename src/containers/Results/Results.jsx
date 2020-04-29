@@ -45,9 +45,9 @@ class Results extends BaseMobileFlow {
   componentDidMount = async () => {
     await super.componentDidMount();
 
-    const { measurements } = this.props;
+    const { measurements, mtmClientId } = this.props;
 
-    this.sendMeasurements(measurements);
+    this.sendMeasurements(measurements, mtmClientId);
 
     gaSuccess();
   }
@@ -55,20 +55,23 @@ class Results extends BaseMobileFlow {
   componentWillReceiveProps = async (nextProps) => {
     const {
       measurements,
+      mtmClientId,
     } = nextProps;
 
-    this.sendMeasurements(measurements);
+    this.sendMeasurements(measurements, mtmClientId);
   }
 
   /**
    * Send size recommendations to flow api
    *
    * @param {Object} measurements - measurements object
+   * @param {number} mtmClientId - mtm client id
    */
-  sendMeasurements = async (measurements) => {
+  sendMeasurements = async (measurements, mtmClientId) => {
     await this.flow.updateState({
       status: 'finished',
       measurements,
+      mtmClientId,
     });
   }
 

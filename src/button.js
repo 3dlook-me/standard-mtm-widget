@@ -199,7 +199,11 @@ class SaiaMTMButton {
           return product[0].widget_is_visible;
         }
 
-        return product.widget_is_visible;
+        if ('widget_is_visible' in product) {
+          return product.widget_is_visible;
+        }
+
+        return true;
       });
   }
 

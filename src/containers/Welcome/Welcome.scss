@@ -1,43 +1,22 @@
 @import '../../scss/utils/index';
 
 .welcome {
-  padding-top: 0;
+  padding-top: 60px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 
-  &__slider {
-    margin-top: 94px;
-
-    @include breakpoint($mobile) {
-      margin-top: 93px;
-    }
-
-    .slider__slide img {
-      height: 284px;
-
-      @include breakpoint($mobile) {
-        height: 235px;
-      }
-    }
-  }
-
-  &__slider-text {
-    text-align: center;
-    height: 42px;
-    font-size: rem(16px);
-    font-weight: bold;
-    text-transform: uppercase;
-    margin-top: 31px;
-
-    @include breakpoint($mobile) {
-      font-size: rem(14px);
-    }
-  }
-
   + .screen__footer {
     .button {
       box-shadow: none;
+    }
+  }
+
+  &__img {
+    margin-bottom: 70px;
+
+    img {
+      max-width: 100%;
     }
   }
 }

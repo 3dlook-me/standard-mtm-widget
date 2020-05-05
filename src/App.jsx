@@ -29,7 +29,6 @@ import {
   Browser,
 } from './containers';
 
-import bgImage from './images/welcome-bg.png';
 import landscapeView from './images/landscape-view.svg';
 
 console.log(`%cVERSION: ${VERSION}, COMMITHASH: ${COMMITHASH}, BRANCH: ${BRANCH}`, 'background: #f00; color: #fff; font-size: 20px;');
@@ -50,7 +49,7 @@ class App extends Component {
           </figure>
           <p className="landscape-view__txt">Please turn your device</p>
         </div>
-        <div className="widget-container widget-container--no-bg" style={{ backgroundImage: `url(${bgImage})` }}>
+        <div className="widget-container widget-container--no-bg">
           <Header help={this.toggleHelp} />
           <Help />
 

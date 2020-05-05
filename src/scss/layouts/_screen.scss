@@ -16,9 +16,8 @@ $failure: $error-border-color;
 
   &__intro {
     width: 100%;
-    max-width: 490px;
     padding: 0 26px;
-    margin: auto auto 54px;
+    margin: 0 auto 40px;
 
     @include breakpoint($mobile) {
       margin: auto auto 14px;
@@ -26,29 +25,25 @@ $failure: $error-border-color;
   }
 
   &__intro-title {
-    color: #FFFFFF;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 21px;
-    text-align: center;
-    text-shadow: 0 2px 10px #3A3444;
     text-transform: uppercase;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 28px;
+    text-align: center;
     margin-bottom: 14px;
   }
 
   &__intro-txt {
-    color: #FFFFFF;
     font-size: 16px;
     line-height: 19px;
     text-align: center;
-    text-shadow: 0 2px 6px rgba(61, 56, 71, 0.87);
-    font-weight: 300;
+    color: #686868;
   }
 
   &__footer {
     margin-top: auto;
     padding-top: 0;
-    padding-bottom: 70px;
+    padding-bottom: 50px;
 
     @include breakpoint($mobile) {
       padding-top: 30px;
@@ -58,7 +53,6 @@ $failure: $error-border-color;
     .button {
       margin: 0 auto;
       font-weight: 300;
-      box-shadow: 0 6px 16px 0 rgba(255,119,0,0.5);
     }
   }
 

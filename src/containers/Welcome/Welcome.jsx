@@ -13,6 +13,8 @@ import FlowService from '../../services/flowService';
 import { Browser } from '..';
 
 import './Welcome.scss';
+import mobileBg from '../../images/img_pf_mobile.png';
+import desktopBg from '../../images/img_pf.png';
 
 /**
  * Welcome page component
@@ -123,19 +125,22 @@ class Welcome extends Component {
         ) : (
           <section className="screen active">
             <div className="screen__content welcome">
+              <picture className="welcome__img">
+                <source media="(max-width: 500px)" srcSet={mobileBg} />
+                <img src={desktopBg} alt="photos_model_perfect-fit" />
+              </picture>
               <div className="screen__intro">
                 <h4 className="screen__intro-title">
-                  Never guess your size again
+                  Get a personal fit recommendation
                 </h4>
                 <p className="screen__intro-txt">
-                  Get personalized size recommendation in under one minute.
-                  No measuring tape required
+                  No quiz, no measuring tape, no return hassle – in under a minute!
                 </p>
               </div>
             </div>
             <div className="screen__footer">
               <Link className="button" href="/email" onClick={gaWelcomeOnContinue} disabled={isButtonDisabled}>
-                <span>start</span>
+                <span>next</span>
               </Link>
             </div>
           </section>

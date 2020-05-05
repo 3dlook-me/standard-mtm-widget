@@ -17,7 +17,7 @@
                 <mask id="mask-4" fill="white">
                     <use xlink:href="#path-3"></use>
                 </mask>
-                <use id="Oval" stroke="#FF9940" stroke-width="8" stroke-linecap="round" xlink:href="#path-3"></use>
+                <use id="Oval" stroke="#343239" stroke-width="8" stroke-linecap="round" xlink:href="#path-3"></use>
             </g>
         </g>
     </g>

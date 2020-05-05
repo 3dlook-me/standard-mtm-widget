@@ -319,7 +319,7 @@ class QRCodeContainer extends Component {
             {(!isCopied) ? 'Copy link' : 'Link copied'}
             <svg width="11px" height="14px" viewBox="0 0 11 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                <g className="qrcode__btn-svg" transform="translate(-325.000000, -341.000000)" stroke="#FFAB55" strokeWidth="1.3">
+                <g className="qrcode__btn-svg" transform="translate(-325.000000, -341.000000)" stroke="#396EC5" strokeWidth="1.3">
                   <g transform="translate(326.000000, 342.000000)">
                     <path d="M1.27272727,10 C0.569819409,10 0,9.36040679 0,8.57142857 L0,1.42857143 C0,0.639593215 0.569819409,0 1.27272727,0 L1.27272727,0 L5.72727273,0 C6.43018059,0 7,0.639593215 7,1.42857143 L7,1.42857143" id="Path" />
                     <rect id="Rectangle" x="2.65" y="2.65" width="6.7" height="9.7" rx="2" />

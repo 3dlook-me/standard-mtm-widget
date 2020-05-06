@@ -6,6 +6,10 @@
   flex-direction: column;
   flex-grow: 1;
 
+  @include breakpoint($mobile) {
+    padding-top: 82px;
+  }
+
   + .screen__footer {
     .button {
       box-shadow: none;
@@ -15,8 +19,24 @@
   &__img {
     margin-bottom: 70px;
 
+    @include breakpoint($mobile) {
+      flex-grow: 1;
+      position: relative;
+      margin-bottom: 56px;
+    }
+
     img {
       max-width: 100%;
+
+      @include breakpoint($mobile) {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        max-height: 100%;
+      }
     }
   }
 }

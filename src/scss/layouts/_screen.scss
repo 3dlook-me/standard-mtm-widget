@@ -20,7 +20,8 @@ $failure: $error-border-color;
     margin: 0 auto 40px;
 
     @include breakpoint($mobile) {
-      margin: auto auto 14px;
+      margin: auto auto 0;
+      padding: 0 24px;
     }
   }
 
@@ -31,6 +32,11 @@ $failure: $error-border-color;
     line-height: 28px;
     text-align: center;
     margin-bottom: 14px;
+
+    @include breakpoint($mobile) {
+      font-size: 17px;
+      line-height: 20px;
+    }
   }
 
   &__intro-txt {
@@ -38,6 +44,11 @@ $failure: $error-border-color;
     line-height: 19px;
     text-align: center;
     color: #686868;
+
+    @include breakpoint($mobile) {
+      font-size: 14px;
+      line-height: 18px;
+    }
   }
 
   &__footer {

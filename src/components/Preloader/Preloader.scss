@@ -111,11 +111,11 @@
     margin: auto;
 
     &--first {
-      animation: 3s preloader-disappearance linear 8.3s forwards;
+      animation: .1s preloader-disappearance linear 9.3s forwards;
     }
 
     &--second {
-      animation: 3s preloader-appearance linear 6.3s forwards, 3s preloader-disappearance linear 13.3s forwards;
+      animation: 3s preloader-appearance linear 6.3s forwards, .5s preloader-disappearance linear 15.3s forwards;
       clip-path: inset(0 0 100% 0);
     }
 

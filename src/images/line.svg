@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="126px" height="15px" viewBox="0 0 126 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>line</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="131" y="398" width="114" height="3" rx="1"></rect>
+        <filter x="-8.8%" y="-266.7%" width="117.5%" height="766.7%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="3" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 1   0 0 0 0 0   0 0 0 0 0.266666667  0 0 0 0.4 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Mobile" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="[M]-Loading-[frame-2]" transform="translate(-125.000000, -394.000000)" fill-rule="nonzero">
+            <g id="line">
+                <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                <use fill="#FF0044" xlink:href="#path-1"></use>
+            </g>
+        </g>
+    </g>
+</svg>

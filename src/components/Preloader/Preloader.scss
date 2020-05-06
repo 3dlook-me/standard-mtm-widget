@@ -9,7 +9,7 @@
   right: 0;
   bottom: 0;
   background: #fff;
-  padding-top: 56px;
+  padding-top: 36px;
 
   @include breakpoint($mobile) {
     top: 40px;
@@ -45,12 +45,12 @@
     font-weight: bold;
     line-height: 19px;
     text-align: center;
-    text-transform: unset;
     margin-bottom: 14px;
+    text-transform: uppercase;
   }
 
   &__title-wrap {
-    margin-bottom: 74px;
+    margin-bottom: 70px;
 
     @media screen and (max-height: 650px) {
       margin-bottom: 40px;
@@ -89,58 +89,82 @@
     margin-bottom: -42px;
   }
 
-  &__anim {
-    position: relative;
-    width: 94px;
-    height: 251px;
-    overflow: hidden;
-    margin-bottom: 84px;
-
-    @media screen and (max-width: 374px) {
-      top: 14px;
-    }
-
-    @media screen and (max-height: 650px) {
-      margin-bottom: 44px;
-    }
-
-    @include breakpoint($mobile) {
-      margin-bottom: 44px;
-    }
-
-    @media screen and (max-width: 374px) {
-      width: 82px;
-      height: 219px;
-      margin-bottom: 30px;
-    }
-
-    img {
-      width: 100%;
-      position: absolute;
-    }
-  }
-
-  &__dots {
-    animation: spin 5s ease infinite;
-    will-change: transform;
-  }
-
-  &__percentage {
-    color: #000000;
-    font-size: 24px;
+  &__status {
+    color: #396EC5;
     font-weight: bold;
-    line-height: 29px;
+    line-height: 16px;
+  }
+
+  &__animation {
+    height: 310px;
+    width: 100%;
+    position: relative;
+    margin-bottom: 70px;
+  }
+
+  &__animation-stage {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+
+    &--first {
+      animation: 3s preloader-disappearance linear 8.3s forwards;
+    }
+
+    &--second {
+      animation: 3s preloader-appearance linear 6.3s forwards, 3s preloader-disappearance linear 13.3s forwards;
+      clip-path: inset(0 0 100% 0);
+    }
+
+    &--third {
+      animation: 3s preloader-appearance linear 12.3s forwards;
+      clip-path: inset(0 0 100% 0);
+    }
+  }
+
+  &__animation-indicator {
+    position: absolute;
+    top: -6px;
+    right: 0;
+    left: 0;
+    margin: auto;
+    animation: 6s indicator-up-and-down linear infinite .3s;
+    will-change: transform;
   }
 }
 
-@keyframes spin {
+@keyframes indicator-up-and-down {
   0% {
-    top: -60px;
+    transform: translateY(0);
   }
+
   50% {
-    top: 255px;
+    transform: translateY(310px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes preloader-appearance {
+  0% {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  100% {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes preloader-disappearance {
+  0% {
+    opacity: 1;
   }
   100% {
-    top: -60px;
+    opacity: 0;
   }
 }

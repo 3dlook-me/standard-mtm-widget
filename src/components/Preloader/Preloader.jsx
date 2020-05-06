@@ -17,10 +17,6 @@ const Preloader = ({ isActive, status, isMobile }) => (
       </h2>
 
       <p className="preloader__status">{status}</p>
-
-      {isMobile ? (
-        <p className="preloader__warning-txt">Please, do not lock your phone until we find your perfect fit</p>
-      ) : null}
     </div>
 
     <div className="preloader__animation">
@@ -30,15 +26,25 @@ const Preloader = ({ isActive, status, isMobile }) => (
       <img className="preloader__animation-indicator" src={indicator} alt="line" />
     </div>
 
-    <p className="preloader__text">
-      {isMobile ? `${status}` : (
+    {isMobile ? (
+      <div className="preloader__warning-block">
+        <div className="preloader__warning-icon">×</div>
+        <p className="preloader__warning-txt">
+          Please
+          <b> do not lock your phone, </b>
+          we are
+          computing your measurements! &#128522;
+        </p>
+      </div>
+    ) : (
+      <p className="preloader__text">
         <span>
           It might take us up to
           <b> one minute </b>
           to find your perfect fit. Thanks for being patient!
         </span>
-      )}
-    </p>
+      </p>
+    )}
   </div>
 );
 

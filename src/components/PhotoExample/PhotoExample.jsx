@@ -39,7 +39,7 @@ class PhotoExample extends Component {
             {`${photoType} photo example`}
           </h2>
 
-          <figure className="photo-example__img">
+          <figure className={`photo-example__img photo-example__img--${photoType}`}>
             {!isImageLoaded ? (
               <Loader />
             ) : null}

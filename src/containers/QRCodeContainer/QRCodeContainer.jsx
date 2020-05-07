@@ -132,8 +132,10 @@ class QRCodeContainer extends Component {
                   isPending: true,
                 });
 
-                if (flowState.state.processStatus) {
-                  setProcessingStatus(flowState.state.processStatus);
+                const { processStatus } = flowState.state;
+
+                if (processStatus || processStatus === '') {
+                  setProcessingStatus(processStatus);
                 }
 
                 const currentTime = Date.now();
@@ -300,9 +302,7 @@ class QRCodeContainer extends Component {
         <div className={classNames('screen__content', 'scan-qrcode')}>
           {(!isPending) ? (
             <Stepper steps="5" current="2" />
-          ) : (
-            null
-          )}
+          ) : null }
 
           <h3 className="screen__title scan-qrcode__title">SCAN THIS QR CODE</h3>
           <p>and proceed on your mobile device</p>

@@ -187,7 +187,7 @@ class WeightContainer extends Component {
     });
 
     if (isMobile) {
-      route('/tutorial', false);
+      route('/upload', false);
     } else {
       route('/qrcode', false);
     }

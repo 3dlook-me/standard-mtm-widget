@@ -28,7 +28,7 @@ import {
 
 import './Upload.scss';
 
-const isPhoneLocked = false;
+let isPhoneLocked = false;
 
 /**
  * Upload page component.
@@ -93,23 +93,23 @@ class Upload extends Component {
     }
 
     // is phone locked detect
-    // if (typeof document.hidden !== 'undefined') {
-    //   hidden = 'hidden';
-    //   visibilityChange = 'visibilitychange';
-    // } else if (typeof document.webkitHidden !== 'undefined') {
-    //   hidden = 'webkitHidden';
-    //   visibilityChange = 'webkitvisibilitychange';
-    // }
-    //
-    // this.handleVisibilityChange = async () => {
-    //   if (document[hidden]) {
-    //     isPhoneLocked = true;
-    //
-    //     await window.location.reload();
-    //   }
-    // };
-    //
-    // document.addEventListener(visibilityChange, this.handleVisibilityChange);
+    if (typeof document.hidden !== 'undefined') {
+      hidden = 'hidden';
+      visibilityChange = 'visibilitychange';
+    } else if (typeof document.webkitHidden !== 'undefined') {
+      hidden = 'webkitHidden';
+      visibilityChange = 'webkitvisibilitychange';
+    }
+
+    this.handleVisibilityChange = async () => {
+      if (document[hidden]) {
+        isPhoneLocked = true;
+
+        await window.location.reload();
+      }
+    };
+
+    document.addEventListener(visibilityChange, this.handleVisibilityChange);
   }
 
   init(props) {
@@ -261,6 +261,10 @@ class Upload extends Component {
       }
 
       if (!personId) {
+        if (isFromDesktopToMobile) {
+          this.flow.updateLocalState({ processStatus: 'Initiating Profile Creation' });
+        }
+
         setProcessingStatus('Initiating Profile Creation');
 
         const createdPersonId = await this.api.person.create({
@@ -276,8 +280,16 @@ class Upload extends Component {
 
         await wait(1000);
 
+        if (isFromDesktopToMobile) {
+          this.flow.updateLocalState({ processStatus: 'Profile Creation Completed!' });
+        }
+
         setProcessingStatus('Profile Creation Completed!');
         await wait(1000);
+
+        if (isFromDesktopToMobile) {
+          this.flow.updateLocalState({ processStatus: 'Photo Uploading' });
+        }
 
         setProcessingStatus('Photo Uploading');
 
@@ -288,9 +300,17 @@ class Upload extends Component {
 
         await wait(1000);
 
+        if (isFromDesktopToMobile) {
+          this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });
+        }
+
         setProcessingStatus('Photo Upload Completed!');
         await wait(1000);
       } else {
+        if (isFromDesktopToMobile) {
+          this.flow.updateLocalState({ processStatus: 'Photo Uploading' });
+        }
+
         setProcessingStatus('Photo Uploading');
 
         await this.api.person.update(personId, images);
@@ -298,8 +318,16 @@ class Upload extends Component {
 
         taskSetId = await this.api.person.calculate(personId);
 
+        if (isFromDesktopToMobile) {
+          this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });
+        }
+
         setProcessingStatus('Photo Upload Completed!');
         await wait(1000);
+      }
+
+      if (isFromDesktopToMobile) {
+        this.flow.updateLocalState({ processStatus: 'Calculating your Measurements' });
       }
 
       setProcessingStatus('Calculating your Measurements');
@@ -307,6 +335,10 @@ class Upload extends Component {
       const person = await this.api.queue.getResults(taskSetId, 4000);
 
       await wait(1000);
+
+      if (isFromDesktopToMobile) {
+        this.flow.updateLocalState({ processStatus: 'Sending Your Results' });
+      }
 
       setProcessingStatus('Sending Your Results');
       await wait(1000);

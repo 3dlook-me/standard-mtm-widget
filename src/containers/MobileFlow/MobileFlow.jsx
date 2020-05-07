@@ -44,6 +44,7 @@ class MobileFlow extends BaseMobileFlow {
       await this.flow.updateState({
         ...flowState.state,
         status: 'opened-on-mobile',
+        processStatus: '',
       });
     }
 

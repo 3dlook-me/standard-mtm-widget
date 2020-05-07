@@ -107,6 +107,7 @@ class QRCodeContainer extends Component {
       setPersonId,
       origin,
       setBodyType,
+      setProcessingStatus,
     } = props;
 
     if (token && flowId && !this.api && !this.flow) {
@@ -130,6 +131,10 @@ class QRCodeContainer extends Component {
                 this.setState({
                   isPending: true,
                 });
+
+                if (flowState.state.processStatus) {
+                  setProcessingStatus(flowState.state.processStatus);
+                }
 
                 const currentTime = Date.now();
                 const widgetWasAliveAt = flowState.state.lastActiveDate;
@@ -286,6 +291,8 @@ class QRCodeContainer extends Component {
       isShortUrlFetching,
     } = this.state;
 
+    const { sendDataStatus } = this.props;
+
     const qrCopyUrl = copyUrl || qrCodeUrl;
 
     return (
@@ -370,7 +377,7 @@ class QRCodeContainer extends Component {
           </button>
         </div>
 
-        <Preloader isActive={isPending} />
+        <Preloader isActive={isPending} status={sendDataStatus} />
       </div>
 
     );

@@ -19,9 +19,20 @@ export default class UploadFile extends Component {
     super(props);
 
     this.state = {
+      file: null,
       value: null,
       isImageLoaded: false,
     };
+  }
+
+  componentDidMount() {
+    const { value, change } = this.props;
+
+    if (value) {
+      this.setState({
+        file: value,
+      }, () => change(value));
+    }
   }
 
   /**
@@ -59,7 +70,9 @@ export default class UploadFile extends Component {
     const orientation = await getOrientation(file);
     const fileBase64 = await fixOrientation(file, orientation);
 
-    change(fileBase64);
+    this.setState({
+      file: fileBase64,
+    }, () => change(fileBase64));
   }
 
   /**

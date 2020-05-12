@@ -22,6 +22,7 @@ class HardValidation extends Component {
     const { flowId, token } = this.props;
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
+    this.flow.updateLocalState({ processStatus: '' });
 
     const { setPageReloadStatus } = props;
 

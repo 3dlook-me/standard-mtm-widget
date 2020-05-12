@@ -36,8 +36,7 @@ class BaseMobileFlow extends Component {
       setProductId,
       setUnits,
       setWeight,
-      setFlowState,
-      flowState,
+      resetState,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -52,18 +51,20 @@ class BaseMobileFlow extends Component {
     if (!matches.id) { return; }
 
     this.flow = new FlowService(token);
+
+    resetState();
+
+    this.flow.resetGlobalState();
+
+    setToken(token);
     setFlowId(matches.id);
+
     this.flow.setFlowId(matches.id);
 
     return this.flow.get()
       .then((flowStateResult) => {
         const brand = flowStateResult.state.brand || TEST_BRAND;
         const bodyPart = flowStateResult.state.bodyPart || TEST_BODY_PART;
-
-        // FOR PAGE RELOAD
-        if (!flowState) {
-          setFlowState(flowStateResult.state);
-        }
 
         setPersonId(flowStateResult.person);
         setBrand(brand);

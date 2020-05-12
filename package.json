@@ -90,7 +90,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "@3dlook/camera": "^1.0.2",
+    "@3dlook/camera": "^1.0.4",
     "@3dlook/saia-sdk": "^2.10.1",
     "@babel/polyfill": "^7.8.3",
     "@babel/runtime": "^7.8.4",

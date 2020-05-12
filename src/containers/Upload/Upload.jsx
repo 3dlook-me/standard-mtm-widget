@@ -261,10 +261,10 @@ class Upload extends Component {
         const mtmClientParams = {
           unit: units,
           email,
-          phone: phoneNumber,
-          firstName,
           source,
-          notes,
+          ...(phoneNumber && { phone: phoneNumber }),
+          ...(firstName && { firstName }),
+          ...(notes && { notes }),
         };
 
         mtmClientId = await this.api.mtmClient.create(mtmClientParams);

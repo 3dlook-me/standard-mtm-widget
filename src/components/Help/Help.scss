@@ -17,8 +17,8 @@
     display: flex;
 
     & + .screen {
-      .widget-camera__warning {
-        z-index: 0;
+      .widget-camera {
+        z-index: -1;
       }
     }
   }

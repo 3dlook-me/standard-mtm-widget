@@ -137,6 +137,7 @@
     width: 100%;
     position: relative;
     margin-bottom: 70px;
+    flex-shrink: 0;
 
     @include breakpoint($mobile) {
       margin-bottom: 50px;

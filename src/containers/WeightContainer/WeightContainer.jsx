@@ -179,6 +179,7 @@ class WeightContainer extends Component {
 
     await this.flow.updateState({
       status: 'set metadata',
+      processStatus: '',
       gender,
       height,
       units,
@@ -187,7 +188,7 @@ class WeightContainer extends Component {
     });
 
     if (isMobile) {
-      route('/tutorial', false);
+      route('/upload', false);
     } else {
       route('/qrcode', false);
     }
@@ -248,7 +249,7 @@ class WeightContainer extends Component {
               ) : (
                 <div className="weight-container__input-wrap">
                   <input
-                    className="input"
+                    className={classNames('input', { 'input--invalid': !isWeightValid && !skipWeight })}
                     type="number"
                     placeholder="0"
                     onBlur={this.changeWeight}

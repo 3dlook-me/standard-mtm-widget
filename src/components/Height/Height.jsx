@@ -240,7 +240,7 @@ export default class Height extends Component {
         <div className="height__measure height__measure--cm">
           <div className="height__input-block" data-measure="cm">
             <input
-              className="input"
+              className={classNames('input', { 'input--invalid': !isValid })}
               type="number"
               value={cm}
               onBlur={this.onCmInputChange}
@@ -265,7 +265,7 @@ export default class Height extends Component {
         <div className="height__measure height__measure--in">
           <div className="height__input-block" data-measure="ft">
             <input
-              className="input"
+              className={classNames('input', { 'input--invalid': !isValid })}
               type="number"
               value={ft}
               onBlur={this.onFtInputChange}
@@ -275,7 +275,7 @@ export default class Height extends Component {
           </div>
           <div className="height__input-block" data-measure="in">
             <input
-              className="input"
+              className={classNames('input', { 'input--invalid': !isValid })}
               type="number"
               value={inches}
               onBlur={this.onInInputChange}

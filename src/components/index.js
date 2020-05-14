@@ -11,3 +11,4 @@ export * from './UploadFile';
 export * from './UploadValidation';
 export * from './BaseMobileFlow';
 export * from './Loader';
+export * from './PhotoExample';

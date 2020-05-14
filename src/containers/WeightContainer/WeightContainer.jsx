@@ -179,6 +179,7 @@ class WeightContainer extends Component {
 
     await this.flow.updateState({
       status: 'set metadata',
+      processStatus: '',
       gender,
       height,
       units,

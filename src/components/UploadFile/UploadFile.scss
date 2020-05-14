@@ -10,6 +10,10 @@ $mobile-image-height: 340px;
   margin: 0 auto 54px;
   width: 100%;
 
+  @media (max-width: 414px) and (max-height: 667px) {
+    margin-bottom: 24px;
+  }
+
   &__image {
     width: 100%;
     flex-grow: 1;
@@ -20,8 +24,13 @@ $mobile-image-height: 340px;
     position: relative;
     height: 202px;
 
+    @media (max-width: 414px) and (max-height: 667px) {
+      height: 33vw;
+    }
+
     img {
       max-width: 100%;
+      max-height: 100%;
     }
   }
 

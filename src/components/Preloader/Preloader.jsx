@@ -1,16 +1,33 @@
 import { h } from 'preact';
+import classNames from 'classnames';
 
 import './Preloader.scss';
 import firstStage from '../../images/stage_1.svg';
 import secondStage from '../../images/stage_2.svg';
 import thirdStage from '../../images/stage_3.svg';
 import indicator from '../../images/line.svg';
+import spinner from '../../images/loader-for-phone.svg';
+import phone from '../../images/phone-for-loader.svg';
 
 /**
  * Preloader component
  */
 const Preloader = ({ isActive, status, isMobile }) => (
   <div className={`preloader ${isActive ? 'active' : ''}`}>
+
+    <div className={classNames('preloader__instructions', { 'preloader__instructions--active': !isMobile && status === '' })}>
+      <div className="preloader__instructions-phone-wrap">
+        <img className="preloader__instructions-phone" src={phone} alt="phone" />
+        <img className="preloader__instructions-spinner" src={spinner} alt="spinner" />
+      </div>
+      <p>
+        Follow instructions on
+        <b> your mobile phone</b>
+        <br />
+        to get your perfect fit
+      </p>
+    </div>
+
     <div className="preloader__title-wrap">
       <h2 className="preloader__title screen__title">
         The magic is happening

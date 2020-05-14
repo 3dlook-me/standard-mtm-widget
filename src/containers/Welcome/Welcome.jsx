@@ -14,8 +14,8 @@ import { Browser } from '..';
 import SettingsService from '../../services/settingsService';
 
 import './Welcome.scss';
-import mobileBg from '../../images/img_pf_mobile.png';
-import desktopBg from '../../images/img_pf.png';
+import mobileBg from '../../images/img_mtm_mobile.png';
+import desktopBg from '../../images/img_mtm.png';
 
 /**
  * Welcome page component
@@ -140,7 +140,7 @@ class Welcome extends Component {
               </picture>
               <div className="screen__intro">
                 <h4 className="screen__intro-title">
-                  Get a personal fit recommendation
+                  Forget about measuring tape or appointments
                 </h4>
                 <p className="screen__intro-txt">
                   No quiz, no measuring tape, no return hassle – in under a minute!

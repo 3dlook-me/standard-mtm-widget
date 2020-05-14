@@ -48,6 +48,7 @@ class NotFound extends Component {
 
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
+    this.flow.updateLocalState({ processStatus: '' });
 
     // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
     if (pageReloadStatus && isFromDesktopToMobile) {
@@ -60,13 +61,7 @@ class NotFound extends Component {
   }
 
   close = () => {
-    const { isNetwork } = this.props;
-
-    if (isNetwork) {
-      route('/tutorial');
-    } else {
-      route('/upload');
-    }
+    route('/upload');
   }
 
   render() {

@@ -14,6 +14,8 @@ import { Browser } from '..';
 import SettingsService from '../../services/settingsService';
 
 import './Welcome.scss';
+import mobileBg from '../../images/img_pf_mobile.png';
+import desktopBg from '../../images/img_pf.png';
 
 /**
  * Welcome page component
@@ -132,20 +134,22 @@ class Welcome extends Component {
         ) : (
           <section className="screen active">
             <div className="screen__content welcome">
+              <picture className="welcome__img">
+                <source media="(max-width: 500px)" srcSet={mobileBg} />
+                <img src={desktopBg} alt="photos_model_perfect-fit" />
+              </picture>
               <div className="screen__intro">
                 <h4 className="screen__intro-title">
-                  Forget about measuring tape or appointments.
+                  Get a personal fit recommendation
                 </h4>
                 <p className="screen__intro-txt">
-                  Get measured at your home with our advanced mobile
-                  <br />
-                  measuring technology
+                  No quiz, no measuring tape, no return hassle – in under a minute!
                 </p>
               </div>
             </div>
             <div className="screen__footer">
               <Link className="button" href="/email" onClick={gaWelcomeOnContinue} disabled={isButtonDisabled}>
-                <span>start</span>
+                <span>next</span>
               </Link>
             </div>
           </section>

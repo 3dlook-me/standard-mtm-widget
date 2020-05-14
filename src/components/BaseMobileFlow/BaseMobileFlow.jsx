@@ -43,6 +43,7 @@ class BaseMobileFlow extends Component {
       setMtmClientId,
       setFirstName,
       setNotes,
+      resetState,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -57,7 +58,14 @@ class BaseMobileFlow extends Component {
     if (!matches.id) { return; }
 
     this.flow = new FlowService(token);
+
+    resetState();
+
+    this.flow.resetGlobalState();
+
+    setToken(token);
     setFlowId(matches.id);
+
     this.flow.setFlowId(matches.id);
 
     return this.flow.get()

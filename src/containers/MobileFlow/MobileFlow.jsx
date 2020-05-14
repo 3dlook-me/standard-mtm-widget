@@ -16,10 +16,12 @@ class MobileFlow extends BaseMobileFlow {
   }
 
   componentDidMount = async () => {
-    const { matches, resetState } = this.props;
+    const {
+      matches, flowState, setFlowState,
+    } = this.props;
 
     if (!isMobileDevice()) {
-      route(`/tutorial?id=${matches.id}`, true);
+      route(`/upload?id=${matches.id}`, true);
 
       return Promise.resolve();
     }
@@ -34,29 +36,34 @@ class MobileFlow extends BaseMobileFlow {
 
     gaSwitchToMobileFlow();
 
-    resetState();
+    const flowStateData = await this.flow.get();
 
-    this.flow.resetGlobalState();
-
-    const flowState = await this.flow.get();
-
-    if (flowState.state.status !== 'finished') {
+    if (flowStateData.state.status !== 'finished') {
       await this.flow.updateState({
-        ...flowState.state,
+        ...flowStateData.state,
         status: 'opened-on-mobile',
+        processStatus: '',
       });
     }
 
-    if (flowState.state.status === 'finished') {
+    if (flowStateData.state.status === 'finished') {
       route(`/results?id=${matches.id}`, true);
     } else {
+      // FOR PAGE RELOAD
+      if (!flowState) {
+        setFlowState({
+          ...flowStateData.state,
+          status: 'opened-on-mobile',
+        });
+      }
+
       setInterval(() => {
         this.flow.updateState({
           lastActiveDate: Date.now(),
         });
       }, 3000);
 
-      route(`/tutorial?id=${matches.id}`, true);
+      route(`/upload?id=${matches.id}`, true);
     }
 
     return Promise.resolve();

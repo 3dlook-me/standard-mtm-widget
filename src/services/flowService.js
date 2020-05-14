@@ -132,4 +132,16 @@ export default class FlowService {
     })
       .then((response) => response.data);
   }
+
+  /**
+   * Update local state for interval patch state updates
+   *
+   * @param {Object} state - data object
+   */
+  updateLocalState(state) {
+    globalState = {
+      ...globalState,
+      ...state,
+    };
+  }
 }

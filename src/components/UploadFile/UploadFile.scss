@@ -25,6 +25,10 @@ $mobile-image-height: 340px;
     height: 202px;
 
     @media (max-width: 414px) and (max-height: 667px) {
+      height: 50vw;
+    }
+
+    @media (max-width: 375px) and (max-height: 560px) {
       height: 33vw;
     }
 

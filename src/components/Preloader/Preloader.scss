@@ -81,15 +81,16 @@
 
   &__text {
     width: 100%;
-    max-width: 320px;
+    max-width: 350px;
     color: #000000;
-    font-size: 16px;
     font-weight: 400;
-    line-height: 24px;
     text-align: center;
     margin: 0 auto;
+    font-size: 14px;
+    line-height: 21px;
 
     @include breakpoint($mobile) {
+      max-width: 320px;
       margin: 0 auto 60px;
       font-size: 14px;
       line-height: 18px;

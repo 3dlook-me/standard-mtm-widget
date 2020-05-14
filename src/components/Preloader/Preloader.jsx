@@ -24,7 +24,7 @@ const Preloader = ({ isActive, status, isMobile }) => (
         Follow instructions on
         <b> your mobile phone</b>
         <br />
-        to get your perfect fit
+        to generate your measurements
       </p>
     </div>
 

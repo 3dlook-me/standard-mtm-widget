@@ -114,13 +114,7 @@ export default class UploadFile extends Component {
    * Ability to load photos from gallery
    */
   isButtonDisabled = (isGallery) => {
-    if (environment === 'development') {
-      this.setState({
-        isButtonDisabled: false,
-      });
-    }
-
-    if (isGallery) {
+    if (environment === 'development' || isGallery) {
       this.setState({
         isButtonDisabled: false,
       });

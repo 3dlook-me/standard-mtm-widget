@@ -242,6 +242,10 @@ class SaiaButton {
       url += `&productId=${this.defaults.productId}`;
     }
 
+    if (this.defaults.photosFromGallery) {
+      url += `&photosFromGallery=${this.defaults.photosFromGallery}`;
+    }
+
     if (!this.isMobile) {
       this.modal.querySelector('iframe').src = url;
     } else {

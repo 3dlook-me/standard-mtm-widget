@@ -542,6 +542,7 @@ class Upload extends Component {
       camera,
       sendDataStatus,
       isMobile,
+      isPhotosFromGallery,
     } = this.props;
 
     let title;
@@ -601,6 +602,7 @@ class Upload extends Component {
                     isValid={isFrontImageValid}
                     value={frontImage}
                     openPhotoExample={this.openPhotoExample}
+                    photosFromGallery={isPhotosFromGallery}
                   />
                   <UploadBlock
                     className={classNames({
@@ -613,6 +615,7 @@ class Upload extends Component {
                     isValid={isSideImageValid}
                     value={sideImage}
                     openPhotoExample={this.openPhotoExample}
+                    photosFromGallery={isPhotosFromGallery}
                   />
 
                   {(camera === 'front') ? <Camera type={camera} gender={gender} change={this.saveFrontFile} /> : null}

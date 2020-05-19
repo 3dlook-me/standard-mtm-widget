@@ -28,7 +28,9 @@ export default class UploadFile extends Component {
 
   componentDidMount() {
     const {
-      value, change, photosFromGallery,
+      value,
+      change,
+      photosFromGallery,
     } = this.props;
 
     this.isButtonDisabled(photosFromGallery);

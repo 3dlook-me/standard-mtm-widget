@@ -163,17 +163,17 @@ export default class UploadFile extends Component {
         />
         <div className="upload-file__image upload-file__image--placeholder">
 
-          {!isImageLoaded ? (
-            <Loader />
-          ) : null}
+          {/* {!isImageLoaded ? ( */}
+          {/*  <Loader /> */}
+          {/* ) : null} */}
 
-          {(type === 'front') ? (
-            <img src={frontPhoto} onLoad={this.onImageLoad} alt="front" />
-          ) : null}
+          {/* {(type === 'front') ? ( */}
+          {/*  <img src={frontPhoto} onLoad={this.onImageLoad} alt="front" /> */}
+          {/* ) : null} */}
 
-          {(type === 'side') ? (
-            <img src={sidePhoto} onLoad={this.onImageLoad} alt="side" />
-          ) : null}
+          {/* {(type === 'side') ? ( */}
+          {/*  <img src={sidePhoto} onLoad={this.onImageLoad} alt="side" /> */}
+          {/* ) : null} */}
         </div>
       </label>
     );

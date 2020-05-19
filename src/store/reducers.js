@@ -63,6 +63,8 @@ export const INITIAL_STATE = {
   pageReloadStatus: false,
 
   isNetwork: true,
+
+  photosFromGallery: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -295,6 +297,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isNetwork: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_PHOTOS_FROM_GALLERY:
+      return {
+        ...state,
+        isPhotosFromGallery: action.payload,
       };
 
     default:

@@ -22,11 +22,16 @@ export default class UploadFile extends Component {
       file: null,
       value: null,
       isImageLoaded: false,
+      isButtonDisabled: true,
     };
   }
 
   componentDidMount() {
-    const { value, change } = this.props;
+    const {
+      value, change, photosFromGallery,
+    } = this.props;
+
+    this.isButtonDisabled(photosFromGallery);
 
     if (value) {
       this.setState({
@@ -105,6 +110,23 @@ export default class UploadFile extends Component {
     }
   }
 
+  /**
+   * Ability to load photos from gallery
+   */
+  isButtonDisabled = (isGallery) => {
+    if (environment === 'development') {
+      this.setState({
+        isButtonDisabled: false,
+      });
+    }
+
+    if (isGallery) {
+      this.setState({
+        isButtonDisabled: false,
+      });
+    }
+  }
+
   render() {
     const {
       type,
@@ -114,6 +136,7 @@ export default class UploadFile extends Component {
     const {
       value,
       isImageLoaded,
+      isButtonDisabled,
     } = this.state;
 
     const classes = classNames('upload-file',
@@ -132,7 +155,16 @@ export default class UploadFile extends Component {
         onKeyPress={this.keyboardAccess}
         onKeyUp={this.keyboardAccess}
       >
-        <input type="file" name={type} id={type} onChange={this.onChange} tabIndex="-1" value={value} accept="image/*" disabled={environment !== 'development'} />
+        <input
+          type="file"
+          name={type}
+          id={type}
+          onChange={this.onChange}
+          tabIndex="-1"
+          value={value}
+          accept="image/*"
+          disabled={isButtonDisabled}
+        />
         <div className="upload-file__image upload-file__image--placeholder">
 
           {!isImageLoaded ? (

@@ -39,6 +39,7 @@ export const CONSTANTS = {
   SET_PAGE_RELOAD_STATUS: 'SET_PAGE_RELOAD_STATUS',
   SET_FLOW_STATE: 'SET_FLOW_STATE',
   SET_IS_NETWORK: 'SET_IS_NETWORK',
+  SET_IS_PHOTOS_FROM_GALLERY: 'SET_IS_PHOTOS_FROM_GALLERY',
 };
 
 /**
@@ -420,6 +421,16 @@ export const setIsNetwork = (isStable) => ({
   payload: isStable,
 });
 
+/**
+ * Set ability to upload photos from gallery
+ *
+ * @param {boolean} isStable - network status
+ */
+export const setIsPhotosFromGallery = (isGallery) => ({
+  type: CONSTANTS.SET_IS_PHOTOS_FROM_GALLERY,
+  payload: isGallery,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -457,5 +468,6 @@ export default {
   setProcessingStatus,
   setPageReloadStatus,
   setFlowState,
-  setIsNetwork
+  setIsNetwork,
+  setIsPhotosFromGallery,
 };

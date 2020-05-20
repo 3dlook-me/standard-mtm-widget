@@ -1,13 +1,16 @@
 @import '../../scss/utils/index';
 
 .camera-mode-selection {
-  width: 100%;
-  max-width: 375px;
-  margin: 0 auto;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
+  padding-top: 18px;
 
+  .screen__title {
+    margin-bottom: 20px;
+  }
+
+  .privacy-banner {
+    margin: 0 auto 30px;
+  }
+  
   &__text {
     width: 100%;
     max-width: 300px;
@@ -16,8 +19,11 @@
   }
 
   &__buttons-wrap {
-    display: flex;
+    width: 100%;
+    max-width: 375px;
+    margin: 0 auto;
     flex-grow: 1;
+    display: flex;
   }
 
   &__button {

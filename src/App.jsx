@@ -11,6 +11,7 @@ import { gaStart } from './helpers/ga';
 import {
   Header,
   Help,
+  HowToTakePhotos,
 } from './components';
 import {
   Welcome,
@@ -27,6 +28,7 @@ import {
   NotFound,
   MobileFlow,
   Browser,
+  CameraModeSelection,
 } from './containers';
 
 import landscapeView from './images/landscape-view.svg';
@@ -61,6 +63,8 @@ class App extends Component {
             <WeightContainer path="/weight" />
             <QRCodeContainer path="/qrcode" />
             <QRCodeHelp path="/qrcode-help" />
+            <CameraModeSelection path="/camera-mode-selection" />
+            <HowToTakePhotos path="/how-to-take-photos" />
             <Upload path="/upload" />
             <Tutorial path="/tutorial" />
             <HardValidation path="/hard-validation" />

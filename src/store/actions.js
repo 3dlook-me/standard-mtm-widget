@@ -40,6 +40,7 @@ export const CONSTANTS = {
   SET_FLOW_STATE: 'SET_FLOW_STATE',
   SET_IS_NETWORK: 'SET_IS_NETWORK',
   SET_IS_PHOTOS_FROM_GALLERY: 'SET_IS_PHOTOS_FROM_GALLERY',
+  SET_CAMERA_MODE: 'SET_CAMERA_MODE',
 };
 
 /**
@@ -431,6 +432,16 @@ export const setIsPhotosFromGallery = (isGallery) => ({
   payload: isGallery,
 });
 
+/**
+ * Set camera mode
+ *
+ * @param {string} mode - 'front-mode' or 'back-mode'
+ */
+export const setCameraMode = (mode) => ({
+  type: CONSTANTS.SET_CAMERA_MODE,
+  payload: mode,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -470,4 +481,5 @@ export default {
   setFlowState,
   setIsNetwork,
   setIsPhotosFromGallery,
+  setCameraMode,
 };

@@ -24,10 +24,12 @@ import {
   Stepper,
   UploadBlock,
   PhotoExample,
-  CameraModeSelection,
 } from '../../components';
 
 import './Upload.scss';
+import frontCameraMode from '../../images/front-camera-mode.png';
+import checkMark from '../../images/check-mark.svg';
+import sideCameraMode from '../../images/side-camera-mode.png';
 
 let isPhoneLocked = false;
 
@@ -620,7 +622,7 @@ class Upload extends Component {
                 </p>
               </div>
 
-              <CameraModeSelection />
+              {/* <CameraModeSelection /> */}
 
               <div className="upload__block">
                 <div className="upload__files">
@@ -654,9 +656,9 @@ class Upload extends Component {
           </Fragment>
         )}
 
-        {isPhotoExample ? (
-          <PhotoExample photoType={photoType} closePhotoExample={this.closePhotoExample} />
-        ) : null}
+        {/* {isPhotoExample ? ( */}
+        {/*  <PhotoExample photoType={photoType} closePhotoExample={this.closePhotoExample} /> */}
+        {/* ) : null} */}
 
         <Preloader isActive={isPending} status={sendDataStatus} isMobile={isMobile} />
       </div>

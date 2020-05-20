@@ -57,6 +57,7 @@ export const INITIAL_STATE = {
 
   headerIconsStyle: 'default',
   camera: null,
+  cameraMode: 'back-mode',
   isHelpActive: false,
   isOpenReturnUrlDesktop: false,
   sendDataStatus: '',
@@ -303,6 +304,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isPhotosFromGallery: action.payload,
+      };
+
+    case CONSTANTS.SET_CAMERA_MODE:
+      return {
+        ...state,
+        cameraMode: action.payload,
       };
 
     default:

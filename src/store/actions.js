@@ -31,7 +31,6 @@ export const CONSTANTS = {
   SET_HEADER_ICONS_STYLE: 'SET_HEADER_ICONS_STYLE',
   SET_CAMERA: 'SET_CAMERA',
   SET_HELP_IS_ACTIVE: 'SET_HELP_IS_ACTIVE',
-  SET_HELP_BUTTON_STATUS: 'SET_HELP_BUTTON_STATUS',
   SET_IS_OPEN_RETURN_URL_DESKTOP: 'SET_IS_OPEN_RETURN_URL_DESKTOP',
   SET_PHONE_NUMBER: 'SET_PHONE_NUMBER',
   SET_PRODUCT_ID: 'SET_PRODUCT_ID',
@@ -39,12 +38,8 @@ export const CONSTANTS = {
   SET_PROCESSING_STATUS: 'SET_PROCESSING_STATUS',
   SET_PAGE_RELOAD_STATUS: 'SET_PAGE_RELOAD_STATUS',
   SET_FLOW_STATE: 'SET_FLOW_STATE',
-  SET_SETTINGS: 'SET_SETTINGS',
   SET_IS_NETWORK: 'SET_IS_NETWORK',
-  SET_SOURCE: 'SET_SOURCE',
-  SET_MTM_CLIENT_ID: 'SET_MTM_CLIENT_ID',
-  SET_FIRST_NAME: 'SET_FIRST_NAME',
-  SET_NOTES: 'SET_NOTES',
+  SET_IS_PHOTOS_FROM_GALLERY: 'SET_IS_PHOTOS_FROM_GALLERY',
 };
 
 /**
@@ -486,6 +481,16 @@ export const setNotes = (notes) => ({
   payload: notes,
 });
 
+/**
+ * Set ability to upload photos from gallery
+ *
+ * @param {boolean} isStable - network status
+ */
+export const setIsPhotosFromGallery = (isGallery) => ({
+  type: CONSTANTS.SET_IS_PHOTOS_FROM_GALLERY,
+  payload: isGallery,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -530,4 +535,5 @@ export default {
   setMtmClientId,
   setFirstName,
   setNotes,
+  setIsPhotosFromGallery,
 };

@@ -48,11 +48,13 @@ class Welcome extends Component {
       setWidgetUrl,
       resetState,
       setSettings,
+      setIsPhotosFromGallery,
     } = this.props;
 
     const token = matches.key || API_KEY || parseGetParams().key;
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;
+    const photosFromGallery = matches.photosFromGallery || false;
 
     this.widgetContainer = document.querySelector('.widget-container');
 
@@ -80,6 +82,11 @@ class Welcome extends Component {
       });
 
       resetState();
+
+      if (photosFromGallery) {
+        setIsPhotosFromGallery(true);
+      }
+
       setToken(token);
       setBrand(brand);
       setBodyPart(bodyPart);
@@ -100,6 +107,7 @@ class Welcome extends Component {
         returnUrl: matches.returnUrl,
         fakeSize: !!matches.fakeSize,
         productId: parseInt(matches.productId, 10),
+        ...(photosFromGallery && { photosFromGallery: true }),
       })
         .then((res) => {
           setFlowId(res);

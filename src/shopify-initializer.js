@@ -23,6 +23,7 @@ import SaiaMTMButton from './button';
   const button = new SaiaMTMButton({
     key: API_KEY,
     widgetUrl: WIDGET_HOST,
+    photosFromGallery: true,
   });
 
   button.init();

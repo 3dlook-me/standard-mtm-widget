@@ -44,6 +44,7 @@ class BaseMobileFlow extends Component {
       setFirstName,
       setNotes,
       resetState,
+      setIsPhotosFromGallery,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -72,6 +73,11 @@ class BaseMobileFlow extends Component {
       .then((flowStateResult) => {
         const brand = flowStateResult.state.brand || TEST_BRAND;
         const bodyPart = flowStateResult.state.bodyPart || TEST_BODY_PART;
+        const photosFromGallery = flowStateResult.state.photosFromGallery || false;
+
+        if (photosFromGallery) {
+          setIsPhotosFromGallery(true);
+        }
 
         // FOR PAGE RELOAD
         if (!flowState) {

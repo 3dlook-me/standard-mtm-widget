@@ -80,8 +80,6 @@ class Upload extends Component {
 
   componentDidMount() {
     const { camera, setIsNetwork, isNetwork } = this.props;
-    let hidden;
-    let visibilityChange;
 
     // if camera is active when page refreshed
     if (camera) {
@@ -94,25 +92,6 @@ class Upload extends Component {
       // after not found page, if was network error
       setIsNetwork(true);
     }
-
-    // is phone locked detect
-    if (typeof document.hidden !== 'undefined') {
-      hidden = 'hidden';
-      visibilityChange = 'visibilitychange';
-    } else if (typeof document.webkitHidden !== 'undefined') {
-      hidden = 'webkitHidden';
-      visibilityChange = 'webkitvisibilitychange';
-    }
-
-    this.handleVisibilityChange = async () => {
-      if (document[hidden]) {
-        isPhoneLocked = true;
-
-        await window.location.reload();
-      }
-    };
-
-    document.addEventListener(visibilityChange, this.handleVisibilityChange);
   }
 
   init(props) {
@@ -242,6 +221,28 @@ class Upload extends Component {
       if (!frontImage || !sideImage) {
         return;
       }
+
+      // is phone locked detect
+      let hidden;
+      let visibilityChange;
+
+      if (typeof document.hidden !== 'undefined') {
+        hidden = 'hidden';
+        visibilityChange = 'visibilitychange';
+      } else if (typeof document.webkitHidden !== 'undefined') {
+        hidden = 'webkitHidden';
+        visibilityChange = 'webkitvisibilitychange';
+      }
+
+      this.handleVisibilityChange = async () => {
+        if (document[hidden]) {
+          isPhoneLocked = true;
+
+          await window.location.reload();
+        }
+      };
+
+      document.addEventListener(visibilityChange, this.handleVisibilityChange);
 
       this.setState({
         isFrontImageValid: !!frontImage,

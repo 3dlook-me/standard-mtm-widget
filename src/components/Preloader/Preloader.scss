@@ -9,11 +9,12 @@
   right: 0;
   bottom: 0;
   background: #fff;
-  padding-top: 56px;
+  padding-top: 36px;
 
   @include breakpoint($mobile) {
     top: 40px;
     justify-content: space-between;
+    padding-top: 60px;
   }
 
   @media screen and (max-width: 374px) {
@@ -25,6 +26,14 @@
     flex-direction: column;
     align-items: center;
     z-index: 1;
+
+    @media (max-width: 414px) and (max-height: 662px) {
+      justify-content: flex-start;
+    }
+
+    @media (max-width: 375px) and (max-height: 580px) {
+      padding-top: 30px;
+    }
 
     &::after {
       content: '';
@@ -45,12 +54,17 @@
     font-weight: bold;
     line-height: 19px;
     text-align: center;
-    text-transform: unset;
     margin-bottom: 14px;
+    text-transform: uppercase;
+
+    @include breakpoint($mobile) {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
   }
 
   &__title-wrap {
-    margin-bottom: 74px;
+    margin-bottom: 70px;
 
     @media screen and (max-height: 650px) {
       margin-bottom: 40px;
@@ -60,87 +74,208 @@
       margin-bottom: 40px;
     }
 
-    @media screen and (max-width: 374px) {
-      margin-bottom: 14px;
+    @media (max-width: 375px) and (max-height: 580px) {
+      margin-bottom: 16px;
     }
   }
 
   &__text {
     width: 100%;
-    max-width: 320px;
+    max-width: 350px;
     color: #000000;
-    font-size: 16px;
     font-weight: 400;
-    line-height: 24px;
     text-align: center;
     margin: 0 auto;
+    font-size: 14px;
+    line-height: 21px;
 
     @include breakpoint($mobile) {
+      max-width: 320px;
       margin: 0 auto 60px;
       font-size: 14px;
       line-height: 18px;
     }
   }
 
-  &__warning-txt {
-    width: 100%;
-    max-width: 320px;
-    font-weight: 500;
-    margin-bottom: -42px;
-  }
-
-  &__anim {
-    position: relative;
-    width: 94px;
-    height: 251px;
-    overflow: hidden;
-    margin-bottom: 84px;
-
-    @media screen and (max-width: 374px) {
-      top: 14px;
-    }
-
-    @media screen and (max-height: 650px) {
-      margin-bottom: 44px;
-    }
+  &__status {
+    color: #396EC5;
+    font-weight: bold;
+    line-height: 16px;
+    height: 16px;
 
     @include breakpoint($mobile) {
-      margin-bottom: 44px;
-    }
-
-    @media screen and (max-width: 374px) {
-      width: 82px;
-      height: 219px;
-      margin-bottom: 30px;
-    }
-
-    img {
-      width: 100%;
-      position: absolute;
+      font-size: 16px;
+      letter-spacing: 0;
+      line-height: 19px;
+      height: auto;
     }
   }
 
-  &__dots {
-    animation: spin 5s ease infinite;
+  &__warning-block {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 342px;
+    margin: 0 auto 60px;
+    padding: 0 16px;
+
+    @media (max-width: 414px) and (max-height: 662px) {
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 375px) and (max-height: 580px) {
+      margin-bottom: 16px;
+    }
+  }
+
+  &__warning-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 40px;
+    border: 2px solid #343239;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 800;
+    color: #E02020;
+    background-color: #F6FAFF;
+    font-size: 16px;
+    margin-right: 16px;
+  }
+
+  &__warning-txt {
+    font-size: 16px;
+    text-align: left;
+  }
+
+  &__animation {
+    height: 310px;
+    width: 100%;
+    position: relative;
+    margin-bottom: 70px;
+    flex-shrink: 0;
+
+    @include breakpoint($mobile) {
+      margin-bottom: 50px;
+    }
+
+    @media (max-width: 375px) and (max-height: 580px) {
+     margin-bottom: 16px;
+    }
+  }
+
+  &__animation-stage {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+
+    &--first {
+      animation: .1s preloader-disappearance linear 9.3s forwards;
+    }
+
+    &--second {
+      animation: 3s preloader-appearance linear 6.3s forwards, .5s preloader-disappearance linear 15.3s forwards;
+      clip-path: inset(0 0 100% 0);
+    }
+
+    &--third {
+      animation: 3s preloader-appearance linear 12.3s forwards;
+      clip-path: inset(0 0 100% 0);
+    }
+  }
+
+  &__animation-indicator {
+    position: absolute;
+    top: -6px;
+    right: 0;
+    left: 0;
+    margin: auto;
+    animation: 6s indicator-up-and-down linear infinite .3s;
     will-change: transform;
   }
 
-  &__percentage {
-    color: #000000;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 29px;
+  &__instructions {
+    margin-top: 160px;
+    width: 100%;
+    max-width: 320px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+
+    &--active {
+      display: flex;
+
+      & ~ * {
+        display: none;
+      }
+    }
+  }
+
+  &__instructions-phone-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    max-width: 60px;
+    width: 100%;
+    margin-bottom: 50px;
+  }
+
+  &__instructions-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 28px;
+    animation: preloader-spinner 2.5s linear infinite;
   }
 }
 
-@keyframes spin {
+@keyframes indicator-up-and-down {
   0% {
-    top: -60px;
+    transform: translateY(0);
   }
+
   50% {
-    top: 255px;
+    transform: translateY(310px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes preloader-appearance {
+  0% {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  100% {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes preloader-disappearance {
+  0% {
+    opacity: 1;
   }
   100% {
-    top: -60px;
+    opacity: 0;
+  }
+}
+
+@keyframes preloader-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }

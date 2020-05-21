@@ -27,8 +27,6 @@
       }
 
       .header__svg-fill {
-        stroke: black;
-
         &--circle {
           stroke: black;
         }
@@ -38,9 +36,7 @@
     .screen__footer {
       .button {
         &:not(.help__close) {
-          background-color: white;
-          color: $main-color;
-          font-weight: 300;
+          font-weight: 600;
 
           &[disabled] {
             box-shadow: none;

@@ -8,9 +8,19 @@
   }
 
   &__text {
-    display: block;
-    max-width: 236px;
-    margin-top: 27px;
-    color: #9B9B9B;
+    width: 100%;
+    max-width: 240px;
+    margin: 0 auto 16px;
+  }
+
+  &__btn {
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 14px;
+    text-transform: uppercase;
+    background-color: #F1F3F4;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 4px;
   }
 }

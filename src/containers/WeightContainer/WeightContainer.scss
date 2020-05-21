@@ -33,6 +33,7 @@
       width: 100%;
       height: 100%;
       opacity: 0;
+      -webkit-appearance: none; /* for iphone select height */
 
       + .weight-container__placeholder {
         height: 100%;

@@ -13,3 +13,4 @@ export * from './BaseMobileFlow';
 export * from './Measurements';
 export * from './Guide';
 export * from './Loader';
+export * from './PhotoExample';

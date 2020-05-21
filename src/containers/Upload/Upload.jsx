@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import { route } from 'preact-router';
 import API from '@3dlook/saia-sdk/lib/api';
 import { connect } from 'react-redux';
@@ -11,7 +11,7 @@ import { store } from '../../store';
 import {
   send,
   wait,
-  mobileFlowStatusUpdate,
+  mobileFlowStatusUpdate, isMobileDevice,
 } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
@@ -22,6 +22,7 @@ import {
   Preloader,
   Stepper,
   UploadBlock,
+  PhotoExample,
 } from '../../components';
 
 import './Upload.scss';
@@ -46,6 +47,9 @@ class Upload extends Component {
       sideImagePose: null,
 
       isPending: false,
+
+      photoType: 'front',
+      isPhotoExample: false,
     };
 
     const { setPageReloadStatus } = props;
@@ -66,14 +70,13 @@ class Upload extends Component {
     clearInterval(this.timer);
 
     window.removeEventListener('unload', this.reloadListener);
+
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     document.removeEventListener('webkitvisibilitychange', this.handleVisibilityChange);
   }
 
   componentDidMount() {
     const { camera, setIsNetwork, isNetwork } = this.props;
-    let hidden;
-    let visibilityChange;
 
     // if camera is active when page refreshed
     if (camera) {
@@ -86,25 +89,6 @@ class Upload extends Component {
       // after not found page, if was network error
       setIsNetwork(true);
     }
-
-    // is phone locked detect
-    if (typeof document.hidden !== 'undefined') {
-      hidden = 'hidden';
-      visibilityChange = 'visibilitychange';
-    } else if (typeof document.webkitHidden !== 'undefined') {
-      hidden = 'webkitHidden';
-      visibilityChange = 'webkitvisibilitychange';
-    }
-
-    this.handleVisibilityChange = async () => {
-      if (document[hidden]) {
-        isPhoneLocked = true;
-
-        await window.location.reload();
-      }
-    };
-
-    document.addEventListener(visibilityChange, this.handleVisibilityChange);
   }
 
   init(props) {
@@ -215,6 +199,7 @@ class Upload extends Component {
       units,
       setProcessingStatus,
       setMtmClientId,
+      isFromDesktopToMobile,
     } = this.props;
 
     try {
@@ -233,6 +218,28 @@ class Upload extends Component {
       if (!frontImage || !sideImage) {
         return;
       }
+
+      let hidden;
+      let visibilityChange;
+
+      // is phone locked detect
+      if (typeof document.hidden !== 'undefined') {
+        hidden = 'hidden';
+        visibilityChange = 'visibilitychange';
+      } else if (typeof document.webkitHidden !== 'undefined') {
+        hidden = 'webkitHidden';
+        visibilityChange = 'webkitvisibilitychange';
+      }
+
+      this.handleVisibilityChange = async () => {
+        if (document[hidden]) {
+          isPhoneLocked = true;
+
+          await window.location.reload();
+        }
+      };
+
+      document.addEventListener(visibilityChange, this.handleVisibilityChange);
 
       this.setState({
         isFrontImageValid: !!frontImage,
@@ -256,6 +263,10 @@ class Upload extends Component {
       }
 
       if (!personId) {
+        if (isFromDesktopToMobile) {
+          this.flow.updateLocalState({ processStatus: 'Initiating Profile Creation' });
+        }
+
         setProcessingStatus('Initiating Profile Creation');
 
         const mtmClientParams = {
@@ -283,8 +294,16 @@ class Upload extends Component {
 
         await wait(1000);
 
+        if (isFromDesktopToMobile) {
+          this.flow.updateLocalState({ processStatus: 'Profile Creation Completed!' });
+        }
+
         setProcessingStatus('Profile Creation Completed!');
         await wait(1000);
+
+        if (isFromDesktopToMobile) {
+          this.flow.updateLocalState({ processStatus: 'Photo Uploading' });
+        }
 
         setProcessingStatus('Photo Uploading');
 
@@ -295,9 +314,17 @@ class Upload extends Component {
 
         await wait(1000);
 
+        if (isFromDesktopToMobile) {
+          this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });
+        }
+
         setProcessingStatus('Photo Upload Completed!');
         await wait(1000);
       } else {
+        if (isFromDesktopToMobile) {
+          this.flow.updateLocalState({ processStatus: 'Photo Uploading' });
+        }
+
         setProcessingStatus('Photo Uploading');
 
         await this.api.person.update(personId, images);
@@ -305,8 +332,16 @@ class Upload extends Component {
 
         taskSetId = await this.api.person.calculate(personId);
 
+        if (isFromDesktopToMobile) {
+          this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });
+        }
+
         setProcessingStatus('Photo Upload Completed!');
         await wait(1000);
+      }
+
+      if (isFromDesktopToMobile) {
+        this.flow.updateLocalState({ processStatus: 'Calculating your Measurements' });
       }
 
       setProcessingStatus('Calculating your Measurements');
@@ -314,6 +349,10 @@ class Upload extends Component {
       const person = await this.api.queue.getResults(taskSetId, 4000);
 
       await wait(1000);
+
+      if (isFromDesktopToMobile) {
+        this.flow.updateLocalState({ processStatus: 'Sending Your Results' });
+      }
 
       setProcessingStatus('Sending Your Results');
       await wait(1000);
@@ -407,7 +446,22 @@ class Upload extends Component {
     setHeaderIconsStyle('white');
   }
 
+  openPhotoExample =(photoType) => {
+    this.setState({
+      isPhotoExample: true,
+      photoType,
+    });
+  }
+
+  closePhotoExample = () => {
+    this.setState({
+      isPhotoExample: false,
+    });
+  }
+
   render() {
+    const isDesktop = !isMobileDevice();
+
     const {
       isPending,
       isFrontImageValid,
@@ -416,6 +470,8 @@ class Upload extends Component {
       frontImageBody,
       sideImagePose,
       sideImageBody,
+      photoType,
+      isPhotoExample,
     } = this.state;
 
     const {
@@ -425,6 +481,7 @@ class Upload extends Component {
       camera,
       sendDataStatus,
       isMobile,
+      isPhotosFromGallery,
     } = this.props;
 
     let title;
@@ -437,63 +494,102 @@ class Upload extends Component {
 
     return (
       <div className="screen active">
-        <div className="screen__content upload">
-          <Stepper steps="5" current={((!frontImage && !sideImage) || (!frontImage && sideImage)) ? 3 : 4} />
 
-          <h3 className="screen__title upload__title">{title}</h3>
+        {isDesktop ? (
+          <div className="tutorial__desktop-msg">
+            <h2>Please open this link on your mobile device</h2>
+          </div>
+        ) : (
+          <Fragment>
+            <div className="screen__content upload">
+              <Stepper steps="5" current={((!frontImage && !sideImage) || (!frontImage && sideImage)) ? 3 : 4} />
 
-          <div className="upload__block">
-            <div className="upload__files">
-              <UploadBlock
-                className={classNames({
+              <h3 className="screen__title upload__title">{title}</h3>
+              <div className="upload__banner">
+                <figure className="upload__banner-icon">
+                  <svg width="24px" height="28px" viewBox="0 0 24 28" version="1.1">
+                    <title>privacy</title>
+                    <desc>Created with Sketch.</desc>
+                    <g id="Mobile" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                      <g id="[M]-Step-6_1" transform="translate(-46.000000, -132.000000)" fill="#396EC5">
+                        <g id="Group" transform="translate(30.000000, 120.000000)">
+                          <g id="security-on" transform="translate(16.000000, 12.000000)">
+                            <path d="M23.1972759,4.37435632 C18.4198966,4.37435632 14.7599425,3.00943678 11.6650575,0 C8.57049425,3.00943678 4.91070115,4.37435632 0.133724138,4.37435632 C0.133724138,12.2115402 -1.48794253,23.4382529 11.664977,27.9976667 C24.8188621,23.4383333 23.1972759,12.2116207 23.1972759,4.37435632 Z M10.7097586,18.1656437 L6.86788506,14.3232069 L8.58803448,12.6031379 L10.7097586,14.7253448 L14.7424828,10.6925402 L16.4625517,12.4126092 L10.7097586,18.1656437 Z" id="privacy" />
+                          </g>
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+                </figure>
+                <p className="upload__banner-txt">
+                  We take your privacy very seriously and
+                  <b> delete your photos after </b>
+                  we process your measurements
+                </p>
+              </div>
+
+              <div className="upload__block">
+                <div className="upload__files">
+                  <UploadBlock
+                    className={classNames({
+                      active: (!frontImage && !sideImage) || (!frontImage && sideImage),
+                    })}
+                    gender={gender}
+                    type="front"
+                    validation={{ pose: frontImagePose, body: frontImageBody }}
+                    change={this.saveFrontFile}
+                    isValid={isFrontImageValid}
+                    value={frontImage}
+                    openPhotoExample={this.openPhotoExample}
+                    photosFromGallery={isPhotosFromGallery}
+                  />
+                  <UploadBlock
+                    className={classNames({
+                      active: frontImage && !sideImage,
+                    })}
+                    gender={gender}
+                    type="side"
+                    validation={{ pose: sideImagePose, body: sideImageBody }}
+                    change={this.saveSideFile}
+                    isValid={isSideImageValid}
+                    value={sideImage}
+                    openPhotoExample={this.openPhotoExample}
+                    photosFromGallery={isPhotosFromGallery}
+                  />
+
+                  {(camera === 'front') ? <Camera type={camera} gender={gender} change={this.saveFrontFile} /> : null}
+                  {(camera === 'side') ? <Camera type={camera} gender={gender} change={this.saveSideFile} /> : null}
+                </div>
+              </div>
+
+            </div>
+            <div className="screen__footer">
+              <button
+                className={classNames('button', 'upload__front-image-btn', {
                   active: (!frontImage && !sideImage) || (!frontImage && sideImage),
                 })}
-                gender={gender}
-                type="front"
-                validation={{ pose: frontImagePose, body: frontImageBody }}
-                change={this.saveFrontFile}
-                isValid={isFrontImageValid}
-                value={frontImage}
-              />
-              <UploadBlock
-                className={classNames({
+                onClick={this.triggerFrontImage}
+                type="button"
+              >
+                Open camera
+              </button>
+
+              <button
+                className={classNames('button', 'upload__side-image-btn', {
                   active: frontImage && !sideImage,
                 })}
-                gender={gender}
-                type="side"
-                validation={{ pose: sideImagePose, body: sideImageBody }}
-                change={this.saveSideFile}
-                isValid={isSideImageValid}
-                value={sideImage}
-              />
-
-              {(camera === 'front') ? <Camera type={camera} gender={gender} change={this.saveFrontFile} /> : null}
-              {(camera === 'side') ? <Camera type={camera} gender={gender} change={this.saveSideFile} /> : null}
+                onClick={this.triggerSideImage}
+                type="button"
+              >
+                Open camera
+              </button>
             </div>
-          </div>
+          </Fragment>
+        )}
 
-        </div>
-        <div className="screen__footer">
-          <button
-            className={classNames('button', 'upload__front-image-btn', {
-              active: (!frontImage && !sideImage) || (!frontImage && sideImage),
-            })}
-            onClick={this.triggerFrontImage}
-            type="button"
-          >
-            Open camera
-          </button>
-
-          <button
-            className={classNames('button', 'upload__side-image-btn', {
-              active: frontImage && !sideImage,
-            })}
-            onClick={this.triggerSideImage}
-            type="button"
-          >
-            Open camera
-          </button>
-        </div>
+        {isPhotoExample ? (
+          <PhotoExample photoType={photoType} closePhotoExample={this.closePhotoExample} />
+        ) : null}
 
         <Preloader isActive={isPending} status={sendDataStatus} isMobile={isMobile} />
       </div>

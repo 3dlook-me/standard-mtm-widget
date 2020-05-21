@@ -14,6 +14,8 @@ import { Browser } from '..';
 import SettingsService from '../../services/settingsService';
 
 import './Welcome.scss';
+import mobileBg from '../../images/img_mtm_mobile.png';
+import desktopBg from '../../images/img_mtm.png';
 
 /**
  * Welcome page component
@@ -46,11 +48,13 @@ class Welcome extends Component {
       setWidgetUrl,
       resetState,
       setSettings,
+      setIsPhotosFromGallery,
     } = this.props;
 
     const token = matches.key || API_KEY || parseGetParams().key;
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;
+    const photosFromGallery = matches.photosFromGallery || false;
 
     this.widgetContainer = document.querySelector('.widget-container');
 
@@ -78,6 +82,11 @@ class Welcome extends Component {
       });
 
       resetState();
+
+      if (photosFromGallery) {
+        setIsPhotosFromGallery(true);
+      }
+
       setToken(token);
       setBrand(brand);
       setBodyPart(bodyPart);
@@ -98,6 +107,7 @@ class Welcome extends Component {
         returnUrl: matches.returnUrl,
         fakeSize: !!matches.fakeSize,
         productId: parseInt(matches.productId, 10),
+        ...(photosFromGallery && { photosFromGallery: true }),
       })
         .then((res) => {
           setFlowId(res);
@@ -132,20 +142,22 @@ class Welcome extends Component {
         ) : (
           <section className="screen active">
             <div className="screen__content welcome">
+              <picture className="welcome__img">
+                <source media="(max-width: 500px)" srcSet={mobileBg} />
+                <img src={desktopBg} alt="photos_model_perfect-fit" />
+              </picture>
               <div className="screen__intro">
                 <h4 className="screen__intro-title">
-                  Forget about measuring tape or appointments.
+                  Forget about measuring tape or appointments
                 </h4>
                 <p className="screen__intro-txt">
-                  Get measured at your home with our advanced mobile
-                  <br />
-                  measuring technology
+                  No quiz, no measuring tape, no return hassle – in under a minute!
                 </p>
               </div>
             </div>
             <div className="screen__footer">
               <Link className="button" href="/email" onClick={gaWelcomeOnContinue} disabled={isButtonDisabled}>
-                <span>start</span>
+                <span>next</span>
               </Link>
             </div>
           </section>

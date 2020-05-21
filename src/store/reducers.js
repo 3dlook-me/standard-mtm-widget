@@ -77,6 +77,8 @@ export const INITIAL_STATE = {
   isNetwork: true,
 
   source: 'widget',
+
+  photosFromGallery: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -348,6 +350,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         notes: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_PHOTOS_FROM_GALLERY:
+      return {
+        ...state,
+        isPhotosFromGallery: action.payload,
       };
 
     default:

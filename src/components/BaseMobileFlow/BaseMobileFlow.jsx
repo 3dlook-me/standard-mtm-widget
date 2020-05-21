@@ -43,6 +43,8 @@ class BaseMobileFlow extends Component {
       setMtmClientId,
       setFirstName,
       setNotes,
+      resetState,
+      setIsPhotosFromGallery,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -57,13 +59,25 @@ class BaseMobileFlow extends Component {
     if (!matches.id) { return; }
 
     this.flow = new FlowService(token);
+
+    resetState();
+
+    this.flow.resetGlobalState();
+
+    setToken(token);
     setFlowId(matches.id);
+
     this.flow.setFlowId(matches.id);
 
     return this.flow.get()
       .then((flowStateResult) => {
         const brand = flowStateResult.state.brand || TEST_BRAND;
         const bodyPart = flowStateResult.state.bodyPart || TEST_BODY_PART;
+        const photosFromGallery = flowStateResult.state.photosFromGallery || false;
+
+        if (photosFromGallery) {
+          setIsPhotosFromGallery(true);
+        }
 
         // FOR PAGE RELOAD
         if (!flowState) {

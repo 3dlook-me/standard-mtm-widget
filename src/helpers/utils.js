@@ -450,6 +450,7 @@ export const saveState = (state) => {
 export const mobileFlowStatusUpdate = (flow, state) => {
   flow.updateState({
     ...state,
+    processStatus: '',
   }).then(() => Promise.resolve());
 
   setInterval(() => {

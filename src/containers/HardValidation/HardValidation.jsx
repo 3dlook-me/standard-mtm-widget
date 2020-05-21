@@ -22,6 +22,7 @@ class HardValidation extends Component {
     const { flowId, token } = this.props;
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
+    this.flow.updateLocalState({ processStatus: '' });
 
     const { setPageReloadStatus } = props;
 
@@ -119,7 +120,7 @@ class HardValidation extends Component {
     if (side) {
       if (side === 'Front photo in the side') {
         sideInTheSide = true;
-        topMessageSide = 'It seems you uploaded frong photo instead of the side one';
+        topMessageSide = 'It seems you uploaded front photo instead of the side one';
         tipMessageSide = 'Please upload the side photo.';
       } else if (side === 'Can\'t detect the human body') {
         cannotDetectBodySide = true;

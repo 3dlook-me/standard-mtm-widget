@@ -14,6 +14,12 @@ export default class UploadBlock extends Component {
     change(params);
   }
 
+  openExample = () => {
+    const { openPhotoExample, type } = this.props;
+
+    openPhotoExample(type);
+  }
+
   render() {
     const {
       type,
@@ -21,6 +27,7 @@ export default class UploadBlock extends Component {
       isValid,
       value,
       className,
+      photosFromGallery,
     } = this.props;
 
     return (
@@ -31,9 +38,20 @@ export default class UploadBlock extends Component {
           change={this.fileChange}
           isValid={isValid}
           value={value}
+          photosFromGallery={photosFromGallery}
         />
 
-        <p className="upload-block__text">Make sure your entire body is present on the screen</p>
+        <p className="upload-block__text">
+          Make sure your entire body
+          <b> is present on the screen</b>
+        </p>
+        <button
+          className="upload-block__btn"
+          type="button"
+          onClick={this.openExample}
+        >
+          View an example
+        </button>
       </div>
     );
   }

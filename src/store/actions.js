@@ -45,6 +45,7 @@ export const CONSTANTS = {
   SET_MTM_CLIENT_ID: 'SET_MTM_CLIENT_ID',
   SET_FIRST_NAME: 'SET_FIRST_NAME',
   SET_NOTES: 'SET_NOTES',
+  SET_IS_PHOTOS_FROM_GALLERY: 'SET_IS_PHOTOS_FROM_GALLERY',
 };
 
 /**
@@ -387,10 +388,10 @@ export const setWeight = (weight) => ({
 });
 
 /**
-  * Set weight
-  *
-  * @param {any} weightLb - weight object
-  */
+ * Set weight
+ *
+ * @param {any} weightLb - weight object
+ */
 export const setWeightLb = (weightLb) => ({
   type: CONSTANTS.SET_WEIGHT_LB,
   payload: weightLb,
@@ -486,6 +487,15 @@ export const setNotes = (notes) => ({
   payload: notes,
 });
 
+/** Set ability to upload photos from gallery
+ *
+ * @param {boolean} isStable - network status
+*/
+export const setIsPhotosFromGallery = (isGallery) => ({
+  type: CONSTANTS.SET_IS_PHOTOS_FROM_GALLERY,
+  payload: isGallery,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -530,4 +540,5 @@ export default {
   setMtmClientId,
   setFirstName,
   setNotes,
+  setIsPhotosFromGallery,
 };

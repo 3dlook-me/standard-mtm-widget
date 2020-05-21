@@ -11,7 +11,6 @@ import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 
 import './Result.scss';
-import emoji from '../../images/emoji-heart-eyes.png';
 
 /**
  * Results page component.
@@ -182,7 +181,6 @@ class Results extends BaseMobileFlow {
 
           {(results === 'thanks') ? (
             <div className="result__thanks">
-              <img src={emoji} alt="emoji" />
               <h3 className="result__thanks-title">Thank you!</h3>
               <p className="result__thanks-text">
                 We got your measurements and

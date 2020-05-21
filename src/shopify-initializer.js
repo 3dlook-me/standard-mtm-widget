@@ -23,6 +23,7 @@ import SaiaButton from './button';
   const button = new SaiaButton({
     key: API_KEY,
     widgetUrl: WIDGET_HOST,
+    photosFromGallery: true,
   });
 
   const isButtonVisible = await button.checkButtonVisibility();

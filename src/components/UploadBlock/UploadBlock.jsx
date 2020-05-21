@@ -27,6 +27,7 @@ export default class UploadBlock extends Component {
       isValid,
       value,
       className,
+      photosFromGallery,
     } = this.props;
 
     return (
@@ -37,6 +38,7 @@ export default class UploadBlock extends Component {
           change={this.fileChange}
           isValid={isValid}
           value={value}
+          photosFromGallery={photosFromGallery}
         />
 
         <p className="upload-block__text">

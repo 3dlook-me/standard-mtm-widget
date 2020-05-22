@@ -1,5 +1,7 @@
 import {
-  h, Component, Fragment,
+  h,
+  Component,
+  Fragment,
 } from 'preact';
 
 import { Loader } from '..';

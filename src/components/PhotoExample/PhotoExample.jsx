@@ -1,4 +1,6 @@
-import { h, Component } from 'preact';
+import {
+  h, Component, Fragment,
+} from 'preact';
 
 import { Loader } from '..';
 
@@ -39,13 +41,18 @@ class PhotoExample extends Component {
             {`${photoType} photo example`}
           </h2>
 
-          <figure className={`photo-example__img photo-example__img--${photoType}`}>
+          <div
+            className={`photo-example__img photo-example__img--${photoType}`}
+            style={{ backgroundImage: `url(${photo})` }}
+          >
             {!isImageLoaded ? (
-              <Loader />
-            ) : null}
-            <img src={photo} onLoad={this.onImageLoad} alt="example" />
-          </figure>
+              <Fragment>
+                <Loader />
 
+                <img className="photo-example__img-onload-detect" src={photo} onLoad={this.onImageLoad} alt="example" />
+              </Fragment>
+            ) : null}
+          </div>
         </div>
 
 

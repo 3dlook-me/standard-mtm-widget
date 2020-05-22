@@ -24,6 +24,14 @@ body {
         color: #fff !important;
       }
     }
+
+    .upload-block__btn {
+      pointer-events: none !important;
+    }
+
+    .widget-camera-take-photo {
+      pointer-events: none !important;
+    }
   }
 }
 

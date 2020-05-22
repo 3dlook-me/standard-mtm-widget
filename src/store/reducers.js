@@ -53,6 +53,8 @@ export const INITIAL_STATE = {
   email: null,
   units: 'in',
   phoneNumber: null,
+  phoneCountry: null,
+  phoneUserPart: null,
   fakeSize: false,
 
   headerIconsStyle: 'default',
@@ -303,6 +305,18 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isPhotosFromGallery: action.payload,
+      };
+
+    case CONSTANTS.SET_PHONE_COUNTRY:
+      return {
+        ...state,
+        phoneCountry: action.payload,
+      };
+
+    case CONSTANTS.SET_PHONE_USER_PART:
+      return {
+        ...state,
+        phoneUserPart: action.payload,
       };
 
     default:

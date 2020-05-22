@@ -51,6 +51,8 @@ class QRCodeContainer extends Component {
     const { flowId, token } = this.props;
     const mobileFlowUrl = `${window.location.origin}${window.location.pathname}?key=${token}#/mobile/${flowId}`;
 
+    window.addEventListener('online', this.pageReload);
+
     this.setState({
       qrCodeUrl: mobileFlowUrl,
     });
@@ -83,12 +85,16 @@ class QRCodeContainer extends Component {
   componentWillUnmount() {
     if (this.unsubscribe) this.unsubscribe();
     clearInterval(this.timer);
+
+    window.removeEventListener('online', this.pageReload);
   }
 
   /**
    * Change phone number
    */
   changePhoneNumber = (isValid, number, country) => {
+    const { setPhoneCountry, setPhoneUserPart } = this.props;
+
     const phoneNumber = `${country.dialCode}${number}`;
     const noLettersCheck = validatePhoneNumberLetters(phoneNumber);
 
@@ -96,6 +102,11 @@ class QRCodeContainer extends Component {
       isPhoneNumberValid: isValid && noLettersCheck,
       phoneNumber,
     });
+
+    if (isValid && noLettersCheck) {
+      setPhoneCountry(country.iso2);
+      setPhoneUserPart(number);
+    }
   }
 
   init(props) {
@@ -279,6 +290,14 @@ class QRCodeContainer extends Component {
     }, 1000);
   };
 
+  pageReload = () => {
+    const { isPending } = this.state;
+
+    if (!isPending) {
+      window.location.reload();
+    }
+  }
+
   render() {
     const {
       qrCodeUrl,
@@ -293,7 +312,11 @@ class QRCodeContainer extends Component {
       isShortUrlFetching,
     } = this.state;
 
-    const { sendDataStatus } = this.props;
+    const {
+      sendDataStatus,
+      phoneCountry,
+      phoneUserPart,
+    } = this.props;
 
     const qrCopyUrl = copyUrl || qrCodeUrl;
 
@@ -341,6 +364,8 @@ class QRCodeContainer extends Component {
           <div className="screen__control scan-qrcode__control">
             <IntlTelInput
               containerClassName="intl-tel-input"
+              defaultCountry={phoneCountry || ''}
+              defaultValue={phoneUserPart || ''}
               inputClassName={
                 classNames(
                   'input',

@@ -172,14 +172,6 @@ export default class UploadFile extends Component {
               <img className="upload-file__img-onload-detect" src={type === 'front' ? frontPhoto : sidePhoto} onLoad={this.onImageLoad} alt="example" />
             </Fragment>
           ) : null}
-
-          {/* {(type === 'front') ? ( */}
-          {/*  <img src={frontPhoto} onLoad={this.onImageLoad} alt="front" /> */}
-          {/* ) : null} */}
-
-          {/* {(type === 'side') ? ( */}
-          {/*  <img src={sidePhoto} onLoad={this.onImageLoad} alt="side" /> */}
-          {/* ) : null} */}
         </div>
       </label>
     );

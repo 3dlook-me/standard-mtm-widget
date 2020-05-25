@@ -6,17 +6,30 @@ import { Link } from 'preact-router';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { isMobileDevice, mobileFlowStatusUpdate } from '../../helpers/utils';
-import { Stepper, PrivacyBanner } from '../../components';
+import {
+  Stepper,
+  PrivacyBanner,
+  Loader,
+} from '../../components';
 
 import './CameraModeSelection.scss';
+import backCameraMode from '../../images/back-camera-mode.png';
 import frontCameraMode from '../../images/front-camera-mode.png';
-import sideCameraMode from '../../images/side-camera-mode.png';
 import checkMark from '../../images/check-mark.svg';
 
 /**
  * CameraModeSelection component
  */
 class CameraModeSelection extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      isBackModeImageLoaded: false,
+      isFrontImageLoaded: false,
+    };
+  }
+
   componentDidMount() {
     const isDesktop = !isMobileDevice();
 
@@ -50,10 +63,22 @@ class CameraModeSelection extends Component {
     setCameraMode(e.target.value);
   }
 
+  onBackImageLoad = () => {
+    this.setState({
+      isBackModeImageLoaded: true,
+    });
+  }
+
+  onFrontImageLoad = () => {
+    this.setState({
+      isFrontModeImageLoaded: true,
+    });
+  }
+
   render() {
-    // const {} = this.props;
     const isDesktop = !isMobileDevice();
     const { cameraMode } = this.props;
+    const { isBackModeImageLoaded, isFrontModeImageLoaded } = this.state;
 
     return (
 
@@ -92,8 +117,22 @@ class CameraModeSelection extends Component {
                     onChange={this.handleClick}
                   />
 
-                  <div className="camera-mode-selection__img-wrap">
-                    <img src={frontCameraMode} alt="front" />
+                  <div
+                    className="camera-mode-selection__img-wrap"
+                    style={{ backgroundImage: `url(${backCameraMode})` }}
+                  >
+                    {!isBackModeImageLoaded ? (
+                      <Fragment>
+                        <Loader />
+
+                        <img
+                          className="camera-mode-selection__img-onload-detect"
+                          src={frontCameraMode}
+                          onLoad={this.onBackImageLoad}
+                          alt="back"
+                        />
+                      </Fragment>
+                    ) : null}
                   </div>
                   <div className="camera-mode-selection__icon-wrap">
                     <h4 className="camera-mode-selection__title">
@@ -119,8 +158,22 @@ class CameraModeSelection extends Component {
                     onChange={this.handleClick}
                   />
 
-                  <div className="camera-mode-selection__img-wrap">
-                    <img src={sideCameraMode} alt="side" />
+                  <div
+                    className="camera-mode-selection__img-wrap"
+                    style={{ backgroundImage: `url(${frontCameraMode})` }}
+                  >
+                    {!isFrontModeImageLoaded ? (
+                      <Fragment>
+                        <Loader />
+
+                        <img
+                          className="camera-mode-selection__img-onload-detect"
+                          src={frontCameraMode}
+                          onLoad={this.onFrontImageLoad}
+                          alt="back"
+                        />
+                      </Fragment>
+                    ) : null}
                   </div>
                   <div className="camera-mode-selection__icon-wrap">
                     <h4 className="camera-mode-selection__title">

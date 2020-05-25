@@ -27,9 +27,8 @@ import {
 } from '../../components';
 
 import './Upload.scss';
-import frontCameraMode from '../../images/front-camera-mode.png';
-import checkMark from '../../images/check-mark.svg';
-import sideCameraMode from '../../images/side-camera-mode.png';
+import frontExample from '../../images/img_front-example.png';
+import sideExample from '../../images/img_side-example.png';
 
 let isPhoneLocked = false;
 
@@ -54,6 +53,8 @@ class Upload extends Component {
 
       photoType: 'front',
       isPhotoExample: false,
+
+      activeTab: 'front',
     };
 
     const { setPageReloadStatus } = props;
@@ -92,6 +93,12 @@ class Upload extends Component {
       // after not found page, if was network error
       setIsNetwork(true);
     }
+
+    this.tabTimer = setTimeout(() => {
+      this.setState({
+        activeTab: 'side',
+      });
+    }, 4000);
   }
 
   init(props) {
@@ -524,6 +531,14 @@ class Upload extends Component {
     });
   }
 
+  changeTab = (e) => {
+    this.setState({
+      activeTab: e.target.name,
+    });
+
+    clearTimeout(this.tabTimer);
+  }
+
   render() {
     const isDesktop = !isMobileDevice();
 
@@ -537,6 +552,7 @@ class Upload extends Component {
       sideImageBody,
       photoType,
       isPhotoExample,
+      activeTab,
     } = this.state;
 
     const {
@@ -570,7 +586,9 @@ class Upload extends Component {
               <Stepper steps="5" current={((!frontImage && !sideImage) || (!frontImage && sideImage)) ? 3 : 4} />
 
               <h3 className="screen__title upload__title">
-                {title}
+                {/* {title} */}
+
+                Requirements
                 <div className="upload__upload-file">
                   <UploadBlock
                     className={classNames({
@@ -600,28 +618,44 @@ class Upload extends Component {
                   />
                 </div>
               </h3>
-              <div className="upload__banner">
-                <figure className="upload__banner-icon">
-                  <svg width="24px" height="28px" viewBox="0 0 24 28" version="1.1">
-                    <title>privacy</title>
-                    <desc>Created with Sketch.</desc>
-                    <g id="Mobile" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                      <g id="[M]-Step-6_1" transform="translate(-46.000000, -132.000000)" fill="#396EC5">
-                        <g id="Group" transform="translate(30.000000, 120.000000)">
-                          <g id="security-on" transform="translate(16.000000, 12.000000)">
-                            <path d="M23.1972759,4.37435632 C18.4198966,4.37435632 14.7599425,3.00943678 11.6650575,0 C8.57049425,3.00943678 4.91070115,4.37435632 0.133724138,4.37435632 C0.133724138,12.2115402 -1.48794253,23.4382529 11.664977,27.9976667 C24.8188621,23.4383333 23.1972759,12.2116207 23.1972759,4.37435632 Z M10.7097586,18.1656437 L6.86788506,14.3232069 L8.58803448,12.6031379 L10.7097586,14.7253448 L14.7424828,10.6925402 L16.4625517,12.4126092 L10.7097586,18.1656437 Z" id="privacy" />
-                          </g>
-                        </g>
-                      </g>
-                    </g>
-                  </svg>
-                </figure>
-                <p className="upload__banner-txt">
-                  We take your privacy very seriously and
-                  <b> delete your photos after </b>
-                  we process your measurements
-                </p>
+
+              <div className="upload__tabs">
+                <div className="upload__tabs-btn-wrap">
+                  <button
+                    className={classNames('upload__tabs-btn', {
+                      'upload__tabs-btn--active': activeTab === 'front',
+                    })}
+                    type="button"
+                    name="front"
+                    onClick={this.changeTab}
+                  >
+                    front photo
+                  </button>
+                  <button
+                    className={classNames('upload__tabs-btn', {
+                      'upload__tabs-btn--active': activeTab === 'side',
+                    })}
+                    type="button"
+                    name="side"
+                    onClick={this.changeTab}
+                  >
+                    side photo
+                  </button>
+                </div>
+                <div
+                  className={classNames('upload__tabs-photo', {
+                    'upload__tabs-photo--active': activeTab === 'front',
+                  })}
+                  style={{ backgroundImage: `url(${frontExample})` }}
+                />
+                <div
+                  className={classNames('upload__tabs-photo', {
+                    'upload__tabs-photo--active': activeTab === 'side',
+                  })}
+                  style={{ backgroundImage: `url(${sideExample})` }}
+                />
               </div>
+
 
               {/* <CameraModeSelection /> */}
 
@@ -641,7 +675,7 @@ class Upload extends Component {
                 onClick={this.triggerFrontImage}
                 type="button"
               >
-                Open camera
+                Let&apos;s start
               </button>
 
               <button
@@ -651,7 +685,7 @@ class Upload extends Component {
                 onClick={this.triggerSideImage}
                 type="button"
               >
-                Open camera
+                Let&apos;s start
               </button>
             </div>
           </Fragment>

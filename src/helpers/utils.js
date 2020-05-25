@@ -1,9 +1,5 @@
 import axios from 'axios';
-// import platform from 'mini-platform-detect';
 import { detectOS, browserName } from 'detect-browser';
-
-const environment = process.env.NODE_ENV;
-
 
 /**
  * Get stringified GET params from object
@@ -467,3 +463,16 @@ export const mobileFlowStatusUpdate = (flow, state) => {
  * @returns {number} inches value
  */
 export const cm2in = (cm) => cm / 2.54;
+
+/**
+ * Check online status
+ */
+export const updateInternetStatus = () => {
+  const $body = document.body;
+
+  if (navigator.onLine) {
+    $body.classList.remove('offline');
+  } else {
+    $body.classList.add('offline');
+  }
+};

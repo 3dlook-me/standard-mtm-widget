@@ -219,10 +219,10 @@ class Upload extends Component {
         return;
       }
 
+      // is phone locked detect
       let hidden;
       let visibilityChange;
 
-      // is phone locked detect
       if (typeof document.hidden !== 'undefined') {
         hidden = 'hidden';
         visibilityChange = 'visibilitychange';

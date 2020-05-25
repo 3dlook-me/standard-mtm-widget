@@ -11,6 +11,40 @@ body {
   @include breakpoint(max-width 768px) {
     display: flex;
   }
+
+  &.offline {
+    .header__offline-status {
+      display: block;
+    }
+
+    .screen__footer {
+      .button {
+        pointer-events: none !important;
+        background-color: #cecece !important;
+        color: #fff !important;
+      }
+    }
+
+    .upload-block__btn {
+      pointer-events: none !important;
+    }
+
+    .widget-camera-take-photo {
+      pointer-events: none !important;
+    }
+
+    .weight-container__skip-btn {
+      pointer-events: none !important;
+    }
+
+    .measurements__list {
+      pointer-events: none !important;
+    }
+
+    .header__close {
+      pointer-events: none !important;
+    }
+  }
 }
 
 button {

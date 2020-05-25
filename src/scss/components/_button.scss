@@ -80,4 +80,9 @@ $border-width: 2px;
       display: none;
     }
   }
+
+  &--blocked {
+    pointer-events: none;
+    opacity: 0.9;
+  }
 }

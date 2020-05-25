@@ -2,9 +2,12 @@
 
 .upload-block {
   display: none;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
 
   &.active {
-    display: block;
+    display: flex;
   }
 
   &__text {

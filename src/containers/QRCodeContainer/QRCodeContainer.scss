@@ -179,6 +179,10 @@
   }
 }
 
+.spin {
+  display: none;
+}
+
 .button--sms-pending,
 .button--sms-success,
 .button--sms-pending[disabled],
@@ -193,6 +197,7 @@
   }
 
   img.spin {
+    display: block;
     animation: sms-spin 3s linear infinite;
   }
 }

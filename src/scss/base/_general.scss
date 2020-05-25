@@ -36,6 +36,14 @@ body {
     .weight-container__skip-btn {
       pointer-events: none !important;
     }
+
+    .measurements__list {
+      pointer-events: none !important;
+    }
+
+    .header__close {
+      pointer-events: none !important;
+    }
   }
 }
 

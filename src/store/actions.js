@@ -40,6 +40,8 @@ export const CONSTANTS = {
   SET_FLOW_STATE: 'SET_FLOW_STATE',
   SET_IS_NETWORK: 'SET_IS_NETWORK',
   SET_IS_PHOTOS_FROM_GALLERY: 'SET_IS_PHOTOS_FROM_GALLERY',
+  SET_PHONE_COUNTRY: 'SET_PHONE_COUNTRY',
+  SET_PHONE_USER_PART: 'SET_PHONE_USER_PART',
 };
 
 /**
@@ -431,6 +433,26 @@ export const setIsPhotosFromGallery = (isGallery) => ({
   payload: isGallery,
 });
 
+/**
+ * Set phone country
+ *
+ * @param {string} phoneCountry - phone country
+ */
+export const setPhoneCountry = (phoneCountry) => ({
+  type: CONSTANTS.SET_PHONE_COUNTRY,
+  payload: phoneCountry,
+});
+
+/**
+ * Set phone user part
+ *
+ * @param {string} phoneUserPart - phone user part
+ */
+export const setPhoneUserPart = (phoneUserPart) => ({
+  type: CONSTANTS.SET_PHONE_USER_PART,
+  payload: phoneUserPart,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -470,4 +492,6 @@ export default {
   setFlowState,
   setIsNetwork,
   setIsPhotosFromGallery,
+  setPhoneCountry,
+  setPhoneUserPart,
 };

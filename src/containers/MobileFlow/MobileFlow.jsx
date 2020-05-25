@@ -4,7 +4,9 @@ import { route } from 'preact-router';
 
 import actions from '../../store/actions';
 import { gaSwitchToMobileFlow } from '../../helpers/ga';
-import { browserValidation, isMobileDevice } from '../../helpers/utils';
+import {
+  browserValidation, isMobileDevice,
+} from '../../helpers/utils';
 import { BaseMobileFlow, Loader } from '../../components';
 
 /**
@@ -13,12 +15,16 @@ import { BaseMobileFlow, Loader } from '../../components';
 class MobileFlow extends BaseMobileFlow {
   componentWillUnmount() {
     if (this.unsubscribe) this.unsubscribe();
+
+    window.removeEventListener('online', this.pageReload);
   }
 
   componentDidMount = async () => {
     const {
       matches, flowState, setFlowState,
     } = this.props;
+
+    window.addEventListener('online', this.pageReload);
 
     if (!isMobileDevice()) {
       route('/camera-mode-selection', true);
@@ -67,6 +73,10 @@ class MobileFlow extends BaseMobileFlow {
     }
 
     return Promise.resolve();
+  }
+
+  pageReload = () => {
+    window.location.reload();
   }
 
   render() {

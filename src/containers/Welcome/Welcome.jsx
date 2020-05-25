@@ -100,8 +100,8 @@ class Welcome extends Component {
       this.flow.create({
         status: 'created',
         productUrl: matches.product,
-        brand: matches.brand,
-        bodyPart: matches.body_part,
+        brand,
+        bodyPart,
         returnUrl: matches.returnUrl,
         fakeSize: !!matches.fakeSize,
         productId: parseInt(matches.productId, 10),
@@ -114,7 +114,15 @@ class Welcome extends Component {
             isButtonDisabled: false,
           });
         })
-        .catch((err) => alert(err.message));
+        .catch((err) => {
+          this.widgetIframe = window.parent.document.querySelector('.saia-pf-drop iframe');
+
+          // condition for preventing appearing the error alert in safari
+          // after the widget closes quickly after it is opened
+          if (this.widgetIframe.getAttribute('src') !== '') {
+            alert(err.message);
+          }
+        });
     }, { once: true });
   }
 

@@ -9,6 +9,7 @@ $mobile-image-height: 340px;
   overflow: hidden;
   margin: 0 auto 54px;
   width: 100%;
+  flex-grow: 1;
   margin: 0 !important; /* temporarily while table-flow is being tested */
   width: 100%; /* temporarily while table-flow is being tested */
   height: 100%; /* temporarily while table-flow is being tested */
@@ -25,6 +26,9 @@ $mobile-image-height: 340px;
     justify-content: center;
     align-items: center;
     position: relative;
+    background-size: contain;
+    background-position: top center;
+    background-repeat: no-repeat;
     height: 202px;
 
     height: auto !important; /* temporarily while table-flow is being tested */
@@ -45,5 +49,11 @@ $mobile-image-height: 340px;
 
   input {
     @include visually-hidden;
+  }
+
+  &__img-onload-detect {
+    opacity: 0;
+    width: 10px;
+    height: 10px;
   }
 }

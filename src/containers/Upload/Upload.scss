@@ -88,12 +88,16 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 300px;
+    max-width: 275px;
+    flex-grow: 1;
+    flex-direction: column;
   }
 
   &__files {
     display: flex;
     justify-content: space-between;
+    flex-grow: 1;
+    width: 100%;
   }
 
   &--is-mobile &__files {

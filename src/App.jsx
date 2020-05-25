@@ -8,7 +8,7 @@ import './scss/_index.scss';
 
 import { store } from './store';
 import { gaStart } from './helpers/ga';
-import { updateInternetStates } from './helpers/utils';
+import { updateInternetStatus } from './helpers/utils';
 import {
   Header,
   Help,
@@ -42,8 +42,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('online', updateInternetStates);
-    window.addEventListener('offline', updateInternetStates);
+    window.addEventListener('online', updateInternetStatus);
+    window.addEventListener('offline', updateInternetStatus);
   }
 
   render() {

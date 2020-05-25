@@ -459,7 +459,7 @@ export const mobileFlowStatusUpdate = (flow, state) => {
 /**
  * Check online status
  */
-export const updateInternetStates = () => {
+export const updateInternetStatus = () => {
   const $body = document.body;
 
   if (navigator.onLine) {

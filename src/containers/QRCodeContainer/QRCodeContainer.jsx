@@ -433,13 +433,11 @@ class QRCodeContainer extends Component {
         </div>
         <div className="screen__footer">
           <button className={classNames('button', { 'button--sms-pending': isSMSPending, 'button--sms-success': isSMSSuccess })} onClick={this.sendSMS} type="button" disabled={isSMSPending || !isPhoneNumberValid || !phoneNumber || isSMSSuccess}>
-            {/* {(isSMSPending) ? ( */}
             <img
               className="spin"
               src={smsSendingIcon}
               alt="sms sending"
             />
-            {/* ) : null } */}
 
             {(isSMSPending) ? (
               'SENDING'

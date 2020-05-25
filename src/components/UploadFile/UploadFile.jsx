@@ -1,5 +1,5 @@
 /* eslint class-methods-use-this: off */
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import classNames from 'classnames';
 
 import { getOrientation, fixOrientation } from '../../helpers/utils';
@@ -161,18 +161,16 @@ export default class UploadFile extends Component {
           accept="image/*"
           disabled={isButtonDisabled}
         />
-        <div className="upload-file__image upload-file__image--placeholder">
+        <div
+          className="upload-file__image upload-file__image--placeholder"
+          style={{ backgroundImage: `url(${type === 'front' ? frontPhoto : sidePhoto})` }}
+        >
 
           {!isImageLoaded ? (
-            <Loader />
-          ) : null}
-
-          {(type === 'front') ? (
-            <img src={frontPhoto} onLoad={this.onImageLoad} alt="front" />
-          ) : null}
-
-          {(type === 'side') ? (
-            <img src={sidePhoto} onLoad={this.onImageLoad} alt="side" />
+            <Fragment>
+              <Loader />
+              <img className="upload-file__img-onload-detect" src={type === 'front' ? frontPhoto : sidePhoto} onLoad={this.onImageLoad} alt="example" />
+            </Fragment>
           ) : null}
         </div>
       </label>

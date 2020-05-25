@@ -45,4 +45,17 @@
       stroke: #fff;
     }
   }
+
+  &__offline-status {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #d0021b;
+    padding: 4px;
+    color: white;
+    text-align: center;
+    z-index: 50;
+    display: none;
+  }
 }

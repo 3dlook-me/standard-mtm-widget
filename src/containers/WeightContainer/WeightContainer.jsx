@@ -17,6 +17,8 @@ import './WeightContainer.scss';
 class WeightContainer extends Component {
   $weightEl = createRef();
 
+  $nextBtn = createRef();
+
   constructor(props) {
     super(props);
 
@@ -178,25 +180,30 @@ class WeightContainer extends Component {
       settings,
     } = this.props;
 
-    await this.flow.updateState({
-      status: 'set metadata',
-      processStatus: '',
-      gender,
-      height,
-      units,
-      email,
-      settings,
-      ...(weight && { weight }),
-    });
-
     if (isMobile) {
+      this.$nextBtn.current.classList.add('button--blocked');
+
+      await this.flow.updateState({
+        status: 'set metadata',
+        processStatus: '',
+        gender,
+        height,
+        units,
+        email,
+        settings,
+        ...(weight && { weight }),
+      })
+        .finally(() => {
+          this.$nextBtn.current.classList.remove('button--blocked');
+        });
+
       route('/upload', false);
     } else {
       route('/qrcode', false);
     }
   }
 
-  skipAndNextHandler = async () => {
+  skipAndNextHandler = () => {
     const { setWeight } = this.props;
 
     this.setState({
@@ -274,7 +281,15 @@ class WeightContainer extends Component {
           </div>
         </div>
         <div className="screen__footer">
-          <button className="button" onClick={this.nextButtonClick} disabled={buttonDisabled} type="button">Next</button>
+          <button
+            className="button"
+            onClick={this.nextButtonClick}
+            disabled={buttonDisabled}
+            type="button"
+            ref={this.$nextBtn}
+          >
+            Next
+          </button>
         </div>
       </section>
     );

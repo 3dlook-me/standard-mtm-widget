@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import { connect } from 'react-redux';
+import { connect, Provider } from 'react-redux';
 import classNames from 'classnames';
 import './Header.scss';
 
@@ -39,36 +39,11 @@ class Header extends Component {
 
     const {
       returnUrl,
-      isFromDesktopToMobile,
       origin,
       resetState,
       measurements,
       isMobile,
     } = this.props;
-
-    // if (isFromDesktopToMobile) {
-    //   const flowState = await this.flow.get();
-    //   const flowStateStatus = flowState.state.status;
-    //
-    //   await this.flow.updateState({
-    //     status: 'close-confirm',
-    //   });
-    //
-    //   if (confirm('Are you sure that you want to close widget? ')) {
-    //     if (measurements) {
-    //       window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
-    //     } else {
-    //       window.location = returnUrl;
-    //     }
-    //   }
-    //
-    //   await this.flow.updateState({
-    //     status: flowStateStatus,
-    //     ...flowState,
-    //   });
-    //
-    //   return;
-    // }
 
     if (isMobile) {
       // if (confirm('Are you sure that you want to close widget? ')) {
@@ -102,6 +77,7 @@ class Header extends Component {
 
     return (
       <header className={classNames('header', `header--${headerIconsStyle}`, { active: isHelpActive })}>
+        <div className="header__offline-status">Check your internet connection</div>
         {helpBtnStatus ? (
           <button className="header__help" onClick={this.onHelpButtonClick} type="button">
             <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">

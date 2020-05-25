@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component, createRef } from 'preact';
 import { route, Link } from 'preact-router';
 import API from '@3dlook/saia-sdk/lib/api';
 import { connect } from 'react-redux';
@@ -25,6 +25,8 @@ import smsSendingIcon from '../../images/sms-sending.svg';
  * ScanQRCode page component.
  */
 class QRCodeContainer extends Component {
+  a = createRef();
+
   constructor(props) {
     super(props);
 
@@ -48,8 +50,21 @@ class QRCodeContainer extends Component {
   }
 
   componentDidMount() {
-    const { flowId, token } = this.props;
+    const {
+      flowId,
+      token,
+      phoneCountry,
+      phoneUserPart,
+      phoneNumber,
+    } = this.props;
     const mobileFlowUrl = `${window.location.origin}${window.location.pathname}?key=${token}#/mobile/${flowId}`;
+
+    if (phoneCountry && phoneUserPart) {
+      this.setState({
+        isPhoneNumberValid: true,
+        phoneNumber,
+      });
+    }
 
     window.addEventListener('online', this.pageReload);
 
@@ -93,7 +108,11 @@ class QRCodeContainer extends Component {
    * Change phone number
    */
   changePhoneNumber = (isValid, number, country) => {
-    const { setPhoneCountry, setPhoneUserPart } = this.props;
+    const {
+      setPhoneCountry,
+      setPhoneUserPart,
+      setPhoneNumber,
+    } = this.props;
 
     const phoneNumber = `${country.dialCode}${number}`;
     const noLettersCheck = validatePhoneNumberLetters(phoneNumber);
@@ -106,10 +125,11 @@ class QRCodeContainer extends Component {
     if (isValid && noLettersCheck) {
       setPhoneCountry(country.iso2);
       setPhoneUserPart(number);
+      setPhoneNumber(phoneNumber);
     }
   }
 
-  init(props) {
+  async init(props) {
     const {
       token,
       flowId,
@@ -119,6 +139,16 @@ class QRCodeContainer extends Component {
       origin,
       setBodyType,
       setProcessingStatus,
+      gender,
+      height,
+      weight,
+      units,
+      email,
+      productUrl,
+      brand,
+      bodyPart,
+      returnUrl,
+      productId,
     } = props;
 
     if (token && flowId && !this.api && !this.flow) {
@@ -129,6 +159,22 @@ class QRCodeContainer extends Component {
 
       this.flow = new FlowService(token);
       this.flow.setFlowId(flowId);
+
+      await this.flow.updateState({
+        status: 'set metadata',
+        processStatus: '',
+        fakeSize: false,
+        gender,
+        height,
+        units,
+        email,
+        productUrl,
+        brand,
+        bodyPart,
+        returnUrl,
+        productId,
+        ...(weight && { weight }),
+      });
 
       if (!isMobile) {
         this.timer = setInterval(() => {
@@ -378,6 +424,7 @@ class QRCodeContainer extends Component {
               }
               separateDialCode="true"
               onPhoneNumberBlur={this.changePhoneNumber}
+              ref={this.a}
             />
             <p className={classNames('scan-qrcode__error', { active: !isPhoneNumberValid })}>Invalid phone number</p>
 
@@ -386,9 +433,13 @@ class QRCodeContainer extends Component {
         </div>
         <div className="screen__footer">
           <button className={classNames('button', { 'button--sms-pending': isSMSPending, 'button--sms-success': isSMSSuccess })} onClick={this.sendSMS} type="button" disabled={isSMSPending || !isPhoneNumberValid || !phoneNumber || isSMSSuccess}>
-            {(isSMSPending) ? (
-              <img className="spin" src={smsSendingIcon} alt="sms sending" />
-            ) : null }
+            {/* {(isSMSPending) ? ( */}
+            <img
+              className="spin"
+              src={smsSendingIcon}
+              alt="sms sending"
+            />
+            {/* ) : null } */}
 
             {(isSMSPending) ? (
               'SENDING'

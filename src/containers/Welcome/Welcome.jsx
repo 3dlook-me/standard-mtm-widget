@@ -100,8 +100,8 @@ class Welcome extends Component {
       this.flow.create({
         status: 'created',
         productUrl: matches.product,
-        brand: matches.brand,
-        bodyPart: matches.body_part,
+        brand,
+        bodyPart,
         returnUrl: matches.returnUrl,
         fakeSize: !!matches.fakeSize,
         productId: parseInt(matches.productId, 10),

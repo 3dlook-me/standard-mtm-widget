@@ -271,8 +271,8 @@ class Upload extends Component {
 
         const mtmClientParams = {
           unit: units,
-          email,
           source,
+          ...(email && { email }),
           ...(phoneNumber && { phone: phoneNumber }),
           ...(firstName && { firstName }),
           ...(notes && { notes }),

@@ -428,16 +428,6 @@ class Upload extends Component {
             return;
           }
 
-          if (error.message.includes('is not specified')) {
-            const { returnUrl } = this.props;
-
-            alert('Oops...\nThe server lost connection...\nPlease restart widget flow on the desktop or start again on mobile');
-
-            window.location.href = returnUrl;
-
-            return;
-          }
-
           alert(error);
 
           route('/not-found', true);

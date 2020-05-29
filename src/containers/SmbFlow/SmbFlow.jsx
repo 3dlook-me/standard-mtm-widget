@@ -24,11 +24,14 @@ class SmbFlow extends BaseMobileFlow {
       flowState,
       setFlowState,
       setIsSmbFlow,
+      setIsFromDesktopToMobile,
     } = this.props;
 
     window.addEventListener('online', this.pageReload);
 
     await super.componentDidMount();
+
+    setIsFromDesktopToMobile(false);
 
     if (!browserValidation()) {
       route('/browser', true);
@@ -60,12 +63,6 @@ class SmbFlow extends BaseMobileFlow {
           status: 'opened-on-mobile',
         });
       }
-
-      setInterval(() => {
-        this.flow.updateState({
-          lastActiveDate: Date.now(),
-        });
-      }, 3000);
 
       route('/', true);
     }

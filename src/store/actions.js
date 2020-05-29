@@ -48,6 +48,7 @@ export const CONSTANTS = {
   SET_IS_PHOTOS_FROM_GALLERY: 'SET_IS_PHOTOS_FROM_GALLERY',
   SET_PHONE_COUNTRY: 'SET_PHONE_COUNTRY',
   SET_PHONE_USER_PART: 'SET_PHONE_USER_PART',
+  SET_IS_SMB_FLOW: 'SET_IS_SMB_FLOW',
 };
 
 /**
@@ -518,6 +519,16 @@ export const setPhoneUserPart = (phoneUserPart) => ({
   payload: phoneUserPart,
 });
 
+/**
+ * Set is SMB flow
+ *
+ * @param {string} isSmbFlow - phone user part
+ */
+export const setIsSmbFlow = (isSmbFlow) => ({
+  type: CONSTANTS.SET_IS_SMB_FLOW,
+  payload: isSmbFlow,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -565,4 +576,5 @@ export default {
   setIsPhotosFromGallery,
   setPhoneCountry,
   setPhoneUserPart,
+  setIsSmbFlow,
 };

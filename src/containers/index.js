@@ -12,4 +12,5 @@ export * from './Results';
 export * from './HardValidation';
 export * from './NotFound';
 export * from './MobileFlow';
+export * from './SmbFlow';
 export * from './Browser';

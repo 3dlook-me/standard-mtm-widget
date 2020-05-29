@@ -32,6 +32,7 @@ class Welcome extends Component {
 
   componentDidMount() {
     const {
+      isSmbFlow,
       setFlowId,
       setBrand,
       setBodyPart,
@@ -87,44 +88,46 @@ class Welcome extends Component {
         setIsPhotosFromGallery(true);
       }
 
-      setToken(token);
-      setBrand(brand);
-      setBodyPart(bodyPart);
-      setProductUrl(matches.product);
-      setOrigin(matches.origin);
-      setIsMobile(isMobileDevice());
-      setReturnUrl(matches.returnUrl);
-      setIsOpenReturnUrlDesktop(!!matches.returnUrlDesktop);
-      setFakeSize(!!matches.fakeSize);
-      setProductId(parseInt(matches.productId, 10));
+      if (!isSmbFlow) {
+        setToken(token);
+        setBrand(brand);
+        setBodyPart(bodyPart);
+        setProductUrl(matches.product);
+        setOrigin(matches.origin);
+        setIsMobile(isMobileDevice());
+        setReturnUrl(matches.returnUrl);
+        setIsOpenReturnUrlDesktop(!!matches.returnUrlDesktop);
+        setFakeSize(!!matches.fakeSize);
+        setProductId(parseInt(matches.productId, 10));
 
-      this.flow = new FlowService(token);
-      this.flow.create({
-        status: 'created',
-        productUrl: matches.product,
-        brand,
-        bodyPart,
-        returnUrl: matches.returnUrl,
-        fakeSize: !!matches.fakeSize,
-        productId: parseInt(matches.productId, 10),
-        ...(photosFromGallery && { photosFromGallery: true }),
-      })
-        .then((res) => {
-          setFlowId(res);
-
-          this.setState({
-            isButtonDisabled: false,
-          });
+        this.flow = new FlowService(token);
+        this.flow.create({
+          status: 'created',
+          productUrl: matches.product,
+          brand,
+          bodyPart,
+          returnUrl: matches.returnUrl,
+          fakeSize: !!matches.fakeSize,
+          productId: parseInt(matches.productId, 10),
+          ...(photosFromGallery && { photosFromGallery: true }),
         })
-        .catch((err) => {
-          this.widgetIframe = window.parent.document.querySelector('.saia-pf-drop iframe');
+          .then((res) => {
+            setFlowId(res);
 
-          // condition for preventing appearing the error alert in safari
-          // after the widget closes quickly after it is opened
-          if (this.widgetIframe.getAttribute('src') !== '') {
-            alert(err.message);
-          }
-        });
+            this.setState({
+              isButtonDisabled: false,
+            });
+          })
+          .catch((err) => {
+            this.widgetIframe = window.parent.document.querySelector('.saia-pf-drop iframe');
+
+            // condition for preventing appearing the error alert in safari
+            // after the widget closes quickly after it is opened
+            if (this.widgetIframe.getAttribute('src') !== '') {
+              alert(err.message);
+            }
+          });
+      }
 
       const settingsService = new SettingsService(token);
 

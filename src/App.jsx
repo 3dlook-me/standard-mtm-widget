@@ -28,6 +28,7 @@ import {
   NotFound,
   MobileFlow,
   Browser,
+  SmbFlow,
 } from './containers';
 
 import landscapeView from './images/landscape-view.svg';
@@ -73,6 +74,7 @@ class App extends Component {
             <NotFound path="/not-found" />
             <Results path="/results" />
             <MobileFlow path="/mobile/:id" />
+            <SmbFlow path="/smb/:id" />
             <Browser path="/browser" />
           </Router>
         </div>

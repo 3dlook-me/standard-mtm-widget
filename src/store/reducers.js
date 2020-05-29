@@ -81,6 +81,8 @@ export const INITIAL_STATE = {
   source: 'widget',
 
   photosFromGallery: false,
+
+  isSmbFlow: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -370,6 +372,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         phoneUserPart: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_SMB_FLOW:
+      return {
+        ...state,
+        isSmbFlow: action.payload,
       };
 
     default:

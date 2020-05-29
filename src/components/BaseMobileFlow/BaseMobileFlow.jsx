@@ -106,7 +106,7 @@ class BaseMobileFlow extends Component {
         setProductId(flowStateResult.state.productId);
         setUnits(flowStateResult.state.units);
         setSource(flowStateResult.state.source);
-        setMtmClientId(flowStateResult.state.mtmClientId);
+        setMtmClientId(flowStateResult.state.mtmClientId || flowStateResult.mtm_client);
         setFirstName(flowStateResult.state.firstName);
         setNotes(flowStateResult.state.notes);
       });

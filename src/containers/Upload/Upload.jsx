@@ -181,6 +181,7 @@ class Upload extends Component {
       firstName,
       source,
       notes,
+      mtmClientId: mtmClientIdFromState,
     } = props;
 
     let {
@@ -278,9 +279,12 @@ class Upload extends Component {
           ...(notes && { notes }),
         };
 
-        mtmClientId = await this.api.mtmClient.create(mtmClientParams);
-
-        setMtmClientId(mtmClientId);
+        if (!mtmClientIdFromState) {
+          mtmClientId = await this.api.mtmClient.create(mtmClientParams);
+          setMtmClientId(mtmClientId);
+        } else {
+          mtmClientId = mtmClientIdFromState;
+        }
 
         const createdPersonId = await this.api.mtmClient.createPerson(mtmClientId, {
           gender,

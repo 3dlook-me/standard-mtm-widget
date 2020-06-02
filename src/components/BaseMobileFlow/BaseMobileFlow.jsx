@@ -104,7 +104,7 @@ class BaseMobileFlow extends Component {
         setEmail(flowStateResult.state.email);
         setPhoneNumber(flowStateResult.state.phoneNumber);
         setProductId(flowStateResult.state.productId);
-        setUnits(flowStateResult.state.units);
+        setUnits(flowStateResult.state.units || 'in');
         setSource(flowStateResult.state.source);
         setMtmClientId(flowStateResult.state.mtmClientId || flowStateResult.mtm_client);
         setFirstName(flowStateResult.state.firstName);

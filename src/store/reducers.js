@@ -65,7 +65,7 @@ export const INITIAL_STATE = {
   fakeSize: false,
 
   settings: {
-    results_screen: 'measurements',
+    final_page: 'measurements',
   },
 
   headerIconsStyle: 'default',

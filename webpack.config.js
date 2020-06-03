@@ -208,7 +208,7 @@ module.exports = {
       },
 
       {
-        test: /\.(jpe?g|png|gif|svg|mp4)/,
+        test: /\.(jpe?g|png|gif|svg|mp4|mp3)/,
         use: [
           {
             loader: 'file-loader',

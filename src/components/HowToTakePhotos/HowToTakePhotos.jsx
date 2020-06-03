@@ -4,7 +4,7 @@ import { Link } from 'preact-router';
 import { Stepper } from '..';
 
 import './HowToTakePhotos.scss';
-import video from '../../video/video-pf.mp4';
+import video from '../../video/table-flow-example.mp4';
 
 /**
  * HowToTakePhotos video page component

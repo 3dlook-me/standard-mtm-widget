@@ -21,17 +21,29 @@
   &__video-wrap {
     display: flex;
     flex-direction: column;
+    position: relative;
+    //height: 70vw;
+    flex-grow: 1;
   }
 
   &__video {
-    width: 100%;
     max-width: 100%;
+    max-height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
   }
 
   &__progress-bar {
     display:flex;
     height: 2px;
     background: transparent;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
   }
 
   &__progress {
@@ -40,12 +52,13 @@
   }
 
   &__btn-wrap {
-    flex-grow: 1;
+    //flex-grow: 1;
     background: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-top: 30px;
   }
 
   &__btn {

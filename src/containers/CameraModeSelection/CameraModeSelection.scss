@@ -63,12 +63,13 @@
 
   &__img-wrap {
     padding: 0 12px;
-    margin-bottom: 16px;
-    height: calc(100% - 67px);
+    height: 100%;
     position: relative;
     background-repeat: no-repeat;
     background-position: top center;
     background-size: contain;
+    width: calc(100% - 24px);
+    margin: 0 auto 16px;
   }
 
   &__title {

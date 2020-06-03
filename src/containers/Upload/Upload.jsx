@@ -141,7 +141,9 @@ class Upload extends Component {
 
     setHeaderIconsStyle('default');
     addFrontImage(file);
-    setCamera(null);
+    // setCamera(null);
+
+    this.triggerSideImage();
   }
 
   /**
@@ -563,6 +565,7 @@ class Upload extends Component {
       sendDataStatus,
       isMobile,
       isPhotosFromGallery,
+      cameraMode,
     } = this.props;
 
     let title;
@@ -661,8 +664,17 @@ class Upload extends Component {
 
               <div className="upload__block">
                 <div className="upload__files">
-                  {(camera === 'front') ? <Camera type={camera} gender={gender} change={this.saveFrontFile} /> : null}
-                  {(camera === 'side') ? <Camera type={camera} gender={gender} change={this.saveSideFile} /> : null}
+                  {camera ? (
+                    <Camera
+                      type={camera}
+                      gender={gender}
+                      saveFront={this.saveFrontFile}
+                      saveSide={this.saveSideFile}
+                      flowMode={cameraMode}
+                    />
+                  ) : null}
+                  {/* {(camera === 'front') ? <Camera type={camera} gender={gender} change={this.saveFrontFile} flowMode={cameraMode} /> : null} */}
+                  {/* {(camera === 'side') ? <Camera type={camera} gender={gender} change={this.saveSideFile} flowMode={cameraMode} /> : null} */}
                 </div>
               </div>
 

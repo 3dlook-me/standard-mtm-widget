@@ -82,6 +82,7 @@ class Upload extends Component {
   componentDidMount() {
     const { camera, setIsNetwork, isNetwork } = this.props;
 
+
     // if camera is active when page refreshed
     if (camera) {
       const { setCamera } = this.props;
@@ -137,13 +138,20 @@ class Upload extends Component {
       addFrontImage,
       setHeaderIconsStyle,
       setCamera,
+      camera,
+      cameraMode,
     } = this.props;
 
     setHeaderIconsStyle('default');
     addFrontImage(file);
-    // setCamera(null);
 
-    this.triggerSideImage();
+    if (cameraMode === 'front-mode') {
+      if (camera) {
+        this.triggerSideImage();
+      }
+    } else {
+      setCamera(null);
+    }
   }
 
   /**

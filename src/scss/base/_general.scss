@@ -37,6 +37,19 @@ body {
       pointer-events: none !important;
     }
   }
+
+  &.camera-front-mode {
+    .header__help {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    .header {
+      path {
+        stroke: #fff;
+      }
+    }
+  }
 }
 
 button {

@@ -54,7 +54,7 @@ class Upload extends Component {
       photoType: 'front',
       isPhotoExample: false,
 
-      activeTab: 'front',
+      activeTab: props.frontImage && !props.sideImage ? 'side' : 'front',
     };
 
     const { setPageReloadStatus } = props;
@@ -260,6 +260,8 @@ class Upload extends Component {
       };
 
       document.addEventListener(visibilityChange, this.handleVisibilityChange);
+      // to show info icon after camera
+      document.body.classList.remove('camera-front-mode');
 
       this.setState({
         isFrontImageValid: !!frontImage,
@@ -511,21 +513,39 @@ class Upload extends Component {
   }
 
   triggerFrontImage = () => {
-    const { setHeaderIconsStyle, setCamera } = this.props;
+    const {
+      setHeaderIconsStyle,
+      setCamera,
+      cameraMode,
+    } = this.props;
 
     gaOpenCameraFrontPhoto();
 
     setCamera('front');
-    setHeaderIconsStyle('white');
+
+    if (cameraMode !== 'front-mode') {
+      setHeaderIconsStyle('white');
+    } else {
+      document.body.classList.add('camera-front-mode');
+    }
   }
 
   triggerSideImage = () => {
-    const { setHeaderIconsStyle, setCamera } = this.props;
+    const {
+      setHeaderIconsStyle,
+      setCamera,
+      cameraMode,
+    } = this.props;
 
     gaOpenCameraSidePhoto();
 
     setCamera('side');
-    setHeaderIconsStyle('white');
+
+    if (cameraMode !== 'front-mode') {
+      setHeaderIconsStyle('white');
+    } else {
+      document.body.classList.add('camera-front-mode');
+    }
   }
 
   openPhotoExample =(photoType) => {

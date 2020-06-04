@@ -1,39 +1,66 @@
-import { h, Component, createRef } from 'preact';
+import {
+  h,
+  Component,
+  createRef,
+} from 'preact';
+import { connect } from 'react-redux';
 import { Link } from 'preact-router';
 
-import { Stepper } from '..';
+import actions from '../../store/actions';
+import { Stepper } from '../../components';
 
 import './HowToTakePhotos.scss';
 import video from '../../video/table-flow-example.mp4';
+import FlowService from '../../services/flowService';
+import { mobileFlowStatusUpdate } from '../../helpers/utils';
 
 /**
  * HowToTakePhotos video page component
  */
-export default class HowToTakePhotos {
-  video = createRef();
+class HowToTakePhotos extends Component{
+  $video = createRef();
 
-  videoProgress = createRef();
+  $videoProgress = createRef();
 
   componentDidMount =() => {
-    const { current } = this.video;
+    const { current } = this.$video;
 
     current.play();
     current.addEventListener('timeupdate', this.handleProgress);
+
+    const {
+      isFromDesktopToMobile,
+      pageReloadStatus,
+      token,
+      flowId,
+    } = this.props;
+
+    this.flow = new FlowService(token);
+    this.flow.setFlowId(flowId);
+
+    // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
+    if (pageReloadStatus && isFromDesktopToMobile) {
+      const { setPageReloadStatus, flowState } = this.props;
+
+      setPageReloadStatus(false);
+
+      mobileFlowStatusUpdate(this.flow, flowState);
+    }
   }
 
   componentWillUnmount = () => {
-    this.video.current.removeEventListener('timeupdate', this.handleProgress);
+    this.$video.current.removeEventListener('timeupdate', this.handleProgress);
   }
 
   handleProgress = () => {
-    const { current } = this.video;
+    const { current } = this.$video;
     const percent = (current.currentTime / current.duration) * 100;
 
-    this.videoProgress.current.style.flexBasis = `${percent}%`;
+    this.$videoProgress.current.style.flexBasis = `${percent}%`;
   }
 
   restartVideo = () => {
-    const { current } = this.video;
+    const { current } = this.$video;
 
     current.currentTime = 0;
     current.play();
@@ -52,7 +79,7 @@ export default class HowToTakePhotos {
               {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
               <video
                 className="how-to-take-photos__video"
-                ref={this.video}
+                ref={this.$video}
                 muted
                 preload="auto"
                 playsInline
@@ -63,7 +90,7 @@ export default class HowToTakePhotos {
               <div className="how-to-take-photos__progress-bar">
                 <div
                   className="how-to-take-photos__progress"
-                  ref={this.videoProgress}
+                  ref={this.$videoProgress}
                 />
               </div>
             </div>
@@ -88,3 +115,5 @@ export default class HowToTakePhotos {
     );
   }
 }
+
+export default connect((state) => state, actions)(HowToTakePhotos);

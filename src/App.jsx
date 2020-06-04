@@ -9,11 +9,7 @@ import './scss/_index.scss';
 import { store } from './store';
 import { gaStart } from './helpers/ga';
 import { updateInternetStatus } from './helpers/utils';
-import {
-  Header,
-  Help,
-  HowToTakePhotos,
-} from './components';
+import { Header, Help } from './components';
 import {
   Welcome,
   Email,
@@ -30,6 +26,7 @@ import {
   MobileFlow,
   Browser,
   CameraModeSelection,
+  HowToTakePhotos,
 } from './containers';
 
 import landscapeView from './images/landscape-view.svg';

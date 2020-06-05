@@ -68,8 +68,8 @@ class HowToTakePhotos extends Component {
   }
 
   render() {
-    const { cameraMode } = this.props;
-    const videoTrack = cameraMode === 'front-mode' ? videoTableMode : videoFriendMode;
+    const { isTableFlow } = this.props;
+    const videoTrack = isTableFlow ? videoTableMode : videoFriendMode;
 
     return (
       <div className="screen active">

@@ -59,7 +59,7 @@ export const INITIAL_STATE = {
 
   headerIconsStyle: 'default',
   camera: null,
-  cameraMode: 'back-mode',
+  isTableFlow: false,
   isHelpActive: false,
   isOpenReturnUrlDesktop: false,
   sendDataStatus: '',
@@ -320,10 +320,10 @@ export default (state = INITIAL_STATE, action) => {
         phoneUserPart: action.payload,
       };
 
-    case CONSTANTS.SET_CAMERA_MODE:
+    case CONSTANTS.SET_IS_TABLE_FLOW:
       return {
         ...state,
-        cameraMode: action.payload,
+        isTableFlow: action.payload,
       };
 
     default:

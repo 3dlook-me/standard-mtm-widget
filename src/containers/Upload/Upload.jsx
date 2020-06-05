@@ -30,7 +30,6 @@ import {
 import './Upload.scss';
 import frontExample from '../../images/example-front.png';
 import sideExample from '../../images/example-side.png';
-import frontCameraMode from '../../images/front-camera-mode.png';
 
 let isPhoneLocked = false;
 
@@ -83,8 +82,11 @@ class Upload extends Component {
   }
 
   componentDidMount() {
-    const { camera, setIsNetwork, isNetwork } = this.props;
-
+    const {
+      camera,
+      setIsNetwork,
+      isNetwork,
+    } = this.props;
 
     // if camera is active when page refreshed
     if (camera) {
@@ -97,12 +99,6 @@ class Upload extends Component {
       // after not found page, if was network error
       setIsNetwork(true);
     }
-
-    this.tabTimer = setTimeout(() => {
-      this.setState({
-        activeTab: 'side',
-      });
-    }, 4000);
   }
 
   init(props) {
@@ -142,13 +138,13 @@ class Upload extends Component {
       setHeaderIconsStyle,
       setCamera,
       camera,
-      cameraMode,
+      isTableFlow,
     } = this.props;
 
     setHeaderIconsStyle('default');
     addFrontImage(file);
 
-    if (cameraMode === 'front-mode') {
+    if (isTableFlow) {
       if (camera) {
         this.triggerSideImage();
       }
@@ -171,6 +167,7 @@ class Upload extends Component {
       setHeaderIconsStyle,
       setCamera,
     } = this.props;
+
     setHeaderIconsStyle('default');
 
     setCamera(null);
@@ -268,7 +265,7 @@ class Upload extends Component {
 
       document.addEventListener(visibilityChange, this.handleVisibilityChange);
       // to show info icon after camera
-      document.body.classList.remove('camera-front-mode');
+      document.body.classList.remove('camera-table-flow');
 
       this.setState({
         isFrontImageValid: !!frontImage,
@@ -523,17 +520,17 @@ class Upload extends Component {
     const {
       setHeaderIconsStyle,
       setCamera,
-      cameraMode,
+      isTableFlow,
     } = this.props;
 
     gaOpenCameraFrontPhoto();
 
     setCamera('front');
 
-    if (cameraMode !== 'front-mode') {
-      setHeaderIconsStyle('white');
+    if (isTableFlow) {
+      document.body.classList.add('camera-table-flow');
     } else {
-      document.body.classList.add('camera-front-mode');
+      setHeaderIconsStyle('white');
     }
   }
 
@@ -541,17 +538,17 @@ class Upload extends Component {
     const {
       setHeaderIconsStyle,
       setCamera,
-      cameraMode,
+      isTableFlow,
     } = this.props;
 
     gaOpenCameraSidePhoto();
 
     setCamera('side');
 
-    if (cameraMode !== 'front-mode') {
-      setHeaderIconsStyle('white');
+    if (isTableFlow) {
+      document.body.classList.add('camera-table-flow');
     } else {
-      document.body.classList.add('camera-front-mode');
+      setHeaderIconsStyle('white');
     }
   }
 
@@ -593,7 +590,7 @@ class Upload extends Component {
       sendDataStatus,
       isMobile,
       isPhotosFromGallery,
-      cameraMode,
+      isTableFlow,
     } = this.props;
 
     let title;
@@ -601,7 +598,7 @@ class Upload extends Component {
     let frontActive = false;
     let sideActive = false;
 
-    if (cameraMode === 'front-mode') {
+    if (isTableFlow) {
       title = 'requirements';
       frontActive = (!frontImage && !sideImage) || (!frontImage && sideImage);
       sideActive = frontImage && !sideImage;
@@ -660,7 +657,7 @@ class Upload extends Component {
                 </div>
               </h3>
 
-              {cameraMode === 'front-mode' ? (
+              {isTableFlow ? (
                 <Tabs activeTab={activeTab} />
               ) : (
                 <div
@@ -690,11 +687,9 @@ class Upload extends Component {
                       gender={gender}
                       saveFront={this.saveFrontFile}
                       saveSide={this.saveSideFile}
-                      flowMode={cameraMode}
+                      isTableFlow={isTableFlow}
                     />
                   ) : null}
-                  {/* {(camera === 'front') ? <Camera type={camera} gender={gender} change={this.saveFrontFile} flowMode={cameraMode} /> : null} */}
-                  {/* {(camera === 'side') ? <Camera type={camera} gender={gender} change={this.saveSideFile} flowMode={cameraMode} /> : null} */}
                 </div>
               </div>
 

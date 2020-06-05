@@ -24,11 +24,13 @@ import {
   Stepper,
   UploadBlock,
   PhotoExample,
+  Tabs, Loader,
 } from '../../components';
 
 import './Upload.scss';
-import frontExample from '../../images/img_front-example.png';
-import sideExample from '../../images/img_side-example.png';
+import frontExample from '../../images/example-front.png';
+import sideExample from '../../images/example-side.png';
+import frontCameraMode from '../../images/front-camera-mode.png';
 
 let isPhoneLocked = false;
 
@@ -55,6 +57,7 @@ class Upload extends Component {
       isPhotoExample: false,
 
       activeTab: props.frontImage && !props.sideImage ? 'side' : 'front',
+      isImageExampleLoaded: false,
     };
 
     const { setPageReloadStatus } = props;
@@ -150,6 +153,10 @@ class Upload extends Component {
         this.triggerSideImage();
       }
     } else {
+      this.setState({
+        isImageExampleLoaded: false,
+      });
+
       setCamera(null);
     }
   }
@@ -555,18 +562,10 @@ class Upload extends Component {
     });
   }
 
-  closePhotoExample = () => {
+  onImgExampleLoaded = () => {
     this.setState({
-      isPhotoExample: false,
+      isImageExampleLoaded: true,
     });
-  }
-
-  changeTab = (e) => {
-    this.setState({
-      activeTab: e.target.name,
-    });
-
-    clearTimeout(this.tabTimer);
   }
 
   render() {
@@ -583,6 +582,7 @@ class Upload extends Component {
       photoType,
       isPhotoExample,
       activeTab,
+      isImageExampleLoaded,
     } = this.state;
 
     const {
@@ -597,11 +597,22 @@ class Upload extends Component {
     } = this.props;
 
     let title;
+    let photoBg;
+    let frontActive = false;
+    let sideActive = false;
 
-    if ((!frontImage && !sideImage) || (!frontImage && sideImage)) {
+    if (cameraMode === 'front-mode') {
+      title = 'requirements';
+      frontActive = (!frontImage && !sideImage) || (!frontImage && sideImage);
+      sideActive = frontImage && !sideImage;
+    } else if ((!frontImage && !sideImage) || (!frontImage && sideImage)) {
       title = 'Take Front photo';
+      photoBg = frontExample;
+      frontActive = true;
     } else if (frontImage && !sideImage) {
       title = 'Take Side photo';
+      photoBg = sideExample;
+      sideActive = true;
     }
 
     return (
@@ -614,16 +625,15 @@ class Upload extends Component {
         ) : (
           <Fragment>
             <div className="screen__content upload">
-              <Stepper steps="5" current={((!frontImage && !sideImage) || (!frontImage && sideImage)) ? 3 : 4} />
+              <Stepper steps="5" current={frontActive ? 3 : 4} />
 
               <h3 className="screen__title upload__title">
-                {/* {title} */}
+                {title}
 
-                Requirements
                 <div className="upload__upload-file">
                   <UploadBlock
                     className={classNames({
-                      active: (!frontImage && !sideImage) || (!frontImage && sideImage),
+                      active: frontActive,
                     })}
                     gender={gender}
                     type="front"
@@ -636,7 +646,7 @@ class Upload extends Component {
                   />
                   <UploadBlock
                     className={classNames({
-                      active: frontImage && !sideImage,
+                      active: sideActive,
                     })}
                     gender={gender}
                     type="side"
@@ -650,45 +660,27 @@ class Upload extends Component {
                 </div>
               </h3>
 
-              <div className="upload__tabs">
-                <div className="upload__tabs-btn-wrap">
-                  <button
-                    className={classNames('upload__tabs-btn', {
-                      'upload__tabs-btn--active': activeTab === 'front',
-                    })}
-                    type="button"
-                    name="front"
-                    onClick={this.changeTab}
-                  >
-                    front photo
-                  </button>
-                  <button
-                    className={classNames('upload__tabs-btn', {
-                      'upload__tabs-btn--active': activeTab === 'side',
-                    })}
-                    type="button"
-                    name="side"
-                    onClick={this.changeTab}
-                  >
-                    side photo
-                  </button>
+              {cameraMode === 'front-mode' ? (
+                <Tabs activeTab={activeTab} />
+              ) : (
+                <div
+                  className="upload__image-example"
+                  style={{ backgroundImage: `url(${photoBg})` }}
+                >
+                  {!isImageExampleLoaded ? (
+                    <Fragment>
+                      <Loader />
+
+                      <img
+                        className="upload__image-example-onload-detect"
+                        src={photoBg}
+                        onLoad={this.onImgExampleLoaded}
+                        alt="back"
+                      />
+                    </Fragment>
+                  ) : null}
                 </div>
-                <div
-                  className={classNames('upload__tabs-photo', {
-                    'upload__tabs-photo--active': activeTab === 'front',
-                  })}
-                  style={{ backgroundImage: `url(${frontExample})` }}
-                />
-                <div
-                  className={classNames('upload__tabs-photo', {
-                    'upload__tabs-photo--active': activeTab === 'side',
-                  })}
-                  style={{ backgroundImage: `url(${sideExample})` }}
-                />
-              </div>
-
-
-              {/* <CameraModeSelection /> */}
+              )}
 
               <div className="upload__block">
                 <div className="upload__files">
@@ -710,7 +702,7 @@ class Upload extends Component {
             <div className="screen__footer">
               <button
                 className={classNames('button', 'upload__front-image-btn', {
-                  active: (!frontImage && !sideImage) || (!frontImage && sideImage),
+                  active: frontActive,
                 })}
                 onClick={this.triggerFrontImage}
                 type="button"
@@ -720,7 +712,7 @@ class Upload extends Component {
 
               <button
                 className={classNames('button', 'upload__side-image-btn', {
-                  active: frontImage && !sideImage,
+                  active: sideActive,
                 })}
                 onClick={this.triggerSideImage}
                 type="button"

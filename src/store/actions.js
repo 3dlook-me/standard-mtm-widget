@@ -42,7 +42,7 @@ export const CONSTANTS = {
   SET_IS_PHOTOS_FROM_GALLERY: 'SET_IS_PHOTOS_FROM_GALLERY',
   SET_PHONE_COUNTRY: 'SET_PHONE_COUNTRY',
   SET_PHONE_USER_PART: 'SET_PHONE_USER_PART',
-  SET_CAMERA_MODE: 'SET_CAMERA_MODE',
+  SET_IS_TABLE_FLOW: 'SET_IS_TABLE_FLOW',
 };
 
 /**
@@ -455,13 +455,13 @@ export const setPhoneUserPart = (phoneUserPart) => ({
 });
 
 /**
- * Set camera mode
+ * Set is table flow mode
  *
- * @param {string} mode - 'front-mode' or 'back-mode'
+ * @param {boolean} isTableFLow
  */
-export const setCameraMode = (mode) => ({
-  type: CONSTANTS.SET_CAMERA_MODE,
-  payload: mode,
+export const setIsTableFlow = (isTableFLow) => ({
+  type: CONSTANTS.SET_IS_TABLE_FLOW,
+  payload: isTableFLow,
 });
 
 export default {
@@ -505,5 +505,5 @@ export default {
   setIsPhotosFromGallery,
   setPhoneCountry,
   setPhoneUserPart,
-  setCameraMode,
+  setIsTableFlow,
 };

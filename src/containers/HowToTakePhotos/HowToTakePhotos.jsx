@@ -10,14 +10,15 @@ import actions from '../../store/actions';
 import { Stepper } from '../../components';
 
 import './HowToTakePhotos.scss';
-import video from '../../video/table-flow-example.mp4';
+import videoTableMode from '../../video/table-flow-example.mp4';
+import videoFriendMode from '../../video/video-pf.mp4';
 import FlowService from '../../services/flowService';
 import { mobileFlowStatusUpdate } from '../../helpers/utils';
 
 /**
  * HowToTakePhotos video page component
  */
-class HowToTakePhotos extends Component{
+class HowToTakePhotos extends Component {
   $video = createRef();
 
   $videoProgress = createRef();
@@ -67,6 +68,9 @@ class HowToTakePhotos extends Component{
   }
 
   render() {
+    const { cameraMode } = this.props;
+    const videoTrack = cameraMode === 'front-mode' ? videoTableMode : videoFriendMode;
+
     return (
       <div className="screen active">
         <div className="screen__content how-to-take-photos">
@@ -84,7 +88,7 @@ class HowToTakePhotos extends Component{
                 preload="auto"
                 playsInline
               >
-                <source src={video} type="video/mp4" />
+                <source src={videoTrack} type="video/mp4" />
               </video>
 
               <div className="how-to-take-photos__progress-bar">

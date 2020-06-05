@@ -58,9 +58,10 @@ class CameraModeSelection extends Component {
   }
 
   handleClick = (e) => {
-    const { setCameraMode } = this.props;
+    const { setIsTableFlow } = this.props;
+    const value = e.target.value === 'table-flow';
 
-    setCameraMode(e.target.value);
+    setIsTableFlow(value);
   }
 
   onBackImageLoad = () => {
@@ -77,7 +78,7 @@ class CameraModeSelection extends Component {
 
   render() {
     const isDesktop = !isMobileDevice();
-    const { cameraMode } = this.props;
+    const { isTableFlow } = this.props;
     const { isBackModeImageLoaded, isFrontModeImageLoaded } = this.state;
 
     return (
@@ -106,13 +107,15 @@ class CameraModeSelection extends Component {
 
               <div className="camera-mode-selection__buttons-wrap">
                 <label
-                  className={classNames('camera-mode-selection__button camera-mode-selection__button--back', { 'camera-mode-selection__button--active': cameraMode === 'back-mode' })}
+                  className={classNames('camera-mode-selection__button camera-mode-selection__button--back', {
+                    'camera-mode-selection__button--active': !isTableFlow,
+                  })}
                   htmlFor="back-mode-radio"
                 >
                   <input
                     type="radio"
-                    value="back-mode"
-                    name="camera-mode"
+                    value
+                    name="flow-mode"
                     id="back-mode-radio"
                     onChange={this.handleClick}
                   />
@@ -146,16 +149,16 @@ class CameraModeSelection extends Component {
 
                 <label
                   className={classNames('camera-mode-selection__button camera-mode-selection__button--front', {
-                    'camera-mode-selection__button--active': cameraMode === 'front-mode',
+                    'camera-mode-selection__button--active': isTableFlow,
                   })}
                   htmlFor="front-mode-radio"
                 >
                   <input
                     type="radio"
-                    value="front-mode"
-                    name="camera-mode"
+                    name="flow-mode"
                     id="front-mode-radio"
                     onChange={this.handleClick}
+                    value="table-flow"
                   />
 
                   <div

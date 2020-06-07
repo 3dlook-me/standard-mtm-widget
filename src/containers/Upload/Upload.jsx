@@ -182,6 +182,7 @@ class Upload extends Component {
       source,
       notes,
       mtmClientId: mtmClientIdFromState,
+      widgetId,
     } = props;
 
     let {
@@ -271,6 +272,7 @@ class Upload extends Component {
         setProcessingStatus('Initiating Profile Creation');
 
         const mtmClientParams = {
+          widgetId,
           unit: units,
           source,
           ...(email && { email }),

@@ -23,6 +23,7 @@ export const INITIAL_STATE = {
   sideImage: null,
 
   flowId: null,
+  widgetId: null,
   personId: null,
   mtmClientId: null,
   flowState: null,
@@ -168,6 +169,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         flowId: action.payload,
+      };
+
+    case CONSTANTS.SET_WIDGET_ID:
+      return {
+        ...state,
+        widgetId: action.payload,
       };
 
     case CONSTANTS.SET_PERSON_ID:

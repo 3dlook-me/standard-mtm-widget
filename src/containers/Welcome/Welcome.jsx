@@ -34,6 +34,7 @@ class Welcome extends Component {
     const {
       isSmbFlow,
       setFlowId,
+      setWidgetId,
       setBrand,
       setBodyPart,
       setProductUrl,
@@ -112,7 +113,8 @@ class Welcome extends Component {
           ...(photosFromGallery && { photosFromGallery: true }),
         })
           .then((res) => {
-            setFlowId(res);
+            setFlowId(res.uuid);
+            setWidgetId(res.id);
 
             this.setState({
               isButtonDisabled: false,

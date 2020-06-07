@@ -5,6 +5,7 @@ import { route } from 'preact-router';
 import actions from '../../store/actions';
 import {
   browserValidation,
+  isMobileDevice,
 } from '../../helpers/utils';
 import { BaseMobileFlow, Loader } from '../../components';
 
@@ -25,6 +26,7 @@ class SmbFlow extends BaseMobileFlow {
       setFlowState,
       setIsSmbFlow,
       setIsFromDesktopToMobile,
+      setSource,
     } = this.props;
 
     window.addEventListener('online', this.pageReload);
@@ -32,6 +34,11 @@ class SmbFlow extends BaseMobileFlow {
     await super.componentDidMount();
 
     setIsFromDesktopToMobile(false);
+    setSource('dashboard');
+
+    if (!isMobileDevice()) {
+      return Promise.resolve();
+    }
 
     if (!browserValidation()) {
       route('/browser', true);
@@ -75,7 +82,15 @@ class SmbFlow extends BaseMobileFlow {
   }
 
   render() {
-    return (
+    const isDesktop = !isMobileDevice();
+
+    return (isDesktop) ? (
+      <div className="screen active">
+        <div className="tutorial__desktop-msg">
+          <h2>Please open this link on your mobile device</h2>
+        </div>
+      </div>
+    ) : (
       <Loader />
     );
   }

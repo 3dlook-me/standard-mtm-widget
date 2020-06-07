@@ -139,6 +139,7 @@ class Upload extends Component {
       setCamera,
       camera,
       isTableFlow,
+      hardValidation,
     } = this.props;
 
     setHeaderIconsStyle('default');
@@ -146,7 +147,11 @@ class Upload extends Component {
 
     if (isTableFlow) {
       if (camera) {
-        this.triggerSideImage();
+        if (hardValidation.front && !hardValidation.side) {
+          setCamera(null);
+        } else {
+          this.triggerSideImage();
+        }
       }
     } else {
       this.setState({
@@ -591,6 +596,7 @@ class Upload extends Component {
       isMobile,
       isPhotosFromGallery,
       isTableFlow,
+      hardValidation,
     } = this.props;
 
     let title;
@@ -688,6 +694,7 @@ class Upload extends Component {
                       saveFront={this.saveFrontFile}
                       saveSide={this.saveSideFile}
                       isTableFlow={isTableFlow}
+                      hardValidation={hardValidation}
                     />
                   ) : null}
                 </div>

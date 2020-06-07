@@ -284,6 +284,7 @@ class Upload extends Component {
           setMtmClientId(mtmClientId);
         } else {
           mtmClientId = mtmClientIdFromState;
+          await this.api.mtmClient.update(mtmClientId, mtmClientParams);
         }
 
         const createdPersonId = await this.api.mtmClient.createPerson(mtmClientId, {
@@ -293,8 +294,13 @@ class Upload extends Component {
           ...(weight && { weight }),
         });
 
-        setPersonId(createdPersonId);
         personId = createdPersonId;
+
+        setPersonId(personId);
+
+        await this.flow.updateState({
+          personId,
+        });
 
         await wait(1000);
 

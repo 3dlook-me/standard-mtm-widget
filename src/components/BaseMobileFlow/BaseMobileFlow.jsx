@@ -85,7 +85,7 @@ class BaseMobileFlow extends Component {
         }
 
         setMeasurements(flowStateResult.state.measurements);
-        setPersonId(flowStateResult.person);
+        setPersonId(flowStateResult.person || flowStateResult.state.personId);
         setBrand(brand);
         setBodyPart(bodyPart);
         setProductUrl(flowStateResult.state.productUrl);

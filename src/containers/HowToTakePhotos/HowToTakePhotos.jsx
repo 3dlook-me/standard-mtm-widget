@@ -11,7 +11,7 @@ import { Stepper } from '../../components';
 
 import './HowToTakePhotos.scss';
 import videoTableMode from '../../video/table-flow-example.mp4';
-import videoFriendMode from '../../video/video-pf.mp4';
+import videoFriendMode from '../../video/friend-flow-example.mp4';
 import FlowService from '../../services/flowService';
 import { mobileFlowStatusUpdate } from '../../helpers/utils';
 

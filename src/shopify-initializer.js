@@ -25,7 +25,7 @@ import SaiaButton from './button';
     widgetUrl: WIDGET_HOST,
     photosFromGallery: true,
     brand: 'butter denim midrise',
-    body_part: 'bottom',
+    bodyPart: 'bottom',
   });
 
   const isButtonVisible = await button.checkButtonVisibility();

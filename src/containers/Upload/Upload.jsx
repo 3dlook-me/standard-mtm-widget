@@ -24,7 +24,8 @@ import {
   Stepper,
   UploadBlock,
   PhotoExample,
-  Tabs, Loader,
+  Tabs,
+  Loader,
 } from '../../components';
 
 import './Upload.scss';
@@ -79,6 +80,8 @@ class Upload extends Component {
 
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     document.removeEventListener('webkitvisibilitychange', this.handleVisibilityChange);
+
+    window.removeEventListener('offline', this.setOfflineStatus);
   }
 
   componentDidMount() {
@@ -86,7 +89,13 @@ class Upload extends Component {
       camera,
       setIsNetwork,
       isNetwork,
+      token,
+      flowId,
+      pageReloadStatus,
+      isFromDesktopToMobile,
     } = this.props;
+
+    window.addEventListener('offline', this.setOfflineStatus);
 
     // if camera is active when page refreshed
     if (camera) {
@@ -99,22 +108,8 @@ class Upload extends Component {
       // after not found page, if was network error
       setIsNetwork(true);
     }
-  }
 
-  init(props) {
-    const {
-      token,
-      flowId,
-      pageReloadStatus,
-      isFromDesktopToMobile,
-    } = props;
-
-    if (token && flowId && !this.api && !this.flow) {
-      this.api = new API({
-        host: `${API_HOST}/api/v2/`,
-        key: token,
-      });
-
+    if (token && flowId && !this.flow) {
       this.flow = new FlowService(token);
       this.flow.setFlowId(flowId);
 
@@ -126,6 +121,17 @@ class Upload extends Component {
 
         mobileFlowStatusUpdate(this.flow, flowState);
       }
+    }
+  }
+
+  init(props) {
+    const { token } = props;
+
+    if (token && !this.api) {
+      this.api = new API({
+        host: `${API_HOST}/api/v2/`,
+        key: token,
+      });
     }
   }
 
@@ -464,10 +470,6 @@ class Upload extends Component {
         });
       }
     } catch (error) {
-      this.setState({
-        isPending: false,
-      });
-
       if (!isPhoneLocked) {
         // hard validation part
         if (error && error.response && error.response.data && error.response.data.sub_tasks) {
@@ -501,14 +503,17 @@ class Upload extends Component {
           alert(detail || brandError || bodyPartError);
           route('/not-found', true);
         } else {
+          // condition for bug in safari on page reload
           if (error.message === 'Network Error') {
-            const { setIsNetwork } = this.props;
+            return;
+          }
 
-            alert('Check your internet connection and try again');
+          if (error.message.includes('is not specified')) {
+            const { returnUrl } = this.props;
 
-            setIsNetwork(false);
+            alert('Oops...\nThe server lost connection...\nPlease restart widget flow on the desktop or start again on mobile');
 
-            route('/not-found', true);
+            window.location.href = returnUrl;
 
             return;
           }
@@ -568,6 +573,22 @@ class Upload extends Component {
     this.setState({
       isImageExampleLoaded: true,
     });
+  }
+
+  closePhotoExample = () => {
+    this.setState({
+      isPhotoExample: false,
+    });
+  }
+
+  setOfflineStatus = () => {
+    const { setIsNetwork } = this.props;
+
+    setIsNetwork(false);
+
+    alert('Check your internet connection and try again');
+
+    route('/not-found', true);
   }
 
   render() {

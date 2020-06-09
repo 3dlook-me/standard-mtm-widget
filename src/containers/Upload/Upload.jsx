@@ -29,8 +29,8 @@ import {
 } from '../../components';
 
 import './Upload.scss';
-import frontExample from '../../images/example-front.png';
-import sideExample from '../../images/example-side.png';
+import frontExample from '../../images/friend_front.png';
+import sideExample from '../../images/friend_side.png';
 
 let isPhoneLocked = false;
 

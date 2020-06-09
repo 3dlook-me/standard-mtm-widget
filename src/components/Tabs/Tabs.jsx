@@ -2,8 +2,8 @@ import { Component, h } from 'preact';
 import classNames from 'classnames';
 
 import './Tabs.scss';
-import frontExample from '../../images/img_front-example.png';
-import sideExample from '../../images/img_side-example.png';
+import frontExample from '../../images/ai_front.png';
+import sideExample from '../../images/ai_side.png';
 
 /**
  * Preloader component

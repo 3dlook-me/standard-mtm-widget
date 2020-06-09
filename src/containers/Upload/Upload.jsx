@@ -264,22 +264,22 @@ class Upload extends Component {
         images.sideImage = sideImage;
       }
 
+      const mtmClientParams = {
+        widgetId,
+        unit: units,
+        source,
+        ...(email && { email }),
+        ...(phoneNumber && { phone: phoneNumber }),
+        ...(firstName && { firstName }),
+        ...(notes && { notes }),
+      };
+
       if (!personId) {
         if (isFromDesktopToMobile) {
           this.flow.updateLocalState({ processStatus: 'Initiating Profile Creation' });
         }
 
         setProcessingStatus('Initiating Profile Creation');
-
-        const mtmClientParams = {
-          widgetId,
-          unit: units,
-          source,
-          ...(email && { email }),
-          ...(phoneNumber && { phone: phoneNumber }),
-          ...(firstName && { firstName }),
-          ...(notes && { notes }),
-        };
 
         if (!mtmClientIdFromState) {
           mtmClientId = await this.api.mtmClient.create(mtmClientParams);
@@ -338,6 +338,9 @@ class Upload extends Component {
         }
 
         setProcessingStatus('Photo Uploading');
+
+        mtmClientId = mtmClientIdFromState;
+        await this.api.mtmClient.update(mtmClientId, mtmClientParams);
 
         await this.api.person.update(personId, images);
         await wait(1000);

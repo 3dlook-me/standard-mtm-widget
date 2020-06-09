@@ -1,5 +1,5 @@
 import { h, Component, Fragment } from 'preact';
-import { Link } from 'preact-router';
+import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
 import {
@@ -149,6 +149,18 @@ class Welcome extends Component {
     }, { once: true });
   }
 
+  /**
+   * On next screen event handler
+   */
+  onNextScreen = async () => {
+    gaWelcomeOnContinue();
+
+    const { isSmbFlow } = this.props;
+    const routeUrl = (isSmbFlow) ? '/gender' : '/email';
+
+    route(routeUrl, false);
+  }
+
   componentWillUnmount() {
     this.widgetContainer.classList.add('widget-container--no-bg');
   }
@@ -177,9 +189,9 @@ class Welcome extends Component {
               </div>
             </div>
             <div className="screen__footer">
-              <Link className="button" href="/email" onClick={gaWelcomeOnContinue} disabled={isButtonDisabled}>
+              <button className="button" type="button" onClick={this.onNextScreen} disabled={isButtonDisabled}>
                 <span>next</span>
-              </Link>
+              </button>
             </div>
           </section>
         )}

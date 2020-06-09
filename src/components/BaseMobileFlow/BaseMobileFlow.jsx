@@ -45,6 +45,7 @@ class BaseMobileFlow extends Component {
       setNotes,
       resetState,
       setIsPhotosFromGallery,
+      setWidgetId,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -109,6 +110,7 @@ class BaseMobileFlow extends Component {
         setMtmClientId(flowStateResult.state.mtmClientId || flowStateResult.mtm_client);
         setFirstName(flowStateResult.state.firstName);
         setNotes(flowStateResult.state.notes);
+        setWidgetId(flowStateResult.id);
       });
   }
 }

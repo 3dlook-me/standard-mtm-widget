@@ -99,7 +99,7 @@ class BaseMobileFlow extends Component {
         setIsFromDesktopToMobile(true);
         setReturnUrl(flowStateResult.state.returnUrl);
         setSettings(flowStateResult.state.settings);
-        setWidgetUrl(flowStateResult.state.widgetUrl);
+        setWidgetUrl(flowStateResult.state.widgetUrl || window.location.href);
         setBodyType(flowStateResult.state.bodyType);
         setFakeSize(flowStateResult.state.fakeSize);
         setEmail(flowStateResult.state.email);

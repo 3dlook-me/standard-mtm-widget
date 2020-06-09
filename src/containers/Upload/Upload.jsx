@@ -342,7 +342,13 @@ class Upload extends Component {
         mtmClientId = mtmClientIdFromState;
         await this.api.mtmClient.update(mtmClientId, mtmClientParams);
 
-        await this.api.person.update(personId, images);
+        await this.api.person.update(personId, {
+          gender,
+          height,
+          email,
+          ...(weight && { weight }),
+          ...images,
+        });
         await wait(1000);
 
         taskSetId = await this.api.person.calculate(personId);

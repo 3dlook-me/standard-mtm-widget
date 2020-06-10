@@ -43,6 +43,7 @@ export const CONSTANTS = {
   SET_PHONE_COUNTRY: 'SET_PHONE_COUNTRY',
   SET_PHONE_USER_PART: 'SET_PHONE_USER_PART',
   SET_IS_TABLE_FLOW: 'SET_IS_TABLE_FLOW',
+  SET_IS_TABLE_FLOW_DISABLED: 'SET_IS_TABLE_FLOW_DISABLED',
 };
 
 /**
@@ -464,6 +465,16 @@ export const setIsTableFlow = (isTableFLow) => ({
   payload: isTableFLow,
 });
 
+/**
+ * Set is table flow mode disabled
+ *
+ * @param {boolean} isTableFLow
+ */
+export const setIsTableFlowDisabled = (isTableFLow) => ({
+  type: CONSTANTS.SET_IS_TABLE_FLOW_DISABLED,
+  payload: isTableFLow,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -506,4 +517,5 @@ export default {
   setPhoneCountry,
   setPhoneUserPart,
   setIsTableFlow,
+  setIsTableFlowDisabled,
 };

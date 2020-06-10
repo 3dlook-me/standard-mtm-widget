@@ -60,6 +60,7 @@ export const INITIAL_STATE = {
   headerIconsStyle: 'default',
   camera: null,
   isTableFlow: false,
+  isTableFlowDisabled: false,
   isHelpActive: false,
   isOpenReturnUrlDesktop: false,
   sendDataStatus: '',
@@ -324,6 +325,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isTableFlow: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_TABLE_FLOW_DISABLED:
+      return {
+        ...state,
+        isTableFlowDisabled: action.payload,
       };
 
     default:

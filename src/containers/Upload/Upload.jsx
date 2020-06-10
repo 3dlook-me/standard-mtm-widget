@@ -162,6 +162,7 @@ class Upload extends Component {
     } else {
       this.setState({
         isImageExampleLoaded: false,
+        isButtonDisabled: true,
       });
 
       setCamera(null);
@@ -591,6 +592,20 @@ class Upload extends Component {
     route('/not-found', true);
   }
 
+  disableTableFlow = () => {
+    const {
+      setIsTableFlowDisabled,
+      setIsTableFlow,
+      setCamera,
+    } = this.props;
+
+    setCamera(null);
+    setIsTableFlowDisabled(true);
+    setIsTableFlow(false);
+
+    document.body.classList.remove('camera-table-flow');
+  }
+
   render() {
     const isDesktop = !isMobileDevice();
 
@@ -606,6 +621,7 @@ class Upload extends Component {
       isPhotoExample,
       activeTab,
       isImageExampleLoaded,
+      isButtonDisabled,
     } = this.state;
 
     const {
@@ -716,6 +732,7 @@ class Upload extends Component {
                       saveSide={this.saveSideFile}
                       isTableFlow={isTableFlow}
                       hardValidation={hardValidation}
+                      disableTableFlow={this.disableTableFlow}
                     />
                   ) : null}
                 </div>

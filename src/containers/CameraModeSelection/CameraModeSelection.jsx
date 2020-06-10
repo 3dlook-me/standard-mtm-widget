@@ -26,7 +26,7 @@ class CameraModeSelection extends Component {
 
     this.state = {
       isBackModeImageLoaded: false,
-      isFrontImageLoaded: false,
+      isFrontModeImageLoaded: false,
     };
   }
 

@@ -621,7 +621,6 @@ class Upload extends Component {
       isPhotoExample,
       activeTab,
       isImageExampleLoaded,
-      isButtonDisabled,
     } = this.state;
 
     const {

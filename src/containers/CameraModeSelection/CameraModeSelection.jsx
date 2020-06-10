@@ -26,7 +26,7 @@ class CameraModeSelection extends Component {
 
     this.state = {
       isBackModeImageLoaded: false,
-      isFrontImageLoaded: false,
+      isFrontModeImageLoaded: false,
     };
   }
 
@@ -78,7 +78,7 @@ class CameraModeSelection extends Component {
 
   render() {
     const isDesktop = !isMobileDevice();
-    const { isTableFlow } = this.props;
+    const { isTableFlow, isTableFlowDisabled } = this.props;
     const { isBackModeImageLoaded, isFrontModeImageLoaded } = this.state;
 
     return (
@@ -108,7 +108,7 @@ class CameraModeSelection extends Component {
               <div className="camera-mode-selection__buttons-wrap">
                 <label
                   className={classNames('camera-mode-selection__button camera-mode-selection__button--back', {
-                    'camera-mode-selection__button--active': !isTableFlow,
+                    'camera-mode-selection__button--active': !isTableFlow || isTableFlowDisabled,
                   })}
                   htmlFor="back-mode-radio"
                 >
@@ -149,7 +149,8 @@ class CameraModeSelection extends Component {
 
                 <label
                   className={classNames('camera-mode-selection__button camera-mode-selection__button--front', {
-                    'camera-mode-selection__button--active': isTableFlow,
+                    'camera-mode-selection__button--active': isTableFlow && !isTableFlowDisabled,
+                    'camera-mode-selection__button--inactive': isTableFlowDisabled,
                   })}
                   htmlFor="front-mode-radio"
                 >

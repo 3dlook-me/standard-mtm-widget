@@ -162,7 +162,6 @@ class Upload extends Component {
     } else {
       this.setState({
         isImageExampleLoaded: false,
-        isButtonDisabled: true,
       });
 
       setCamera(null);
@@ -528,39 +527,19 @@ class Upload extends Component {
   }
 
   triggerFrontImage = () => {
-    const {
-      setHeaderIconsStyle,
-      setCamera,
-      isTableFlow,
-    } = this.props;
+    const { setCamera } = this.props;
 
     gaOpenCameraFrontPhoto();
 
     setCamera('front');
-
-    if (isTableFlow) {
-      document.body.classList.add('camera-table-flow');
-    } else {
-      setHeaderIconsStyle('white');
-    }
   }
 
   triggerSideImage = () => {
-    const {
-      setHeaderIconsStyle,
-      setCamera,
-      isTableFlow,
-    } = this.props;
+    const { setCamera } = this.props;
 
     gaOpenCameraSidePhoto();
 
     setCamera('side');
-
-    if (isTableFlow) {
-      document.body.classList.add('camera-table-flow');
-    } else {
-      setHeaderIconsStyle('white');
-    }
   }
 
   openPhotoExample =(photoType) => {

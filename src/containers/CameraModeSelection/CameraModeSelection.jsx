@@ -92,7 +92,7 @@ class CameraModeSelection extends Component {
         ) : (
           <Fragment>
             <div className="screen__content camera-mode-selection">
-              <Stepper steps="5" current="3" />
+              <Stepper steps="9" current="5" />
 
               <h3 className="screen__title">LET&apos;S TAKE two PHOTOS</h3>
 

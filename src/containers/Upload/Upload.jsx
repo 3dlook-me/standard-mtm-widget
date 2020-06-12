@@ -664,7 +664,7 @@ class Upload extends Component {
         ) : (
           <Fragment>
             <div className="screen__content upload">
-              <Stepper steps="5" current={frontActive ? 3 : 4} />
+              <Stepper steps="9" current={frontActive ? 7 : 8} />
 
               <h3 className="screen__title upload__title">
                 {title}

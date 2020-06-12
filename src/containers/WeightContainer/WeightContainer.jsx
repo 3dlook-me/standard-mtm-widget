@@ -232,7 +232,7 @@ class WeightContainer extends Component {
     return (
       <section className="screen active">
         <div className="screen__content weight-container">
-          <Stepper steps="6" current={2} />
+          <Stepper steps="9" current="4" />
 
           <div className="weight-container__control screen__control">
             <h3 className="screen__label">What’s your weight?</h3>

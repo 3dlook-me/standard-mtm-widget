@@ -150,7 +150,7 @@ class Results extends BaseMobileFlow {
 
     const { openGuide, measurementsType, measurement } = this.state;
 
-    const results = settings.results_screen;
+    const results = settings.final_page;
 
     return (
       <div className="screen screen--result active">

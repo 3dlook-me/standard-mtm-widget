@@ -1,5 +1,5 @@
 import { h, Component, Fragment } from 'preact';
-import { Link } from 'preact-router';
+import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
 import {
@@ -32,7 +32,9 @@ class Welcome extends Component {
 
   componentDidMount() {
     const {
+      isSmbFlow,
       setFlowId,
+      setWidgetId,
       setBrand,
       setBodyPart,
       setProductUrl,
@@ -87,44 +89,47 @@ class Welcome extends Component {
         setIsPhotosFromGallery(true);
       }
 
-      setToken(token);
-      setBrand(brand);
-      setBodyPart(bodyPart);
-      setProductUrl(matches.product);
-      setOrigin(matches.origin);
-      setIsMobile(isMobileDevice());
-      setReturnUrl(matches.returnUrl);
-      setIsOpenReturnUrlDesktop(!!matches.returnUrlDesktop);
-      setFakeSize(!!matches.fakeSize);
-      setProductId(parseInt(matches.productId, 10));
+      if (!isSmbFlow) {
+        setToken(token);
+        setBrand(brand);
+        setBodyPart(bodyPart);
+        setProductUrl(matches.product);
+        setOrigin(matches.origin);
+        setIsMobile(isMobileDevice());
+        setReturnUrl(matches.returnUrl);
+        setIsOpenReturnUrlDesktop(!!matches.returnUrlDesktop);
+        setFakeSize(!!matches.fakeSize);
+        setProductId(parseInt(matches.productId, 10));
 
-      this.flow = new FlowService(token);
-      this.flow.create({
-        status: 'created',
-        productUrl: matches.product,
-        brand,
-        bodyPart,
-        returnUrl: matches.returnUrl,
-        fakeSize: !!matches.fakeSize,
-        productId: parseInt(matches.productId, 10),
-        ...(photosFromGallery && { photosFromGallery: true }),
-      })
-        .then((res) => {
-          setFlowId(res);
-
-          this.setState({
-            isButtonDisabled: false,
-          });
+        this.flow = new FlowService(token);
+        this.flow.create({
+          status: 'created',
+          productUrl: matches.product,
+          brand,
+          bodyPart,
+          returnUrl: matches.returnUrl,
+          fakeSize: !!matches.fakeSize,
+          productId: parseInt(matches.productId, 10),
+          ...(photosFromGallery && { photosFromGallery: true }),
         })
-        .catch((err) => {
-          this.widgetIframe = window.parent.document.querySelector('.saia-pf-drop iframe');
+          .then((res) => {
+            setFlowId(res.uuid);
+            setWidgetId(res.id);
 
-          // condition for preventing appearing the error alert in safari
-          // after the widget closes quickly after it is opened
-          if (this.widgetIframe.getAttribute('src') !== '') {
-            alert(err.message);
-          }
-        });
+            this.setState({
+              isButtonDisabled: false,
+            });
+          })
+          .catch((err) => {
+            this.widgetIframe = window.parent.document.querySelector('.saia-pf-drop iframe');
+
+            // condition for preventing appearing the error alert in safari
+            // after the widget closes quickly after it is opened
+            if (this.widgetIframe.getAttribute('src') !== '') {
+              alert(err.message);
+            }
+          });
+      }
 
       const settingsService = new SettingsService(token);
 
@@ -142,6 +147,18 @@ class Welcome extends Component {
           }
         });
     }, { once: true });
+  }
+
+  /**
+   * On next screen event handler
+   */
+  onNextScreen = async () => {
+    gaWelcomeOnContinue();
+
+    const { isSmbFlow } = this.props;
+    const routeUrl = (isSmbFlow) ? '/gender' : '/email';
+
+    route(routeUrl, false);
   }
 
   componentWillUnmount() {
@@ -172,9 +189,9 @@ class Welcome extends Component {
               </div>
             </div>
             <div className="screen__footer">
-              <Link className="button" href="/email" onClick={gaWelcomeOnContinue} disabled={isButtonDisabled}>
+              <button className="button" type="button" onClick={this.onNextScreen} disabled={isButtonDisabled}>
                 <span>next</span>
-              </Link>
+              </button>
             </div>
           </section>
         )}

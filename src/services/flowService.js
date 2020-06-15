@@ -61,8 +61,7 @@ export default class FlowService {
       },
     })
       .then((response) => {
-        this.flowId = response.data.uuid;
-        return this.flowId;
+        return response.data;
       });
   }
 

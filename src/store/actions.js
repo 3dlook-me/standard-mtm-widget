@@ -19,6 +19,7 @@ export const CONSTANTS = {
   SET_BODY_TYPE: 'SET_BODY_TYPE',
   ADD_AGREE: 'ADD_AGREE',
   SET_FLOW_ID: 'SET_FLOW_ID',
+  SET_WIDGET_ID: 'SET_WIDGET_ID',
   SET_PERSON_ID: 'SET_PERSON_ID',
   SET_BRAND: 'SET_BRAND',
   SET_BODY_PART: 'SET_BODY_PART',
@@ -48,6 +49,7 @@ export const CONSTANTS = {
   SET_IS_PHOTOS_FROM_GALLERY: 'SET_IS_PHOTOS_FROM_GALLERY',
   SET_PHONE_COUNTRY: 'SET_PHONE_COUNTRY',
   SET_PHONE_USER_PART: 'SET_PHONE_USER_PART',
+  SET_IS_SMB_FLOW: 'SET_IS_SMB_FLOW',
 };
 
 /**
@@ -183,6 +185,16 @@ export const addAgree = (agree) => ({
 export const setFlowId = (flowId) => ({
   type: CONSTANTS.SET_FLOW_ID,
   payload: flowId,
+});
+
+/**
+ * Set widget object id action
+ *
+ * @param {string} id - widget object's id value
+ */
+export const setWidgetId = (id) => ({
+  type: CONSTANTS.SET_WIDGET_ID,
+  payload: id,
 });
 
 /**
@@ -518,6 +530,16 @@ export const setPhoneUserPart = (phoneUserPart) => ({
   payload: phoneUserPart,
 });
 
+/**
+ * Set is SMB flow
+ *
+ * @param {string} isSmbFlow - phone user part
+ */
+export const setIsSmbFlow = (isSmbFlow) => ({
+  type: CONSTANTS.SET_IS_SMB_FLOW,
+  payload: isSmbFlow,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -533,6 +555,7 @@ export default {
   addGender,
   addAgree,
   setFlowId,
+  setWidgetId,
   setPersonId,
   setBrand,
   setBodyPart,
@@ -565,4 +588,5 @@ export default {
   setIsPhotosFromGallery,
   setPhoneCountry,
   setPhoneUserPart,
+  setIsSmbFlow,
 };

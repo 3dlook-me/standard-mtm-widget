@@ -74,7 +74,7 @@ class HowToTakePhotos extends Component {
     return (
       <div className="screen active">
         <div className="screen__content how-to-take-photos">
-          <Stepper steps="5" current="2" />
+          <Stepper steps="9" current="6" />
 
           <div className="how-to-take-photos__content">
             <h3 className="screen__title">how to take photos</h3>

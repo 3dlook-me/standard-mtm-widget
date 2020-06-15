@@ -37,19 +37,6 @@ body {
       pointer-events: none !important;
     }
   }
-
-  &.camera-table-flow {
-    .header__help {
-      opacity: 0 !important;
-      pointer-events: none !important;
-    }
-
-    .header {
-      path {
-        stroke: #fff;
-      }
-    }
-  }
 }
 
 button {

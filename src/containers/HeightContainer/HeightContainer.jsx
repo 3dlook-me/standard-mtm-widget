@@ -115,7 +115,7 @@ class HeightContainer extends Component {
     return (
       <div className="screen active">
         <div className="screen__content height-container">
-          <Stepper steps="5" current="1" />
+          <Stepper steps="9" current={3} />
 
           <div className="height-container__control screen__control">
             <h3 className="screen__label">How tall are you?</h3>

@@ -190,6 +190,8 @@ class Upload extends Component {
       firstName,
       source,
       notes,
+      mtmClientId: mtmClientIdFromState,
+      widgetId,
     } = props;
 
     let {
@@ -271,6 +273,16 @@ class Upload extends Component {
         images.sideImage = sideImage;
       }
 
+      const mtmClientParams = {
+        widgetId,
+        unit: units,
+        source,
+        ...(email && { email }),
+        ...(phoneNumber && { phone: phoneNumber }),
+        ...(firstName && { firstName }),
+        ...(notes && { notes }),
+      };
+
       if (!personId) {
         if (isFromDesktopToMobile) {
           this.flow.updateLocalState({ processStatus: 'Initiating Profile Creation' });
@@ -278,18 +290,13 @@ class Upload extends Component {
 
         setProcessingStatus('Initiating Profile Creation');
 
-        const mtmClientParams = {
-          unit: units,
-          source,
-          ...(email && { email }),
-          ...(phoneNumber && { phone: phoneNumber }),
-          ...(firstName && { firstName }),
-          ...(notes && { notes }),
-        };
-
-        mtmClientId = await this.api.mtmClient.create(mtmClientParams);
-
-        setMtmClientId(mtmClientId);
+        if (!mtmClientIdFromState) {
+          mtmClientId = await this.api.mtmClient.create(mtmClientParams);
+          setMtmClientId(mtmClientId);
+        } else {
+          mtmClientId = mtmClientIdFromState;
+          await this.api.mtmClient.update(mtmClientId, mtmClientParams);
+        }
 
         const createdPersonId = await this.api.mtmClient.createPerson(mtmClientId, {
           gender,
@@ -298,8 +305,13 @@ class Upload extends Component {
           ...(weight && { weight }),
         });
 
-        setPersonId(createdPersonId);
         personId = createdPersonId;
+
+        setPersonId(personId);
+
+        await this.flow.updateState({
+          personId,
+        });
 
         await wait(1000);
 
@@ -336,7 +348,16 @@ class Upload extends Component {
 
         setProcessingStatus('Photo Uploading');
 
-        await this.api.person.update(personId, images);
+        mtmClientId = mtmClientIdFromState;
+        await this.api.mtmClient.update(mtmClientId, mtmClientParams);
+
+        await this.api.person.update(personId, {
+          gender,
+          height,
+          email,
+          ...(weight && { weight }),
+          ...images,
+        });
         await wait(1000);
 
         taskSetId = await this.api.person.calculate(personId);

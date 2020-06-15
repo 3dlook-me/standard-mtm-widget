@@ -45,6 +45,7 @@ class BaseMobileFlow extends Component {
       setNotes,
       resetState,
       setIsPhotosFromGallery,
+      setWidgetId,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -85,7 +86,7 @@ class BaseMobileFlow extends Component {
         }
 
         setMeasurements(flowStateResult.state.measurements);
-        setPersonId(flowStateResult.person);
+        setPersonId(flowStateResult.person || flowStateResult.state.personId);
         setBrand(brand);
         setBodyPart(bodyPart);
         setProductUrl(flowStateResult.state.productUrl);
@@ -98,17 +99,18 @@ class BaseMobileFlow extends Component {
         setIsFromDesktopToMobile(true);
         setReturnUrl(flowStateResult.state.returnUrl);
         setSettings(flowStateResult.state.settings);
-        setWidgetUrl(flowStateResult.state.widgetUrl);
+        setWidgetUrl(flowStateResult.state.widgetUrl || window.location.href);
         setBodyType(flowStateResult.state.bodyType);
         setFakeSize(flowStateResult.state.fakeSize);
         setEmail(flowStateResult.state.email);
         setPhoneNumber(flowStateResult.state.phoneNumber);
         setProductId(flowStateResult.state.productId);
-        setUnits(flowStateResult.state.units);
+        setUnits(flowStateResult.state.units || 'in');
         setSource(flowStateResult.state.source);
-        setMtmClientId(flowStateResult.state.mtmClientId);
+        setMtmClientId(flowStateResult.state.mtmClientId || flowStateResult.mtm_client);
         setFirstName(flowStateResult.state.firstName);
         setNotes(flowStateResult.state.notes);
+        setWidgetId(flowStateResult.id);
       });
   }
 }

@@ -23,6 +23,7 @@ export const INITIAL_STATE = {
   sideImage: null,
 
   flowId: null,
+  widgetId: null,
   personId: null,
   mtmClientId: null,
   flowState: null,
@@ -65,7 +66,7 @@ export const INITIAL_STATE = {
   fakeSize: false,
 
   settings: {
-    results_screen: 'measurements',
+    final_page: 'measurements',
   },
 
   headerIconsStyle: 'default',
@@ -81,6 +82,8 @@ export const INITIAL_STATE = {
   source: 'widget',
 
   photosFromGallery: false,
+
+  isSmbFlow: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -166,6 +169,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         flowId: action.payload,
+      };
+
+    case CONSTANTS.SET_WIDGET_ID:
+      return {
+        ...state,
+        widgetId: action.payload,
       };
 
     case CONSTANTS.SET_PERSON_ID:
@@ -370,6 +379,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         phoneUserPart: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_SMB_FLOW:
+      return {
+        ...state,
+        isSmbFlow: action.payload,
       };
 
     default:

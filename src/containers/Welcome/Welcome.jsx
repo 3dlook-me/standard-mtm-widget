@@ -15,6 +15,7 @@ import { Browser } from '..';
 import './Welcome.scss';
 import mobileBg from '../../images/img_pf_mobile.png';
 import desktopBg from '../../images/img_pf.png';
+import loader from '../../images/sms-sending.svg';
 
 /**
  * Welcome page component
@@ -155,6 +156,11 @@ class Welcome extends Component {
             </div>
             <div className="screen__footer">
               <Link className="button" href="/email" onClick={gaWelcomeOnContinue} disabled={isButtonDisabled}>
+                <img
+                  className="screen__footer-loader"
+                  src={loader}
+                  alt="loader"
+                />
                 <span>next</span>
               </Link>
             </div>

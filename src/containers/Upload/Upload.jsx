@@ -282,8 +282,6 @@ class Upload extends Component {
       };
 
       document.addEventListener(visibilityChange, this.handleVisibilityChange);
-      // to show info icon after camera
-      document.body.classList.remove('camera-table-flow');
 
       this.setState({
         isFrontImageValid: !!frontImage,
@@ -588,8 +586,6 @@ class Upload extends Component {
     setCamera(null);
     setIsTableFlowDisabled(true);
     setIsTableFlow(false);
-
-    document.body.classList.remove('camera-table-flow');
   }
 
   render() {

@@ -23,6 +23,14 @@ class HowToTakePhotos extends Component {
 
   $videoProgress = createRef();
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      videoText: props.isTableFlow ? 'Place your phone on a table' : 'Make front and side photo',
+    };
+  }
+
   componentDidMount =() => {
     const { current } = this.$video;
 
@@ -55,7 +63,18 @@ class HowToTakePhotos extends Component {
 
   handleProgress = () => {
     const { current } = this.$video;
+    const { isTableFlow } = this.props;
     const percent = (current.currentTime / current.duration) * 100;
+
+    if (isTableFlow) {
+      this.setTableFlowVideoText(current.currentTime);
+    }
+
+    // else {
+    //   this.setFriendFlowVideoText(current.currentTime);
+    // }
+
+    // console.log(current.currentTime);
 
     this.$videoProgress.current.style.flexBasis = `${percent}%`;
   }
@@ -67,8 +86,41 @@ class HowToTakePhotos extends Component {
     current.play();
   }
 
+  setTableFlowVideoText = (time) => {
+    if (time < 3.4) {
+      this.setState({
+        videoText: 'Place your phone on a table',
+      });
+    } else if (time > 3.4 && time < 5.3) {
+      this.setState({
+        videoText: 'Take 3 - 4 steps backwards',
+      });
+    } else if (time > 5.3) {
+      this.setState({
+        videoText: 'Follow audio instructions',
+      });
+    }
+  }
+
+  setFriendFlowVideoText = (time) => {
+    if (time < 3) {
+      this.setState({
+        videoText: 'friend flow 1',
+      });
+    } else if (time > 3 && time < 5) {
+      this.setState({
+        videoText: 'friend flow 2',
+      });
+    } else if (time > 5) {
+      this.setState({
+        videoText: 'friend flow 3',
+      });
+    }
+  }
+
   render() {
     const { isTableFlow } = this.props;
+    const { videoText } = this.state;
     const videoTrack = isTableFlow ? videoTableMode : videoFriendMode;
 
     return (
@@ -99,7 +151,7 @@ class HowToTakePhotos extends Component {
               </div>
             </div>
             <div className="how-to-take-photos__btn-wrap">
-              <p>Take 3 - 4 steps backwards</p>
+              <p>{videoText}</p>
               <button
                 className="how-to-take-photos__btn"
                 onClick={this.restartVideo}

@@ -13,6 +13,10 @@ import { BaseMobileFlow, Loader } from '../../components';
  * SMB flow page component
  */
 class SmbFlow extends BaseMobileFlow {
+  state = {
+    hasActiveSubscription: true,
+  };
+
   componentWillUnmount() {
     if (this.unsubscribe) this.unsubscribe();
 
@@ -32,6 +36,16 @@ class SmbFlow extends BaseMobileFlow {
     window.addEventListener('online', this.pageReload);
 
     await super.componentDidMount();
+
+    const user = await this.user.get();
+
+    if (!user.has_active_subscription) {
+      this.setState({
+        hasActiveSubscription: false,
+      });
+
+      return Promise.resolve();
+    }
 
     setIsFromDesktopToMobile(false);
     setSource('dashboard');
@@ -82,7 +96,18 @@ class SmbFlow extends BaseMobileFlow {
   }
 
   render() {
+    const { hasActiveSubscription } = this.state;
     const isDesktop = !isMobileDevice();
+
+    if (!hasActiveSubscription) {
+      return (
+        <div className="screen active">
+          <div className="tutorial__desktop-msg">
+            <h2>Sorry! You can't complite widget flow right now. Please contact with your manager </h2>
+          </div>
+        </div>
+      );
+    }
 
     return (isDesktop) ? (
       <div className="screen active">

@@ -153,9 +153,7 @@ class Upload extends Component {
 
     if (isTableFlow) {
       if (camera) {
-        if (hardValidation.front && !hardValidation.side) {
-          setCamera(null);
-        } else {
+        if (!(hardValidation.front && !hardValidation.side)) {
           this.triggerSideImage();
         }
       }
@@ -177,11 +175,14 @@ class Upload extends Component {
       isMobile,
       setHeaderIconsStyle,
       setCamera,
+      isTableFlow,
     } = this.props;
 
     setHeaderIconsStyle('default');
 
-    setCamera(null);
+    if (!isTableFlow) {
+      setCamera(null);
+    }
 
     if (isMobile) {
       this.unsubscribe = store.subscribe(() => {
@@ -195,6 +196,12 @@ class Upload extends Component {
     }
 
     addSideImage(file);
+  }
+
+  turnOffCamera = () => {
+    const { setCamera } = this.props;
+
+    setCamera(null);
   }
 
   /**
@@ -275,8 +282,6 @@ class Upload extends Component {
       };
 
       document.addEventListener(visibilityChange, this.handleVisibilityChange);
-      // to show info icon after camera
-      document.body.classList.remove('camera-table-flow');
 
       this.setState({
         isFrontImageValid: !!frontImage,
@@ -581,8 +586,6 @@ class Upload extends Component {
     setCamera(null);
     setIsTableFlowDisabled(true);
     setIsTableFlow(false);
-
-    document.body.classList.remove('camera-table-flow');
   }
 
   render() {
@@ -700,22 +703,6 @@ class Upload extends Component {
                 </div>
               )}
 
-              <div className="upload__block">
-                <div className="upload__files">
-                  {camera ? (
-                    <Camera
-                      type={camera}
-                      gender={gender}
-                      saveFront={this.saveFrontFile}
-                      saveSide={this.saveSideFile}
-                      isTableFlow={isTableFlow}
-                      hardValidation={hardValidation}
-                      disableTableFlow={this.disableTableFlow}
-                    />
-                  ) : null}
-                </div>
-              </div>
-
             </div>
             <div className="screen__footer">
               <button
@@ -746,8 +733,20 @@ class Upload extends Component {
         {/* ) : null} */}
 
         <Preloader isActive={isPending} status={sendDataStatus} isMobile={isMobile} />
-      </div>
 
+        {camera ? (
+          <Camera
+            type={camera}
+            gender={gender}
+            saveFront={this.saveFrontFile}
+            saveSide={this.saveSideFile}
+            isTableFlow={isTableFlow}
+            hardValidation={hardValidation}
+            disableTableFlow={this.disableTableFlow}
+            turnOffCamera={this.turnOffCamera}
+          />
+        ) : null}
+      </div>
     );
   }
 }

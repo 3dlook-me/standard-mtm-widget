@@ -8,7 +8,7 @@ import './scss/_index.scss';
 
 import { store } from './store';
 import { gaStart } from './helpers/ga';
-import { updateInternetStatus } from './helpers/utils';
+import { updateInternetStatus, browserDetect } from './helpers/utils';
 import { Header, Help } from './components';
 import {
   Welcome,
@@ -41,8 +41,22 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const isSafari = browserDetect();
     window.addEventListener('online', updateInternetStatus);
     window.addEventListener('offline', updateInternetStatus);
+
+    // iphone bug when portrait after landscape
+    if (isSafari === 'safari') {
+      window.addEventListener('resize', () => {
+        if (window.matchMedia('(orientation: portrait)').matches) {
+          document.getElementsByTagName('html')[0].style.height = '100vh';
+
+          setTimeout(() => {
+            document.getElementsByTagName('html')[0].style.height = '100%';
+          }, 500);
+        }
+      });
+    }
   }
 
   render() {

@@ -27,7 +27,7 @@ class HowToTakePhotos extends Component {
     super(props);
 
     this.state = {
-      videoText: props.isTableFlow ? 'Place your phone on a table' : 'Make front and side photo',
+      videoText: props.isTableFlow ? 'Place your phone on a table' : 'Take front and side photos',
     };
   }
 
@@ -69,12 +69,6 @@ class HowToTakePhotos extends Component {
     if (isTableFlow) {
       this.setTableFlowVideoText(current.currentTime);
     }
-
-    // else {
-    //   this.setFriendFlowVideoText(current.currentTime);
-    // }
-
-    // console.log(current.currentTime);
 
     this.$videoProgress.current.style.flexBasis = `${percent}%`;
   }

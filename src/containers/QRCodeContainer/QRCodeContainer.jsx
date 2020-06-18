@@ -27,6 +27,8 @@ import smsSendingIcon from '../../images/sms-sending.svg';
 class QRCodeContainer extends Component {
   a = createRef();
 
+  lastActiveDate = null;
+
   constructor(props) {
     super(props);
 
@@ -194,15 +196,17 @@ class QRCodeContainer extends Component {
                   setProcessingStatus(processStatus);
                 }
 
-                const currentTime = Date.now();
-                const widgetWasAliveAt = flowState.state.lastActiveDate;
+                const currentTime = this.lastActiveDate.getTime();
+                const widgetWasAliveAt = new Date(flowState.updated).getTime();
 
-                if ((currentTime - widgetWasAliveAt) > 9000) {
+                if ((currentTime - widgetWasAliveAt) > 9000 || currentTime === widgetWasAliveAt) {
                   this.setState({
                     isPending: false,
                   });
                 }
               }
+
+              this.lastActiveDate = new Date(flowState.updated);
 
               if (flowState.state.status === 'finished') {
                 const { measurements } = flowState.state;

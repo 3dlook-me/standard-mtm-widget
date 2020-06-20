@@ -7,7 +7,7 @@ export default class UserService {
   constructor(key) {
     this.axios = axios.create();
     this.axios.defaults.headers = {
-      Authorization: `APIKey ${key}`,
+      Authorization: `UUID ${key}`,
     };
   }
 

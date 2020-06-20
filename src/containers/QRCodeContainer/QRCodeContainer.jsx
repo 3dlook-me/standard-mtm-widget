@@ -59,7 +59,7 @@ class QRCodeContainer extends Component {
       phoneUserPart,
       phoneNumber,
     } = this.props;
-    const mobileFlowUrl = `${window.location.origin}${window.location.pathname}?key=${token}#/mobile/${flowId}`;
+    const mobileFlowUrl = `${window.location.origin}${window.location.pathname}#/mobile/${flowId}`;
 
     if (phoneCountry && phoneUserPart) {
       this.setState({

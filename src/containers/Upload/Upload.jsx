@@ -125,6 +125,10 @@ class Upload extends Component {
         host: `${API_HOST}/api/v2/`,
         key: token,
       });
+
+      this.api.axios.defaults.headers = {
+        Authorization: `UUID ${token}`,
+      };
     }
   }
 

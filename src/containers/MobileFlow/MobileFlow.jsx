@@ -13,6 +13,10 @@ import { BaseMobileFlow, Loader } from '../../components';
  * Mobile flow page component
  */
 class MobileFlow extends BaseMobileFlow {
+  state = {
+    hasActiveSubscription: true,
+  };
+
   componentWillUnmount() {
     if (this.unsubscribe) this.unsubscribe();
 
@@ -20,59 +24,73 @@ class MobileFlow extends BaseMobileFlow {
   }
 
   componentDidMount = async () => {
-    const {
-      matches, flowState, setFlowState,
-    } = this.props;
+    try {
+      const {
+        matches, flowState, setFlowState,
+      } = this.props;
 
-    window.addEventListener('online', this.pageReload);
+      window.addEventListener('online', this.pageReload);
 
-    if (!isMobileDevice()) {
-      route(`/upload?id=${matches.id}`, true);
+      if (!isMobileDevice()) {
+        route(`/upload?id=${matches.id}`, true);
 
-      return Promise.resolve();
-    }
+        return Promise.resolve();
+      }
 
-    await super.componentDidMount();
+      await super.componentDidMount();
 
-    if (!browserValidation()) {
-      route('/browser', true);
+      if (!browserValidation()) {
+        route('/browser', true);
 
-      return Promise.resolve();
-    }
+        return Promise.resolve();
+      }
 
-    gaSwitchToMobileFlow();
+      gaSwitchToMobileFlow();
 
-    const flowStateData = await this.flow.get();
+      const flowStateData = await this.flow.get();
 
-    if (flowStateData.state.status !== 'finished') {
-      await this.flow.updateState({
-        ...flowStateData.state,
-        status: 'opened-on-mobile',
-        processStatus: '',
-      });
-    }
-
-    if (flowStateData.state.status === 'finished') {
-      route(`/results?id=${matches.id}`, true);
-    } else {
-      // FOR PAGE RELOAD
-      if (!flowState) {
-        setFlowState({
+      if (flowStateData.state.status !== 'finished') {
+        await this.flow.updateState({
           ...flowStateData.state,
           status: 'opened-on-mobile',
+          processStatus: '',
         });
       }
 
-      setInterval(() => {
-        this.flow.updateState({
-          lastActiveDate: Date.now(),
-        });
-      }, 3000);
+      if (flowStateData.state.status === 'finished') {
+        route(`/results?id=${matches.id}`, true);
+      } else {
+        // FOR PAGE RELOAD
+        if (!flowState) {
+          setFlowState({
+            ...flowStateData.state,
+            status: 'opened-on-mobile',
+          });
+        }
 
-      route(`/upload?id=${matches.id}`, true);
+        setInterval(() => {
+          this.flow.updateState({
+            lastActiveDate: Date.now(),
+          });
+        }, 3000);
+
+        route(`/upload?id=${matches.id}`, true);
+      }
+
+      return Promise.resolve();
+    } catch (err) {
+      if (err && err.response && err.response.data) {
+        console.error(err.response.data.detail);
+      } else {
+        console.error(err.message);
+      }
+
+      this.setState({
+        hasActiveSubscription: false,
+      });
+
+      return Promise.resolve();
     }
-
-    return Promise.resolve();
   }
 
   pageReload = () => {
@@ -80,6 +98,18 @@ class MobileFlow extends BaseMobileFlow {
   }
 
   render() {
+    const { hasActiveSubscription } = this.state;
+
+    if (!hasActiveSubscription) {
+      return (
+        <div className="screen active">
+          <div className="tutorial__desktop-msg">
+            <h2>Sorry! You can't complite widget flow right now. Please contact with your manager </h2>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <Loader />
     );

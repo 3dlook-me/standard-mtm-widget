@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 
 import FlowService from '../../services/flowService';
-import UserService from '../../services/userService';
 import { isMobileDevice } from '../../helpers/utils';
 
 /**
@@ -62,7 +61,6 @@ class BaseMobileFlow extends Component {
     setToken(token);
 
     this.flow = new FlowService(token);
-    this.user = new UserService(token);
 
     resetState();
 

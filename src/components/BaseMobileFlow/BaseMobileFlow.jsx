@@ -1,8 +1,7 @@
 import { h, Component } from 'preact';
 
 import FlowService from '../../services/flowService';
-import UserService from '../../services/userService';
-import { isMobileDevice, parseGetParams } from '../../helpers/utils';
+import { isMobileDevice } from '../../helpers/utils';
 
 /**
  * Mobile flow page component
@@ -55,13 +54,13 @@ class BaseMobileFlow extends Component {
       return;
     }
 
-    const token = matches.key || API_KEY || parseGetParams().key;
-    setToken(token);
+    const token = matches.id || API_KEY;
 
     if (!matches.id) { return; }
 
+    setToken(token);
+
     this.flow = new FlowService(token);
-    this.user = new UserService(token);
 
     resetState();
 

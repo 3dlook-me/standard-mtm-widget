@@ -16,9 +16,10 @@ export default class FlowService {
   flowId = null;
 
   constructor(key) {
+    this.key = key;
     this.axios = axios.create();
     this.axios.defaults.headers = {
-      Authorization: `APIKey ${key}`,
+      Authorization: `UUID ${key}`,
     };
   }
 
@@ -54,6 +55,9 @@ export default class FlowService {
     return this.axios({
       url: `${API_HOST}/api/v2/persons/widget/`,
       method: 'POST',
+      headers: {
+        Authorization: `PUBLIC ${this.key}`,
+      },
       data: {
         state: {
           ...globalState,

@@ -102,7 +102,8 @@ class Welcome extends Component {
         setProductId(parseInt(matches.productId, 10));
 
         this.flow = new FlowService(token);
-        this.flow.create({
+        this.flow.setFlowId(token);
+        this.flow.updateState({
           status: 'created',
           productUrl: matches.product,
           brand,
@@ -115,6 +116,7 @@ class Welcome extends Component {
           .then((res) => {
             setFlowId(res.uuid);
             setWidgetId(res.id);
+            setSettings(res.settings);
 
             this.setState({
               isButtonDisabled: false,
@@ -130,22 +132,6 @@ class Welcome extends Component {
             }
           });
       }
-
-      const settingsService = new SettingsService(token);
-
-      settingsService.getSettings()
-        .then((res) => {
-          setSettings(res);
-        })
-        .catch((err) => {
-          this.widgetIframe = window.parent.document.querySelector('.saia-pf-drop iframe');
-
-          // condition for preventing appearing the error alert in safari
-          // after the widget closes quickly after it is opened
-          if (this.widgetIframe.getAttribute('src') !== '') {
-            alert(err.message);
-          }
-        });
     }, { once: true });
   }
 

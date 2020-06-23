@@ -24,71 +24,73 @@ class SmbFlow extends BaseMobileFlow {
   }
 
   componentDidMount = async () => {
-    const {
-      matches,
-      flowState,
-      setFlowState,
-      setIsSmbFlow,
-      setIsFromDesktopToMobile,
-      setSource,
-    } = this.props;
+    try {
+      const {
+        matches,
+        flowState,
+        setFlowState,
+        setIsSmbFlow,
+        setIsFromDesktopToMobile,
+        setSource,
+      } = this.props;
 
-    window.addEventListener('online', this.pageReload);
+      window.addEventListener('online', this.pageReload);
 
-    await super.componentDidMount();
+      await super.componentDidMount();
 
-    const user = await this.user.get();
+      setIsFromDesktopToMobile(false);
+      setSource('dashboard');
 
-    if (!user.has_active_subscription) {
+      if (!isMobileDevice()) {
+        return Promise.resolve();
+      }
+
+      if (!browserValidation()) {
+        route('/browser', true);
+
+        return Promise.resolve();
+      }
+
+      setIsSmbFlow(true);
+
+      const flowStateData = await this.flow.get();
+
+      if (flowStateData.state.status !== 'finished') {
+        await this.flow.updateState({
+          ...flowStateData.state,
+          status: 'opened-on-mobile',
+          processStatus: '',
+        });
+      }
+
+      if (flowStateData.state.status === 'finished') {
+        route(`/results?id=${matches.id}`, true);
+      } else {
+        // FOR PAGE RELOAD
+        if (!flowState) {
+          setFlowState({
+            ...flowStateData.state,
+            status: 'opened-on-mobile',
+          });
+        }
+
+        route('/', true);
+      }
+
+      return Promise.resolve();
+    } catch (err) {
+      if (err && err.response && err.response.data) {
+        console.error(err.response.data.detail);
+      } else {
+        console.error(err.message);
+      }
+
       this.setState({
         hasActiveSubscription: false,
       });
 
       return Promise.resolve();
     }
-
-    setIsFromDesktopToMobile(false);
-    setSource('dashboard');
-
-    if (!isMobileDevice()) {
-      return Promise.resolve();
-    }
-
-    if (!browserValidation()) {
-      route('/browser', true);
-
-      return Promise.resolve();
-    }
-
-    // gaSwitchToMobileFlow();
-
-    setIsSmbFlow(true);
-
-    const flowStateData = await this.flow.get();
-
-    if (flowStateData.state.status !== 'finished') {
-      await this.flow.updateState({
-        ...flowStateData.state,
-        status: 'opened-on-mobile',
-        processStatus: '',
-      });
-    }
-
-    if (flowStateData.state.status === 'finished') {
-      route(`/results?id=${matches.id}`, true);
-    } else {
-      // FOR PAGE RELOAD
-      if (!flowState) {
-        setFlowState({
-          ...flowStateData.state,
-          status: 'opened-on-mobile',
-        });
-      }
-
-      route('/', true);
-    }
-
-    return Promise.resolve();
   }
 
   pageReload = () => {

@@ -7,7 +7,7 @@ export default class SettingsService {
   constructor(key) {
     this.axios = axios.create();
     this.axios.defaults.headers = {
-      Authorization: `APIKey ${key}`,
+      Authorization: `UUID ${key}`,
     };
   }
 
@@ -20,6 +20,6 @@ export default class SettingsService {
       url: `${API_HOST}/api/v2/measurements/mtm-widget/`,
       method: 'GET',
     })
-      .then(response => response.data.mtm_widget);
+      .then((response) => response.data.mtm_widget);
   }
 }

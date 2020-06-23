@@ -1,5 +1,4 @@
 import SaiaMTMButton from './button';
-import FlowService from './services/flowService';
 
 (async () => {
   try {
@@ -7,9 +6,7 @@ import FlowService from './services/flowService';
     const scriptTag = document.getElementById('saia-mtm-integration');
     const publicKey = scriptTag.getAttribute('data-public-key');
 
-    const flowService = new FlowService(publicKey);
-    const widget = await flowService.create();
-    const { uuid } = widget;
+    const uuid = await SaiaMTMButton.createWidget(publicKey);
 
     if (!saiaCont) {
       const cartAdd = document.querySelector("form[action='/cart/add']");

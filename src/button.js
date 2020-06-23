@@ -6,6 +6,7 @@ import {
   isMobileDevice,
   send,
 } from './helpers/utils';
+import FlowService from './services/flowService';
 
 require('./scss/components/_saia-button.scss');
 const buttonTemplate = require('./templates/button.html');
@@ -301,6 +302,14 @@ class SaiaMTMButton {
     if (recomendations) {
       this.buttonEl.innerHTML = `<span>YOUR PERFECT FIT: ${recomendations.normal}</span>`;
     }
+  }
+
+  static async createWidget(publicKey) {
+    const flowService = new FlowService(publicKey);
+    const widget = await flowService.create();
+    const { uuid } = widget;
+
+    return Promise.resolve(uuid);
   }
 }
 

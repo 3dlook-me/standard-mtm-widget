@@ -29,6 +29,18 @@ class HowToTakePhotos extends Component {
     this.state = {
       videoText: props.isTableFlow ? 'Place your phone on a table' : 'Take front and side photos',
     };
+
+    const { setPageReloadStatus } = props;
+
+    this.reloadListener = () => {
+      setPageReloadStatus(true);
+    };
+
+    window.addEventListener('unload', this.reloadListener);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('unload', this.reloadListener);
   }
 
   componentDidMount =() => {

@@ -21,13 +21,25 @@ import checkMark from '../../images/check-mark.svg';
  * CameraModeSelection component
  */
 class CameraModeSelection extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       isBackModeImageLoaded: false,
       isFrontModeImageLoaded: false,
     };
+
+    const { setPageReloadStatus } = props;
+
+    this.reloadListener = () => {
+      setPageReloadStatus(true);
+    };
+
+    window.addEventListener('unload', this.reloadListener);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('unload', this.reloadListener);
   }
 
   componentDidMount() {

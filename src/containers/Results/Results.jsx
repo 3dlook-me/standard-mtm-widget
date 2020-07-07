@@ -44,9 +44,13 @@ class Results extends BaseMobileFlow {
   componentDidMount = async () => {
     await super.componentDidMount();
 
-    const { measurements, mtmClientId } = this.props;
+    const {
+      measurements,
+      mtmClientId,
+      origin,
+    } = this.props;
 
-    this.sendMeasurements(measurements, mtmClientId);
+    this.sendMeasurements(measurements, mtmClientId, origin);
 
     gaSuccess();
   }
@@ -55,9 +59,10 @@ class Results extends BaseMobileFlow {
     const {
       measurements,
       mtmClientId,
+      origin,
     } = nextProps;
 
-    this.sendMeasurements(measurements, mtmClientId);
+    this.sendMeasurements(measurements, mtmClientId, origin);
   }
 
   /**
@@ -66,12 +71,14 @@ class Results extends BaseMobileFlow {
    * @param {Object} measurements - measurements object
    * @param {number} mtmClientId - mtm client id
    */
-  sendMeasurements = async (measurements, mtmClientId) => {
+  sendMeasurements = async (measurements, mtmClientId, origin) => {
     await this.flow.updateState({
       status: 'finished',
       measurements,
       mtmClientId,
     });
+
+    send('data', measurements, origin);
   }
 
   openGuide = (index, type) => {

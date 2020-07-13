@@ -145,6 +145,7 @@ class HowToTakePhotos extends Component {
                 muted
                 preload="auto"
                 playsInline
+                autoPlay
               >
                 <source src={videoTrack} type="video/mp4" />
               </video>

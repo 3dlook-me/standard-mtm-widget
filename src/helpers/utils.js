@@ -468,3 +468,14 @@ export const updateInternetStatus = () => {
     $body.classList.add('offline');
   }
 };
+
+/**
+ * Close selects drops on landscape view
+ */
+export const closeSelectsOnResize = () => {
+  const $selects = document.querySelectorAll('select');
+
+  $selects.forEach((e) => {
+    e.blur();
+  });
+};

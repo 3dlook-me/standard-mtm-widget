@@ -475,7 +475,7 @@ export const updateInternetStatus = () => {
 export const closeSelectsOnResize = () => {
   const $selects = document.querySelectorAll('select');
 
-  $selects.forEach((e) => {
-    e.blur();
-  });
+  for (const el of $selects) {
+    el.blur();
+  }
 };

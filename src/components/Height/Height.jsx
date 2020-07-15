@@ -5,7 +5,11 @@ import {
 } from 'preact';
 import classNames from 'classnames';
 
-import { cmToFtIn, getHeightCm } from '../../helpers/utils';
+import {
+  cmToFtIn,
+  getHeightCm,
+  closeSelectsOnResize,
+} from '../../helpers/utils';
 
 import './Height.scss';
 
@@ -64,7 +68,14 @@ export default class Height extends Component {
    * Add event
    */
   componentDidMount() {
-    const { height, units } = this.props;
+    const {
+      height,
+      units,
+      isMobile,
+    } = this.props;
+
+    // for close select drop on landscape view
+    if (isMobile) window.addEventListener('resize', closeSelectsOnResize);
 
     // for set default select value to input after first click
     if (this.$heightCmEl.current) this.$heightCmEl.current.addEventListener('click', this.onCmInputChange, { once: true });
@@ -86,6 +97,10 @@ export default class Height extends Component {
     this.setState({
       units,
     });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', closeSelectsOnResize);
   }
 
   setInches = (data) => {

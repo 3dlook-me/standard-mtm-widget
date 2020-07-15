@@ -26,6 +26,7 @@ export const INITIAL_STATE = {
   bodyPart: null,
   productUrl: null,
   productId: null,
+  taskId: null,
 
   recommendations: {
     tight: null,
@@ -317,6 +318,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         phoneUserPart: action.payload,
+      };
+
+    case CONSTANTS.SET_TASK_ID:
+      return {
+        ...state,
+        taskId: action.payload,
       };
 
     default:

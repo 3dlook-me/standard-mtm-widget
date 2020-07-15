@@ -209,6 +209,8 @@ class Upload extends Component {
       email,
       weight,
       setProcessingStatus,
+      taskId,
+      setTaskId,
     } = this.props;
 
     try {
@@ -326,7 +328,13 @@ class Upload extends Component {
         await this.api.person.update(personId, images);
         await wait(1000);
 
-        taskSetId = await this.api.person.calculate(personId);
+        if (!taskId) {
+          taskSetId = await this.api.person.calculate(personId);
+
+          setTaskId(taskSetId);
+        } else {
+          taskSetId = taskId;
+        }
 
         if (isFromDesktopToMobile) {
           this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });

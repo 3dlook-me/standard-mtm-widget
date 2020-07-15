@@ -42,6 +42,7 @@ export const CONSTANTS = {
   SET_IS_PHOTOS_FROM_GALLERY: 'SET_IS_PHOTOS_FROM_GALLERY',
   SET_PHONE_COUNTRY: 'SET_PHONE_COUNTRY',
   SET_PHONE_USER_PART: 'SET_PHONE_USER_PART',
+  SET_TASK_ID: 'SET_TASK_ID',
 };
 
 /**
@@ -376,7 +377,7 @@ export const setWeight = (weight) => ({
 /**
  * Set weight
  *
- * @param {any} weight - weight object
+ * @param {any} weightLb - weight object
  */
 export const setWeightLb = (weightLb) => ({
   type: CONSTANTS.SET_WEIGHT_LB,
@@ -453,6 +454,16 @@ export const setPhoneUserPart = (phoneUserPart) => ({
   payload: phoneUserPart,
 });
 
+/**
+ * Set taskSetID
+ *
+ * @param {string} id - taskSetID
+ */
+export const setTaskId = (id) => ({
+  type: CONSTANTS.SET_TASK_ID,
+  payload: id,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -494,4 +505,5 @@ export default {
   setIsPhotosFromGallery,
   setPhoneCountry,
   setPhoneUserPart,
+  setTaskId,
 };

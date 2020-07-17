@@ -25,7 +25,7 @@ import smsSendingIcon from '../../images/sms-sending.svg';
  * ScanQRCode page component.
  */
 class QRCodeContainer extends Component {
-  a = createRef();
+  lastActiveDate = null;
 
   constructor(props) {
     super(props);
@@ -195,15 +195,17 @@ class QRCodeContainer extends Component {
                   setProcessingStatus(processStatus);
                 }
 
-                const currentTime = Date.now();
-                const widgetWasAliveAt = flowState.state.lastActiveDate;
+                const currentTime = this.lastActiveDate.getTime();
+                const widgetWasAliveAt = new Date(flowState.updated).getTime();
 
-                if ((currentTime - widgetWasAliveAt) > 9000) {
+                if ((currentTime - widgetWasAliveAt) > 9000 || currentTime === widgetWasAliveAt) {
                   this.setState({
                     isPending: false,
                   });
                 }
               }
+
+              this.lastActiveDate = new Date(flowState.updated);
 
               if (flowState.state.status === 'finished') {
                 const {
@@ -424,7 +426,6 @@ class QRCodeContainer extends Component {
               }
               separateDialCode="true"
               onPhoneNumberBlur={this.changePhoneNumber}
-              ref={this.a}
             />
             <p className={classNames('scan-qrcode__error', { active: !isPhoneNumberValid })}>Invalid phone number</p>
 

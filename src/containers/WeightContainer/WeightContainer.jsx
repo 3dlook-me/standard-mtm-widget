@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-import { getWeightKg } from '../../helpers/utils';
+import { getWeightKg, closeSelectsOnResize } from '../../helpers/utils';
 import { Stepper } from '../../components';
 import { gaOnWeightNext } from '../../helpers/ga';
 
@@ -54,7 +54,15 @@ class WeightContainer extends Component {
    * Add event
    */
   componentDidMount() {
-    const { weight, weightLb, units } = this.props;
+    const {
+      weight,
+      weightLb,
+      units,
+      isMobile,
+    } = this.props;
+
+    // for close select drop on landscape view
+    if (isMobile) window.addEventListener('resize', closeSelectsOnResize);
 
     // for set default select value to input after first click
     if (this.$weightEl.current) this.$weightEl.current.addEventListener('click', this.handleChange, { once: true });
@@ -64,6 +72,10 @@ class WeightContainer extends Component {
         weightValue: units !== 'cm' ? weightLb : weight,
       });
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', closeSelectsOnResize);
   }
 
   /**

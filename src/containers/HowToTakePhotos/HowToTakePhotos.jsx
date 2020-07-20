@@ -1,19 +1,21 @@
 import {
   h,
   Component,
-  createRef,
+  createRef, Fragment,
 } from 'preact';
 import { connect } from 'react-redux';
 import { Link } from 'preact-router';
 
 import actions from '../../store/actions';
-import { Stepper } from '../../components';
+import { Loader, Stepper } from '../../components';
 
 import './HowToTakePhotos.scss';
-import videoTableMode from '../../video/table-flow-example.mp4';
+// import videoTableMode from '../../video/table-flow-example.mp4';
+import videoTableMode from '../../video/FULL_Alone_Compressed (1)-2.mp4';
 import videoFriendMode from '../../video/friend-flow-example.mp4';
 import FlowService from '../../services/flowService';
 import { mobileFlowStatusUpdate } from '../../helpers/utils';
+import frontCameraMode from '../../images/front-camera-mode.png';
 
 /**
  * HowToTakePhotos video page component
@@ -27,7 +29,10 @@ class HowToTakePhotos extends Component {
     super(props);
 
     this.state = {
-      videoText: props.isTableFlow ? 'Place your phone on a table' : 'Take front and side photos',
+      videoText: props.isTableFlow
+        ? 'Stand your device upright on a table. \n You can use an object to help hold it up.'
+        : 'Take front and side photos',
+      isVideoLoaded: false,
     };
 
     const { setPageReloadStatus } = props;
@@ -46,7 +51,6 @@ class HowToTakePhotos extends Component {
   componentDidMount =() => {
     const { current } = this.$video;
 
-    current.play();
     current.addEventListener('timeupdate', this.handleProgress);
 
     const {
@@ -124,9 +128,15 @@ class HowToTakePhotos extends Component {
     }
   }
 
+  onVideoLoad = () => {
+    this.setState({
+      isVideoLoaded: true,
+    });
+  }
+
   render() {
     const { isTableFlow } = this.props;
-    const { videoText } = this.state;
+    const { videoText, isVideoLoaded } = this.state;
     const videoTrack = isTableFlow ? videoTableMode : videoFriendMode;
 
     return (
@@ -146,9 +156,16 @@ class HowToTakePhotos extends Component {
                 preload="auto"
                 playsInline
                 autoPlay
+                onPlay={this.onVideoLoad}
+                width="960"
+                height="540"
               >
                 <source src={videoTrack} type="video/mp4" />
               </video>
+
+              {!isVideoLoaded ? (
+                <Loader />
+              ) : null}
 
               <div className="how-to-take-photos__progress-bar">
                 <div

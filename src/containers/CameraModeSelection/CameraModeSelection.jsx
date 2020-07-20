@@ -193,7 +193,7 @@ class CameraModeSelection extends Component {
                   </div>
                   <div className="camera-mode-selection__icon-wrap">
                     <h4 className="camera-mode-selection__title">
-                      AI assistant
+                      ALONE
                     </h4>
                     <div className="camera-mode-selection__icon">
                       <img src={checkMark} alt="button-status" />

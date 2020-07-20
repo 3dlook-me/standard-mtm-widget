@@ -12,36 +12,30 @@
   &__content {
     display: flex;
     flex-direction: column;
-    background: #F6F6F6;
     flex-grow: 1;
     margin-top: -80px;
-    padding-top: 80px;
+    padding: 80px 16px 0;
   }
 
   &__video-wrap {
     display: flex;
     flex-direction: column;
     position: relative;
-    //height: 70vw;
-    flex-grow: 1;
   }
 
   &__video {
     max-width: 100%;
     max-height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
   }
 
   &__progress-bar {
     display:flex;
-    height: 2px;
+    height: 3px;
     background: transparent;
     position: absolute;
-    bottom: 0;
+    bottom: -13px;
     left: 0;
     width: 100%;
   }
@@ -52,13 +46,18 @@
   }
 
   &__btn-wrap {
-    //flex-grow: 1;
+    flex-grow: 1;
     background: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding-top: 30px;
+
+    p {
+      white-space: pre-line;
+      text-align: center;
+    }
   }
 
   &__btn {

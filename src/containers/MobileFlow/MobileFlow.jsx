@@ -69,7 +69,7 @@ class MobileFlow extends BaseMobileFlow {
         });
       }, 3000);
 
-      route('/camera-mode-selection', true);
+      route('/camera-mode-selection');
     }
 
     return Promise.resolve();

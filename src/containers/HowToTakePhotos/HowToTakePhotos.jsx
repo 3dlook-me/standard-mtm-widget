@@ -1,7 +1,7 @@
 import {
   h,
   Component,
-  createRef, Fragment,
+  createRef,
 } from 'preact';
 import { connect } from 'react-redux';
 import { Link } from 'preact-router';
@@ -10,12 +10,11 @@ import actions from '../../store/actions';
 import { Loader, Stepper } from '../../components';
 
 import './HowToTakePhotos.scss';
-// import videoTableMode from '../../video/table-flow-example.mp4';
-import videoTableMode from '../../video/FULL_Alone_Compressed (1)-2.mp4';
+
+import videoTableMode from '../../video/table-flow-example.mp4';
 import videoFriendMode from '../../video/friend-flow-example.mp4';
 import FlowService from '../../services/flowService';
 import { mobileFlowStatusUpdate } from '../../helpers/utils';
-import frontCameraMode from '../../images/front-camera-mode.png';
 
 /**
  * HowToTakePhotos video page component
@@ -97,17 +96,21 @@ class HowToTakePhotos extends Component {
   }
 
   setTableFlowVideoText = (time) => {
-    if (time < 3.4) {
+    if (time < 3.8) {
       this.setState({
-        videoText: 'Place your phone on a table',
+        videoText: 'Stand your device upright on a table. \n You can use an object to help hold it up.',
       });
-    } else if (time > 3.4 && time < 5.3) {
+    } else if (time > 3.8 && time < 7) {
       this.setState({
-        videoText: 'Take 3 - 4 steps backwards',
+        videoText: 'Angle the phone so that the arrows line up on the green',
       });
-    } else if (time > 5.3) {
+    } else if (time > 7 && time < 13.5) {
       this.setState({
-        videoText: 'Follow audio instructions',
+        videoText: 'Take 3 to 4 steps away from your device.',
+      });
+    } else if (time > 13.5) {
+      this.setState({
+        videoText: 'Please turn up the volume and follow the voice instructions.',
       });
     }
   }

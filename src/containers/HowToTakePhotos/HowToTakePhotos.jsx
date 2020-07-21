@@ -30,7 +30,7 @@ class HowToTakePhotos extends Component {
     this.state = {
       videoText: props.isTableFlow
         ? 'Stand your device upright on a table. \n You can use an object to help hold it up.'
-        : 'Take front and side photos',
+        : 'Ask someone to help take 2 photos of you. \n Keep the device at 90° angle at the waistline.',
       isVideoLoaded: false,
     };
 
@@ -83,6 +83,8 @@ class HowToTakePhotos extends Component {
 
     if (isTableFlow) {
       this.setTableFlowVideoText(current.currentTime);
+    } else {
+      this.setFriendFlowVideoText(current.currentTime);
     }
 
     this.$videoProgress.current.style.flexBasis = `${percent}%`;
@@ -118,15 +120,11 @@ class HowToTakePhotos extends Component {
   setFriendFlowVideoText = (time) => {
     if (time < 3) {
       this.setState({
-        videoText: 'friend flow 1',
+        videoText: 'Ask someone to help take 2 photos of you. \n Keep the device at 90° angle at the waistline.',
       });
-    } else if (time > 3 && time < 5) {
+    } else if (time > 3) {
       this.setState({
-        videoText: 'friend flow 2',
-      });
-    } else if (time > 5) {
-      this.setState({
-        videoText: 'friend flow 3',
+        videoText: 'For the side photo turn to your left.',
       });
     }
   }

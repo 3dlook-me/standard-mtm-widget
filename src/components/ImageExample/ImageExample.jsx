@@ -2,8 +2,8 @@ import { h, Component } from 'preact';
 import classNames from 'classnames';
 
 import './ImageExample.scss';
-import exampleSide from '../../images/HV-side.jpg';
-import exampleFront from '../../images/HV-front.jpg';
+import exampleSide from '../../images/HV-side.png';
+import exampleFront from '../../images/HV-front.png';
 
 /**
  * Help component.

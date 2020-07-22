@@ -502,6 +502,11 @@ class Upload extends Component {
             addSideImage(null);
           }
 
+          if (measurementError) {
+            addFrontImage(null);
+            addSideImage(null);
+          }
+
           route('/hard-validation', true);
         } else if (error && error.response && error.response.status === 400) {
           route('/not-found', true);

@@ -72,10 +72,13 @@ class HardValidation extends Component {
     const {
       hardValidation,
       isMobile,
-      measurementError,
     } = this.props;
 
-    const { front, side } = hardValidation;
+    const {
+      front,
+      side,
+      measurementError,
+    } = hardValidation;
 
     // front error handling
     let sideInTheFront = false;

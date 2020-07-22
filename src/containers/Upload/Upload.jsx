@@ -482,10 +482,12 @@ class Upload extends Component {
 
           const frontTask = subTasks.filter((item) => item.name.indexOf('front_') !== -1)[0];
           const sideTask = subTasks.filter((item) => item.name.indexOf('side_') !== -1)[0];
+          const measurementError = subTasks.filter((item) => item.name.indexOf('measurement_') !== -1)[0];
 
           setHardValidation({
             front: frontTask.message,
             side: sideTask.message,
+            ...(measurementError && { measurementError: true }),
           });
 
           // reset front image if there is hard validation error
@@ -501,8 +503,7 @@ class Upload extends Component {
           }
 
           route('/hard-validation', true);
-        } else if (error && error.response
-          && (error.response.status === 400 || error.response.status === 422)) {
+        } else if (error && error.response && error.response.status === 400) {
           route('/not-found', true);
         } else if (error && error.response && error.response.data) {
           const { detail, brand: brandError, body_part: bodyPartError } = error.response.data;

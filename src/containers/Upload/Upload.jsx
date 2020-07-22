@@ -74,6 +74,10 @@ class Upload extends Component {
   }
 
   componentWillUnmount() {
+    const { setCamera } = this.props;
+
+    setCamera(null);
+
     if (this.unsubscribe) this.unsubscribe();
     clearInterval(this.timer);
     window.removeEventListener('unload', this.reloadListener);

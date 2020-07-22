@@ -479,6 +479,10 @@ class Upload extends Component {
         });
       }
     } catch (error) {
+      const { pageReloadStatus } = this.props;
+
+      if (pageReloadStatus) return;
+
       if (!isPhoneLocked) {
         // hard validation part
         if (error && error.response && error.response.data && error.response.data.sub_tasks) {
@@ -519,11 +523,6 @@ class Upload extends Component {
           alert(detail || brandError || bodyPartError);
           route('/not-found', true);
         } else {
-          // condition for bug in safari on page reload
-          if (error.message === 'Network Error') {
-            return;
-          }
-
           if (error.message.includes('is not specified')) {
             const { returnUrl } = this.props;
 
@@ -534,7 +533,7 @@ class Upload extends Component {
             return;
           }
 
-          alert(error);
+          console.error(error);
 
           route('/not-found', true);
         }

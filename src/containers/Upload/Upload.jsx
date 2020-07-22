@@ -501,7 +501,8 @@ class Upload extends Component {
           }
 
           route('/hard-validation', true);
-        } else if (error && error.response && error.response.status === 400) {
+        } else if (error && error.response
+          && (error.response.status === 400 || error.response.status === 422)) {
           route('/not-found', true);
         } else if (error && error.response && error.response.data) {
           const { detail, brand: brandError, body_part: bodyPartError } = error.response.data;

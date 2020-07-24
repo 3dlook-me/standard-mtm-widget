@@ -34,7 +34,7 @@ import SaiaButton from './button';
     key: API_KEY,
     widgetUrl: WIDGET_HOST,
     photosFromGallery: true,
-    brand: 'Annette Gortz',
+    brand: 'butter denim midrise',
     bodyPart: 'top',
   });
 

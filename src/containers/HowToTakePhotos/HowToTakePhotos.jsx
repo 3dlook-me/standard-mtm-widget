@@ -142,11 +142,16 @@ class HowToTakePhotos extends Component {
 
     return (
       <div className="screen active">
+        <Stepper steps="9" current="6" />
+
         <div className="screen__content how-to-take-photos">
-          <Stepper steps="9" current="6" />
 
           <div className="how-to-take-photos__content">
             <h3 className="screen__title">how to take photos</h3>
+
+            {!isVideoLoaded ? (
+              <Loader />
+            ) : null}
 
             <div className="how-to-take-photos__video-wrap">
               {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -163,10 +168,6 @@ class HowToTakePhotos extends Component {
               >
                 <source src={videoTrack} type="video/mp4" />
               </video>
-
-              {!isVideoLoaded ? (
-                <Loader />
-              ) : null}
 
               <div className="how-to-take-photos__progress-bar">
                 <div

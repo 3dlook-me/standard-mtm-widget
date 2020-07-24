@@ -20,12 +20,22 @@ import SaiaButton from './button';
     parentDiv.insertBefore(cont, cartAdd);
   }
 
+  // test
+  // const button = new SaiaButton({
+  //   key: API_KEY,
+  //   widgetUrl: WIDGET_HOST,
+  //   photosFromGallery: true,
+  //   brand: 'butter denim midrise',
+  //   bodyPart: 'bottom',
+  // });
+
+  // prod
   const button = new SaiaButton({
     key: API_KEY,
     widgetUrl: WIDGET_HOST,
     photosFromGallery: true,
-    brand: 'butter denim midrise',
-    bodyPart: 'bottom',
+    brand: 'Annette Gortz',
+    bodyPart: 'top',
   });
 
   const isButtonVisible = await button.checkButtonVisibility();

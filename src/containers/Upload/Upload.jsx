@@ -310,6 +310,8 @@ class Upload extends Component {
           measurementsType: 'all',
         });
 
+        setTaskId(taskSetId);
+
         await wait(1000);
 
         if (isFromDesktopToMobile) {

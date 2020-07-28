@@ -67,6 +67,8 @@ class Upload extends Component {
   }
 
   componentWillUnmount() {
+    const { setTaskId } = this.props;
+
     if (this.unsubscribe) this.unsubscribe();
     clearInterval(this.timer);
     window.removeEventListener('unload', this.reloadListener);
@@ -75,6 +77,8 @@ class Upload extends Component {
     document.removeEventListener('webkitvisibilitychange', this.handleVisibilityChange);
 
     window.removeEventListener('offline', this.setOfflineStatus);
+
+    setTaskId(null);
   }
 
   componentDidMount() {
@@ -328,8 +332,10 @@ class Upload extends Component {
         setProcessingStatus('Photo Uploading');
 
         await this.api.person.update(personId, images);
+
         await wait(1000);
 
+        // do not calculate again id page reload
         if (!taskId) {
           taskSetId = await this.api.person.calculate(personId);
 
@@ -352,7 +358,7 @@ class Upload extends Component {
 
       setProcessingStatus('Calculating your Measurements');
 
-      const person = await this.api.queue.getResults(taskSetId, 4000);
+      const person = await this.api.queue.getResults(taskSetId, 4000, personId);
 
       await wait(1000);
 

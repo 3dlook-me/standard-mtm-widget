@@ -53,6 +53,8 @@ class Welcome extends Component {
       setIsPhotosFromGallery,
     } = this.props;
 
+    console.log(this.props)
+
     const token = matches.key || API_KEY || parseGetParams().key;
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;

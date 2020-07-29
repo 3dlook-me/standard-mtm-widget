@@ -11,7 +11,8 @@ import { store } from '../../store';
 import {
   send,
   wait,
-  mobileFlowStatusUpdate, isMobileDevice,
+  mobileFlowStatusUpdate,
+  isMobileDevice,
 } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
@@ -66,15 +67,18 @@ class Upload extends Component {
   }
 
   componentWillUnmount() {
-    if (this.unsubscribe) this.unsubscribe();
-    clearInterval(this.timer);
+    const { setTaskId } = this.props;
 
-    window.removeEventListener('unload', this.reloadListener);
+    if (this.unsubscribe) this.unsubscribe();
+
+    clearInterval(this.timer);
 
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     document.removeEventListener('webkitvisibilitychange', this.handleVisibilityChange);
-
     window.removeEventListener('offline', this.setOfflineStatus);
+    window.removeEventListener('unload', this.reloadListener);
+
+    setTaskId(null);
   }
 
   componentDidMount() {
@@ -215,6 +219,8 @@ class Upload extends Component {
       setProcessingStatus,
       setMtmClientId,
       isFromDesktopToMobile,
+      taskId,
+      setTaskId,
     } = this.props;
 
     try {
@@ -337,6 +343,8 @@ class Upload extends Component {
           measurementsType: 'all',
         });
 
+        setTaskId(taskSetId);
+
         await wait(1000);
 
         if (isFromDesktopToMobile) {
@@ -364,7 +372,14 @@ class Upload extends Component {
         });
         await wait(1000);
 
-        taskSetId = await this.api.person.calculate(personId);
+        // do not calculate again id page reload
+        if (!taskId) {
+          taskSetId = await this.api.person.calculate(personId);
+
+          setTaskId(taskSetId);
+        } else {
+          taskSetId = taskId;
+        }
 
         if (isFromDesktopToMobile) {
           this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });
@@ -380,7 +395,7 @@ class Upload extends Component {
 
       setProcessingStatus('Calculating your Measurements');
 
-      const person = await this.api.queue.getResults(taskSetId, 4000);
+      const person = await this.api.queue.getResults(taskSetId, 4000, personId);
 
       await wait(1000);
 

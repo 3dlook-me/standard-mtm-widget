@@ -50,6 +50,7 @@ export const CONSTANTS = {
   SET_PHONE_COUNTRY: 'SET_PHONE_COUNTRY',
   SET_PHONE_USER_PART: 'SET_PHONE_USER_PART',
   SET_IS_SMB_FLOW: 'SET_IS_SMB_FLOW',
+  SET_TASK_ID: 'SET_TASK_ID',
 };
 
 /**
@@ -503,7 +504,7 @@ export const setNotes = (notes) => ({
 
 /** Set ability to upload photos from gallery
  *
- * @param {boolean} isStable - network status
+ * @param {boolean} isGallery - is able
 */
 export const setIsPhotosFromGallery = (isGallery) => ({
   type: CONSTANTS.SET_IS_PHOTOS_FROM_GALLERY,
@@ -538,6 +539,16 @@ export const setPhoneUserPart = (phoneUserPart) => ({
 export const setIsSmbFlow = (isSmbFlow) => ({
   type: CONSTANTS.SET_IS_SMB_FLOW,
   payload: isSmbFlow,
+});
+
+/**
+ * Set taskSetID
+ *
+ * @param {string} id - taskSetID
+ */
+export const setTaskId = (id) => ({
+  type: CONSTANTS.SET_TASK_ID,
+  payload: id,
 });
 
 export default {
@@ -589,4 +600,5 @@ export default {
   setPhoneCountry,
   setPhoneUserPart,
   setIsSmbFlow,
+  setTaskId,
 };

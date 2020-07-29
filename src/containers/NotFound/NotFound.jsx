@@ -40,6 +40,7 @@ class NotFound extends Component {
       token,
       flowId,
       pageReloadStatus,
+      isFromDesktopToMobile,
       isNetwork,
     } = this.props;
 

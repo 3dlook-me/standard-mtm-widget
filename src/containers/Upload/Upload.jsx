@@ -129,7 +129,9 @@ class Upload extends Component {
   }
 
   init(props) {
-    const { token } = props;
+    const { token, deviceCoordinates } = props;
+
+    console.log(deviceCoordinates);
 
     if (token && !this.api) {
       this.api = new API({
@@ -598,6 +600,20 @@ class Upload extends Component {
     setIsTableFlow(false);
   }
 
+  setDeviceCoordinates = (coords) => {
+    const {
+      addFrontDeviceCoordinates,
+      addSideDeviceCoordinates,
+      camera,
+    } = this.props;
+
+    if (camera === 'front') {
+      addFrontDeviceCoordinates(coords);
+    } else {
+      addSideDeviceCoordinates(coords);
+    }
+  }
+
   render() {
     const isDesktop = !isMobileDevice();
 
@@ -754,6 +770,7 @@ class Upload extends Component {
             hardValidation={hardValidation}
             disableTableFlow={this.disableTableFlow}
             turnOffCamera={this.turnOffCamera}
+            setDeviceCoordinates={this.setDeviceCoordinates}
           />
         ) : null}
       </div>

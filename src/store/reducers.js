@@ -17,6 +17,10 @@ export const INITIAL_STATE = {
 
   frontImage: null,
   sideImage: null,
+  deviceCoordinates: {
+    frontPhoto: null,
+    sidePhoto: null,
+  },
 
   flowId: null,
   personId: null,
@@ -130,6 +134,24 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         sideImage: action.payload,
+      };
+
+    case CONSTANTS.ADD_FRONT_COORDINATES:
+      return {
+        ...state,
+        deviceCoordinates: {
+          ...state.deviceCoordinates,
+          frontPhoto: action.payload,
+        },
+      };
+
+    case CONSTANTS.ADD_SIDE_COORDINATES:
+      return {
+        ...state,
+        deviceCoordinates: {
+          ...state.deviceCoordinates,
+          sidePhoto: action.payload,
+        },
       };
 
     case CONSTANTS.ADD_GENDER:

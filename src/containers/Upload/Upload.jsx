@@ -33,6 +33,7 @@ import frontExample from '../../images/friend_front.png';
 import sideExample from '../../images/friend_side.png';
 
 let isPhoneLocked = false;
+let isRefreshed = false;
 
 /**
  * Upload page component.
@@ -63,6 +64,7 @@ class Upload extends Component {
     const { setPageReloadStatus } = props;
 
     this.reloadListener = () => {
+      isRefreshed = true;
       setPageReloadStatus(true);
     };
 
@@ -481,10 +483,6 @@ class Upload extends Component {
         });
       }
     } catch (error) {
-      const { pageReloadStatus } = this.props;
-
-      if (pageReloadStatus) return;
-
       if (!isPhoneLocked) {
         // hard validation part
         if (error && error.response && error.response.data && error.response.data.sub_tasks) {
@@ -534,6 +532,13 @@ class Upload extends Component {
 
             return;
           }
+
+          // for iphone after page reload
+          await wait(2000);
+
+          console.log(isRefreshed)
+
+          if (isRefreshed) return;
 
           console.error(error);
 

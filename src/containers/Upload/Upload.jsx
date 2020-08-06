@@ -76,17 +76,18 @@ class Upload extends Component {
   }
 
   componentWillUnmount() {
-    const { setCamera } = this.props;
+    const { setCamera, setTaskId } = this.props;
 
     setCamera(null);
+    setTaskId(null);
 
     if (this.unsubscribe) this.unsubscribe();
+
     clearInterval(this.timer);
-    window.removeEventListener('unload', this.reloadListener);
 
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     document.removeEventListener('webkitvisibilitychange', this.handleVisibilityChange);
-
+    window.removeEventListener('unload', this.reloadListener);
     window.removeEventListener('offline', this.setOfflineStatus);
   }
 
@@ -250,6 +251,8 @@ class Upload extends Component {
       email,
       weight,
       setProcessingStatus,
+      taskId,
+      setTaskId,
     } = this.props;
 
     try {
@@ -349,6 +352,8 @@ class Upload extends Component {
           measurementsType: 'all',
         });
 
+        setTaskId(taskSetId);
+
         await wait(1000);
 
         if (isFromDesktopToMobile) {
@@ -367,7 +372,14 @@ class Upload extends Component {
         await this.api.person.update(personId, images);
         await wait(1000);
 
-        taskSetId = await this.api.person.calculate(personId);
+        // do not calculate again id page reload
+        if (!taskId) {
+          taskSetId = await this.api.person.calculate(personId);
+
+          setTaskId(taskSetId);
+        } else {
+          taskSetId = taskId;
+        }
 
         if (isFromDesktopToMobile) {
           this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });
@@ -383,7 +395,7 @@ class Upload extends Component {
 
       setProcessingStatus('Calculating your Measurements');
 
-      const person = await this.api.queue.getResults(taskSetId, 4000);
+      const person = await this.api.queue.getResults(taskSetId, 4000, personId);
 
       await wait(1000);
 
@@ -535,8 +547,6 @@ class Upload extends Component {
 
           // for iphone after page reload
           await wait(2000);
-
-          console.log(isRefreshed)
 
           if (isRefreshed) return;
 

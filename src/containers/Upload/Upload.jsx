@@ -132,9 +132,7 @@ class Upload extends Component {
   }
 
   init(props) {
-    const { token, deviceCoordinates } = props;
-
-    console.log(deviceCoordinates);
+    const { token } = props;
 
     if (token && !this.api) {
       this.api = new API({
@@ -233,6 +231,7 @@ class Upload extends Component {
       isFromDesktopToMobile,
       phoneNumber,
       productUrl,
+      deviceCoordinates,
     } = props;
 
     let {
@@ -349,6 +348,7 @@ class Upload extends Component {
 
         taskSetId = await this.api.person.updateAndCalculate(createdPersonId, {
           ...images,
+          deviceCoordinates: { ...deviceCoordinates },
           measurementsType: 'all',
         });
 
@@ -369,7 +369,11 @@ class Upload extends Component {
 
         setProcessingStatus('Photo Uploading');
 
-        await this.api.person.update(personId, images);
+        await this.api.person.update(personId, {
+          ...images,
+          deviceCoordinates: { ...deviceCoordinates },
+        });
+
         await wait(1000);
 
         // do not calculate again id page reload

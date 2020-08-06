@@ -280,8 +280,8 @@ export const setSoftValidation = (softValidation) => ({
  * Set hard validation
  *
  * @param {Object} hardValidation - recommendations
- * @param {sting} hardValidation.front - front photo hard validation message
- * @param {sting} hardValidation.side - side photo hard validation message
+ * @param {string} hardValidation.front - front photo hard validation message
+ * @param {string} hardValidation.side - side photo hard validation message
  */
 export const setHardValidation = (hardValidation) => ({
   type: CONSTANTS.SET_HARD_VALIDATION,
@@ -351,7 +351,7 @@ export const setHelpIsActive = (isActive) => ({
 /**
  * Set help is active
  *
- * @param {string} isActive - is help active
+ * @param {string} isRedirect - is help active
  */
 export const setIsOpenReturnUrlDesktop = (isRedirect) => ({
   type: CONSTANTS.SET_IS_OPEN_RETURN_URL_DESKTOP,
@@ -451,7 +451,7 @@ export const setIsNetwork = (isStable) => ({
 /**
  * Set ability to upload photos from gallery
  *
- * @param {boolean} isStable - network status
+ * @param {boolean} isGallery - ability status
  */
 export const setIsPhotosFromGallery = (isGallery) => ({
   type: CONSTANTS.SET_IS_PHOTOS_FROM_GALLERY,

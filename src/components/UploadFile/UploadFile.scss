@@ -10,7 +10,14 @@ $mobile-image-height: 340px;
   margin: 0 auto 54px;
   width: 100%;
   flex-grow: 1;
-  
+  margin: 0 !important; /* temporarily while table-flow is being tested */
+  width: 100%; /* temporarily while table-flow is being tested */
+  height: 100%; /* temporarily while table-flow is being tested */
+
+  @media (max-width: 414px) and (max-height: 667px) {
+    margin-bottom: 24px;
+  }
+
   &__image {
     width: 100%;
     flex-grow: 1;
@@ -22,6 +29,17 @@ $mobile-image-height: 340px;
     background-size: contain;
     background-position: top center;
     background-repeat: no-repeat;
+    height: 202px;
+
+    height: auto !important; /* temporarily while table-flow is being tested */
+
+    @media (max-width: 414px) and (max-height: 667px) {
+      height: 50vw;
+    }
+
+    @media (max-width: 375px) and (max-height: 560px) {
+      height: 33vw;
+    }
 
     img {
       max-width: 100%;

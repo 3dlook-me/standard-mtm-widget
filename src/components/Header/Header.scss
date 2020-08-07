@@ -36,11 +36,22 @@
     }
 
     circle {
-      stroke: #fff;
+      stroke: #fff !important;
     }
   }
 
   &--white:not(.active) &__close {
+    path {
+      stroke: #fff;
+    }
+  }
+
+  &--table-flow-camera:not(.active) {
+    .header__help {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
     path {
       stroke: #fff;
     }

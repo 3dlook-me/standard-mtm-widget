@@ -447,6 +447,7 @@ export const mobileFlowStatusUpdate = (flow, state) => {
   flow.updateState({
     ...state,
     processStatus: '',
+    lastActiveDate: Date.now(),
   }).then(() => Promise.resolve());
 
   setInterval(() => {

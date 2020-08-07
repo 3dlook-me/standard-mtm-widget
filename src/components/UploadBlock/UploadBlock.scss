@@ -4,7 +4,11 @@
   display: none;
   flex-direction: column;
   width: 100%;
-  align-items: center;
+
+  width: 100%; /* temporarily while table-flow is being tested */
+  height: 100%; /* temporarily while table-flow is being tested */
+  background: transparent; /* temporarily while table-flow is being tested */
+  opacity: 0; /* temporarily while table-flow is being tested */
 
   &.active {
     display: flex;
@@ -14,9 +18,11 @@
     width: 100%;
     max-width: 240px;
     margin: 0 auto 16px;
+    display: none;
   }
 
   &__btn {
+    display: none;
     font-size: 12px;
     font-weight: bold;
     line-height: 14px;

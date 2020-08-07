@@ -73,27 +73,36 @@ class Header extends Component {
       headerIconsStyle,
       isHelpActive,
       helpBtnStatus,
+      camera,
+      isTableFlow,
+      frontImage,
+      sideImage,
     } = this.props;
 
     return (
-      <header className={classNames('header', `header--${headerIconsStyle}`, { active: isHelpActive })}>
+      <header
+        className={classNames('header', {
+          active: isHelpActive,
+          'header--default': !camera,
+          'header--white': camera && !isTableFlow,
+          'header--table-flow-camera': (camera && isTableFlow) && !(frontImage && sideImage),
+        })}
+      >
         <div className="header__offline-status">Check your internet connection</div>
-        {helpBtnStatus ? (
-          <button className="header__help" onClick={this.onHelpButtonClick} type="button">
-            <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
-              <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                <g transform="translate(-29.000000, -19.000000)">
-                  <g transform="translate(30.000000, 20.000000)">
-                    <text fontFamily="Avenir-Black, Avenir" fontSize="12" fontWeight="700" letterSpacing="1" fill="#DDDDDD">
-                      <tspan x="7.44" y="13">i</tspan>
-                    </text>
-                    <circle className="header__svg-fill header__svg-fill--circle" stroke="#DDDDDD" strokeWidth="1.5" cx="9" cy="9" r="9" />
-                  </g>
+        <button className="header__help" onClick={this.onHelpButtonClick} type="button">
+          <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+              <g transform="translate(-29.000000, -19.000000)">
+                <g transform="translate(30.000000, 20.000000)">
+                  <text fontFamily="Avenir-Black, Avenir" fontSize="12" fontWeight="700" letterSpacing="1" fill="#DDDDDD">
+                    <tspan x="7.44" y="13">i</tspan>
+                  </text>
+                  <circle className="header__svg-fill header__svg-fill--circle" stroke="#DDDDDD" strokeWidth="1.5" cx="9" cy="9" r="9" />
                 </g>
               </g>
-            </svg>
-          </button>
-        ) : null}
+            </g>
+          </svg>
+        </button>
 
         <button className="header__close" onClick={this.onCloseButtonClick} type="button">
           <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">

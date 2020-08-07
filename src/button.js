@@ -190,6 +190,10 @@ class SaiaMTMButton {
    * Check should we display button for current product page or not
    */
   checkButtonVisibility() {
+    if (window.location.href.includes('demo.html')) {
+      return true;
+    }
+
     if (this.defaults.brand && this.defaults.bodyPart) {
       return Promise.resolve();
     }

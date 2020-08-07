@@ -25,8 +25,6 @@ import smsSendingIcon from '../../images/sms-sending.svg';
  * ScanQRCode page component.
  */
 class QRCodeContainer extends Component {
-  a = createRef();
-
   lastActiveDate = null;
 
   constructor(props) {
@@ -408,7 +406,6 @@ class QRCodeContainer extends Component {
               }
               separateDialCode="true"
               onPhoneNumberBlur={this.changePhoneNumber}
-              ref={this.a}
             />
             <p className={classNames('scan-qrcode__error', { active: !isPhoneNumberValid })}>Invalid phone number</p>
 

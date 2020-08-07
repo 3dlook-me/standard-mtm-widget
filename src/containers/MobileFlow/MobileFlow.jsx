@@ -32,7 +32,7 @@ class MobileFlow extends BaseMobileFlow {
       window.addEventListener('online', this.pageReload);
 
       if (!isMobileDevice()) {
-        route(`/upload?id=${matches.id}`, true);
+        route('/camera-mode-selection', true);
 
         return Promise.resolve();
       }
@@ -74,7 +74,7 @@ class MobileFlow extends BaseMobileFlow {
           });
         }, 3000);
 
-        route(`/upload?id=${matches.id}`, true);
+        route('/camera-mode-selection');
       }
 
       return Promise.resolve();
@@ -104,7 +104,10 @@ class MobileFlow extends BaseMobileFlow {
       return (
         <div className="screen active">
           <div className="tutorial__desktop-msg">
-            <h2>Sorry! Your measuring process cannot be completed right now. Please contact your brand representative.</h2>
+            <h2>
+              Sorry! Your measuring process cannot be completed right now.
+              Please contact your brand representative.
+            </h2>
           </div>
         </div>
       );

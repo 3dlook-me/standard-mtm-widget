@@ -76,10 +76,9 @@ class Upload extends Component {
   }
 
   componentWillUnmount() {
-    const { setCamera, setTaskId } = this.props;
+    const { setCamera } = this.props;
 
     setCamera(null);
-    setTaskId(null);
 
     if (this.unsubscribe) this.unsubscribe();
 

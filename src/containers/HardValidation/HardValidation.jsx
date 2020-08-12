@@ -40,7 +40,13 @@ class HardValidation extends Component {
   componentDidMount() {
     gaHardValidationError();
 
-    const { pageReloadStatus, isFromDesktopToMobile } = this.props;
+    const {
+      pageReloadStatus,
+      isFromDesktopToMobile,
+      setTaskId,
+    } = this.props;
+
+    setTaskId(null);
 
     // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
     if (pageReloadStatus && isFromDesktopToMobile) {

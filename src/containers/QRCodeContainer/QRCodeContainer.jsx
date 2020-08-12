@@ -197,7 +197,7 @@ class QRCodeContainer extends Component {
                 const currentTime = this.lastActiveDate.getTime();
                 const widgetWasAliveAt = new Date(flowState.updated).getTime();
 
-                if ((currentTime - widgetWasAliveAt) > 9000 || currentTime === widgetWasAliveAt) {
+                if ((currentTime - widgetWasAliveAt) > 12000 || currentTime === widgetWasAliveAt) {
                   this.setState({
                     isPending: false,
                   });

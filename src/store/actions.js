@@ -12,6 +12,8 @@ export const CONSTANTS = {
   SET_TOKEN: 'SET_TOKEN',
   ADD_FRONT_IMAGE: 'ADD_FRONT_IMAGE',
   ADD_SIDE_IMAGE: 'ADD_SIDE_IMAGE',
+  ADD_FRONT_COORDINATES: 'ADD_FRONT_COORDINATES',
+  ADD_SIDE_COORDINATES: 'ADD_SIDE_COORDINATES',
   ADD_HEIGHT: 'ADD_HEIGHT',
   ADD_GENDER: 'ADD_GENDER',
   SET_WEIGHT: 'SET_WEIGHT',
@@ -42,6 +44,8 @@ export const CONSTANTS = {
   SET_IS_PHOTOS_FROM_GALLERY: 'SET_IS_PHOTOS_FROM_GALLERY',
   SET_PHONE_COUNTRY: 'SET_PHONE_COUNTRY',
   SET_PHONE_USER_PART: 'SET_PHONE_USER_PART',
+  SET_IS_TABLE_FLOW: 'SET_IS_TABLE_FLOW',
+  SET_IS_TABLE_FLOW_DISABLED: 'SET_IS_TABLE_FLOW_DISABLED',
   SET_TASK_ID: 'SET_TASK_ID',
 };
 
@@ -133,11 +137,31 @@ export const addFrontImage = (frontImage) => ({
 /**
  * Add side image action
  *
- * @param {string} frontImage - base64 encoded side image
+ * @param {string} sideImage - base64 encoded side image
  */
 export const addSideImage = (sideImage) => ({
   type: CONSTANTS.ADD_SIDE_IMAGE,
   payload: sideImage,
+});
+
+/**
+ * Add device coordinates for front photo action
+ *
+ * @param {Object} coords - x, y, z device coordinates
+ */
+export const addFrontDeviceCoordinates = (coords) => ({
+  type: CONSTANTS.ADD_FRONT_COORDINATES,
+  payload: coords,
+});
+
+/**
+ * Add device coordinates for side photo action
+ *
+ * @param {Object} coords - x, y, z device coordinates
+ */
+export const addSideDeviceCoordinates = (coords) => ({
+  type: CONSTANTS.ADD_SIDE_COORDINATES,
+  payload: coords,
 });
 
 /**
@@ -256,8 +280,8 @@ export const setSoftValidation = (softValidation) => ({
  * Set hard validation
  *
  * @param {Object} hardValidation - recommendations
- * @param {sting} hardValidation.front - front photo hard validation message
- * @param {sting} hardValidation.side - side photo hard validation message
+ * @param {string} hardValidation.front - front photo hard validation message
+ * @param {string} hardValidation.side - side photo hard validation message
  */
 export const setHardValidation = (hardValidation) => ({
   type: CONSTANTS.SET_HARD_VALIDATION,
@@ -327,7 +351,7 @@ export const setHelpIsActive = (isActive) => ({
 /**
  * Set help is active
  *
- * @param {string} isActive - is help active
+ * @param {string} isRedirect - is help active
  */
 export const setIsOpenReturnUrlDesktop = (isRedirect) => ({
   type: CONSTANTS.SET_IS_OPEN_RETURN_URL_DESKTOP,
@@ -427,7 +451,7 @@ export const setIsNetwork = (isStable) => ({
 /**
  * Set ability to upload photos from gallery
  *
- * @param {boolean} isStable - network status
+ * @param {boolean} isGallery - ability status
  */
 export const setIsPhotosFromGallery = (isGallery) => ({
   type: CONSTANTS.SET_IS_PHOTOS_FROM_GALLERY,
@@ -452,6 +476,26 @@ export const setPhoneCountry = (phoneCountry) => ({
 export const setPhoneUserPart = (phoneUserPart) => ({
   type: CONSTANTS.SET_PHONE_USER_PART,
   payload: phoneUserPart,
+});
+
+/**
+ * Set is table flow mode
+ *
+ * @param {boolean} isTableFLow
+ */
+export const setIsTableFlow = (isTableFLow) => ({
+  type: CONSTANTS.SET_IS_TABLE_FLOW,
+  payload: isTableFLow,
+});
+
+/**
+ * Set is table flow mode disabled
+ *
+ * @param {boolean} isTableFLow
+ */
+export const setIsTableFlowDisabled = (isTableFLow) => ({
+  type: CONSTANTS.SET_IS_TABLE_FLOW_DISABLED,
+  payload: isTableFLow,
 });
 
 /**
@@ -505,5 +549,9 @@ export default {
   setIsPhotosFromGallery,
   setPhoneCountry,
   setPhoneUserPart,
-  setTaskId,
+  setIsTableFlow,
+  setIsTableFlowDisabled,
+  addFrontDeviceCoordinates,
+  addSideDeviceCoordinates,
+  setTaskId
 };

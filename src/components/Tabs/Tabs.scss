@@ -1,0 +1,50 @@
+@import '../../scss/utils/index';
+
+.tabs {
+  flex-grow: 1;
+  width: calc(100% - 72px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  &__btn-wrap {
+    width: fit-content;
+    margin: 0 auto;
+    border: 2px solid $main-color;
+    border-radius: 4px;
+    display: flex;
+  }
+
+  &__photo {
+    flex-grow: 1;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: none;
+
+    &--active {
+      display: block;
+    }
+  }
+
+  &__btn {
+    margin: 0;
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-align: center;
+    text-transform: uppercase;
+    color: $main-color;
+    border: none;
+    padding: 6px;
+    width: 105px;
+    background-color: transparent;
+
+    &--active {
+      background-color: $main-color;
+      color: white;
+      pointer-events: none;
+    }
+  }
+}

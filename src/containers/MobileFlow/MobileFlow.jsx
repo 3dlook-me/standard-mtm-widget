@@ -27,7 +27,7 @@ class MobileFlow extends BaseMobileFlow {
     window.addEventListener('online', this.pageReload);
 
     if (!isMobileDevice()) {
-      route(`/upload?id=${matches.id}`, true);
+      route('/camera-mode-selection', true);
 
       return Promise.resolve();
     }
@@ -69,7 +69,7 @@ class MobileFlow extends BaseMobileFlow {
         });
       }, 3000);
 
-      route(`/upload?id=${matches.id}`, true);
+      route('/camera-mode-selection');
     }
 
     return Promise.resolve();

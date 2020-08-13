@@ -1,0 +1,132 @@
+@import '../../scss/utils/index';
+
+.camera-mode-selection {
+  padding-top: 18px;
+  display: flex;
+  flex-direction: column;
+
+  .screen__title {
+    margin-bottom: 20px;
+  }
+
+  .privacy-banner {
+    margin: 0 auto 30px;
+  }
+  
+  &__text {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto 20px;
+    text-align: center;
+  }
+
+  &__buttons-wrap {
+    width: 100%;
+    max-width: 375px;
+    margin: 0 auto;
+    flex-grow: 1;
+    display: flex;
+  }
+
+  &__button {
+    width: 50%;
+    background: transparent;
+    border: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    &--back {
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 1px;
+        height: 200px;
+        background-color: #D8D8D8;
+      }
+    }
+
+    &--active {
+      pointer-events: none;
+
+      .camera-mode-selection__icon-wrap {
+        opacity: 1;
+      }
+
+      .camera-mode-selection__icon {
+        background-color: #396EC5;
+        border-color: #396EC5;
+
+        img {
+          display: block;
+        }
+      }
+    }
+
+    &--inactive {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+  }
+
+  &__img-wrap {
+    padding: 0 12px;
+    height: 100%;
+    position: relative;
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: contain;
+    width: calc(100% - 24px);
+    margin: 0 auto 16px;
+  }
+
+  &__title {
+    color: #343239;
+    text-align: center;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  &__icon-wrap {
+    opacity: 0.5;
+  }
+
+  &__icon {
+    width: 30px;
+    height: 30px;
+    margin: 0 auto;
+    border: 1px solid #D8D8D8;
+    background-color: #F1F3F4;
+    border-radius: 50%;
+
+    img {
+      display: none;
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+
+  input[type='radio'] {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    outline: 0;
+    appearance: none;
+  }
+
+  &__img-onload-detect {
+    opacity: 0;
+    width: 10px;
+    height: 10px;
+  }
+}

@@ -69,10 +69,23 @@ class Header extends Component {
   };
 
   render() {
-    const { headerIconsStyle, isHelpActive } = this.props;
+    const {
+      isHelpActive,
+      camera,
+      isTableFlow,
+      frontImage,
+      sideImage,
+    } = this.props;
 
     return (
-      <header className={classNames('header', `header--${headerIconsStyle}`, { active: isHelpActive })}>
+      <header
+        className={classNames('header', {
+          active: isHelpActive,
+          'header--default': !camera,
+          'header--white': camera && !isTableFlow,
+          'header--table-flow-camera': (camera && isTableFlow) && !(frontImage && sideImage),
+        })}
+      >
         <div className="header__offline-status">Check your internet connection</div>
         <button className="header__help" onClick={this.onHelpButtonClick} type="button">
           <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">

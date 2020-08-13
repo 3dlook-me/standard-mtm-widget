@@ -11,7 +11,7 @@
 
   &__title {
     margin-bottom: 20px;
-    position: relative; /* temporarily while table-flow is being tested */
+    position: relative;
   }
 
   &__title-2 {
@@ -117,7 +117,7 @@
     }
   }
 
-  &__upload-file { /* temporarily while table-flow is being tested */
+  &__upload-file {
     position: absolute;
     top: 0;
     left: 0;

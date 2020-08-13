@@ -4,11 +4,9 @@
   display: none;
   flex-direction: column;
   width: 100%;
-
-  width: 100%; /* temporarily while table-flow is being tested */
-  height: 100%; /* temporarily while table-flow is being tested */
-  background: transparent; /* temporarily while table-flow is being tested */
-  opacity: 0; /* temporarily while table-flow is being tested */
+  height: 100%;
+  background: transparent;
+  opacity: 0;
 
   &.active {
     display: flex;

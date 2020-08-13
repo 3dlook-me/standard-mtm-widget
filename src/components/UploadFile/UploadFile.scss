@@ -7,12 +7,10 @@ $mobile-image-height: 340px;
   background: #FFFFFF;
   transition: all ease 300ms;
   overflow: hidden;
-  margin: 0 auto 54px;
   width: 100%;
   flex-grow: 1;
-  margin: 0 !important; /* temporarily while table-flow is being tested */
-  width: 100%; /* temporarily while table-flow is being tested */
-  height: 100%; /* temporarily while table-flow is being tested */
+  margin: 0 !important;
+  height: 100%;
 
   @media (max-width: 414px) and (max-height: 667px) {
     margin-bottom: 24px;
@@ -29,9 +27,7 @@ $mobile-image-height: 340px;
     background-size: contain;
     background-position: top center;
     background-repeat: no-repeat;
-    height: 202px;
-
-    height: auto !important; /* temporarily while table-flow is being tested */
+    height: auto !important;
 
     @media (max-width: 414px) and (max-height: 667px) {
       height: 50vw;

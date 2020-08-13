@@ -42,12 +42,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const isSafari = browserDetect();
+    const isSafari = browserDetect() === 'safari';
     window.addEventListener('online', updateInternetStatus);
     window.addEventListener('offline', updateInternetStatus);
 
     // iphone bug when portrait after landscape
-    if (isSafari === 'safari') {
+    if (isSafari) {
       window.addEventListener('resize', () => {
         if (window.matchMedia('(orientation: portrait)').matches) {
           document.getElementsByTagName('html')[0].style.height = '100vh';

@@ -24,11 +24,16 @@ import {
   Stepper,
   UploadBlock,
   PhotoExample,
+  Tabs,
+  Loader,
 } from '../../components';
 
 import './Upload.scss';
+import frontExample from '../../images/friend_front.png';
+import sideExample from '../../images/friend_side.png';
 
 let isPhoneLocked = false;
+let isRefreshed = false;
 
 /**
  * Upload page component.
@@ -51,11 +56,15 @@ class Upload extends Component {
 
       photoType: 'front',
       isPhotoExample: false,
+
+      activeTab: props.frontImage && !props.sideImage ? 'side' : 'front',
+      isImageExampleLoaded: false,
     };
 
     const { setPageReloadStatus } = props;
 
     this.reloadListener = () => {
+      isRefreshed = true;
       setPageReloadStatus(true);
     };
 
@@ -67,7 +76,9 @@ class Upload extends Component {
   }
 
   componentWillUnmount() {
-    const { setTaskId } = this.props;
+    const { setCamera } = this.props;
+
+    setCamera(null);
 
     if (this.unsubscribe) this.unsubscribe();
 
@@ -75,10 +86,8 @@ class Upload extends Component {
 
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     document.removeEventListener('webkitvisibilitychange', this.handleVisibilityChange);
-    window.removeEventListener('offline', this.setOfflineStatus);
     window.removeEventListener('unload', this.reloadListener);
-
-    setTaskId(null);
+    window.removeEventListener('offline', this.setOfflineStatus);
   }
 
   componentDidMount() {
@@ -144,11 +153,27 @@ class Upload extends Component {
       addFrontImage,
       setHeaderIconsStyle,
       setCamera,
+      camera,
+      isTableFlow,
+      hardValidation,
     } = this.props;
 
     setHeaderIconsStyle('default');
     addFrontImage(file);
-    setCamera(null);
+
+    if (isTableFlow) {
+      if (camera) {
+        if (!(hardValidation.front && !hardValidation.side)) {
+          this.triggerSideImage();
+        }
+      }
+    } else {
+      this.setState({
+        isImageExampleLoaded: false,
+      });
+
+      setCamera(null);
+    }
   }
 
   /**
@@ -160,10 +185,14 @@ class Upload extends Component {
       isMobile,
       setHeaderIconsStyle,
       setCamera,
+      isTableFlow,
     } = this.props;
+
     setHeaderIconsStyle('default');
 
-    setCamera(null);
+    if (!isTableFlow) {
+      setCamera(null);
+    }
 
     if (isMobile) {
       this.unsubscribe = store.subscribe(() => {
@@ -177,6 +206,12 @@ class Upload extends Component {
     }
 
     addSideImage(file);
+  }
+
+  turnOffCamera = () => {
+    const { setCamera } = this.props;
+
+    setCamera(null);
   }
 
   /**
@@ -200,6 +235,8 @@ class Upload extends Component {
       notes,
       mtmClientId: mtmClientIdFromState,
       widgetId,
+      productUrl,
+      deviceCoordinates,
     } = props;
 
     let {
@@ -340,6 +377,7 @@ class Upload extends Component {
 
         taskSetId = await this.api.person.updateAndCalculate(createdPersonId, {
           ...images,
+          deviceCoordinates: { ...deviceCoordinates },
           measurementsType: 'all',
         });
 
@@ -368,6 +406,7 @@ class Upload extends Component {
           height,
           email,
           ...(weight && { weight }),
+          deviceCoordinates: { ...deviceCoordinates },
           ...images,
         });
         await wait(1000);
@@ -427,10 +466,12 @@ class Upload extends Component {
 
           const frontTask = subTasks.filter((item) => item.name.indexOf('front_') !== -1)[0];
           const sideTask = subTasks.filter((item) => item.name.indexOf('side_') !== -1)[0];
+          const measurementError = subTasks.filter((item) => item.name.indexOf('measurement_') !== -1)[0];
 
           setHardValidation({
             front: frontTask.message,
             side: sideTask.message,
+            ...(measurementError && { measurementError: true }),
           });
 
           // reset front image if there is hard validation error
@@ -445,6 +486,11 @@ class Upload extends Component {
             addSideImage(null);
           }
 
+          if (measurementError) {
+            addFrontImage(null);
+            addSideImage(null);
+          }
+
           route('/hard-validation', true);
         } else if (error && error.response && error.response.status === 400) {
           route('/not-found', true);
@@ -453,11 +499,6 @@ class Upload extends Component {
           alert(detail || brandError || bodyPartError);
           route('/not-found', true);
         } else {
-          // condition for bug in safari on page reload
-          if (error.message === 'Network Error') {
-            return;
-          }
-
           if (error.message.includes('is not specified')) {
             const { returnUrl } = this.props;
 
@@ -468,7 +509,12 @@ class Upload extends Component {
             return;
           }
 
-          alert(error);
+          // for iphone after page reload
+          await wait(2000);
+
+          if (isRefreshed) return;
+
+          console.error(error);
 
           route('/not-found', true);
         }
@@ -477,27 +523,31 @@ class Upload extends Component {
   }
 
   triggerFrontImage = () => {
-    const { setHeaderIconsStyle, setCamera } = this.props;
+    const { setCamera } = this.props;
 
     gaOpenCameraFrontPhoto();
 
     setCamera('front');
-    setHeaderIconsStyle('white');
   }
 
   triggerSideImage = () => {
-    const { setHeaderIconsStyle, setCamera } = this.props;
+    const { setCamera } = this.props;
 
     gaOpenCameraSidePhoto();
 
     setCamera('side');
-    setHeaderIconsStyle('white');
   }
 
   openPhotoExample =(photoType) => {
     this.setState({
       isPhotoExample: true,
       photoType,
+    });
+  }
+
+  onImgExampleLoaded = () => {
+    this.setState({
+      isImageExampleLoaded: true,
     });
   }
 
@@ -517,6 +567,32 @@ class Upload extends Component {
     route('/not-found', true);
   }
 
+  disableTableFlow = () => {
+    const {
+      setIsTableFlowDisabled,
+      setIsTableFlow,
+      setCamera,
+    } = this.props;
+
+    setCamera(null);
+    setIsTableFlowDisabled(true);
+    setIsTableFlow(false);
+  }
+
+  setDeviceCoordinates = (coords) => {
+    const {
+      addFrontDeviceCoordinates,
+      addSideDeviceCoordinates,
+      camera,
+    } = this.props;
+
+    if (camera === 'front') {
+      addFrontDeviceCoordinates(coords);
+    } else {
+      addSideDeviceCoordinates(coords);
+    }
+  }
+
   render() {
     const isDesktop = !isMobileDevice();
 
@@ -530,6 +606,8 @@ class Upload extends Component {
       sideImageBody,
       photoType,
       isPhotoExample,
+      activeTab,
+      isImageExampleLoaded,
     } = this.state;
 
     const {
@@ -540,14 +618,27 @@ class Upload extends Component {
       sendDataStatus,
       isMobile,
       isPhotosFromGallery,
+      isTableFlow,
+      hardValidation,
     } = this.props;
 
     let title;
+    let photoBg;
+    let frontActive = false;
+    let sideActive = false;
 
-    if ((!frontImage && !sideImage) || (!frontImage && sideImage)) {
+    if (isTableFlow) {
+      title = 'requirements';
+      frontActive = (!frontImage && !sideImage) || (!frontImage && sideImage);
+      sideActive = frontImage && !sideImage;
+    } else if ((!frontImage && !sideImage) || (!frontImage && sideImage)) {
       title = 'Take Front photo';
+      photoBg = frontExample;
+      frontActive = true;
     } else if (frontImage && !sideImage) {
       title = 'Take Side photo';
+      photoBg = sideExample;
+      sideActive = true;
     }
 
     return (
@@ -560,37 +651,15 @@ class Upload extends Component {
         ) : (
           <Fragment>
             <div className="screen__content upload">
-              <Stepper steps="5" current={((!frontImage && !sideImage) || (!frontImage && sideImage)) ? 3 : 4} />
+              <Stepper steps="9" current={frontActive ? 7 : 8} />
 
-              <h3 className="screen__title upload__title">{title}</h3>
-              <div className="upload__banner">
-                <figure className="upload__banner-icon">
-                  <svg width="24px" height="28px" viewBox="0 0 24 28" version="1.1">
-                    <title>privacy</title>
-                    <desc>Created with Sketch.</desc>
-                    <g id="Mobile" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                      <g id="[M]-Step-6_1" transform="translate(-46.000000, -132.000000)" fill="#396EC5">
-                        <g id="Group" transform="translate(30.000000, 120.000000)">
-                          <g id="security-on" transform="translate(16.000000, 12.000000)">
-                            <path d="M23.1972759,4.37435632 C18.4198966,4.37435632 14.7599425,3.00943678 11.6650575,0 C8.57049425,3.00943678 4.91070115,4.37435632 0.133724138,4.37435632 C0.133724138,12.2115402 -1.48794253,23.4382529 11.664977,27.9976667 C24.8188621,23.4383333 23.1972759,12.2116207 23.1972759,4.37435632 Z M10.7097586,18.1656437 L6.86788506,14.3232069 L8.58803448,12.6031379 L10.7097586,14.7253448 L14.7424828,10.6925402 L16.4625517,12.4126092 L10.7097586,18.1656437 Z" id="privacy" />
-                          </g>
-                        </g>
-                      </g>
-                    </g>
-                  </svg>
-                </figure>
-                <p className="upload__banner-txt">
-                  We take your privacy very seriously and
-                  <b> delete your photos after </b>
-                  we process your measurements
-                </p>
-              </div>
+              <h3 className="screen__title upload__title">
+                {title}
 
-              <div className="upload__block">
-                <div className="upload__files">
+                <div className="upload__upload-file">
                   <UploadBlock
                     className={classNames({
-                      active: (!frontImage && !sideImage) || (!frontImage && sideImage),
+                      active: frontActive,
                     })}
                     gender={gender}
                     type="front"
@@ -603,7 +672,7 @@ class Upload extends Component {
                   />
                   <UploadBlock
                     className={classNames({
-                      active: frontImage && !sideImage,
+                      active: sideActive,
                     })}
                     gender={gender}
                     type="side"
@@ -614,44 +683,76 @@ class Upload extends Component {
                     openPhotoExample={this.openPhotoExample}
                     photosFromGallery={isPhotosFromGallery}
                   />
-
-                  {(camera === 'front') ? <Camera type={camera} gender={gender} change={this.saveFrontFile} /> : null}
-                  {(camera === 'side') ? <Camera type={camera} gender={gender} change={this.saveSideFile} /> : null}
                 </div>
-              </div>
+              </h3>
+
+              {isTableFlow ? (
+                <Tabs activeTab={activeTab} />
+              ) : (
+                <div
+                  className="upload__image-example"
+                  style={{ backgroundImage: `url(${photoBg})` }}
+                >
+                  {!isImageExampleLoaded ? (
+                    <Fragment>
+                      <Loader />
+
+                      <img
+                        className="upload__image-example-onload-detect"
+                        src={photoBg}
+                        onLoad={this.onImgExampleLoaded}
+                        alt="back"
+                      />
+                    </Fragment>
+                  ) : null}
+                </div>
+              )}
 
             </div>
             <div className="screen__footer">
               <button
                 className={classNames('button', 'upload__front-image-btn', {
-                  active: (!frontImage && !sideImage) || (!frontImage && sideImage),
+                  active: frontActive,
                 })}
                 onClick={this.triggerFrontImage}
                 type="button"
               >
-                Open camera
+                Let&apos;s start
               </button>
 
               <button
                 className={classNames('button', 'upload__side-image-btn', {
-                  active: frontImage && !sideImage,
+                  active: sideActive,
                 })}
                 onClick={this.triggerSideImage}
                 type="button"
               >
-                Open camera
+                Let&apos;s start
               </button>
             </div>
           </Fragment>
         )}
 
-        {isPhotoExample ? (
-          <PhotoExample photoType={photoType} closePhotoExample={this.closePhotoExample} />
-        ) : null}
+        {/* {isPhotoExample ? ( */}
+        {/*  <PhotoExample photoType={photoType} closePhotoExample={this.closePhotoExample} /> */}
+        {/* ) : null} */}
 
         <Preloader isActive={isPending} status={sendDataStatus} isMobile={isMobile} />
-      </div>
 
+        {camera ? (
+          <Camera
+            type={camera}
+            gender={gender}
+            saveFront={this.saveFrontFile}
+            saveSide={this.saveSideFile}
+            isTableFlow={isTableFlow}
+            hardValidation={hardValidation}
+            disableTableFlow={this.disableTableFlow}
+            turnOffCamera={this.turnOffCamera}
+            setDeviceCoordinates={this.setDeviceCoordinates}
+          />
+        ) : null}
+      </div>
     );
   }
 }

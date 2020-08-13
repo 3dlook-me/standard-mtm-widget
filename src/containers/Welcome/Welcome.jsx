@@ -11,11 +11,11 @@ import { gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { Browser } from '..';
-import SettingsService from '../../services/settingsService';
 
 import './Welcome.scss';
 import mobileBg from '../../images/img_mtm_mobile.png';
 import desktopBg from '../../images/img_mtm.png';
+import loader from '../../images/sms-sending.svg';
 
 /**
  * Welcome page component
@@ -176,6 +176,11 @@ class Welcome extends Component {
             </div>
             <div className="screen__footer">
               <button className="button" type="button" onClick={this.onNextScreen} disabled={isButtonDisabled}>
+                <img
+                  className="screen__footer-loader"
+                  src={loader}
+                  alt="loader"
+                />
                 <span>next</span>
               </button>
             </div>

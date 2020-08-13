@@ -32,6 +32,7 @@ class SmbFlow extends BaseMobileFlow {
         setIsSmbFlow,
         setIsFromDesktopToMobile,
         setSource,
+        setReturnUrl
       } = this.props;
 
       window.addEventListener('online', this.pageReload);
@@ -52,6 +53,7 @@ class SmbFlow extends BaseMobileFlow {
       }
 
       setIsSmbFlow(true);
+      setReturnUrl('https://mtm-test.3dlook.me/');
 
       const flowStateData = await this.flow.get();
 

@@ -46,6 +46,11 @@
       margin: 0 auto;
       background-color: white;
     }
+
+    & + .widget-camera {
+      opacity: 0;
+      z-index: -1;
+    }
   }
 
   &__title {

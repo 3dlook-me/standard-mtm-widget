@@ -20,7 +20,7 @@
     background-image: none !important;
   }
 
-  &:not(.widget-container--no-bg) {
+  &/*:not(.widget-container--no-bg)*/ {
     .header:not(.active) {
       text {
         fill: black;

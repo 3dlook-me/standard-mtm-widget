@@ -134,7 +134,7 @@ class Email extends Component {
     return (
       <div className="screen active">
         <div className="screen__content email">
-          <Stepper steps="5" current="0" />
+          <Stepper steps="9" current="1" />
 
           <div className="email__control screen__control">
             <h3 className="screen__label">Enter your email</h3>

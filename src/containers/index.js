@@ -14,3 +14,6 @@ export * from './NotFound';
 export * from './MobileFlow';
 export * from './SmbFlow';
 export * from './Browser';
+export * from './CameraModeSelection';
+export * from './HowToTakePhotos';
+

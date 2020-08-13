@@ -40,7 +40,13 @@ class HardValidation extends Component {
   componentDidMount() {
     gaHardValidationError();
 
-    const { pageReloadStatus, isFromDesktopToMobile } = this.props;
+    const {
+      pageReloadStatus,
+      isFromDesktopToMobile,
+      setTaskId,
+    } = this.props;
+
+    setTaskId(null);
 
     // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
     if (pageReloadStatus && isFromDesktopToMobile) {
@@ -74,7 +80,11 @@ class HardValidation extends Component {
       isMobile,
     } = this.props;
 
-    const { front, side } = hardValidation;
+    const {
+      front,
+      side,
+      measurementError,
+    } = hardValidation;
 
     // front error handling
     let sideInTheFront = false;
@@ -148,6 +158,15 @@ class HardValidation extends Component {
           </h2>
 
           <h3 className="screen__title hard-validation__title">Oops!</h3>
+
+          {measurementError ? (
+            <p className="hard-validation__text">
+              Something went wrong.
+              <br />
+              <br />
+              Restart widget flow on the desktop or start again on mobile.
+            </p>
+          ) : null}
 
           {(topMessageFront)
             ? (

@@ -14,3 +14,5 @@ export * from './Measurements';
 export * from './Guide';
 export * from './Loader';
 export * from './PhotoExample';
+export * from './PrivacyBanner';
+export * from './Tabs';

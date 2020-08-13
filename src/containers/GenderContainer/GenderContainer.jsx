@@ -77,7 +77,7 @@ class GenderContainer extends Component {
     return (
       <section className="screen active">
         <div className="screen__content select-your-gender">
-          <Stepper steps="6" current={1} />
+          <Stepper steps="9" current={2} />
           <div className="gender__control screen__control">
             <h3 className="screen__label">Select your gender</h3>
             <Gender className="select-your-gender__gender" change={this.changeGender} gender={gender} />

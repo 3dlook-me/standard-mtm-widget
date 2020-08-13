@@ -8,11 +8,8 @@ import './scss/_index.scss';
 
 import { store } from './store';
 import { gaStart } from './helpers/ga';
-import { updateInternetStatus } from './helpers/utils';
-import {
-  Header,
-  Help,
-} from './components';
+import { updateInternetStatus, browserDetect } from './helpers/utils';
+import { Header, Help } from './components';
 import {
   Welcome,
   Email,
@@ -28,6 +25,8 @@ import {
   NotFound,
   MobileFlow,
   Browser,
+  CameraModeSelection,
+  HowToTakePhotos,
   SmbFlow,
 } from './containers';
 
@@ -43,8 +42,22 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const isSafari = browserDetect() === 'safari';
     window.addEventListener('online', updateInternetStatus);
     window.addEventListener('offline', updateInternetStatus);
+
+    // iphone bug when portrait after landscape
+    if (isSafari) {
+      window.addEventListener('resize', () => {
+        if (window.matchMedia('(orientation: portrait)').matches) {
+          document.getElementsByTagName('html')[0].style.height = '100vh';
+
+          setTimeout(() => {
+            document.getElementsByTagName('html')[0].style.height = '100%';
+          }, 500);
+        }
+      });
+    }
   }
 
   render() {
@@ -68,6 +81,8 @@ class App extends Component {
             <WeightContainer path="/weight" />
             <QRCodeContainer path="/qrcode" />
             <QRCodeHelp path="/qrcode-help" />
+            <CameraModeSelection path="/camera-mode-selection" />
+            <HowToTakePhotos path="/how-to-take-photos" />
             <Upload path="/upload" />
             <Tutorial path="/tutorial" />
             <HardValidation path="/hard-validation" />

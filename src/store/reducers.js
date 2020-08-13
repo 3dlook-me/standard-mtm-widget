@@ -21,6 +21,10 @@ export const INITIAL_STATE = {
 
   frontImage: null,
   sideImage: null,
+  deviceCoordinates: {
+    frontPhoto: null,
+    sidePhoto: null,
+  },
 
   flowId: null,
   widgetId: null,
@@ -72,6 +76,8 @@ export const INITIAL_STATE = {
 
   headerIconsStyle: 'default',
   camera: null,
+  isTableFlow: false,
+  isTableFlowDisabled: false,
   isHelpActive: false,
   isOpenReturnUrlDesktop: false,
   sendDataStatus: '',
@@ -146,6 +152,24 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         sideImage: action.payload,
+      };
+
+    case CONSTANTS.ADD_FRONT_COORDINATES:
+      return {
+        ...state,
+        deviceCoordinates: {
+          ...state.deviceCoordinates,
+          frontPhoto: action.payload,
+        },
+      };
+
+    case CONSTANTS.ADD_SIDE_COORDINATES:
+      return {
+        ...state,
+        deviceCoordinates: {
+          ...state.deviceCoordinates,
+          sidePhoto: action.payload,
+        },
       };
 
     case CONSTANTS.ADD_GENDER:
@@ -392,6 +416,18 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         taskId: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_TABLE_FLOW:
+      return {
+        ...state,
+        isTableFlow: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_TABLE_FLOW_DISABLED:
+      return {
+        ...state,
+        isTableFlowDisabled: action.payload,
       };
 
     default:

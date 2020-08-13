@@ -106,6 +106,7 @@ class Results extends BaseMobileFlow {
       isMobile,
       isOpenReturnUrlDesktop,
       setHelpBtnStatus,
+      isSmbFlow
     } = this.props;
 
     const { openGuide } = this.state;
@@ -131,7 +132,7 @@ class Results extends BaseMobileFlow {
     }
 
     if (isMobile) {
-      if (measurements) {
+      if (measurements && !isSmbFlow) {
         window.location = `${returnUrl}#/?${objectToUrlParams({
           ...measurements,
           personId,

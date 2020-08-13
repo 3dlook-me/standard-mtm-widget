@@ -116,6 +116,7 @@
 
     &.hide {
       z-index: -1;
+      max-height: 10px;
     }
   }
 

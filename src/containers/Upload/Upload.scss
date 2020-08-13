@@ -11,6 +11,7 @@
 
   &__title {
     margin-bottom: 20px;
+    position: relative;
   }
 
   &__title-2 {
@@ -88,7 +89,6 @@
     align-items: center;
     width: 100%;
     max-width: 275px;
-    flex-grow: 1;
     flex-direction: column;
   }
 
@@ -117,28 +117,28 @@
     }
   }
 
-  &__banner {
-    display: flex;
-    align-items: center;
+  &__upload-file {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 315px;
-    border-radius: 4px;
-    padding: 10px 14px;
-    background-color: #F1F3F4;
-    margin-bottom: 50px;
+    height: 100%;
   }
 
-  &__banner-icon {
-    margin: 0 16px 0 0;
-    flex-shrink: 0;
+  &__image-example {
+    flex-grow: 1;
+    width: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top center;
+    max-width: 325px;
+    margin: 0 auto;
+    position: relative;
   }
 
-  &__banner-txt {
-    color: #3A3A3A;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0;
-    line-height: 16px;
-    text-align: left;
+  &__image-example-onload-detect {
+    opacity: 0;
+    width: 10px;
+    height: 10px;
   }
 }

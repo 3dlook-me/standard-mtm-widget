@@ -13,6 +13,28 @@
   + .screen__footer {
     .button {
       box-shadow: none;
+
+      img {
+        display: none;
+      }
+
+      span {
+        display: block;
+      }
+
+      &[disabled] {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        img {
+          display: block;
+        }
+
+        span {
+          display: none;
+        }
+      }
     }
   }
 

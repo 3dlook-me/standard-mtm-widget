@@ -32,6 +32,7 @@ export const CONSTANTS = {
   SET_EMAIL: 'SET_EMAIL',
   SET_FAKE_SIZE: 'SET_FAKE_SIZE',
   SET_HEADER_ICONS_STYLE: 'SET_HEADER_ICONS_STYLE',
+  SET_IS_HEADER_TRANSLUCENT: 'SET_IS_HEADER_TRANSLUCENT',
   SET_CAMERA: 'SET_CAMERA',
   SET_HELP_IS_ACTIVE: 'SET_HELP_IS_ACTIVE',
   SET_HELP_BUTTON_STATUS: 'SET_HELP_BUTTON_STATUS',
@@ -347,6 +348,16 @@ export const setHeaderIconsStyle = (style) => ({
 });
 
 /**
+ * Set header style
+ *
+ * @param {boolean} isTranslucent - icons opacity 0.4
+ */
+export const setIsHeaderTranslucent = (isTranslucent) => ({
+  type: CONSTANTS.SET_IS_HEADER_TRANSLUCENT,
+  payload: isTranslucent,
+});
+
+/**
  * Set camera type
  *
  * @param {string} camera - camera type -  front, side
@@ -623,6 +634,7 @@ export default {
   setEmail,
   setFakeSize,
   setHeaderIconsStyle,
+  setIsHeaderTranslucent,
   setCamera,
   setHelpIsActive,
   setIsOpenReturnUrlDesktop,

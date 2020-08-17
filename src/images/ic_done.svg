@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ic_done</title>
+    <g id="Mobile" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="[M]-Complete-6" transform="translate(-168.000000, -230.000000)" fill="#65BC00">
+            <g id="Group" transform="translate(69.000000, 230.000000)">
+                <path d="M119,0 C130.045695,0 139,8.954305 139,20 C139,31.045695 130.045695,40 119,40 C107.954305,40 99,31.045695 99,20 C99,8.954305 107.954305,0 119,0 Z M126.510549,12.5 L116.76068,22.4286898 L111.489451,17.0588032 L109,19.5943276 L116.762018,27.5 L129,15.0355245 L126.510549,12.5 Z" id="ic_done"></path>
+            </g>
+        </g>
+    </g>
+</svg>

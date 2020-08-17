@@ -77,6 +77,7 @@ class Header extends Component {
       isTableFlow,
       frontImage,
       sideImage,
+      isHeaderTranslucent,
     } = this.props;
 
     return (
@@ -86,6 +87,7 @@ class Header extends Component {
           'header--default': !camera,
           'header--white': camera && !isTableFlow,
           'header--table-flow-camera': (camera && isTableFlow) && !(frontImage && sideImage),
+          'header--translucent': isHeaderTranslucent,
         })}
       >
         <div className="header__offline-status">Check your internet connection</div>

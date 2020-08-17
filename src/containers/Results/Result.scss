@@ -65,6 +65,17 @@ $bottom-position: -30px;
     margin-bottom: 12px;
   }
 
+  &__thanks-icon {
+    margin: 0 0 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      margin: 0;
+    }
+  }
+
   .screen__subtitle {
     top: -16px;
   }

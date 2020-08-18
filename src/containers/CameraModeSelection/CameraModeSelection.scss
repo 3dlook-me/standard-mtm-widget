@@ -42,7 +42,7 @@
     border: 1px solid #DEDEDE;
     border-radius: 4px;
 
-    @media (max-height: 667px) {
+    @media (max-height: 630px) {
       flex-direction: row;
       justify-content: flex-start;
       align-items: center;
@@ -79,7 +79,7 @@
     margin: 0 0 12px;
     flex-grow: 1;
 
-    @media (max-height: 667px) {
+    @media (max-height: 630px) {
       width: 70px;
       height: 54px;
       flex-grow: 0;

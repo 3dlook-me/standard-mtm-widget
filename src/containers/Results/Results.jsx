@@ -11,6 +11,7 @@ import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 
 import './Result.scss';
+import successIcon from '../../images/ic_done.svg';
 
 /**
  * Results page component.
@@ -48,7 +49,10 @@ class Results extends BaseMobileFlow {
       measurements,
       mtmClientId,
       origin,
+      setIsHeaderTranslucent,
     } = this.props;
+
+    setIsHeaderTranslucent(true);
 
     this.sendMeasurements(measurements, mtmClientId, origin);
 
@@ -63,6 +67,12 @@ class Results extends BaseMobileFlow {
     } = nextProps;
 
     this.sendMeasurements(measurements, mtmClientId, origin);
+  }
+
+  componentWillUnmount() {
+    const { setIsHeaderTranslucent } = this.props;
+
+    setIsHeaderTranslucent(false);
   }
 
   /**
@@ -106,7 +116,7 @@ class Results extends BaseMobileFlow {
       isMobile,
       isOpenReturnUrlDesktop,
       setHelpBtnStatus,
-      isSmbFlow
+      isSmbFlow,
     } = this.props;
 
     const { openGuide } = this.state;
@@ -189,18 +199,21 @@ class Results extends BaseMobileFlow {
 
           {(results === 'thanks') ? (
             <div className="result__thanks">
-              <h3 className="result__thanks-title">Thank you!</h3>
+              <figure className="result__thanks-icon">
+                <img src={successIcon} alt="success" />
+              </figure>
+              <h3 className="result__thanks-title">Success! You're all set.</h3>
               <p className="result__thanks-text">
-                We got your measurements and
+                We've got your measurements to
                 <br />
-                we’ll contact you soon.
+                create your customized wardrobe
               </p>
             </div>
           ) : null}
         </div>
         <div className="screen__footer">
           <button className="button" type="button" onClick={this.onClick}>
-            {openGuide ? 'BACK TO RESULTS' : 'ok'}
+            {openGuide ? 'BACK TO RESULTS' : 'CLOSE'}
           </button>
         </div>
       </div>

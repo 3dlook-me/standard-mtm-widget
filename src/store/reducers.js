@@ -75,6 +75,7 @@ export const INITIAL_STATE = {
   },
 
   headerIconsStyle: 'default',
+  isHeaderTranslucent: false,
   camera: null,
   isTableFlow: false,
   isTableFlowDisabled: false,
@@ -275,6 +276,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         headerIconsStyle: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_HEADER_TRANSLUCENT:
+      return {
+        ...state,
+        isHeaderTranslucent: action.payload,
       };
 
     case CONSTANTS.SET_CAMERA:

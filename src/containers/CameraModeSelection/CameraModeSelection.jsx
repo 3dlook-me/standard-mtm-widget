@@ -119,7 +119,7 @@ class CameraModeSelection extends Component {
               <PrivacyBanner />
 
               <p className="camera-mode-selection__text">
-                You have 2 options: ask someone to help you or
+                You have two options: ask someone to help you, or
                 {' '}
                 <br />
                 {' '}

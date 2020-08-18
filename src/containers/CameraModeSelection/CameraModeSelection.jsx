@@ -205,7 +205,7 @@ class CameraModeSelection extends Component {
                   </div>
                   <div className="camera-mode-selection__icon-wrap">
                     <h4 className="camera-mode-selection__title">
-                      Hands free
+                      Hands-free
                     </h4>
                   </div>
                 </label>

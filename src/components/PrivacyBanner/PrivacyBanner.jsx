@@ -27,7 +27,7 @@ export default function PrivacyBanner() {
         </svg>
       </figure>
       <p className="privacy-banner__txt">
-        Your privacy is in the center of what we do. Photos
+        Your privacy is at the center of what we do. Photos
         <b> will be deleted immediately </b>
         after the processing!
       </p>

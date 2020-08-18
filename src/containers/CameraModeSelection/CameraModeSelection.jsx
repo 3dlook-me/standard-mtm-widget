@@ -127,7 +127,7 @@ class CameraModeSelection extends Component {
                 {' '}
                 <br />
                 {' '}
-                with a voice assistant.
+                using a voice assistant.
                 <br />
                 <b> How would you like to proceed? </b>
               </p>

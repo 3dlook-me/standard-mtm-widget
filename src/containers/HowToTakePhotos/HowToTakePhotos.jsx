@@ -50,6 +50,8 @@ class HowToTakePhotos extends Component {
   componentDidMount =() => {
     const { current } = this.$video;
 
+    current.play();
+
     current.addEventListener('timeupdate', this.handleProgress);
 
     const {

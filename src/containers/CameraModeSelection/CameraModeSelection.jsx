@@ -13,9 +13,10 @@ import {
 } from '../../components';
 
 import './CameraModeSelection.scss';
-import backCameraMode from '../../images/back-camera-mode.png';
-import frontCameraMode from '../../images/front-camera-mode.png';
-import checkMark from '../../images/check-mark.svg';
+import maleFriend from '../../images/male_friend.png';
+import maleAlone from '../../images/male_alone.png';
+import femaleFriend from '../../images/female_friend.png';
+import femaleAlone from '../../images/female_alone.png';
 
 /**
  * CameraModeSelection component
@@ -90,8 +91,15 @@ class CameraModeSelection extends Component {
 
   render() {
     const isDesktop = !isMobileDevice();
-    const { isTableFlow, isTableFlowDisabled } = this.props;
     const { isBackModeImageLoaded, isFrontModeImageLoaded } = this.state;
+    const {
+      isTableFlow,
+      isTableFlowDisabled,
+      gender,
+    } = this.props;
+
+    const frontCameraMode = gender === 'male' ? maleAlone : femaleAlone;
+    const backCameraMode = gender === 'male' ? maleFriend : femaleFriend;
 
     return (
 
@@ -106,15 +114,22 @@ class CameraModeSelection extends Component {
             <div className="screen__content camera-mode-selection">
               <Stepper steps="9" current="5" />
 
-              <h3 className="screen__title">LET&apos;S TAKE two PHOTOS</h3>
+              <h3 className="screen__title">LET&apos;S TAKE 2 PHOTOS</h3>
 
               <PrivacyBanner />
 
               <p className="camera-mode-selection__text">
-                You can either ask someone to help you or
-                take photos with the guidance of our AI assistant.
+                You have two options: ask someone to help you, or
+                {' '}
                 <br />
-                <b>How do you want to proceed?</b>
+                {' '}
+                take photos by yourself in the hands-free mode
+                {' '}
+                <br />
+                {' '}
+                using a voice assistant.
+                <br />
+                <b> How would you like to proceed? </b>
               </p>
 
               <div className="camera-mode-selection__buttons-wrap">
@@ -153,9 +168,6 @@ class CameraModeSelection extends Component {
                     <h4 className="camera-mode-selection__title">
                       With a friend
                     </h4>
-                    <div className="camera-mode-selection__icon">
-                      <img src={checkMark} alt="button-status" />
-                    </div>
                   </div>
                 </label>
 
@@ -193,11 +205,8 @@ class CameraModeSelection extends Component {
                   </div>
                   <div className="camera-mode-selection__icon-wrap">
                     <h4 className="camera-mode-selection__title">
-                      ALONE
+                      Hands-free
                     </h4>
-                    <div className="camera-mode-selection__icon">
-                      <img src={checkMark} alt="button-status" />
-                    </div>
                   </div>
                 </label>
               </div>

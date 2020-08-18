@@ -29,7 +29,7 @@ export default function PrivacyBanner() {
       <p className="privacy-banner__txt">
         Your privacy is in the center of what we do. Photos
         <b> will be deleted immediately </b>
-        after the calculation.
+        after the processing!
       </p>
     </div>
   );

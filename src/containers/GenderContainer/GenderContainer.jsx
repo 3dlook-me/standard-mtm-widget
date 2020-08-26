@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
@@ -24,6 +25,8 @@ class GenderContainer extends Component {
     super(props);
 
     this.state = {
+      isAgreeValid: true,
+      isGenderValid: true,
       buttonDisabled: true,
     };
 
@@ -42,6 +45,10 @@ class GenderContainer extends Component {
     }
   }
 
+  componentDidUpdate() {
+    this.checkButtonState();
+  }
+
   /**
    * Change gender handler
    */
@@ -57,8 +64,52 @@ class GenderContainer extends Component {
     addGender(gender);
 
     this.setState({
-      buttonDisabled: !(gender === 'male' || gender === 'female'),
+      isGenderValid: gender === 'male' || gender === 'female',
     });
+  }
+
+  /**
+   * Change argee checkbox state handler
+   */
+  changeAgree = (e) => {
+    const { addAgree } = this.props;
+
+    addAgree(e.target.checked);
+
+    this.setState({
+      isAgreeValid: e.target.checked,
+    });
+  }
+
+  /**
+   * Set Next button disabled state
+   */
+  checkButtonState() {
+    const {
+      gender,
+      isSmbFlow,
+      agree,
+    } = this.props;
+
+    const {
+      buttonDisabled,
+      isGenderValid,
+      isAgreeValid,
+    } = this.state;
+
+    let isButtonDisabled;
+
+    if (isSmbFlow) {
+      isButtonDisabled = !gender || !isGenderValid || !isAgreeValid || !agree;
+    } else {
+      isButtonDisabled = !gender || !isGenderValid;
+    }
+
+    if (isButtonDisabled !== buttonDisabled) {
+      this.setState({
+        buttonDisabled: isButtonDisabled,
+      });
+    }
   }
 
   /**
@@ -71,8 +122,12 @@ class GenderContainer extends Component {
   }
 
   render() {
-    const { buttonDisabled } = this.state;
-    const { gender } = this.props;
+    const { buttonDisabled, isAgreeValid } = this.state;
+    const {
+      gender,
+      agree,
+      isSmbFlow,
+    } = this.props;
 
     return (
       <section className="screen active">
@@ -84,6 +139,18 @@ class GenderContainer extends Component {
           </div>
         </div>
         <div className="screen__footer">
+          {(isSmbFlow) ? (
+            <div className={classNames('gender__check', 'checkbox', { checked: agree, 'checkbox--invalid': !isAgreeValid })}>
+              <label htmlFor="agree">
+                <input type="checkbox" name="agree" id="agree" onChange={this.changeAgree} checked={agree} />
+                <span className="checkbox__icon" />
+                { 'I accept ' }
+                <a href="https://3dlook.me/terms-of-service/" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>
+                { ' and ' }
+                <a href="https://3dlook.me/privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+              </label>
+            </div>
+          ) : null }
           <button className="button" onClick={this.next} type="button" disabled={buttonDisabled}>Next</button>
         </div>
       </section>

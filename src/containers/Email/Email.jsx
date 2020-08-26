@@ -156,6 +156,8 @@ class Email extends Component {
               <span className="checkbox__icon" />
               { 'I accept ' }
               <a href="https://3dlook.me/terms-of-service/" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>
+              { ' and ' }
+              <a href="https://3dlook.me/privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
             </label>
           </div>
           <button className="button" onClick={this.onNextScreen} type="button" disabled={buttonDisabled}>Next</button>

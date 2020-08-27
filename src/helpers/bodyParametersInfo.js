@@ -30,6 +30,16 @@ export const VOLUMETRIC_PARAMS = [
     imageURI: '/volume/upper_chest_girth.jpg',
   },
   {
+    paramName: 'overarm_girth',
+    units: 'cm',
+    name: 'Overarm girth',
+    paramGroup: 'volume_params',
+    source: '3DLOOK',
+    equipment: 'Tape measure',
+    definition: 'Measure over the arm, across the bust level.',
+    imageURI: '/volume/overarm_girth.jpg',
+  },
+  {
     paramName: 'waist',
     units: 'cm',
     name: 'Waist girth',

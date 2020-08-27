@@ -47,14 +47,18 @@ class Results extends BaseMobileFlow {
 
     const {
       measurements,
-      mtmClientId,
       origin,
       setIsHeaderTranslucent,
+      isMobile,
     } = this.props;
 
     setIsHeaderTranslucent(true);
 
-    this.sendMeasurements(measurements, mtmClientId, origin);
+    if (!isMobile) {
+      await this.flow.widgetDeactivate();
+    }
+
+    send('data', measurements, origin);
 
     gaSuccess();
   }
@@ -62,33 +66,16 @@ class Results extends BaseMobileFlow {
   componentWillReceiveProps = async (nextProps) => {
     const {
       measurements,
-      mtmClientId,
       origin,
     } = nextProps;
 
-    this.sendMeasurements(measurements, mtmClientId, origin);
+    send('data', measurements, origin);
   }
 
   componentWillUnmount() {
     const { setIsHeaderTranslucent } = this.props;
 
     setIsHeaderTranslucent(false);
-  }
-
-  /**
-   * Send size recommendations to flow api
-   *
-   * @param {Object} measurements - measurements object
-   * @param {number} mtmClientId - mtm client id
-   */
-  sendMeasurements = async (measurements, mtmClientId, origin) => {
-    await this.flow.updateState({
-      status: 'finished',
-      measurements,
-      mtmClientId,
-    });
-
-    send('data', measurements, origin);
   }
 
   openGuide = (index, type) => {
@@ -169,6 +156,7 @@ class Results extends BaseMobileFlow {
     const { openGuide, measurementsType, measurement } = this.state;
 
     const results = settings.final_page;
+    // const results = 'measurements'
 
     return (
       <div className="screen screen--result active">

@@ -438,22 +438,31 @@ class Upload extends Component {
 
       await wait(1000);
 
-      if (isFromDesktopToMobile) {
-        this.flow.updateLocalState({ processStatus: 'Sending Your Results' });
-      }
-
-      setProcessingStatus('Sending Your Results');
-      await wait(1000);
-
       const measurements = { ...person };
 
       send('data', measurements, origin);
 
       setMeasurements(measurements);
 
+      if (isFromDesktopToMobile) {
+        this.flow.updateLocalState({
+          processStatus: 'Sending Your Results',
+          status: 'finished',
+          measurements,
+          mtmClientId,
+        });
+      }
+
+      setProcessingStatus('Sending Your Results');
+      await wait(1000);
+
       await this.flow.update({
         person: person.id,
       });
+
+      if (!isFromDesktopToMobile) {
+        await this.flow.widgetDeactivate();
+      }
 
       gaUploadOnContinue();
 

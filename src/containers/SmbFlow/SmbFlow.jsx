@@ -32,7 +32,7 @@ class SmbFlow extends BaseMobileFlow {
         setIsSmbFlow,
         setIsFromDesktopToMobile,
         setSource,
-        setReturnUrl
+        setReturnUrl,
       } = this.props;
 
       window.addEventListener('online', this.pageReload);
@@ -63,12 +63,7 @@ class SmbFlow extends BaseMobileFlow {
           status: 'opened-on-mobile',
           processStatus: '',
         });
-      }
 
-      if (flowStateData.state.status === 'finished') {
-        route(`/results?id=${matches.id}`, true);
-      } else {
-        // FOR PAGE RELOAD
         if (!flowState) {
           setFlowState({
             ...flowStateData.state,
@@ -81,6 +76,13 @@ class SmbFlow extends BaseMobileFlow {
 
       return Promise.resolve();
     } catch (err) {
+      if (err.response.status === 401
+        && err.response.data.detail === 'Widget is inactive.') {
+        route('/results', true);
+
+        return Promise.resolve();
+      }
+
       if (err && err.response && err.response.data) {
         console.error(err.response.data.detail);
       } else {

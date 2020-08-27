@@ -1,12 +1,19 @@
 /* eslint class-methods-use-this: off */
-import { h, Component } from 'preact';
+import { h } from 'preact';
 import { connect } from 'react-redux';
+import { route } from 'preact-router';
+import classNames from 'classnames';
 
 import {
   send, objectToUrlParams,
 } from '../../helpers/utils';
 import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
-import { BaseMobileFlow, Measurements, Guide } from '../../components';
+import {
+  BaseMobileFlow,
+  Measurements,
+  Guide,
+  SoftValidation,
+} from '../../components';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 
@@ -105,6 +112,19 @@ class Results extends BaseMobileFlow {
     setHelpBtnStatus(status);
   }
 
+  onRetake = () => {
+    const {
+      addFrontImage,
+      addSideImage,
+      setPersonId,
+    } = this.props;
+
+    setPersonId(null);
+    addFrontImage(null);
+    addSideImage(null);
+    route('/upload', true);
+  }
+
   onClick = async () => {
     const {
       returnUrl,
@@ -162,6 +182,8 @@ class Results extends BaseMobileFlow {
     const {
       measurements,
       settings,
+      isSoftValidationPresent,
+      softValidation,
       units,
       gender,
     } = this.props;
@@ -172,8 +194,10 @@ class Results extends BaseMobileFlow {
 
     return (
       <div className="screen screen--result active">
-        <div className="screen__content result">
-
+        <div className={classNames('screen__content', 'result', {
+          'result--with-soft-validation': isSoftValidationPresent,
+        })}
+        >
           {openGuide ? (
             <Guide gender={gender} measurementsType={measurementsType} measurement={measurement} />
           ) : null}
@@ -187,6 +211,16 @@ class Results extends BaseMobileFlow {
           {(results === 'measurements') ? (
             <h3 className="screen__title result__title">your Measurements</h3>
           ) : null}
+
+          {(isSoftValidationPresent && !openGuide) ? (
+            <SoftValidation
+              className="result__soft-validation"
+              retake={this.onRetake}
+              units={units}
+              gender={gender}
+              softValidation={softValidation}
+            />
+          ) : null }
 
           {(results === 'measurements') ? (
             <Measurements

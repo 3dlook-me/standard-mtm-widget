@@ -44,16 +44,15 @@ export const INITIAL_STATE = {
     loose: null,
   },
 
+  isSoftValidationPresent: true,
+
   softValidation: {
-    front: {
-      bodyAreaPercentage: null,
-      legsDistance: null,
-      messages: [],
-    },
-    side: {
-      bodyAreaPercentage: null,
-      messages: [],
-    },
+    looseTop: true,
+    looseBottom: true,
+    looseTopAndBottom: true,
+    wideLegs: true,
+    smallLegs: true,
+    bodyPercentage: true,
   },
 
   hardValidation: {
@@ -239,6 +238,12 @@ export default (state = INITIAL_STATE, action) => {
     case CONSTANTS.SET_SOFT_VALIDATION:
       return {
         ...state,
+        isSoftValidationPresent: action.payload.looseTop
+          || action.payload.looseBottom
+          || action.payload.looseTopAndBottom
+          || action.payload.wideLegs
+          || action.payload.smallLegs
+          || action.payload.bodyPercentage,
         softValidation: {
           ...state.softValidation,
           ...action.payload,

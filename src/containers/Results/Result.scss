@@ -10,6 +10,19 @@ $bottom-position: -30px;
   flex-direction: column;
   position: relative;
 
+  &--with-soft-validation &__soft-validation {
+    margin-top: 29px;
+
+    @include breakpoint($iphoneSE) {
+      margin-top: 10px;
+    }
+  }
+
+  &--with-soft-validation &__title {
+    margin-top: 29px;
+    margin-bottom: 35px;
+  }
+
   &__title {
     margin-top: 29px;
     margin-bottom: 60px;
@@ -78,5 +91,10 @@ $bottom-position: -30px;
 
   .screen__subtitle {
     top: -16px;
+  }
+
+  &__soft-validation {
+    max-width: 315px;
+    margin: 0 auto 35px;
   }
 }

@@ -235,7 +235,6 @@ class Upload extends Component {
       notes,
       mtmClientId: mtmClientIdFromState,
       widgetId,
-      productUrl,
       deviceCoordinates,
     } = props;
 
@@ -244,6 +243,7 @@ class Upload extends Component {
     } = props;
 
     const {
+      setSoftValidation,
       setHardValidation,
       addFrontImage,
       addSideImage,
@@ -258,6 +258,7 @@ class Upload extends Component {
       isFromDesktopToMobile,
       taskId,
       setTaskId,
+      setBodyType,
     } = this.props;
 
     try {
@@ -449,7 +450,11 @@ class Upload extends Component {
 
       send('data', measurements, origin);
 
+      const softValidation = this.getSoftValidationParams(person);
+
+      setBodyType(person.volume_params.body_type);
       setMeasurements(measurements);
+      setSoftValidation(softValidation);
 
       await this.flow.update({
         person: person.id,
@@ -593,6 +598,39 @@ class Upload extends Component {
     }
   }
 
+  getSoftValidationParams = (person) => {
+    const softValidation = {
+      looseTop: false,
+      looseBottom: false,
+      looseTopAndBottom: false,
+      wideLegs: false,
+      smallLegs: false,
+      bodyPercentage: false,
+    };
+
+    if (person) {
+      const {
+        front_params: frontParams,
+      } = person;
+
+      if (frontParams) {
+        if (frontParams.clothes_type && frontParams.clothes_type.types) {
+          const { top, bottom } = frontParams.clothes_type.types;
+
+          softValidation.looseTop = top.code === 't2' && bottom.code !== 'b1';
+          softValidation.looseBottom = bottom.code === 'b1' && top.code !== 't2';
+          softValidation.looseTopAndBottom = top.code === 't2' && bottom.code === 'b1';
+        }
+
+        softValidation.wideLegs = frontParams.legs_distance > 15;
+        softValidation.smallLegs = frontParams.legs_distance < 2;
+        softValidation.bodyPercentage = frontParams.body_area_percentage < 0.5;
+      }
+    }
+
+    return softValidation;
+  }
+
   render() {
     const isDesktop = !isMobileDevice();
 
@@ -604,8 +642,6 @@ class Upload extends Component {
       frontImageBody,
       sideImagePose,
       sideImageBody,
-      photoType,
-      isPhotoExample,
       activeTab,
       isImageExampleLoaded,
     } = this.state;

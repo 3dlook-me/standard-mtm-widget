@@ -37,7 +37,7 @@ export const VOLUMETRIC_PARAMS = [
     source: '3DLOOK',
     equipment: 'Tape measure',
     definition: 'Measure over the arm, across the bust level.',
-    imageURI: '/volume/overarm_girth.jpg',
+    imageURI: '/volume/overarm_girth.png',
   },
   {
     paramName: 'waist',

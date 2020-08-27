@@ -44,15 +44,15 @@ export const INITIAL_STATE = {
     loose: null,
   },
 
-  isSoftValidationPresent: true,
+  isSoftValidationPresent: false,
 
   softValidation: {
-    looseTop: true,
-    looseBottom: true,
-    looseTopAndBottom: true,
-    wideLegs: true,
-    smallLegs: true,
-    bodyPercentage: true,
+    looseTop: false,
+    looseBottom: false,
+    looseTopAndBottom: false,
+    wideLegs: false,
+    smallLegs: false,
+    bodyPercentage: false,
   },
 
   hardValidation: {

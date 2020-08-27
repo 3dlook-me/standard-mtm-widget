@@ -14,3 +14,5 @@ export * from './Loader';
 export * from './PhotoExample';
 export * from './PrivacyBanner';
 export * from './Tabs';
+export * from './SoftValidation';
+export * from './SoftValidationItem';

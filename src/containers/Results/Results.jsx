@@ -2,6 +2,7 @@
 import { h, Component } from 'preact';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import { route } from 'preact-router';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
@@ -9,7 +10,7 @@ import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
 import {
   send, objectToUrlParams,
 } from '../../helpers/utils';
-import { BaseMobileFlow } from '../../components';
+import { BaseMobileFlow, SoftValidation } from '../../components';
 
 import './Result.scss';
 import fakeSizeIcon from '../../images/results.svg';
@@ -78,6 +79,19 @@ class Results extends BaseMobileFlow {
     }
   }
 
+  onRetake = () => {
+    const {
+      addFrontImage,
+      addSideImage,
+      setPersonId,
+    } = this.props;
+
+    setPersonId(null);
+    addFrontImage(null);
+    addSideImage(null);
+    route('/upload', true);
+  }
+
   onClick = async () => {
     const {
       returnUrl,
@@ -121,6 +135,10 @@ class Results extends BaseMobileFlow {
     const {
       recommendations,
       fakeSize,
+      isSoftValidationPresent,
+      softValidation,
+      units,
+      gender,
     } = this.props;
 
     return (
@@ -137,6 +155,16 @@ class Results extends BaseMobileFlow {
               <br />
               IS COMPLETED
             </h3>
+          ) : null }
+
+          {(!fakeSize && isSoftValidationPresent) ? (
+            <SoftValidation
+              className="result__soft-validation"
+              retake={this.onRetake}
+              units={units}
+              gender={gender}
+              softValidation={softValidation}
+            />
           ) : null }
 
           {(fakeSize) ? <p className="result__text2">Check product pages for size recommendation</p> : null }
@@ -160,7 +188,7 @@ class Results extends BaseMobileFlow {
             </div>
           </div>
 
-          {(!fakeSize) ? (
+          {(!fakeSize && !isSoftValidationPresent) ? (
             <p className="result__text">
               {'Your '}
               <b>Perfect Fit Profile</b>

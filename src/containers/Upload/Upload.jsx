@@ -239,6 +239,7 @@ class Upload extends Component {
 
     const {
       setRecommendations,
+      setSoftValidation,
       setHardValidation,
       addFrontImage,
       addSideImage,
@@ -420,8 +421,11 @@ class Upload extends Component {
         height,
       };
 
+      const softValidation = this.getSoftValidationParams(person);
+
       setBodyType(person.volume_params.body_type);
       setMeasurements(measurements);
+      setSoftValidation(softValidation);
 
       await this.flow.updateState({
         measurements,
@@ -630,6 +634,39 @@ class Upload extends Component {
     } else {
       addSideDeviceCoordinates(coords);
     }
+  }
+
+  getSoftValidationParams = (person) => {
+    const softValidation = {
+      looseTop: false,
+      looseBottom: false,
+      looseTopAndBottom: false,
+      wideLegs: false,
+      smallLegs: false,
+      bodyPercentage: false,
+    };
+
+    if (person) {
+      const {
+        front_params: frontParams,
+      } = person;
+
+      if (frontParams) {
+        if (frontParams.clothes_type && frontParams.clothes_type.types) {
+          const { top, bottom } = frontParams.clothes_type.types;
+
+          softValidation.looseTop = top.code === 't2' && bottom.code !== 'b1';
+          softValidation.looseBottom = bottom.code === 'b1' && top.code !== 't2';
+          softValidation.looseTopAndBottom = top.code === 't2' && bottom.code === 'b1';
+        }
+
+        softValidation.wideLegs = frontParams.legs_distance > 15;
+        softValidation.smallLegs = frontParams.legs_distance < 2;
+        softValidation.bodyPercentage = frontParams.body_area_percentage < 0.5;
+      }
+    }
+
+    return softValidation;
   }
 
   render() {

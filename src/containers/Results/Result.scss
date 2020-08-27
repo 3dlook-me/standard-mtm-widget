@@ -263,4 +263,9 @@ $bottom-position: -30px;
     line-height: 22px;
     text-align: center;
   }
+
+  &__soft-validation {
+    max-width: 315px;
+    margin: 0 auto 35px;
+  }
 }

@@ -127,6 +127,7 @@ class GenderContainer extends Component {
       gender,
       agree,
       isSmbFlow,
+      isDemoWidget,
     } = this.props;
 
     return (
@@ -139,7 +140,7 @@ class GenderContainer extends Component {
           </div>
         </div>
         <div className="screen__footer">
-          {(isSmbFlow) ? (
+          {(isSmbFlow || isDemoWidget) ? (
             <div className={classNames('gender__check', 'checkbox', { checked: agree, 'checkbox--invalid': !isAgreeValid })}>
               <label htmlFor="agree">
                 <input type="checkbox" name="agree" id="agree" onChange={this.changeAgree} checked={agree} />

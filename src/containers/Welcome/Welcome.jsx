@@ -141,8 +141,8 @@ class Welcome extends Component {
   onNextScreen = async () => {
     gaWelcomeOnContinue();
 
-    const { isSmbFlow } = this.props;
-    const routeUrl = (isSmbFlow) ? '/gender' : '/email';
+    const { isSmbFlow, isDemoWidget } = this.props;
+    const routeUrl = (isSmbFlow || isDemoWidget) ? '/gender' : '/email';
 
     route(routeUrl, false);
   }

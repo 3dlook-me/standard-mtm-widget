@@ -55,7 +55,8 @@ class SmbFlow extends BaseMobileFlow {
       if (matches.source !== 'demo') {
         setIsSmbFlow(true);
       }
-      setReturnUrl('https://mtm-test.3dlook.me/');
+
+      setReturnUrl('https://mtm.3dlook.me/');
 
       const flowStateData = await this.flow.get();
 
@@ -74,6 +75,10 @@ class SmbFlow extends BaseMobileFlow {
         }
 
         if (matches.source === 'demo') {
+          const { setIsDemoWidget } = this.props;
+
+          setIsDemoWidget(true);
+
           setInterval(() => {
             this.flow.updateState({
               lastActiveDate: Date.now(),

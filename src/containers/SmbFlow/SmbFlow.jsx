@@ -52,7 +52,9 @@ class SmbFlow extends BaseMobileFlow {
         return Promise.resolve();
       }
 
-      setIsSmbFlow(true);
+      if (matches.source !== 'demo') {
+        setIsSmbFlow(true);
+      }
       setReturnUrl('https://mtm-test.3dlook.me/');
 
       const flowStateData = await this.flow.get();
@@ -69,6 +71,14 @@ class SmbFlow extends BaseMobileFlow {
             ...flowStateData.state,
             status: 'opened-on-mobile',
           });
+        }
+
+        if (matches.source === 'demo') {
+          setInterval(() => {
+            this.flow.updateState({
+              lastActiveDate: Date.now(),
+            });
+          }, 3000);
         }
 
         route('/', true);

@@ -451,6 +451,12 @@ class Upload extends Component {
           measurements,
           mtmClientId,
         });
+      } else {
+        await this.flow.updateState({
+          status: 'finished',
+          measurements,
+          mtmClientId,
+        });
       }
 
       setProcessingStatus('Sending Your Results');

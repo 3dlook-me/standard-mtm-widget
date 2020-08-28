@@ -50,11 +50,12 @@ class Results extends BaseMobileFlow {
       origin,
       setIsHeaderTranslucent,
       isMobile,
+      isWidgetDeactivated,
     } = this.props;
 
     setIsHeaderTranslucent(true);
 
-    if (!isMobile) {
+    if (!isMobile && !isWidgetDeactivated) {
       await this.flow.widgetDeactivate();
     }
 
@@ -153,10 +154,13 @@ class Results extends BaseMobileFlow {
       gender,
     } = this.props;
 
-    const { openGuide, measurementsType, measurement } = this.state;
+    const {
+      openGuide,
+      measurementsType,
+      measurement,
+    } = this.state;
 
     const results = settings.final_page;
-    // const results = 'measurements'
 
     return (
       <div className="screen screen--result active">

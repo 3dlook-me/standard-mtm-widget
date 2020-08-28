@@ -78,6 +78,12 @@ class SmbFlow extends BaseMobileFlow {
     } catch (err) {
       if (err.response.status === 401
         && err.response.data.detail === 'Widget is inactive.') {
+        const { setIsWidgetDeactivated } = this.props;
+
+        await setIsWidgetDeactivated(true);
+
+        await super.componentDidMount();
+
         route('/results', true);
 
         return Promise.resolve();

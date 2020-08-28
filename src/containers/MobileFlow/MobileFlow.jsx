@@ -25,9 +25,7 @@ class MobileFlow extends BaseMobileFlow {
 
   componentDidMount = async () => {
     try {
-      const {
-        matches, flowState, setFlowState,
-      } = this.props;
+      const { flowState, setFlowState } = this.props;
 
       window.addEventListener('online', this.pageReload);
 
@@ -77,6 +75,12 @@ class MobileFlow extends BaseMobileFlow {
     } catch (err) {
       if (err.response.status === 401
         && err.response.data.detail === 'Widget is inactive.') {
+        const { setIsWidgetDeactivated } = this.props;
+
+        await setIsWidgetDeactivated(true);
+
+        await super.componentDidMount();
+
         route('/results', true);
 
         return Promise.resolve();

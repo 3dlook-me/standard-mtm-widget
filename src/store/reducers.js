@@ -92,6 +92,7 @@ export const INITIAL_STATE = {
   photosFromGallery: false,
 
   isSmbFlow: false,
+  isWidgetDeactivated: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -435,6 +436,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isTableFlowDisabled: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_WIDGET_DEACTIVATED:
+      return {
+        ...state,
+        isWidgetDeactivated: action.payload,
       };
 
     default:

@@ -53,7 +53,7 @@ class SmbFlow extends BaseMobileFlow {
       }
 
       setIsSmbFlow(true);
-      setReturnUrl('https://mtm-test.3dlook.me/');
+      setReturnUrl('https://mtm.3dlook.me/');
 
       const flowStateData = await this.flow.get();
 

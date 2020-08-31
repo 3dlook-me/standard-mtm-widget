@@ -5,6 +5,7 @@ import SaiaMTMButton from './button';
     const saiaCont = document.querySelector('.saia-widget-container');
     const scriptTag = document.getElementById('saia-mtm-integration');
     const publicKey = scriptTag.getAttribute('data-public-key');
+    const buttonTitle = scriptTag.getAttribute('data-button-title');
 
     const uuid = await SaiaMTMButton.createWidget(publicKey);
 
@@ -19,6 +20,7 @@ import SaiaMTMButton from './button';
     const button = new SaiaMTMButton({
       key: uuid,
       widgetUrl: WIDGET_HOST,
+      buttonTitle: buttonTitle || 'GET MEASURED',
     });
 
     button.init();

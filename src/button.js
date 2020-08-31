@@ -22,8 +22,6 @@ class SaiaMTMButton {
    * @param {string} options.container - selector for button container
    * @param {string} options.key - SAIA PF API key
    * @param {string} [options.widgetUrl] - url to the widget host to open it in the iframe
-   * @param {string} [options.buttonStyle] - button style.
-   * Could be 'gradient', 'gradient-reversed', 'black', 'white'
    * @param {Object} [options.product] - object with product parameters (optional)
    * @param {string} [options.product.description] - product description.
    * Will be displayed on final results page
@@ -41,12 +39,12 @@ class SaiaMTMButton {
    * @param {string} [options.returnUrlDesktop] - should widget open returnUrl on desktop or not
    * @param {string} [options.fakeSize] - should show fake size result page
    * @param {number} [options.productId] - shoify product id
+   * @param {string} [options.buttonTitle] - shoify product id
    */
   constructor(options) {
     uid += 1;
 
     this.defaults = {
-      buttonStyle: 'orange',
       container: '.saia-widget-container',
       key: '',
       widgetUrl: (typeof WIDGET_HOST !== 'undefined') ? WIDGET_HOST : '',
@@ -54,6 +52,7 @@ class SaiaMTMButton {
       bodyPart: '',
       returnUrl: `${window.location.origin}${window.location.pathname}`,
       returnUrlDesktop: false,
+      buttonTitle: 'GET MEASURED',
       ...options,
 
       product: {
@@ -92,7 +91,9 @@ class SaiaMTMButton {
   init() {
     this.checkGetParamsForMeasurements();
     const buttonClasses = `saia-mtm-button--${this.defaults.id}`;
-    const buttonTemplateClasses = buttonTemplate.replace('classes', buttonClasses);
+    const buttonTemplateClasses = buttonTemplate
+      .replace('{{classes}}', buttonClasses)
+      .replace('{{buttonTitle}}', this.defaults.buttonTitle);
     const container = document.querySelector(this.defaults.container);
     container.insertAdjacentHTML('beforeend', buttonTemplateClasses);
 

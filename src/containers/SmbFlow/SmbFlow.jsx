@@ -91,20 +91,28 @@ class SmbFlow extends BaseMobileFlow {
 
       return Promise.resolve();
     } catch (err) {
+      const {
+        setReturnUrl,
+        setIsMobile,
+        setIsSmbFlow,
+      } = this.props;
+
+      setIsSmbFlow(true);
+      setIsMobile(true);
+      setReturnUrl('https://mtm.3dlook.me/');
+
       if (err.response.status === 401
         && err.response.data.detail === 'Widget is inactive.') {
         const {
           setIsWidgetDeactivated,
-          setReturnUrl,
           setIsFromDesktopToMobile,
         } = this.props;
 
         await setIsWidgetDeactivated(true);
 
-        await super.componentDidMount();
-
         setIsFromDesktopToMobile(false);
-        setReturnUrl('https://mtm.3dlook.me/');
+
+        await super.componentDidMount();
 
         route('/results', true);
 

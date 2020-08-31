@@ -42,6 +42,7 @@ class NotFound extends Component {
       pageReloadStatus,
       isFromDesktopToMobile,
       isNetwork,
+      isDemoWidget,
     } = this.props;
 
     if (isNetwork) {
@@ -54,7 +55,7 @@ class NotFound extends Component {
     this.flow.updateLocalState({ processStatus: '' });
 
     // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
-    if (pageReloadStatus && isFromDesktopToMobile) {
+    if ((pageReloadStatus && isFromDesktopToMobile) || (pageReloadStatus && isDemoWidget)) {
       const { flowState, setPageReloadStatus } = this.props;
 
       setPageReloadStatus(false);

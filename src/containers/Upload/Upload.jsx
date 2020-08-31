@@ -99,6 +99,7 @@ class Upload extends Component {
       flowId,
       pageReloadStatus,
       isFromDesktopToMobile,
+      isDemoWidget,
     } = this.props;
 
     window.addEventListener('offline', this.setOfflineStatus);
@@ -120,7 +121,7 @@ class Upload extends Component {
       this.flow.setFlowId(flowId);
 
       // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
-      if (pageReloadStatus && isFromDesktopToMobile) {
+      if ((pageReloadStatus && isFromDesktopToMobile) || (pageReloadStatus && isDemoWidget)) {
         const { flowState, setPageReloadStatus } = this.props;
 
         setPageReloadStatus(false);

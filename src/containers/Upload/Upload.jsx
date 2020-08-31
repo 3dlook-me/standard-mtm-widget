@@ -730,7 +730,7 @@ class Upload extends Component {
               ) : (
                 <div
                   className="upload__image-example"
-                  style={{ backgroundImage: `url(${photoBg})` }}
+                  style={photoBg ? { backgroundImage: `url(${photoBg})` } : null}
                 >
                   {!isImageExampleLoaded ? (
                     <Fragment>

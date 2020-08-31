@@ -97,6 +97,7 @@ class SmbFlow extends BaseMobileFlow {
         setIsSmbFlow,
       } = this.props;
 
+      // for 401 widget not found to close widget
       setIsSmbFlow(true);
       setIsMobile(true);
       setReturnUrl('https://mtm.3dlook.me/');
@@ -110,9 +111,10 @@ class SmbFlow extends BaseMobileFlow {
 
         await setIsWidgetDeactivated(true);
 
-        setIsFromDesktopToMobile(false);
-
         await super.componentDidMount();
+
+        setReturnUrl('https://mtm.3dlook.me/');
+        setIsFromDesktopToMobile(false);
 
         route('/results', true);
 

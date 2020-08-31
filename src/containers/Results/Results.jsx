@@ -51,6 +51,7 @@ class Results extends BaseMobileFlow {
       setIsHeaderTranslucent,
       isMobile,
       isWidgetDeactivated,
+      setIsWidgetDeactivated,
     } = this.props;
 
     setIsHeaderTranslucent(true);
@@ -58,6 +59,8 @@ class Results extends BaseMobileFlow {
     if (!isMobile && !isWidgetDeactivated) {
       await this.flow.widgetDeactivate();
     }
+
+    setIsWidgetDeactivated(false);
 
     send('data', measurements, origin);
 

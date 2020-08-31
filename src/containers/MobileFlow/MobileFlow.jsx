@@ -75,12 +75,17 @@ class MobileFlow extends BaseMobileFlow {
     } catch (err) {
       if (err.response.status === 401
         && err.response.data.detail === 'Widget is inactive.') {
-        const { setIsWidgetDeactivated, setReturnUrl } = this.props;
+        const {
+          setIsWidgetDeactivated,
+          setReturnUrl,
+          setIsFromDesktopToMobile,
+        } = this.props;
 
         await setIsWidgetDeactivated(true);
 
         await super.componentDidMount();
 
+        setIsFromDesktopToMobile(false);
         setReturnUrl('https://mtm.3dlook.me/');
 
         route('/results', true);

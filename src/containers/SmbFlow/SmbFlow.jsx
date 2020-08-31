@@ -93,11 +93,13 @@ class SmbFlow extends BaseMobileFlow {
     } catch (err) {
       if (err.response.status === 401
         && err.response.data.detail === 'Widget is inactive.') {
-        const { setIsWidgetDeactivated } = this.props;
+        const { setIsWidgetDeactivated, setReturnUrl } = this.props;
 
         await setIsWidgetDeactivated(true);
 
         await super.componentDidMount();
+
+        setReturnUrl('https://mtm.3dlook.me/');
 
         route('/results', true);
 

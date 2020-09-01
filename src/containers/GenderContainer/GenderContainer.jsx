@@ -58,9 +58,8 @@ class GenderContainer extends Component {
       isDemoWidget,
     } = this.props;
 
-    console.log('this', this.props);
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: GENDER_PAGE_ENTER,
     });
 

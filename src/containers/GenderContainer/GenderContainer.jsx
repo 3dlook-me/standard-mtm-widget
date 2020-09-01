@@ -172,6 +172,7 @@ class GenderContainer extends Component {
       agree,
       isSmbFlow,
       isDemoWidget,
+      token,
     } = this.props;
 
     return (
@@ -180,7 +181,12 @@ class GenderContainer extends Component {
           <Stepper steps="9" current={2} />
           <div className="gender__control screen__control">
             <h3 className="screen__label">Select your gender</h3>
-            <Gender className="select-your-gender__gender" change={this.changeGender} gender={gender} />
+            <Gender
+              className="select-your-gender__gender"
+              change={this.changeGender}
+              gender={gender}
+              token={token}
+            />
           </div>
         </div>
         <div className="screen__footer">

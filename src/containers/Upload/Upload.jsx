@@ -102,7 +102,6 @@ class Upload extends Component {
       camera,
       setIsNetwork,
       isNetwork,
-      token,
       flowId,
       pageReloadStatus,
       isFromDesktopToMobile,

@@ -57,13 +57,14 @@ class HowToTakePhotos extends Component {
       pageReloadStatus,
       token,
       flowId,
+      isDemoWidget,
     } = this.props;
 
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
 
     // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
-    if (pageReloadStatus && isFromDesktopToMobile) {
+    if ((pageReloadStatus && isFromDesktopToMobile) || (pageReloadStatus && isDemoWidget)) {
       const { setPageReloadStatus, flowState } = this.props;
 
       setPageReloadStatus(false);

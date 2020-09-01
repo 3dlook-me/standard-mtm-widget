@@ -25,9 +25,7 @@ class MobileFlow extends BaseMobileFlow {
 
   componentDidMount = async () => {
     try {
-      const {
-        matches, flowState, setFlowState,
-      } = this.props;
+      const { flowState, setFlowState } = this.props;
 
       window.addEventListener('online', this.pageReload);
 
@@ -55,11 +53,7 @@ class MobileFlow extends BaseMobileFlow {
           status: 'opened-on-mobile',
           processStatus: '',
         });
-      }
 
-      if (flowStateData.state.status === 'finished') {
-        route(`/results?id=${matches.id}`, true);
-      } else {
         // FOR PAGE RELOAD
         if (!flowState) {
           setFlowState({
@@ -79,6 +73,26 @@ class MobileFlow extends BaseMobileFlow {
 
       return Promise.resolve();
     } catch (err) {
+      if (err.response.status === 401
+        && err.response.data.detail === 'Widget is inactive.') {
+        const {
+          setIsWidgetDeactivated,
+          setReturnUrl,
+          setIsFromDesktopToMobile,
+        } = this.props;
+
+        await setIsWidgetDeactivated(true);
+
+        await super.componentDidMount();
+
+        setIsFromDesktopToMobile(false);
+        setReturnUrl('https://mtm.3dlook.me/');
+
+        route('/results', true);
+
+        return Promise.resolve();
+      }
+
       if (err && err.response && err.response.data) {
         console.error(err.response.data.detail);
       } else {

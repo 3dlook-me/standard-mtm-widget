@@ -32,7 +32,7 @@ class SmbFlow extends BaseMobileFlow {
         setIsSmbFlow,
         setIsFromDesktopToMobile,
         setSource,
-        setReturnUrl
+        setReturnUrl,
       } = this.props;
 
       window.addEventListener('online', this.pageReload);
@@ -52,8 +52,11 @@ class SmbFlow extends BaseMobileFlow {
         return Promise.resolve();
       }
 
-      setIsSmbFlow(true);
-      setReturnUrl('https://mtm-test.3dlook.me/');
+      if (matches.source !== 'demo') {
+        setIsSmbFlow(true);
+      }
+
+      setReturnUrl('https://mtm.3dlook.me/');
 
       const flowStateData = await this.flow.get();
 
@@ -63,12 +66,7 @@ class SmbFlow extends BaseMobileFlow {
           status: 'opened-on-mobile',
           processStatus: '',
         });
-      }
 
-      if (flowStateData.state.status === 'finished') {
-        route(`/results?id=${matches.id}`, true);
-      } else {
-        // FOR PAGE RELOAD
         if (!flowState) {
           setFlowState({
             ...flowStateData.state,
@@ -76,11 +74,53 @@ class SmbFlow extends BaseMobileFlow {
           });
         }
 
+        if (matches.source === 'demo') {
+          const { setIsDemoWidget } = this.props;
+
+          setIsDemoWidget(true);
+
+          setInterval(() => {
+            this.flow.updateState({
+              lastActiveDate: Date.now(),
+            });
+          }, 3000);
+        }
+
         route('/', true);
       }
 
       return Promise.resolve();
     } catch (err) {
+      const {
+        setReturnUrl,
+        setIsMobile,
+        setIsSmbFlow,
+      } = this.props;
+
+      // for 401 widget not found to close widget
+      setIsSmbFlow(true);
+      setIsMobile(true);
+      setReturnUrl('https://mtm.3dlook.me/');
+
+      if (err.response.status === 401
+        && err.response.data.detail === 'Widget is inactive.') {
+        const {
+          setIsWidgetDeactivated,
+          setIsFromDesktopToMobile,
+        } = this.props;
+
+        await setIsWidgetDeactivated(true);
+
+        await super.componentDidMount();
+
+        setReturnUrl('https://mtm.3dlook.me/');
+        setIsFromDesktopToMobile(false);
+
+        route('/results', true);
+
+        return Promise.resolve();
+      }
+
       if (err && err.response && err.response.data) {
         console.error(err.response.data.detail);
       } else {

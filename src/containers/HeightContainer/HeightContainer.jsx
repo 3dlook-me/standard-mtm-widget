@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { gaOnHeightNext } from '../../helpers/ga';
+import { mobileFlowStatusUpdate } from '../../helpers/utils';
 import {
   Height,
   Stepper,
@@ -28,16 +29,43 @@ class HeightContainer extends Component {
 
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
+
+    const { setPageReloadStatus, isDemoWidget } = props;
+
+    if (isDemoWidget) {
+      this.reloadListener = () => {
+        setPageReloadStatus(true);
+      };
+
+      window.addEventListener('unload', this.reloadListener);
+    }
   }
 
   componentDidMount() {
-    const { height } = this.props;
+    const {
+      height,
+      pageReloadStatus,
+      isDemoWidget,
+    } = this.props;
 
     if (height && (height >= 150 && height <= 220)) {
       this.setState({
         buttonDisabled: false,
       });
     }
+
+    // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
+    if (pageReloadStatus && isDemoWidget) {
+      const { setPageReloadStatus, flowState } = this.props;
+
+      setPageReloadStatus(false);
+
+      mobileFlowStatusUpdate(this.flow, flowState);
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('unload', this.reloadListener);
   }
 
   /**

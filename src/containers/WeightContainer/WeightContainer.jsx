@@ -5,7 +5,11 @@ import classNames from 'classnames';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-import { getWeightKg, closeSelectsOnResize } from '../../helpers/utils';
+import {
+  getWeightKg,
+  closeSelectsOnResize,
+  mobileFlowStatusUpdate,
+} from '../../helpers/utils';
 import { Stepper } from '../../components';
 import { gaOnWeightNext } from '../../helpers/ga';
 
@@ -41,6 +45,16 @@ class WeightContainer extends Component {
     this.flow.setFlowId(flowId);
 
     this.weightValues = [...Array(maxWeight + 1).keys()].slice(minWeight);
+
+    const { setPageReloadStatus, isDemoWidget } = props;
+
+    if (isDemoWidget) {
+      this.reloadListener = () => {
+        setPageReloadStatus(true);
+      };
+
+      window.addEventListener('unload', this.reloadListener);
+    }
   }
 
   /**
@@ -59,6 +73,8 @@ class WeightContainer extends Component {
       weightLb,
       units,
       isMobile,
+      pageReloadStatus,
+      isDemoWidget,
     } = this.props;
 
     // for close select drop on landscape view
@@ -72,10 +88,20 @@ class WeightContainer extends Component {
         weightValue: units !== 'cm' ? weightLb : weight,
       });
     }
+
+    // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
+    if (pageReloadStatus && isDemoWidget) {
+      const { setPageReloadStatus, flowState } = this.props;
+
+      setPageReloadStatus(false);
+
+      mobileFlowStatusUpdate(this.flow, flowState);
+    }
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', closeSelectsOnResize);
+    window.removeEventListener('unload', this.reloadListener);
   }
 
   /**

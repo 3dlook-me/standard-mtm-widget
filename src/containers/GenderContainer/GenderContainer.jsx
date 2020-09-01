@@ -59,10 +59,11 @@ class GenderContainer extends Component {
       gender,
       pageReloadStatus,
       isDemoWidget,
+      token,
     } = this.props;
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: GENDER_PAGE_ENTER,
     });
 
@@ -154,9 +155,10 @@ class GenderContainer extends Component {
    * Go to the next screen
    */
   next = async () => {
+    const { token } = this.props;
     gaGenderOnContinue();
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: GENDER_PAGE_LEAVE,
     });
 

@@ -32,11 +32,11 @@ class Gender extends Component {
    * Gender change event handler
    */
   onGenderChange = (e) => {
-    const { change } = this.props;
+    const { change, token } = this.props;
     const { value } = e.target;
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: GENDER_PAGE_GENDER_SELECTED,
       data: {
         value,

@@ -51,6 +51,7 @@ class HeightContainer extends Component {
       height,
       pageReloadStatus,
       isDemoWidget,
+      token,
     } = this.props;
 
     if (height && (height >= 150 && height <= 220)) {
@@ -60,7 +61,7 @@ class HeightContainer extends Component {
     }
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: HEIGHT_PAGE_ENTER,
     });
 
@@ -89,10 +90,11 @@ class HeightContainer extends Component {
    * On next screen event handler
    */
   onNextScreen = async () => {
+    const { token } = this.props;
     gaOnHeightNext();
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: HEIGHT_PAGE_LEAVE,
     });
     route('/weight', false);
@@ -121,7 +123,7 @@ class HeightContainer extends Component {
    * Change height handler
    */
   changeHeight = (height) => {
-    const { addHeight } = this.props;
+    const { addHeight, token } = this.props;
     const numHeight = parseInt(height, 10);
     let isValueValid = false;
 
@@ -132,7 +134,7 @@ class HeightContainer extends Component {
     addHeight(numHeight);
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: HEIGHT_PAGE_HEIGHT_SELECTED,
       data: {
         value: numHeight,

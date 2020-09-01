@@ -31,10 +31,10 @@ class Email extends Component {
   }
 
   componentDidMount() {
-    const { email, agree, matches } = this.props;
+    const { email, agree, token } = this.props;
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: EMAIL_PAGE_ENTER,
     });
 
@@ -69,13 +69,13 @@ class Email extends Component {
    * Change email address
    */
   changeEmail = (e) => {
-    const { setEmail, matches } = this.props;
+    const { setEmail, token } = this.props;
     const { value } = e.target;
     const isValid = validateEmail(value);
     const isEmail = value.trim().length > 0;
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: EMAIL_PAGE_ENTER_EMAIL,
       data: {
         value,
@@ -99,11 +99,11 @@ class Email extends Component {
    * Change agree checkbox state handler
    */
   changeAgree = (e) => {
-    const { addAgree, matches } = this.props;
+    const { addAgree, token } = this.props;
 
     if (e.target.checked) {
       analyticsService({
-        uuid: this.props.token,
+        uuid: token,
         event: EMAIL_PAGE_TERMS_CHECK,
         data: {
           value: e.target.checked,
@@ -122,11 +122,11 @@ class Email extends Component {
    * On next screen event handler
    */
   onNextScreen = async () => {
-    const { matches } = this.props;
+    const { token } = this.props;
     gaOnEmailNext();
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: EMAIL_PAGE_LEAVE,
     });
     route('/gender', false);

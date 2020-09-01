@@ -47,8 +47,9 @@ class Results extends BaseMobileFlow {
   }
 
   componentDidMount = async () => {
+    const { token } = this.props;
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: RESULT_SCREEN_ENTER,
     });
 
@@ -86,11 +87,11 @@ class Results extends BaseMobileFlow {
   }
 
   componentWillUnmount() {
-    const { setIsHeaderTranslucent } = this.props;
+    const { setIsHeaderTranslucent, token } = this.props;
 
     setIsHeaderTranslucent(false);
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: RESULT_SCREEN_LEAVE,
     });
   }

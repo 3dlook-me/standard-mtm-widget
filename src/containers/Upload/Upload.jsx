@@ -107,10 +107,11 @@ class Upload extends Component {
       pageReloadStatus,
       isFromDesktopToMobile,
       isDemoWidget,
+      token,
     } = this.props;
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
     });
 
@@ -169,10 +170,11 @@ class Upload extends Component {
       camera,
       isTableFlow,
       hardValidation,
+      token,
     } = this.props;
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: FRONT_PHOTO_PAGE_PHOTO_TAKEN,
     });
 
@@ -204,10 +206,11 @@ class Upload extends Component {
       setHeaderIconsStyle,
       setCamera,
       isTableFlow,
+      token,
     } = this.props;
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: SIDE_PHOTO_PAGE_PHOTO_TAKEN,
     });
 
@@ -281,6 +284,7 @@ class Upload extends Component {
       isFromDesktopToMobile,
       taskId,
       setTaskId,
+      token,
     } = this.props;
 
     try {
@@ -329,7 +333,7 @@ class Upload extends Component {
       });
 
       analyticsService({
-        uuid: this.props.token,
+        uuid: token,
         event: MAGIC_SCREEN_PAGE_ENTER,
       });
 
@@ -501,17 +505,17 @@ class Upload extends Component {
       gaUploadOnContinue();
 
       analyticsService({
-        uuid: this.props.token,
+        uuid: token,
         event: MAGIC_SCREEN_PAGE_LEAVE,
       });
       analyticsService({
-        uuid: this.props.token,
+        uuid: token,
         event: MAGIC_SCREEN_PAGE_SUCCESS,
       });
       route('/results', true);
     } catch (error) {
       analyticsService({
-        uuid: this.props.token,
+        uuid: token,
         event: MAGIC_SCREEN_PAGE_FAILED,
       });
       if (!isPhoneLocked) {
@@ -578,27 +582,27 @@ class Upload extends Component {
   }
 
   triggerFrontImage = () => {
-    const { setCamera } = this.props;
+    const { setCamera, token } = this.props;
 
     gaOpenCameraFrontPhoto();
 
     setCamera('front');
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: FRONT_PHOTO_PAGE_OPEN_CAMERA,
     });
   }
 
   triggerSideImage = () => {
-    const { setCamera } = this.props;
+    const { setCamera, token } = this.props;
 
     gaOpenCameraSidePhoto();
 
     setCamera('side');
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: SIDE_PHOTO_PAGE_OPEN_CAMERA,
     });
   }

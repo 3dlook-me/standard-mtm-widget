@@ -80,10 +80,11 @@ class WeightContainer extends Component {
       isMobile,
       pageReloadStatus,
       isDemoWidget,
+      token,
     } = this.props;
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: WEIGHT_PAGE_ENTER,
     });
 
@@ -147,7 +148,7 @@ class WeightContainer extends Component {
    */
   handleChange = (e) => {
     const { value } = e.target;
-    const { setWeight, setWeightLb, units } = this.props;
+    const { setWeight, setWeightLb, units, token } = this.props;
 
     if (units !== 'cm') {
       setWeight(getWeightKg(+value));
@@ -157,7 +158,7 @@ class WeightContainer extends Component {
     }
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: WEIGHT_PAGE_WEIGHT_SELECTED,
       data: {
         value: units !== 'cm' ? getWeightKg(+value) : +value,
@@ -224,10 +225,11 @@ class WeightContainer extends Component {
   }
 
   toNextScreen = async () => {
+    const { token } = this.props;
     gaOnWeightNext();
 
     analyticsService({
-      uuid: this.props.token,
+      uuid: token,
       event: WEIGHT_PAGE_LEAVE,
     });
 

@@ -10,7 +10,6 @@ import {
   getWeightKg,
   closeSelectsOnResize,
   mobileFlowStatusUpdate,
-  parseGetParams,
 } from '../../helpers/utils';
 import { Stepper } from '../../components';
 import { gaOnWeightNext } from '../../helpers/ga';
@@ -80,9 +79,8 @@ class WeightContainer extends Component {
     } = this.props;
 
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: WEIGHT_PAGE_ENTER,
-      token: API_KEY || parseGetParams().key,
     });
 
     // for close select drop on landscape view
@@ -155,9 +153,8 @@ class WeightContainer extends Component {
     }
 
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: WEIGHT_PAGE_WEIGHT_SELECTED,
-      token: API_KEY || parseGetParams().key,
       data: {
         value: units !== 'cm' ? getWeightKg(+value) : +value,
       },
@@ -226,9 +223,8 @@ class WeightContainer extends Component {
     gaOnWeightNext();
 
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: WEIGHT_PAGE_LEAVE,
-      token: API_KEY || parseGetParams().key,
     });
 
     const {

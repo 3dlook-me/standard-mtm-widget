@@ -110,9 +110,8 @@ class Upload extends Component {
     } = this.props;
 
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
-      token: API_KEY || parseGetParams().key,
     });
 
     window.addEventListener('offline', this.setOfflineStatus);
@@ -173,9 +172,8 @@ class Upload extends Component {
     } = this.props;
 
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: FRONT_PHOTO_PAGE_PHOTO_TAKEN,
-      token: API_KEY || parseGetParams().key,
     });
 
     setHeaderIconsStyle('default');
@@ -209,9 +207,8 @@ class Upload extends Component {
     } = this.props;
 
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: SIDE_PHOTO_PAGE_PHOTO_TAKEN,
-      token: API_KEY || parseGetParams().key,
     });
 
     setHeaderIconsStyle('default');
@@ -332,9 +329,8 @@ class Upload extends Component {
       });
 
       analyticsService({
-        uuid: API_KEY || parseGetParams().key,
+        uuid: this.props.token,
         event: MAGIC_SCREEN_PAGE_ENTER,
-        token: API_KEY || parseGetParams().key,
       });
 
       let taskSetId;
@@ -505,21 +501,18 @@ class Upload extends Component {
       gaUploadOnContinue();
 
       analyticsService({
-        uuid: API_KEY || parseGetParams().key,
+        uuid: this.props.token,
         event: MAGIC_SCREEN_PAGE_LEAVE,
-        token: API_KEY || parseGetParams().key,
       });
       analyticsService({
         uuid: API_KEY || parseGetParams().key,
         event: MAGIC_SCREEN_PAGE_SUCCESS,
-        token: API_KEY || parseGetParams().key,
       });
       route('/results', true);
     } catch (error) {
       analyticsService({
         uuid: API_KEY || parseGetParams().key,
         event: MAGIC_SCREEN_PAGE_FAILED,
-        token: API_KEY || parseGetParams().key,
       });
       if (!isPhoneLocked) {
         // hard validation part
@@ -592,9 +585,8 @@ class Upload extends Component {
     setCamera('front');
 
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: FRONT_PHOTO_PAGE_OPEN_CAMERA,
-      token: API_KEY || parseGetParams().key,
     });
   }
 
@@ -606,9 +598,8 @@ class Upload extends Component {
     setCamera('side');
 
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: SIDE_PHOTO_PAGE_OPEN_CAMERA,
-      token: API_KEY || parseGetParams().key,
     });
   }
 

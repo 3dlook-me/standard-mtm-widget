@@ -57,9 +57,8 @@ class HeightContainer extends Component {
     }
 
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: HEIGHT_PAGE_ENTER,
-      token: API_KEY || parseGetParams().key,
     });
 
     // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
@@ -90,9 +89,8 @@ class HeightContainer extends Component {
     gaOnHeightNext();
 
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: HEIGHT_PAGE_LEAVE,
-      token: API_KEY || parseGetParams().key,
     });
     route('/weight', false);
   };
@@ -131,9 +129,8 @@ class HeightContainer extends Component {
     addHeight(numHeight);
 
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: HEIGHT_PAGE_HEIGHT_SELECTED,
-      token: API_KEY || parseGetParams().key,
       data: {
         value: numHeight,
       },

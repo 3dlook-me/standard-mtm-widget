@@ -45,9 +45,8 @@ class Results extends BaseMobileFlow {
 
   componentDidMount = async () => {
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: RESULT_SCREEN_ENTER,
-      token: API_KEY || parseGetParams().key,
     });
 
     await super.componentDidMount();
@@ -88,9 +87,8 @@ class Results extends BaseMobileFlow {
 
     setIsHeaderTranslucent(false);
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: RESULT_SCREEN_LEAVE,
-      token: API_KEY || parseGetParams().key,
     });
   }
 

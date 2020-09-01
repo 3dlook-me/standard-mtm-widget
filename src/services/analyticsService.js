@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-export default ({ uuid, event, data = {}, token }) =>
+export default ({ uuid, event, data = {} }) =>
   axios.post(`${API_HOST}/api/v2/persons/widget/${uuid}/events/`, {
     name: event,
     data,
   }, {
-    headers: { Authorization: `UUID ${token}` },
+    headers: { Authorization: `UUID ${uuid}` },
   });
 
 // TODO Common events

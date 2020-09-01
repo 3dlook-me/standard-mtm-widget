@@ -5,14 +5,13 @@ import classNames from 'classnames';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-import { mobileFlowStatusUpdate } from '../../helpers/utils';
+import { mobileFlowStatusUpdate, parseGetParams } from '../../helpers/utils';
 import {
   gaDataMale,
   gaDataFemale,
   gaGenderOnContinue,
 } from '../../helpers/ga';
 import analyticsService, { GENDER_PAGE_ENTER, GENDER_PAGE_LEAVE } from '../../services/analyticsService';
-import { parseGetParams } from '../../helpers/utils';
 import {
   Stepper,
   Gender,
@@ -59,10 +58,10 @@ class GenderContainer extends Component {
       isDemoWidget,
     } = this.props;
 
+    console.log('this', this.props);
     analyticsService({
       uuid: API_KEY || parseGetParams().key,
       event: GENDER_PAGE_ENTER,
-      token: API_KEY || parseGetParams().key,
     });
 
     if (gender) {
@@ -155,9 +154,8 @@ class GenderContainer extends Component {
   next = async () => {
     gaGenderOnContinue();
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: GENDER_PAGE_LEAVE,
-      token: API_KEY || parseGetParams().key,
     });
 
     route('/height', false);

@@ -70,16 +70,6 @@ class Welcome extends Component {
     const bodyPart = matches.body_part || TEST_BODY_PART;
     const photosFromGallery = matches.photosFromGallery || false;
 
-    analyticsService({
-      uuid: matches.key || API_KEY || parseGetParams().key,
-      event: WELCOME_SCREEN_ENTER,
-      token,
-      data: {
-        device: isMobileDevice() ? 'mobile' : 'web browser',
-        browser: detect().name === 'ios' ? 'safari' : detect().name,
-      },
-    });
-
     this.widgetContainer = document.querySelector('.widget-container');
 
     if (isMobileDevice()) {
@@ -173,6 +163,15 @@ class Welcome extends Component {
         });
       }
     }, { once: true });
+
+    analyticsService({
+      uuid: token,
+      event: WELCOME_SCREEN_ENTER,
+      data: {
+        device: isMobileDevice() ? 'mobile' : 'web browser',
+        browser: detect().name === 'ios' ? 'safari' : detect().name,
+      },
+    });
   }
 
   /**
@@ -190,7 +189,6 @@ class Welcome extends Component {
     analyticsService({
       uuid: widgetUUID,
       event: WELCOME_SCREEN_CLOSE,
-      token: widgetUUID,
     });
     route(routeUrl, false);
   }

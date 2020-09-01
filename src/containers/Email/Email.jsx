@@ -35,9 +35,8 @@ class Email extends Component {
     const token = matches.key || API_KEY || parseGetParams().key;
 
     analyticsService({
-      uuid: matches.key || API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: EMAIL_PAGE_ENTER,
-      token,
     });
 
     if (email && agree) {
@@ -77,9 +76,8 @@ class Email extends Component {
     const isEmail = value.trim().length > 0;
 
     analyticsService({
-      uuid: matches.key || API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: EMAIL_PAGE_ENTER_EMAIL,
-      token: matches.key || API_KEY || parseGetParams().key,
       data: {
         value,
       },
@@ -106,9 +104,8 @@ class Email extends Component {
 
     if (e.target.checked) {
       analyticsService({
-        uuid: matches.key || API_KEY || parseGetParams().key,
+        uuid: this.props.token,
         event: EMAIL_PAGE_TERMS_CHECK,
-        token: matches.key || API_KEY || parseGetParams().key,
         data: {
           value: e.target.checked,
         },
@@ -130,9 +127,8 @@ class Email extends Component {
     gaOnEmailNext();
 
     analyticsService({
-      uuid: matches.key || API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: EMAIL_PAGE_LEAVE,
-      token: matches.key || API_KEY || parseGetParams().key,
     });
     route('/gender', false);
   }

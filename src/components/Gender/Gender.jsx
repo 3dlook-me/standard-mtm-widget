@@ -1,12 +1,13 @@
 import { h, Component } from 'preact';
 import classNames from 'classnames';
-import analyticsService, { GENDER_PAGE_ENTER, GENDER_PAGE_GENDER_SELECTED } from '../../services/analyticsService';
-import { parseGetParams } from '../../helpers/utils';
+import { connect } from 'react-redux';
+import analyticsService, { GENDER_PAGE_GENDER_SELECTED } from '../../services/analyticsService';
+import actions from '../../store/actions';
 
 /**
  * Gender component
  */
-export default class Gender extends Component {
+class Gender extends Component {
   constructor() {
     super();
 
@@ -33,9 +34,8 @@ export default class Gender extends Component {
     const { value } = e.target;
 
     analyticsService({
-      uuid: API_KEY || parseGetParams().key,
+      uuid: this.props.token,
       event: GENDER_PAGE_GENDER_SELECTED,
-      token: API_KEY || parseGetParams().key,
       data: {
         value,
       },
@@ -63,3 +63,5 @@ export default class Gender extends Component {
     );
   }
 }
+
+export default connect((state) => state, actions)(Gender);

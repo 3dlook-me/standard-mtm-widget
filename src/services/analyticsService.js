@@ -1,0 +1,71 @@
+import axios from 'axios';
+
+export default ({ uuid, event, data = {}, token }) =>
+  axios.post(`${API_HOST}/api/v2/persons/widget/${uuid}/events/`, {
+    name: event,
+    data,
+  }, {
+    headers: { Authorization: `UUID ${token}` },
+  });
+
+// TODO Common events
+export const FAQ_PAGE_OPEN = 'FAQ_PAGE_OPEN';
+export const FAQ_PAGE_CLOSE = 'FAQ_PAGE_CLOSE';
+
+export const WELCOME_SCREEN_ENTER = 'WELCOME_SCREEN_ENTER';
+export const WELCOME_SCREEN_CLOSE = 'WELCOME_SCREEN_CLOSE';
+
+// export const WIDGET_OPEN = 'WIDGET_OPEN';
+// export const WIDGET_CLOSE = 'WIDGET_CLOSE';
+
+// TODO Email screen
+export const EMAIL_PAGE_ENTER = 'EMAIL_PAGE_ENTER';
+export const EMAIL_PAGE_LEAVE = 'EMAIL_PAGE_LEAVE';
+export const EMAIL_PAGE_TERMS_CHECK = 'EMAIL_PAGE_TERMS_CHECK';
+export const EMAIL_PAGE_ENTER_EMAIL = 'EMAIL_PAGE_ENTER_EMAIL';
+
+// TODO Gender screen
+export const GENDER_PAGE_ENTER = 'GENDER_PAGE_ENTER';
+export const GENDER_PAGE_LEAVE = 'GENDER_PAGE_LEAVE';
+export const GENDER_PAGE_GENDER_SELECTED = 'GENDER_PAGE_GENDER_SELECTED';
+
+// TODO Height screen
+export const HEIGHT_PAGE_ENTER = 'HEIGHT_PAGE_ENTER';
+export const HEIGHT_PAGE_LEAVE = 'HEIGHT_PAGE_LEAVE';
+export const HEIGHT_PAGE_HEIGHT_SELECTED = 'HEIGHT_PAGE_HEIGHT_SELECTED';
+
+// TODO Weight screen
+export const WEIGHT_PAGE_ENTER = 'WEIGHT_PAGE_ENTER';
+export const WEIGHT_PAGE_LEAVE = 'WEIGHT_PAGE_LEAVE';
+export const WEIGHT_PAGE_WEIGHT_SELECTED = 'WEIGHT_PAGE_WEIGHT_SELECTED';
+
+// TODO Scan QR code screen
+export const SCAN_QR_CODE_PAGE_ENTER = 'SCAN_QR_CODE_PAGE_ENTER';
+export const SCAN_QR_CODE_PAGE_LEAVE = 'SCAN_QR_CODE_PAGE_LEAVE';
+export const SCAN_QR_CODE_PAGE_LINK_COPIED = 'SCAN_QR_CODE_PAGE_LINK_COPIED';
+export const SCAN_QR_CODE_PAGE_SMS_SENT = 'SCAN_QR_CODE_PAGE_SMS_SENT';
+
+// TODO Mobile flow start screen
+export const MOBILE_FLOW_START = 'MOBILE_FLOW_START';
+
+// TODO Front photo screen
+export const FRONT_PHOTO_PAGE_ENTER = 'FRONT_PHOTO_PAGE_ENTER';
+export const FRONT_PHOTO_PAGE_OPEN_CAMERA = 'FRONT_PHOTO_PAGE_OPEN_CAMERA';
+export const FRONT_PHOTO_PAGE_EXAMPLE_OPEN = 'FRONT_PHOTO_PAGE_EXAMPLE_OPEN';
+export const FRONT_PHOTO_PAGE_PHOTO_TAKEN = 'FRONT_PHOTO_PAGE_PHOTO_TAKEN';
+
+// TODO Side photo screen
+export const SIDE_PHOTO_PAGE_ENTER = 'SIDE_PHOTO_PAGE_ENTER';
+export const SIDE_PHOTO_PAGE_OPEN_CAMERA = 'SIDE_PHOTO_PAGE_OPEN_CAMERA';
+export const SIDE_PHOTO_PAGE_EXAMPLE_OPEN = 'SIDE_PHOTO_PAGE_EXAMPLE_OPEN';
+export const SIDE_PHOTO_PAGE_PHOTO_TAKEN = 'SIDE_PHOTO_PAGE_PHOTO_TAKEN';
+
+// TODO Magic is happening screen
+export const MAGIC_SCREEN_PAGE_ENTER = 'MAGIC_SCREEN_PAGE_ENTER';
+export const MAGIC_SCREEN_PAGE_LEAVE = 'MAGIC_SCREEN_PAGE_LEAVE';
+export const MAGIC_SCREEN_PAGE_SUCCESS = 'MAGIC_SCREEN_PAGE_SUCCESS';
+export const MAGIC_SCREEN_PAGE_FAILED = 'MAGIC_SCREEN_PAGE_FAILED';
+
+// TODO Results screen
+export const RESULT_SCREEN_ENTER = 'RESULT_SCREEN_ENTER';
+export const RESULT_SCREEN_LEAVE = 'RESULT_SCREEN_LEAVE';

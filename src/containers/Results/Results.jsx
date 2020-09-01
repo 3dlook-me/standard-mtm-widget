@@ -3,8 +3,9 @@ import { h, Component } from 'preact';
 import { connect } from 'react-redux';
 
 import {
-  send, objectToUrlParams,
+  send, objectToUrlParams, parseGetParams,
 } from '../../helpers/utils';
+import analyticsService, { RESULT_SCREEN_ENTER, RESULT_SCREEN_LEAVE } from '../../services/analyticsService';
 import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
 import { BaseMobileFlow, Measurements, Guide } from '../../components';
 import actions from '../../store/actions';
@@ -43,6 +44,12 @@ class Results extends BaseMobileFlow {
   }
 
   componentDidMount = async () => {
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: RESULT_SCREEN_ENTER,
+      token: API_KEY || parseGetParams().key,
+    });
+
     await super.componentDidMount();
 
     const {
@@ -73,6 +80,11 @@ class Results extends BaseMobileFlow {
     const { setIsHeaderTranslucent } = this.props;
 
     setIsHeaderTranslucent(false);
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: RESULT_SCREEN_LEAVE,
+      token: API_KEY || parseGetParams().key,
+    });
   }
 
   /**

@@ -1,5 +1,7 @@
 import { h, Component } from 'preact';
 import classNames from 'classnames';
+import analyticsService, { GENDER_PAGE_ENTER, GENDER_PAGE_GENDER_SELECTED } from '../../services/analyticsService';
+import { parseGetParams } from '../../helpers/utils';
 
 /**
  * Gender component
@@ -28,12 +30,18 @@ export default class Gender extends Component {
    */
   onGenderChange = (e) => {
     const { change } = this.props;
-
     const { value } = e.target;
 
-    this.setState({
-      value,
-    }, () => change(value));
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: GENDER_PAGE_GENDER_SELECTED,
+      token: API_KEY || parseGetParams().key,
+      data: {
+        value,
+      },
+    });
+
+    this.setState({ value }, () => change(value));
   }
 
   render() {

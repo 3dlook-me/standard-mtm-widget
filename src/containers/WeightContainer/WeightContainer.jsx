@@ -5,7 +5,8 @@ import classNames from 'classnames';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-import { getWeightKg, closeSelectsOnResize } from '../../helpers/utils';
+import analyticsService, { WEIGHT_PAGE_ENTER, WEIGHT_PAGE_LEAVE, WEIGHT_PAGE_WEIGHT_SELECTED } from '../../services/analyticsService';
+import { getWeightKg, closeSelectsOnResize, parseGetParams } from '../../helpers/utils';
 import { Stepper } from '../../components';
 import { gaOnWeightNext } from '../../helpers/ga';
 
@@ -60,6 +61,12 @@ class WeightContainer extends Component {
       units,
       isMobile,
     } = this.props;
+
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: WEIGHT_PAGE_ENTER,
+      token: API_KEY || parseGetParams().key,
+    });
 
     // for close select drop on landscape view
     if (isMobile) window.addEventListener('resize', closeSelectsOnResize);
@@ -119,6 +126,15 @@ class WeightContainer extends Component {
     } else {
       setWeight(+value);
     }
+
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: WEIGHT_PAGE_WEIGHT_SELECTED,
+      token: API_KEY || parseGetParams().key,
+      data: {
+        value: units !== 'cm' ? getWeightKg(+value) : +value,
+      },
+    });
 
     this.setState({
       weightValue: value,
@@ -181,6 +197,12 @@ class WeightContainer extends Component {
 
   toNextScreen = async () => {
     gaOnWeightNext();
+
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: WEIGHT_PAGE_LEAVE,
+      token: API_KEY || parseGetParams().key,
+    });
 
     const {
       gender,

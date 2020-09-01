@@ -5,8 +5,12 @@ import { connect } from 'react-redux';
 
 import actions from '../../store/actions';
 import { gaOnEmailNext } from '../../helpers/ga';
-import { validateEmail } from '../../helpers/utils';
+import { parseGetParams, validateEmail } from '../../helpers/utils';
 import { Stepper } from '../../components';
+import analyticsService, {
+  EMAIL_PAGE_ENTER, EMAIL_PAGE_LEAVE,
+  EMAIL_PAGE_TERMS_CHECK, EMAIL_PAGE_ENTER_EMAIL,
+} from '../../services/analyticsService';
 
 import './Email.scss';
 
@@ -27,7 +31,14 @@ class Email extends Component {
   }
 
   componentDidMount() {
-    const { email, agree } = this.props;
+    const { email, agree, matches } = this.props;
+    const token = matches.key || API_KEY || parseGetParams().key;
+
+    analyticsService({
+      uuid: matches.key || API_KEY || parseGetParams().key,
+      event: EMAIL_PAGE_ENTER,
+      token,
+    });
 
     if (email && agree) {
       this.setState({
@@ -60,10 +71,19 @@ class Email extends Component {
    * Change email address
    */
   changeEmail = (e) => {
-    const { setEmail } = this.props;
+    const { setEmail, matches } = this.props;
     const { value } = e.target;
     const isValid = validateEmail(value);
     const isEmail = value.trim().length > 0;
+
+    analyticsService({
+      uuid: matches.key || API_KEY || parseGetParams().key,
+      event: EMAIL_PAGE_ENTER_EMAIL,
+      token: matches.key || API_KEY || parseGetParams().key,
+      data: {
+        value,
+      },
+    });
 
     this.setState({
       isEmailValid: (isValid || !value),
@@ -79,10 +99,21 @@ class Email extends Component {
   };
 
   /**
-   * Change argee checkbox state handler
+   * Change agree checkbox state handler
    */
   changeAgree = (e) => {
-    const { addAgree } = this.props;
+    const { addAgree, matches } = this.props;
+
+    if (e.target.checked) {
+      analyticsService({
+        uuid: matches.key || API_KEY || parseGetParams().key,
+        event: EMAIL_PAGE_TERMS_CHECK,
+        token: matches.key || API_KEY || parseGetParams().key,
+        data: {
+          value: e.target.checked,
+        },
+      });
+    }
 
     addAgree(e.target.checked);
 
@@ -95,8 +126,14 @@ class Email extends Component {
    * On next screen event handler
    */
   onNextScreen = async () => {
+    const { matches } = this.props;
     gaOnEmailNext();
 
+    analyticsService({
+      uuid: matches.key || API_KEY || parseGetParams().key,
+      event: EMAIL_PAGE_LEAVE,
+      token: matches.key || API_KEY || parseGetParams().key,
+    });
     route('/gender', false);
   }
 

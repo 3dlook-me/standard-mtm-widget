@@ -12,13 +12,20 @@ import {
   send,
   wait,
   mobileFlowStatusUpdate,
-  isMobileDevice,
+  isMobileDevice, parseGetParams, getWeightKg,
 } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
   gaOpenCameraFrontPhoto,
   gaOpenCameraSidePhoto,
 } from '../../helpers/ga';
+import analyticsService, {
+  FRONT_PHOTO_PAGE_EXAMPLE_OPEN, SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+  FRONT_PHOTO_PAGE_OPEN_CAMERA, SIDE_PHOTO_PAGE_OPEN_CAMERA,
+  FRONT_PHOTO_PAGE_PHOTO_TAKEN, SIDE_PHOTO_PAGE_PHOTO_TAKEN,
+  MAGIC_SCREEN_PAGE_ENTER, MAGIC_SCREEN_PAGE_LEAVE,
+  MAGIC_SCREEN_PAGE_SUCCESS, MAGIC_SCREEN_PAGE_FAILED,
+} from '../../services/analyticsService';
 import {
   Preloader,
   Stepper,
@@ -101,6 +108,12 @@ class Upload extends Component {
       isFromDesktopToMobile,
     } = this.props;
 
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
+      token: API_KEY || parseGetParams().key,
+    });
+
     window.addEventListener('offline', this.setOfflineStatus);
 
     // if camera is active when page refreshed
@@ -158,6 +171,12 @@ class Upload extends Component {
       hardValidation,
     } = this.props;
 
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: FRONT_PHOTO_PAGE_PHOTO_TAKEN,
+      token: API_KEY || parseGetParams().key,
+    });
+
     setHeaderIconsStyle('default');
     addFrontImage(file);
 
@@ -187,6 +206,12 @@ class Upload extends Component {
       setCamera,
       isTableFlow,
     } = this.props;
+
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: SIDE_PHOTO_PAGE_PHOTO_TAKEN,
+      token: API_KEY || parseGetParams().key,
+    });
 
     setHeaderIconsStyle('default');
 
@@ -303,6 +328,12 @@ class Upload extends Component {
         isFrontImageValid: !!frontImage,
         isSideImageValid: !!sideImage,
         isPending: true,
+      });
+
+      analyticsService({
+        uuid: API_KEY || parseGetParams().key,
+        event: MAGIC_SCREEN_PAGE_ENTER,
+        token: API_KEY || parseGetParams().key,
       });
 
       let taskSetId;
@@ -457,8 +488,23 @@ class Upload extends Component {
 
       gaUploadOnContinue();
 
+      analyticsService({
+        uuid: API_KEY || parseGetParams().key,
+        event: MAGIC_SCREEN_PAGE_LEAVE,
+        token: API_KEY || parseGetParams().key,
+      });
+      analyticsService({
+        uuid: API_KEY || parseGetParams().key,
+        event: MAGIC_SCREEN_PAGE_SUCCESS,
+        token: API_KEY || parseGetParams().key,
+      });
       route('/results', true);
     } catch (error) {
+      analyticsService({
+        uuid: API_KEY || parseGetParams().key,
+        event: MAGIC_SCREEN_PAGE_FAILED,
+        token: API_KEY || parseGetParams().key,
+      });
       if (!isPhoneLocked) {
         // hard validation part
         if (error && error.response && error.response.data && error.response.data.sub_tasks) {
@@ -528,6 +574,12 @@ class Upload extends Component {
     gaOpenCameraFrontPhoto();
 
     setCamera('front');
+
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: FRONT_PHOTO_PAGE_OPEN_CAMERA,
+      token: API_KEY || parseGetParams().key,
+    });
   }
 
   triggerSideImage = () => {
@@ -536,6 +588,12 @@ class Upload extends Component {
     gaOpenCameraSidePhoto();
 
     setCamera('side');
+
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: SIDE_PHOTO_PAGE_OPEN_CAMERA,
+      token: API_KEY || parseGetParams().key,
+    });
   }
 
   openPhotoExample =(photoType) => {
@@ -635,10 +693,20 @@ class Upload extends Component {
       title = 'Take Front photo';
       photoBg = frontExample;
       frontActive = true;
+      // analyticsService({
+      //   uuid: API_KEY || parseGetParams().key,
+      //   event: FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
+      //   token: API_KEY || parseGetParams().key,
+      // });
     } else if (frontImage && !sideImage) {
       title = 'Take Side photo';
       photoBg = sideExample;
       sideActive = true;
+      // analyticsService({
+      //   uuid: API_KEY || parseGetParams().key,
+      //   event: SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+      //   token: API_KEY || parseGetParams().key,
+      // });
     }
 
     return (

@@ -11,6 +11,8 @@ import {
 } from '../../components';
 
 import './HeightContainer.scss';
+import analyticsService, { HEIGHT_PAGE_ENTER, HEIGHT_PAGE_LEAVE, HEIGHT_PAGE_HEIGHT_SELECTED } from "../../services/analyticsService";
+import {parseGetParams} from "../../helpers/utils";
 
 /**
  * HeightContainer page component
@@ -38,6 +40,12 @@ class HeightContainer extends Component {
         buttonDisabled: false,
       });
     }
+
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: HEIGHT_PAGE_ENTER,
+      token: API_KEY || parseGetParams().key,
+    });
   }
 
   /**
@@ -53,6 +61,11 @@ class HeightContainer extends Component {
   onNextScreen = async () => {
     gaOnHeightNext();
 
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: HEIGHT_PAGE_LEAVE,
+      token: API_KEY || parseGetParams().key,
+    });
     route('/weight', false);
   };
 
@@ -88,6 +101,15 @@ class HeightContainer extends Component {
     }
 
     addHeight(numHeight);
+
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: HEIGHT_PAGE_HEIGHT_SELECTED,
+      token: API_KEY || parseGetParams().key,
+      data: {
+        value: numHeight,
+      },
+    });
 
     this.setState({
       isHeightValid: isValueValid,

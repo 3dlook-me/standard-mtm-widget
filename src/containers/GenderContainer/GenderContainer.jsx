@@ -10,6 +10,8 @@ import {
   gaDataFemale,
   gaGenderOnContinue,
 } from '../../helpers/ga';
+import analyticsService, { GENDER_PAGE_ENTER, GENDER_PAGE_LEAVE } from '../../services/analyticsService';
+import { parseGetParams } from '../../helpers/utils';
 import {
   Stepper,
   Gender,
@@ -37,6 +39,12 @@ class GenderContainer extends Component {
 
   componentDidMount() {
     const { gender } = this.props;
+
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: GENDER_PAGE_ENTER,
+      token: API_KEY || parseGetParams().key,
+    });
 
     if (gender) {
       this.setState({
@@ -117,6 +125,11 @@ class GenderContainer extends Component {
    */
   next = async () => {
     gaGenderOnContinue();
+    analyticsService({
+      uuid: API_KEY || parseGetParams().key,
+      event: GENDER_PAGE_LEAVE,
+      token: API_KEY || parseGetParams().key,
+    });
 
     route('/height', false);
   }

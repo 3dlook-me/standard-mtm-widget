@@ -1,8 +1,9 @@
 import { h, Component, Fragment } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
-
+import { detectOS, browserName, detect } from 'detect-browser';
 import {
+  browserDetect,
   browserValidation,
   isMobileDevice,
   parseGetParams,
@@ -10,6 +11,7 @@ import {
 import { gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
+import analyticsService, { WELCOME_SCREEN_ENTER, WELCOME_SCREEN_CLOSE } from '../../services/analyticsService';
 import { Browser } from '..';
 
 import './Welcome.scss';
@@ -57,6 +59,16 @@ class Welcome extends Component {
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;
     const photosFromGallery = matches.photosFromGallery || false;
+
+    analyticsService({
+      uuid: matches.key || API_KEY || parseGetParams().key,
+      event: WELCOME_SCREEN_ENTER,
+      token,
+      data: {
+        device: isMobileDevice() ? 'mobile' : 'web browser',
+        browser: detect().name === 'ios' ? 'safari' : detect().name,
+      },
+    });
 
     this.widgetContainer = document.querySelector('.widget-container');
 
@@ -139,11 +151,19 @@ class Welcome extends Component {
    * On next screen event handler
    */
   onNextScreen = async () => {
+    const { matches } = this.props;
     gaWelcomeOnContinue();
 
     const { isSmbFlow } = this.props;
     const routeUrl = (isSmbFlow) ? '/gender' : '/email';
 
+    const widgetUUID = matches.key || API_KEY || parseGetParams().key;
+
+    analyticsService({
+      uuid: widgetUUID,
+      event: WELCOME_SCREEN_CLOSE,
+      token: widgetUUID,
+    });
     route(routeUrl, false);
   }
 

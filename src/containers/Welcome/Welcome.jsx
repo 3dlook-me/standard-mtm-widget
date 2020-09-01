@@ -6,6 +6,7 @@ import {
   browserDetect,
   browserValidation,
   isMobileDevice,
+  mobileFlowStatusUpdate,
   parseGetParams,
 } from '../../helpers/utils';
 import { gaWelcomeOnContinue } from '../../helpers/ga';
@@ -23,13 +24,21 @@ import loader from '../../images/sms-sending.svg';
  * Welcome page component
  */
 class Welcome extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       isButtonDisabled: false,
       invalidBrowser: false,
     };
+
+    const { setPageReloadStatus } = props;
+
+    this.reloadListener = () => {
+      setPageReloadStatus(true);
+    };
+
+    window.addEventListener('unload', this.reloadListener);
   }
 
   componentDidMount() {
@@ -53,6 +62,7 @@ class Welcome extends Component {
       resetState,
       setSettings,
       setIsPhotosFromGallery,
+      isDemoWidget,
     } = this.props;
 
     const token = matches.key || API_KEY || parseGetParams().key;
@@ -95,13 +105,13 @@ class Welcome extends Component {
         isButtonDisabled: true,
       });
 
-      resetState();
-
       if (photosFromGallery) {
         setIsPhotosFromGallery(true);
       }
 
-      if (!isSmbFlow) {
+      if (!isSmbFlow && !isDemoWidget) {
+        resetState();
+
         setToken(token);
         setBrand(brand);
         setBodyPart(bodyPart);
@@ -143,6 +153,24 @@ class Welcome extends Component {
               alert(err.message);
             }
           });
+      } else {
+        const { pageReloadStatus, flowId } = this.props;
+
+        this.flow = new FlowService(flowId);
+        this.flow.setFlowId(flowId);
+
+        // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
+        if (pageReloadStatus && isDemoWidget) {
+          const { setPageReloadStatus, flowState } = this.props;
+
+          setPageReloadStatus(false);
+
+          mobileFlowStatusUpdate(this.flow, flowState);
+        }
+
+        this.setState({
+          isButtonDisabled: false,
+        });
       }
     }, { once: true });
   }
@@ -154,8 +182,8 @@ class Welcome extends Component {
     const { matches } = this.props;
     gaWelcomeOnContinue();
 
-    const { isSmbFlow } = this.props;
-    const routeUrl = (isSmbFlow) ? '/gender' : '/email';
+    const { isSmbFlow, isDemoWidget } = this.props;
+    const routeUrl = (isSmbFlow || isDemoWidget) ? '/gender' : '/email';
 
     const widgetUUID = matches.key || API_KEY || parseGetParams().key;
 
@@ -169,6 +197,7 @@ class Welcome extends Component {
 
   componentWillUnmount() {
     this.widgetContainer.classList.add('widget-container--no-bg');
+    window.removeEventListener('unload', this.reloadListener);
   }
 
   render() {

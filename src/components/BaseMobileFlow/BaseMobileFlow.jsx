@@ -46,6 +46,7 @@ class BaseMobileFlow extends Component {
       resetState,
       setIsPhotosFromGallery,
       setWidgetId,
+      isWidgetDeactivated,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -62,9 +63,15 @@ class BaseMobileFlow extends Component {
 
     this.flow = new FlowService(token);
 
-    resetState();
+    if (isWidgetDeactivated) {
+      this.flow.axios.defaults.headers = {
+        Authorization: 'null',
+      };
+    } else {
+      resetState();
 
-    this.flow.resetGlobalState();
+      this.flow.resetGlobalState();
+    }
 
     setToken(token);
     setFlowId(matches.id);

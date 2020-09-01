@@ -5,6 +5,7 @@ import classNames from 'classnames';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
+import { mobileFlowStatusUpdate } from '../../helpers/utils';
 import {
   gaDataMale,
   gaDataFemale,
@@ -35,10 +36,28 @@ class GenderContainer extends Component {
     const { flowId, token } = this.props;
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
+
+    const { setPageReloadStatus, isDemoWidget } = props;
+
+    if (isDemoWidget) {
+      this.reloadListener = () => {
+        setPageReloadStatus(true);
+      };
+
+      window.addEventListener('unload', this.reloadListener);
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('unload', this.reloadListener);
   }
 
   componentDidMount() {
-    const { gender } = this.props;
+    const {
+      gender,
+      pageReloadStatus,
+      isDemoWidget,
+    } = this.props;
 
     analyticsService({
       uuid: API_KEY || parseGetParams().key,
@@ -50,6 +69,15 @@ class GenderContainer extends Component {
       this.setState({
         buttonDisabled: false,
       });
+    }
+
+    // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
+    if (pageReloadStatus && isDemoWidget) {
+      const { setPageReloadStatus, flowState } = this.props;
+
+      setPageReloadStatus(false);
+
+      mobileFlowStatusUpdate(this.flow, flowState);
     }
   }
 
@@ -97,6 +125,7 @@ class GenderContainer extends Component {
       gender,
       isSmbFlow,
       agree,
+      isDemoWidget,
     } = this.props;
 
     const {
@@ -107,7 +136,7 @@ class GenderContainer extends Component {
 
     let isButtonDisabled;
 
-    if (isSmbFlow) {
+    if (isSmbFlow || isDemoWidget) {
       isButtonDisabled = !gender || !isGenderValid || !isAgreeValid || !agree;
     } else {
       isButtonDisabled = !gender || !isGenderValid;
@@ -140,6 +169,7 @@ class GenderContainer extends Component {
       gender,
       agree,
       isSmbFlow,
+      isDemoWidget,
     } = this.props;
 
     return (
@@ -152,7 +182,7 @@ class GenderContainer extends Component {
           </div>
         </div>
         <div className="screen__footer">
-          {(isSmbFlow) ? (
+          {(isSmbFlow || isDemoWidget) ? (
             <div className={classNames('gender__check', 'checkbox', { checked: agree, 'checkbox--invalid': !isAgreeValid })}>
               <label htmlFor="agree">
                 <input type="checkbox" name="agree" id="agree" onChange={this.changeAgree} checked={agree} />

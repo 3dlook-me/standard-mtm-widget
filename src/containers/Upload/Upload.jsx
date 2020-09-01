@@ -20,7 +20,7 @@ import {
   gaOpenCameraSidePhoto,
 } from '../../helpers/ga';
 import analyticsService, {
-  FRONT_PHOTO_PAGE_EXAMPLE_OPEN, SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+  FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
   FRONT_PHOTO_PAGE_OPEN_CAMERA, SIDE_PHOTO_PAGE_OPEN_CAMERA,
   FRONT_PHOTO_PAGE_PHOTO_TAKEN, SIDE_PHOTO_PAGE_PHOTO_TAKEN,
   MAGIC_SCREEN_PAGE_ENTER, MAGIC_SCREEN_PAGE_LEAVE,
@@ -505,13 +505,13 @@ class Upload extends Component {
         event: MAGIC_SCREEN_PAGE_LEAVE,
       });
       analyticsService({
-        uuid: API_KEY || parseGetParams().key,
+        uuid: this.props.token,
         event: MAGIC_SCREEN_PAGE_SUCCESS,
       });
       route('/results', true);
     } catch (error) {
       analyticsService({
-        uuid: API_KEY || parseGetParams().key,
+        uuid: this.props.token,
         event: MAGIC_SCREEN_PAGE_FAILED,
       });
       if (!isPhoneLocked) {

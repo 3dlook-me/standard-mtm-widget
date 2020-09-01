@@ -5,7 +5,11 @@ import classNames from 'classnames';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-import analyticsService, { WEIGHT_PAGE_ENTER, WEIGHT_PAGE_LEAVE, WEIGHT_PAGE_WEIGHT_SELECTED } from '../../services/analyticsService';
+import analyticsService, {
+  WEIGHT_PAGE_ENTER,
+  WEIGHT_PAGE_LEAVE,
+  WEIGHT_PAGE_WEIGHT_SELECTED,
+} from '../../services/analyticsService';
 import {
   getWeightKg,
   closeSelectsOnResize,

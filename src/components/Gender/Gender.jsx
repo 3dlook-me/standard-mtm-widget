@@ -1,7 +1,9 @@
 import { h, Component } from 'preact';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import analyticsService, { GENDER_PAGE_GENDER_SELECTED } from '../../services/analyticsService';
+import analyticsService, {
+  GENDER_PAGE_GENDER_SELECTED,
+} from '../../services/analyticsService';
 import actions from '../../store/actions';
 
 /**

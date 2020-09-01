@@ -32,7 +32,6 @@ class Email extends Component {
 
   componentDidMount() {
     const { email, agree, matches } = this.props;
-    const token = matches.key || API_KEY || parseGetParams().key;
 
     analyticsService({
       uuid: this.props.token,

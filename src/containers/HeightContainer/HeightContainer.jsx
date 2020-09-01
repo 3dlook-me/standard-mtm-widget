@@ -6,8 +6,11 @@ import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { gaOnHeightNext } from '../../helpers/ga';
 import { mobileFlowStatusUpdate } from '../../helpers/utils';
-import analyticsService, { HEIGHT_PAGE_ENTER, HEIGHT_PAGE_LEAVE, HEIGHT_PAGE_HEIGHT_SELECTED } from '../../services/analyticsService';
-import { parseGetParams } from '../../helpers/utils';
+import analyticsService, {
+  HEIGHT_PAGE_ENTER,
+  HEIGHT_PAGE_LEAVE,
+  HEIGHT_PAGE_HEIGHT_SELECTED,
+} from '../../services/analyticsService';
 import {
   Height,
   Stepper,

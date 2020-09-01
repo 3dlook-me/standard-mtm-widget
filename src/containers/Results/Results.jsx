@@ -3,9 +3,12 @@ import { h, Component } from 'preact';
 import { connect } from 'react-redux';
 
 import {
-  send, objectToUrlParams, parseGetParams,
+  send, objectToUrlParams,
 } from '../../helpers/utils';
-import analyticsService, { RESULT_SCREEN_ENTER, RESULT_SCREEN_LEAVE } from '../../services/analyticsService';
+import analyticsService, {
+  RESULT_SCREEN_ENTER,
+  RESULT_SCREEN_LEAVE,
+} from '../../services/analyticsService';
 import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
 import { BaseMobileFlow, Measurements, Guide } from '../../components';
 import actions from '../../store/actions';

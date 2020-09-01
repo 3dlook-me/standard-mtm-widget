@@ -12,7 +12,10 @@ import {
 import { gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-import analyticsService, { WELCOME_SCREEN_ENTER, WELCOME_SCREEN_CLOSE } from '../../services/analyticsService';
+import analyticsService, {
+  WELCOME_SCREEN_ENTER,
+  WELCOME_SCREEN_CLOSE,
+} from '../../services/analyticsService';
 import { Browser } from '..';
 
 import './Welcome.scss';

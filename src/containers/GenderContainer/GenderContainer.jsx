@@ -11,7 +11,10 @@ import {
   gaDataFemale,
   gaGenderOnContinue,
 } from '../../helpers/ga';
-import analyticsService, { GENDER_PAGE_ENTER, GENDER_PAGE_LEAVE } from '../../services/analyticsService';
+import analyticsService, {
+  GENDER_PAGE_ENTER,
+  GENDER_PAGE_LEAVE,
+} from '../../services/analyticsService';
 import {
   Stepper,
   Gender,

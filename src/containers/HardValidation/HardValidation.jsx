@@ -44,12 +44,13 @@ class HardValidation extends Component {
       pageReloadStatus,
       isFromDesktopToMobile,
       setTaskId,
+      isDemoWidget,
     } = this.props;
 
     setTaskId(null);
 
     // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
-    if (pageReloadStatus && isFromDesktopToMobile) {
+    if ((pageReloadStatus && isFromDesktopToMobile) || (pageReloadStatus && isDemoWidget)) {
       const { setPageReloadStatus, flowState } = this.props;
 
       setPageReloadStatus(false);

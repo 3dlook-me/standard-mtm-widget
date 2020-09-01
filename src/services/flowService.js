@@ -137,6 +137,20 @@ export default class FlowService {
   }
 
   /**
+   * Deactivate widget
+   *
+   * @param {string} flowId - flow object id
+   */
+  widgetDeactivate(flowId = this.flowId) {
+    return this.axios({
+      url: `${API_HOST}/api/v2/persons/widget/${flowId}/deactivate/`,
+      method: 'POST',
+      data: {},
+    })
+      .then((response) => response.data);
+  }
+
+  /**
    * Update local state for interval patch state updates
    *
    * @param {Object} state - data object

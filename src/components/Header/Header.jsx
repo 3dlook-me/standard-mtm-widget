@@ -43,11 +43,13 @@ class Header extends Component {
       resetState,
       measurements,
       isMobile,
+      isSmbFlow,
+      isDemoWidget,
     } = this.props;
 
     if (isMobile) {
       // if (confirm('Are you sure that you want to close widget? ')) {
-      if (measurements) {
+      if (measurements && !isSmbFlow && !isDemoWidget) {
         window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
       } else {
         window.location = returnUrl;

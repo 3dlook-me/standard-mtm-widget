@@ -1,9 +1,8 @@
 import { h, Component, Fragment } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
-import { detectOS, browserName, detect } from 'detect-browser';
+
 import {
-  browserDetect,
   browserValidation,
   isMobileDevice,
   mobileFlowStatusUpdate,

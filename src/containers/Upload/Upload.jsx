@@ -12,7 +12,7 @@ import {
   send,
   wait,
   mobileFlowStatusUpdate,
-  isMobileDevice, parseGetParams, getWeightKg,
+  isMobileDevice,
 } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
@@ -30,7 +30,6 @@ import {
   Preloader,
   Stepper,
   UploadBlock,
-  PhotoExample,
   Tabs,
   Loader,
 } from '../../components';

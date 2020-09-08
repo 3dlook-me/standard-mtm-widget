@@ -14,3 +14,4 @@ export * from './Loader';
 export * from './PhotoExample';
 export * from './PrivacyBanner';
 export * from './Tabs';
+export * from './Requirements';

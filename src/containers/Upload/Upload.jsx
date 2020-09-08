@@ -1,4 +1,8 @@
-import { h, Component, Fragment } from 'preact';
+import {
+  h,
+  Component,
+  Fragment,
+} from 'preact';
 import { route } from 'preact-router';
 import API from '@3dlook/saia-sdk/lib/api';
 import { connect } from 'react-redux';
@@ -23,9 +27,7 @@ import {
   Preloader,
   Stepper,
   UploadBlock,
-  PhotoExample,
-  Tabs,
-  Loader,
+  Requirements,
 } from '../../components';
 
 import './Upload.scss';
@@ -54,11 +56,10 @@ class Upload extends Component {
 
       isPending: false,
 
-      photoType: 'front',
-      isPhotoExample: false,
+      // photoType: 'front',
+      // isPhotoExample: false,
 
-      activeTab: props.frontImage && !props.sideImage ? 'side' : 'front',
-      isImageExampleLoaded: false,
+      // activeTab: props.frontImage && !props.sideImage ? 'side' : 'front',
     };
 
     const { setPageReloadStatus } = props;
@@ -164,10 +165,6 @@ class Upload extends Component {
         }
       }
     } else {
-      this.setState({
-        isImageExampleLoaded: false,
-      });
-
       setCamera(null);
     }
   }
@@ -584,12 +581,6 @@ class Upload extends Component {
     });
   }
 
-  onImgExampleLoaded = () => {
-    this.setState({
-      isImageExampleLoaded: true,
-    });
-  }
-
   closePhotoExample = () => {
     this.setState({
       isPhotoExample: false,
@@ -643,10 +634,6 @@ class Upload extends Component {
       frontImageBody,
       sideImagePose,
       sideImageBody,
-      photoType,
-      isPhotoExample,
-      activeTab,
-      isImageExampleLoaded,
     } = this.state;
 
     const {
@@ -689,9 +676,9 @@ class Upload extends Component {
           </div>
         ) : (
           <Fragment>
-            <div className="screen__content upload">
-              <Stepper steps="9" current={frontActive ? 7 : 8} />
+            <Stepper steps="9" current={frontActive ? 7 : 8} />
 
+            <div className="screen__content upload">
               <h3 className="screen__title upload__title">
                 {title}
 
@@ -725,28 +712,7 @@ class Upload extends Component {
                 </div>
               </h3>
 
-              {isTableFlow ? (
-                <Tabs activeTab={activeTab} />
-              ) : (
-                <div
-                  className="upload__image-example"
-                  style={photoBg ? { backgroundImage: `url(${photoBg})` } : null}
-                >
-                  {!isImageExampleLoaded ? (
-                    <Fragment>
-                      <Loader />
-
-                      <img
-                        className="upload__image-example-onload-detect"
-                        src={photoBg}
-                        onLoad={this.onImgExampleLoaded}
-                        alt="back"
-                      />
-                    </Fragment>
-                  ) : null}
-                </div>
-              )}
-
+              <Requirements isTableFlow={isTableFlow} photoBg={photoBg} />
             </div>
             <div className="screen__footer">
               <button

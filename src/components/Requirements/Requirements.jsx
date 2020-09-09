@@ -11,7 +11,7 @@ import './Requirements.scss';
 import videoTableFlowRequirements from '../../video/table-flow-requirements.mp4';
 
 /**
- * Preloader component
+ * Requirements component
  */
 class Requirements extends Component {
   $videoTF = createRef();
@@ -47,13 +47,13 @@ class Requirements extends Component {
       <Fragment>
         {isTableFlow ? (
           // <Tabs activeTab={activeTab} />
-          <div className="upload__video-wrap">
+          <div className="requirements__video-wrap">
             {!isVideoLoaded ? (
               <Loader />
             ) : null}
 
             <video
-              className="upload__video"
+              className="requirements__video"
               ref={this.$videoTF}
               muted
               preload="auto"
@@ -68,7 +68,7 @@ class Requirements extends Component {
           </div>
         ) : (
           <div
-            className="upload__image-example"
+            className="requirements__image-example"
             style={photoBg ? { backgroundImage: `url(${photoBg})` } : null}
           >
             {!isImageExampleLoaded ? (
@@ -76,7 +76,7 @@ class Requirements extends Component {
                 <Loader />
 
                 <img
-                  className="upload__image-example-onload-detect"
+                  className="requirements__image-example-onload-detect"
                   src={photoBg}
                   onLoad={this.onImgExampleLoaded}
                   alt="back"

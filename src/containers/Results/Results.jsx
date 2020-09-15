@@ -148,9 +148,18 @@ class Results extends BaseMobileFlow {
   };
 
   render() {
-    const { measurements, settings, units, gender } = this.props;
+    const {
+      measurements,
+      settings,
+      units,
+      gender,
+    } = this.props;
 
-    const { openGuide, measurementsType, measurement } = this.state;
+    const {
+      openGuide,
+      measurementsType,
+      measurement,
+    } = this.state;
 
     const results = settings.final_page;
 

@@ -1,4 +1,8 @@
-import { h, Component, createRef } from 'preact';
+import {
+  h,
+  Component,
+  createRef,
+} from 'preact';
 import { connect } from 'react-redux';
 import { Link } from 'preact-router';
 
@@ -68,10 +72,7 @@ class HowToTakePhotos extends Component {
     this.flow.setFlowId(flowId);
 
     // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
-    if (
-      (pageReloadStatus && isFromDesktopToMobile) ||
-      (pageReloadStatus && isDemoWidget)
-    ) {
+    if ((pageReloadStatus && isFromDesktopToMobile) || (pageReloadStatus && isDemoWidget)) {
       const { setPageReloadStatus, flowState } = this.props;
 
       setPageReloadStatus(false);
@@ -114,8 +115,7 @@ class HowToTakePhotos extends Component {
   setTableFlowVideoText = (time) => {
     if (time < 3.8) {
       this.setState({
-        videoText:
-          'Stand your device upright on a table. \n You can use an object to help hold it up.',
+        videoText: 'Stand your device upright on a table. \n You can use an object to help hold it up.',
       });
     } else if (time > 3.8 && time < 7) {
       this.setState({
@@ -127,8 +127,7 @@ class HowToTakePhotos extends Component {
       });
     } else if (time > 13.5) {
       this.setState({
-        videoText:
-          'Please turn up the volume and follow the voice instructions.',
+        videoText: 'Please turn up the volume and follow the voice instructions.',
       });
     }
   };
@@ -136,8 +135,7 @@ class HowToTakePhotos extends Component {
   setFriendFlowVideoText = (time) => {
     if (time < 3) {
       this.setState({
-        videoText:
-          'Ask someone to help take 2 photos of you. \n Keep the device at 90° angle at the waistline.',
+        videoText: 'Ask someone to help take 2 photos of you. \n Keep the device at 90° angle at the waistline.',
       });
     } else if (time > 3) {
       this.setState({

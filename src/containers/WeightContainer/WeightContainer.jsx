@@ -81,10 +81,7 @@ class WeightContainer extends Component {
     if (isMobile) window.addEventListener('resize', closeSelectsOnResize);
 
     // for set default select value to input after first click
-    if (this.$weightEl.current)
-      this.$weightEl.current.addEventListener('click', this.handleChange, {
-        once: true,
-      });
+    if (this.$weightEl.current) this.$weightEl.current.addEventListener('click', this.handleChange, { once: true });
 
     if (weight) {
       this.setState({
@@ -217,20 +214,19 @@ class WeightContainer extends Component {
     if (isMobile) {
       this.$nextBtn.current.classList.add('button--blocked');
 
-      await this.flow
-        .updateState({
-          status: 'set metadata',
-          processStatus: '',
-          gender,
-          height,
-          units,
-          email,
-          settings,
-          ...(weight && { weight }),
-        })
-        .finally(() => {
-          this.$nextBtn.current.classList.remove('button--blocked');
-        });
+      await this.flow.updateState({
+        status: 'set metadata',
+        processStatus: '',
+        gender,
+        height,
+        units,
+        email,
+        settings,
+        ...(weight && { weight }),
+      })
+      .finally(() => {
+        this.$nextBtn.current.classList.remove('button--blocked');
+      });
 
       route('/camera-mode-selection', false);
     } else {

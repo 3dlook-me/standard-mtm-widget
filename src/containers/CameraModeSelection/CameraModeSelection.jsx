@@ -6,7 +6,11 @@ import { Link } from 'preact-router';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { isMobileDevice, mobileFlowStatusUpdate } from '../../helpers/utils';
-import { Stepper, PrivacyBanner, Loader } from '../../components';
+import {
+  Stepper,
+  PrivacyBanner,
+  Loader,
+} from '../../components';
 import { gaOnNextLetsTakePhotos, gaOnSelectFlow } from '../../helpers/ga';
 
 import './CameraModeSelection.scss';
@@ -44,9 +48,7 @@ class CameraModeSelection extends Component {
     const isDesktop = !isMobileDevice();
 
     if (isDesktop) {
-      document
-        .querySelector('.header__close')
-        .classList.add('header__close--hide');
+      document.querySelector('.header__close').classList.add('header__close--hide');
     }
 
     const {
@@ -61,10 +63,7 @@ class CameraModeSelection extends Component {
     this.flow.setFlowId(flowId);
 
     // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
-    if (
-      (pageReloadStatus && isFromDesktopToMobile) ||
-      (pageReloadStatus && isDemoWidget)
-    ) {
+    if ((pageReloadStatus && isFromDesktopToMobile) || (pageReloadStatus && isDemoWidget)) {
       const { setPageReloadStatus, flowState } = this.props;
 
       setPageReloadStatus(false);
@@ -102,7 +101,11 @@ class CameraModeSelection extends Component {
   render() {
     const isDesktop = !isMobileDevice();
     const { isBackModeImageLoaded, isFrontModeImageLoaded } = this.state;
-    const { isTableFlow, isTableFlowDisabled, gender } = this.props;
+    const {
+      isTableFlow,
+      isTableFlowDisabled,
+      gender,
+    } = this.props;
 
     const frontCameraMode = gender === 'male' ? maleAlone : femaleAlone;
     const backCameraMode = gender === 'male' ? maleFriend : femaleFriend;
@@ -132,13 +135,9 @@ class CameraModeSelection extends Component {
 
               <div className="camera-mode-selection__buttons-wrap">
                 <label
-                  className={classNames(
-                    'camera-mode-selection__button camera-mode-selection__button--back',
-                    {
-                      'camera-mode-selection__button--active':
-                        !isTableFlow || isTableFlowDisabled,
-                    }
-                  )}
+                  className={classNames('camera-mode-selection__button camera-mode-selection__button--back', {
+                    'camera-mode-selection__button--active': !isTableFlow || isTableFlowDisabled,
+                  })}
                   htmlFor="back-mode-radio"
                 >
                   <input
@@ -174,14 +173,10 @@ class CameraModeSelection extends Component {
                 </label>
 
                 <label
-                  className={classNames(
-                    'camera-mode-selection__button camera-mode-selection__button--front',
-                    {
-                      'camera-mode-selection__button--active':
-                        isTableFlow && !isTableFlowDisabled,
-                      'camera-mode-selection__button--inactive': isTableFlowDisabled,
-                    }
-                  )}
+                  className={classNames('camera-mode-selection__button camera-mode-selection__button--front', {
+                    'camera-mode-selection__button--active': isTableFlow && !isTableFlowDisabled,
+                    'camera-mode-selection__button--inactive': isTableFlowDisabled,
+                  })}
                   htmlFor="front-mode-radio"
                 >
                   <input
@@ -210,7 +205,9 @@ class CameraModeSelection extends Component {
                     ) : null}
                   </div>
                   <div className="camera-mode-selection__icon-wrap">
-                    <h4 className="camera-mode-selection__title">Hands-free</h4>
+                    <h4 className="camera-mode-selection__title">
+                      Hands-free
+                    </h4>
                   </div>
                 </label>
               </div>

@@ -84,14 +84,8 @@ class Upload extends Component {
 
     clearInterval(this.timer);
 
-    document.removeEventListener(
-      'visibilitychange',
-      this.handleVisibilityChange
-    );
-    document.removeEventListener(
-      'webkitvisibilitychange',
-      this.handleVisibilityChange
-    );
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    document.removeEventListener('webkitvisibilitychange', this.handleVisibilityChange);
     window.removeEventListener('unload', this.reloadListener);
     window.removeEventListener('offline', this.setOfflineStatus);
   }
@@ -127,10 +121,7 @@ class Upload extends Component {
       this.flow.setFlowId(flowId);
 
       // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
-      if (
-        (pageReloadStatus && isFromDesktopToMobile) ||
-        (pageReloadStatus && isDemoWidget)
-      ) {
+      if ((pageReloadStatus && isFromDesktopToMobile) || (pageReloadStatus && isDemoWidget)) {
         const { flowState, setPageReloadStatus } = this.props;
 
         setPageReloadStatus(false);
@@ -346,9 +337,7 @@ class Upload extends Component {
 
       if (!personId) {
         if (isFromDesktopToMobile) {
-          this.flow.updateLocalState({
-            processStatus: 'Initiating Profile Creation',
-          });
+          this.flow.updateLocalState({ processStatus: 'Initiating Profile Creation' });
         }
 
         setProcessingStatus('Initiating Profile Creation');
@@ -361,15 +350,12 @@ class Upload extends Component {
           await this.api.mtmClient.update(mtmClientId, mtmClientParams);
         }
 
-        const createdPersonId = await this.api.mtmClient.createPerson(
-          mtmClientId,
-          {
-            gender,
-            height,
-            email,
-            ...(weight && { weight }),
-          }
-        );
+        const createdPersonId = await this.api.mtmClient.createPerson(mtmClientId, {
+          gender,
+          height,
+          email,
+          ...(weight && { weight }),
+        });
 
         personId = createdPersonId;
 
@@ -382,9 +368,7 @@ class Upload extends Component {
         await wait(1000);
 
         if (isFromDesktopToMobile) {
-          this.flow.updateLocalState({
-            processStatus: 'Profile Creation Completed!',
-          });
+          this.flow.updateLocalState({ processStatus: 'Profile Creation Completed!' });
         }
 
         setProcessingStatus('Profile Creation Completed!');
@@ -407,9 +391,7 @@ class Upload extends Component {
         await wait(1000);
 
         if (isFromDesktopToMobile) {
-          this.flow.updateLocalState({
-            processStatus: 'Photo Upload Completed!',
-          });
+          this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });
         }
 
         setProcessingStatus('Photo Upload Completed!');
@@ -503,23 +485,12 @@ class Upload extends Component {
     } catch (error) {
       if (!isPhoneLocked) {
         // hard validation part
-        if (
-          error &&
-          error.response &&
-          error.response.data &&
-          error.response.data.sub_tasks
-        ) {
+        if (error && error.response && error.response.data && error.response.data.sub_tasks) {
           const subTasks = error.response.data.sub_tasks;
 
-          const frontTask = subTasks.filter(
-            (item) => item.name.indexOf('front_') !== -1
-          )[0];
-          const sideTask = subTasks.filter(
-            (item) => item.name.indexOf('side_') !== -1
-          )[0];
-          const measurementError = subTasks.filter(
-            (item) => item.name.indexOf('measurement_') !== -1
-          )[0];
+          const frontTask = subTasks.filter((item) => item.name.indexOf('front_') !== -1)[0];
+          const sideTask = subTasks.filter((item) => item.name.indexOf('side_') !== -1)[0];
+          const measurementError = subTasks.filter((item) => item.name.indexOf('measurement_') !== -1)[0];
 
           setHardValidation({
             front: frontTask.message,
@@ -625,7 +596,11 @@ class Upload extends Component {
   };
 
   disableTableFlow = () => {
-    const { setIsTableFlowDisabled, setIsTableFlow, setCamera } = this.props;
+    const {
+      setIsTableFlowDisabled,
+      setIsTableFlow,
+      setCamera,
+    } = this.props;
 
     setCamera(null);
     setIsTableFlowDisabled(true);

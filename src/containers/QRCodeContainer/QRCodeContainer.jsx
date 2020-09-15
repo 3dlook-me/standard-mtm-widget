@@ -11,7 +11,12 @@ import FlowService from '../../services/flowService';
 import SMSService from '../../services/smsService';
 import { validatePhoneNumberLetters } from '../../helpers/utils';
 import { gaCopyUrl, gaSendSms } from '../../helpers/ga';
-import { Preloader, QRCodeBlock, Stepper, Loader } from '../../components';
+import {
+  Preloader,
+  QRCodeBlock,
+  Stepper,
+  Loader,
+} from '../../components';
 
 import './QRCodeContainer.scss';
 import smsSendingIcon from '../../images/sms-sending.svg';
@@ -71,17 +76,14 @@ class QRCodeContainer extends Component {
     this.clipboard = new Clipboard('.scan-qrcode__btn');
 
     this.sms = new SMSService(token);
-    this.sms
-      .getShortLink(mobileFlowUrl)
+    this.sms.getShortLink(mobileFlowUrl)
       .then((res) => {
         this.setState({
           copyUrl: res.short_link,
           isShortUrlFetching: false,
         });
       })
-      .catch(() => {
-        this.setState({ isShortUrlFetching: false });
-      })
+      .catch(() => { this.setState({ isShortUrlFetching: false }); })
       .finally(async () => {
         const { copyUrl, qrCodeUrl } = this.state;
 
@@ -106,7 +108,11 @@ class QRCodeContainer extends Component {
    * Change phone number
    */
   changePhoneNumber = (isValid, number, country) => {
-    const { setPhoneCountry, setPhoneUserPart, setPhoneNumber } = this.props;
+    const {
+      setPhoneCountry,
+      setPhoneUserPart,
+      setPhoneNumber,
+    } = this.props;
 
     const phoneNumber = `${country.dialCode}${number}`;
     const noLettersCheck = validatePhoneNumberLetters(phoneNumber);
@@ -171,17 +177,13 @@ class QRCodeContainer extends Component {
 
       if (!isMobile) {
         this.timer = setInterval(() => {
-          this.flow
-            .get()
+          this.flow.get()
             .then((flowState) => {
               if (flowState.state.status === 'close-confirm') {
                 return;
               }
 
-              if (
-                flowState.state.status === 'opened-on-mobile' &&
-                flowState.state.lastActiveDate
-              ) {
+              if (flowState.state.status === 'opened-on-mobile' && flowState.state.lastActiveDate) {
                 this.setState({
                   isPending: true,
                 });
@@ -195,10 +197,7 @@ class QRCodeContainer extends Component {
                 const currentTime = this.lastActiveDate.getTime();
                 const widgetWasAliveAt = new Date(flowState.updated).getTime();
 
-                if (
-                  currentTime - widgetWasAliveAt > 12000 ||
-                  currentTime === widgetWasAliveAt
-                ) {
+                if (currentTime - widgetWasAliveAt > 12000 || currentTime === widgetWasAliveAt) {
                   this.setState({
                     isPending: false,
                   });
@@ -231,21 +230,15 @@ class QRCodeContainer extends Component {
       onCopy();
     }
 
-    this.setState(
-      {
-        isCopied: true,
-      },
-      () => {
-        const timer = setTimeout(() => {
-          this.setState(
-            {
-              isCopied: false,
-            },
-            () => clearTimeout(timer)
-          );
-        }, 3000);
-      }
-    );
+    this.setState({
+      isCopied: true,
+    }, () => {
+      const timer = setTimeout(() => {
+        this.setState({
+          isCopied: false,
+        }, () => clearTimeout(timer));
+      }, 3000);
+    });
   };
 
   showQRCodeHelp = () => {
@@ -264,8 +257,7 @@ class QRCodeContainer extends Component {
         isSMSPending: true,
       });
 
-      this.sms
-        .send(phoneNumber, qrCodeUrl)
+      this.sms.send(phoneNumber, qrCodeUrl)
         .then(() => {
           gaSendSms();
           this.resendTimer();
@@ -322,7 +314,7 @@ class QRCodeContainer extends Component {
       }
 
       this.setState({
-        resendTime: (time -= 1),
+        resendTime: time -= 1,
       });
     }, 1000);
   };
@@ -349,7 +341,11 @@ class QRCodeContainer extends Component {
       isShortUrlFetching,
     } = this.state;
 
-    const { sendDataStatus, phoneCountry, phoneUserPart } = this.props;
+    const {
+      sendDataStatus,
+      phoneCountry,
+      phoneUserPart,
+    } = this.props;
 
     const qrCopyUrl = copyUrl || qrCodeUrl;
 

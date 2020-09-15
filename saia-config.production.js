@@ -10,5 +10,5 @@ module.exports = {
   // path to widget assets for url configuration
   // should end with /
   WIDGET_ASSETS_URL: '/',
-  GA_TRACKING_ID: null,
+  GA_TRACKING_ID: 'UA-92309701-5',
 };

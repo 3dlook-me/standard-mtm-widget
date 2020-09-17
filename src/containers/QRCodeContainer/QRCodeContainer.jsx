@@ -135,6 +135,7 @@ class QRCodeContainer extends Component {
       flowId,
       isMobile,
       setMeasurements,
+      setSoftValidation,
       setProcessingStatus,
       settings,
       gender,
@@ -207,7 +208,11 @@ class QRCodeContainer extends Component {
               this.lastActiveDate = new Date(flowState.updated);
 
               if (flowState.state.status === 'finished') {
-                const { measurements } = flowState.state;
+                const {
+                  measurements,
+                  softValidation,
+                } = flowState.state;
+                setSoftValidation(softValidation);
                 setMeasurements(measurements);
 
                 route('/results', true);

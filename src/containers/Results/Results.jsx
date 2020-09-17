@@ -116,10 +116,10 @@ class Results extends BaseMobileFlow {
     const {
       addFrontImage,
       addSideImage,
-      setPersonId,
+      setTaskId,
     } = this.props;
 
-    setPersonId(null);
+    setTaskId(null);
     addFrontImage(null);
     addSideImage(null);
     route('/upload', true);
@@ -186,6 +186,7 @@ class Results extends BaseMobileFlow {
       softValidation,
       units,
       gender,
+      isMobile,
     } = this.props;
 
     const { openGuide, measurementsType, measurement } = this.state;
@@ -219,6 +220,7 @@ class Results extends BaseMobileFlow {
               units={units}
               gender={gender}
               softValidation={softValidation}
+              isDesktop={!isMobile}
             />
           ) : null }
 

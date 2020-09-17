@@ -101,4 +101,10 @@ $bottom-position: -30px;
     max-width: 315px;
     margin: 0 auto 35px;
   }
+
+  body.offline &__soft-validation .button {
+    pointer-events: none !important;
+    border-color: #e9e9e9 !important;
+    background-color: #e9e9e9 !important;
+  }
 }

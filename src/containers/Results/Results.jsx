@@ -57,6 +57,9 @@ class Results extends BaseMobileFlow {
       mtmClientId,
       origin,
       setIsHeaderTranslucent,
+      isMobile,
+      setFlowIsPending,
+      setProcessingStatus,
     } = this.props;
 
     setIsHeaderTranslucent(true);
@@ -64,6 +67,23 @@ class Results extends BaseMobileFlow {
     this.sendMeasurements(measurements, mtmClientId, origin);
 
     gaSuccess();
+
+    if (!isMobile) {
+      this.timer = setInterval(() => {
+        this.flow.get()
+          .then((flowState) => {
+            if (flowState.state.status === 'finished') {
+              return;
+            }
+
+            setFlowIsPending(true);
+            setProcessingStatus('');
+
+            route('/qrcode', true);
+          })
+          .catch((err) => console.log(err));
+      }, 3000);
+    }
   }
 
   componentWillReceiveProps = async (nextProps) => {
@@ -80,6 +100,10 @@ class Results extends BaseMobileFlow {
     const { setIsHeaderTranslucent } = this.props;
 
     setIsHeaderTranslucent(false);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   /**
@@ -112,12 +136,17 @@ class Results extends BaseMobileFlow {
     setHelpBtnStatus(status);
   }
 
-  onRetake = () => {
+  onRetake = async () => {
     const {
       addFrontImage,
       addSideImage,
       setTaskId,
     } = this.props;
+
+    await this.flow.updateState({
+      status: 'opened-on-mobile',
+      processStatus: '',
+    });
 
     setTaskId(null);
     addFrontImage(null);

@@ -91,6 +91,8 @@ export const INITIAL_STATE = {
   photosFromGallery: false,
 
   isSmbFlow: false,
+
+  flowIsPending: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -440,6 +442,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isTableFlowDisabled: action.payload,
+      };
+
+    case CONSTANTS.SET_FLOW_IS_PENDING:
+      return {
+        ...state,
+        flowIsPending: action.payload,
       };
 
     default:

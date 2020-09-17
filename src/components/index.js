@@ -16,3 +16,4 @@ export * from './PrivacyBanner';
 export * from './Tabs';
 export * from './SoftValidation';
 export * from './SoftValidationItem';
+export * from './Requirements';

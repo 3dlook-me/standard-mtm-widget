@@ -2,7 +2,8 @@ import { h, Component } from 'preact';
 import classNames from 'classnames';
 
 import analyticsService, {
-  GENDER_PAGE_GENDER_SELECTED,
+  GENDER_PAGE_MALE_GENDER_SELECTED,
+  GENDER_PAGE_FEMALE_GENDER_SELECTED,
 } from '../../services/analyticsService';
 
 /**
@@ -36,10 +37,9 @@ class Gender extends Component {
 
     analyticsService({
       uuid: token,
-      event: GENDER_PAGE_GENDER_SELECTED,
-      data: {
-        value,
-      },
+      event: value === 'male'
+        ? GENDER_PAGE_MALE_GENDER_SELECTED
+        : GENDER_PAGE_FEMALE_GENDER_SELECTED,
     });
 
     this.setState({ value }, () => change(value));

@@ -1,6 +1,11 @@
 import { h } from 'preact';
+import { useCallback } from 'preact/hooks';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import analyticsService, {
+  FAQ_PAGE_CLOSE,
+} from '../../services/analyticsService';
+import { parseGetParams } from '../../helpers/utils';
 import './Help.scss';
 
 import actions from '../../store/actions';
@@ -9,7 +14,18 @@ import actions from '../../store/actions';
  * Help component.
  * Displays help information
  */
-const Help = ({ setHelpIsActive, isHelpActive }) => (
+const Help = ({ setHelpIsActive, isHelpActive, matches, token }) => {
+  const onClickBack = useCallback(() => {
+    const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
+
+    analyticsService({
+      uuid,
+      event: FAQ_PAGE_CLOSE,
+    });
+    setHelpIsActive(!isHelpActive);
+  }, [setHelpIsActive, isHelpActive, matches]);
+
+  return (
   <div className={classNames('help', { active: isHelpActive })}>
     <div className="help__content">
       <h2>DO YOU STORE MY PHOTOS? WHERE DO THEY GO AFTER I UPLOAD THEM?</h2>
@@ -25,11 +41,12 @@ const Help = ({ setHelpIsActive, isHelpActive }) => (
       <p>All data you provide is transferred to the website owner into their 3DLOOK admin panel. They will use this data to provide you the best offer they can. Note: website owner may use your contact data to reach out to you if they consider it necessary.</p>
     </div>
     <div className="help__footer">
-      <button className="help__close button" type="button" onClick={() => setHelpIsActive(!isHelpActive)}>
+      <button className="help__close button" type="button" onClick={onClickBack}>
         <span>Back</span>
       </button>
     </div>
   </div>
 );
+  }
 
 export default connect((state) => state, actions)(Help);

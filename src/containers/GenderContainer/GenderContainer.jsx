@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-import { mobileFlowStatusUpdate, parseGetParams } from '../../helpers/utils';
+import { mobileFlowStatusUpdate } from '../../helpers/utils';
 import {
   gaDataMale,
   gaDataFemale,

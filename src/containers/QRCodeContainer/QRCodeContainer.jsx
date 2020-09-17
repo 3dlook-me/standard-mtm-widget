@@ -9,7 +9,13 @@ import IntlTelInput from 'react-intl-tel-input';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import SMSService from '../../services/smsService';
-import { send, validatePhoneNumberLetters } from '../../helpers/utils';
+import { validatePhoneNumberLetters } from '../../helpers/utils';
+import analyticsService, {
+  SCAN_QR_CODE_PAGE_ENTER,
+  SCAN_QR_CODE_PAGE_LEAVE,
+  SCAN_QR_CODE_PAGE_LINK_COPIED,
+  SCAN_QR_CODE_PAGE_SMS_SENT,
+} from '../../services/analyticsService';
 import { gaCopyUrl } from '../../helpers/ga';
 import {
   Preloader,
@@ -59,6 +65,11 @@ class QRCodeContainer extends Component {
     } = this.props;
     const mobileFlowUrl = `${window.location.origin}${window.location.pathname}#/mobile/${flowId}`;
 
+    analyticsService({
+      uuid: token,
+      event: SCAN_QR_CODE_PAGE_ENTER,
+    });
+
     if (phoneCountry && phoneUserPart) {
       this.setState({
         isPhoneNumberValid: true,
@@ -96,6 +107,19 @@ class QRCodeContainer extends Component {
   componentWillReceiveProps(nextProps) {
     this.init(nextProps);
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { isPending } = this.state;
+    const { token } = this.props;
+
+    if (!prevState.isPending && isPending) {
+      analyticsService({
+        uuid: token,
+        event: SCAN_QR_CODE_PAGE_LEAVE,
+      });
+    }
+  }
+  
 
   componentWillUnmount() {
     if (this.unsubscribe) this.unsubscribe();
@@ -222,7 +246,12 @@ class QRCodeContainer extends Component {
   copyUrl = () => {
     gaCopyUrl();
 
-    const { onCopy } = this.props;
+    const { onCopy, token } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: SCAN_QR_CODE_PAGE_LINK_COPIED,
+    });
 
     this.resendTimer();
 
@@ -247,6 +276,7 @@ class QRCodeContainer extends Component {
 
   sendSMS = () => {
     const { phoneNumber, qrCodeUrl } = this.state;
+    const { token } = this.props;
 
     if (!phoneNumber) {
       this.setState({
@@ -255,6 +285,14 @@ class QRCodeContainer extends Component {
     } else {
       this.setState({
         isSMSPending: true,
+      });
+
+      analyticsService({
+        uuid: token,
+        event: SCAN_QR_CODE_PAGE_SMS_SENT,
+        data: {
+          value: phoneNumber,
+        }
       });
 
       this.sms.send(phoneNumber, qrCodeUrl)

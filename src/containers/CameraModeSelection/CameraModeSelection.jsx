@@ -6,6 +6,12 @@ import { Link } from 'preact-router';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { isMobileDevice, mobileFlowStatusUpdate } from '../../helpers/utils';
+import analyticsService, {
+  CAMERA_MODE_PAGE_ENTER,
+  CAMERA_MODE_PAGE_LEAVE,
+  CAMERA_MODE_PAGE_WITH_FRIEND,
+  CAMERA_MODE_PAGE_HANDS_FREE,
+} from '../../services/analyticsService';
 import {
   Stepper,
   PrivacyBanner,
@@ -40,7 +46,14 @@ class CameraModeSelection extends Component {
   }
 
   componentWillUnmount() {
+    const { token } = this.props;
+
     window.removeEventListener('unload', this.reloadListener);
+
+    analyticsService({
+      uuid: token,
+      event: CAMERA_MODE_PAGE_LEAVE,
+    });
   }
 
   componentDidMount() {
@@ -57,6 +70,11 @@ class CameraModeSelection extends Component {
       flowId,
       isDemoWidget,
     } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: CAMERA_MODE_PAGE_ENTER,
+    });
 
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
@@ -87,6 +105,15 @@ class CameraModeSelection extends Component {
   onFrontImageLoad = () => {
     this.setState({
       isFrontModeImageLoaded: true,
+    });
+  }
+
+  onClickNextPage = () => {
+    const { isTableFlow, token } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: isTableFlow ? CAMERA_MODE_PAGE_HANDS_FREE : CAMERA_MODE_PAGE_WITH_FRIEND,
     });
   }
 
@@ -216,6 +243,7 @@ class CameraModeSelection extends Component {
               <Link
                 className="button"
                 href="/how-to-take-photos"
+                onClick={this.onClickNextPage}
               >
                 NEXT
               </Link>

@@ -7,6 +7,9 @@ import { gaSwitchToMobileFlow } from '../../helpers/ga';
 import {
   browserValidation, isMobileDevice,
 } from '../../helpers/utils';
+import analyticsService, {
+  MOBILE_FLOW_START,
+} from '../../services/analyticsService';
 import { BaseMobileFlow, Loader } from '../../components';
 
 /**
@@ -24,6 +27,13 @@ class MobileFlow extends BaseMobileFlow {
   }
 
   componentDidMount = async () => {
+    const { matches } = this.props;
+
+    analyticsService({
+      uuid: matches.id,
+      event: MOBILE_FLOW_START,
+    });
+
     try {
       const { flowState, setFlowState } = this.props;
 

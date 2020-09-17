@@ -133,14 +133,16 @@ class HeightContainer extends Component {
 
     addHeight(numHeight);
 
-    analyticsService({
-      uuid: token,
-      event: HEIGHT_PAGE_HEIGHT_SELECTED,
-      data: {
-        value: numHeight,
-      },
-    });
-
+    if (isValueValid) {
+      analyticsService({
+        uuid: token,
+        event: HEIGHT_PAGE_HEIGHT_SELECTED,
+        data: {
+          value: numHeight,
+        },
+      });
+    }
+    
     this.setState({
       isHeightValid: isValueValid,
     });
@@ -162,6 +164,7 @@ class HeightContainer extends Component {
       isMobile,
       height,
       units,
+      token,
     } = this.props;
 
     return (
@@ -179,6 +182,7 @@ class HeightContainer extends Component {
               changeUnits={this.onChangeUnits}
               height={height}
               units={units}
+              token={token}
             />
           </div>
 

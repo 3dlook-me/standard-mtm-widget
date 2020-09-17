@@ -3,7 +3,7 @@ import { route } from 'preact-router';
 import API from '@3dlook/saia-sdk/lib/api';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import Camera from '@3dlook/camera/src/Camera';
+import Camera from '../../components/CustomCamera/CustomCamera';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
@@ -21,10 +21,17 @@ import {
 } from '../../helpers/ga';
 import analyticsService, {
   FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
-  FRONT_PHOTO_PAGE_OPEN_CAMERA, SIDE_PHOTO_PAGE_OPEN_CAMERA,
-  FRONT_PHOTO_PAGE_PHOTO_TAKEN, SIDE_PHOTO_PAGE_PHOTO_TAKEN,
-  MAGIC_SCREEN_PAGE_ENTER, MAGIC_SCREEN_PAGE_LEAVE,
-  MAGIC_SCREEN_PAGE_SUCCESS, MAGIC_SCREEN_PAGE_FAILED,
+  SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+  FRONT_PHOTO_PAGE_EXAMPLE_CLOSE,
+  SIDE_PHOTO_PAGE_EXAMPLE_CLOSE,
+  FRONT_PHOTO_PAGE_OPEN_CAMERA,
+  SIDE_PHOTO_PAGE_OPEN_CAMERA,
+  FRONT_PHOTO_PAGE_PHOTO_TAKEN,
+  SIDE_PHOTO_PAGE_PHOTO_TAKEN,
+  MAGIC_SCREEN_PAGE_ENTER,
+  MAGIC_SCREEN_PAGE_LEAVE,
+  MAGIC_SCREEN_PAGE_SUCCESS,
+  MAGIC_SCREEN_PAGE_FAILED,
 } from '../../services/analyticsService';
 import {
   Preloader,
@@ -106,12 +113,18 @@ class Upload extends Component {
       isFromDesktopToMobile,
       isDemoWidget,
       token,
+      isTableFlow,
+      frontImage
     } = this.props;
 
-    analyticsService({
-      uuid: token,
-      event: FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
-    });
+    if (!isTableFlow) {
+      analyticsService({
+        uuid: token,
+        event: !frontImage
+          ? FRONT_PHOTO_PAGE_EXAMPLE_OPEN
+          : SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+      });
+    }
 
     window.addEventListener('offline', this.setOfflineStatus);
 
@@ -141,6 +154,35 @@ class Upload extends Component {
       }
     }
   }
+
+  componentDidUpdate(prevProps) {
+    const {
+      frontImage,
+      sideImage,
+      isTableFlow,
+      token,
+    } = this.props;
+
+    if (!isTableFlow && !prevProps.frontImage && frontImage && !sideImage) {
+      analyticsService({
+        uuid: token,
+        event: SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+      });
+    }
+
+    if (
+        !isTableFlow &&
+        (!prevProps.sideImage && sideImage || !prevProps.frontImage && frontImage)
+      ) {
+      analyticsService({
+        uuid: token,
+        event: 
+          !prevProps.sideImage && sideImage && SIDE_PHOTO_PAGE_EXAMPLE_CLOSE ||
+          !prevProps.frontImage && frontImage && FRONT_PHOTO_PAGE_EXAMPLE_CLOSE,
+      });
+    }
+  }
+  
 
   init(props) {
     const { token } = props;
@@ -496,10 +538,6 @@ class Upload extends Component {
         person: person.id,
       });
 
-      if (!isFromDesktopToMobile) {
-        await this.flow.widgetDeactivate();
-      }
-
       gaUploadOnContinue();
 
       analyticsService({
@@ -687,6 +725,7 @@ class Upload extends Component {
       isPhotosFromGallery,
       isTableFlow,
       hardValidation,
+      token,
     } = this.props;
 
     let title;
@@ -702,20 +741,10 @@ class Upload extends Component {
       title = 'Take Front photo';
       photoBg = frontExample;
       frontActive = true;
-      // analyticsService({
-      //   uuid: API_KEY || parseGetParams().key,
-      //   event: FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
-      //   token: API_KEY || parseGetParams().key,
-      // });
     } else if (frontImage && !sideImage) {
       title = 'Take Side photo';
       photoBg = sideExample;
       sideActive = true;
-      // analyticsService({
-      //   uuid: API_KEY || parseGetParams().key,
-      //   event: SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
-      //   token: API_KEY || parseGetParams().key,
-      // });
     }
 
     return (
@@ -764,7 +793,12 @@ class Upload extends Component {
               </h3>
 
               {isTableFlow ? (
-                <Tabs activeTab={activeTab} />
+                <Tabs
+                  activeTab={activeTab}
+                  token={token}
+                  isFrontImage={!!frontImage}
+                  isSideImage={!!sideImage}
+                />
               ) : (
                 <div
                   className="upload__image-example"
@@ -827,6 +861,7 @@ class Upload extends Component {
             disableTableFlow={this.disableTableFlow}
             turnOffCamera={this.turnOffCamera}
             setDeviceCoordinates={this.setDeviceCoordinates}
+            token={token}
           />
         ) : null}
       </div>

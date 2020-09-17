@@ -9,6 +9,7 @@ import analyticsService, {
   WEIGHT_PAGE_ENTER,
   WEIGHT_PAGE_LEAVE,
   WEIGHT_PAGE_WEIGHT_SELECTED,
+  WEIGHT_PAGE_WEIGHT_SKIP,
 } from '../../services/analyticsService';
 import {
   getWeightKg,
@@ -148,7 +149,7 @@ class WeightContainer extends Component {
    */
   handleChange = (e) => {
     const { value } = e.target;
-    const { setWeight, setWeightLb, units, token } = this.props;
+    const { setWeight, setWeightLb, units } = this.props;
 
     if (units !== 'cm') {
       setWeight(getWeightKg(+value));
@@ -156,14 +157,6 @@ class WeightContainer extends Component {
     } else {
       setWeight(+value);
     }
-
-    analyticsService({
-      uuid: token,
-      event: WEIGHT_PAGE_WEIGHT_SELECTED,
-      data: {
-        value: units !== 'cm' ? getWeightKg(+value) : +value,
-      },
-    });
 
     this.setState({
       weightValue: value,
@@ -226,7 +219,18 @@ class WeightContainer extends Component {
 
   toNextScreen = async () => {
     const { token } = this.props;
+    const { weightValue } = this.state;
     gaOnWeightNext();
+
+    if (weightValue) {
+      analyticsService({
+        uuid: token,
+        event: WEIGHT_PAGE_WEIGHT_SELECTED,
+        data: {
+          value: weightValue,
+        }
+      });
+    }
 
     analyticsService({
       uuid: token,
@@ -267,13 +271,18 @@ class WeightContainer extends Component {
   }
 
   skipAndNextHandler = () => {
-    const { setWeight } = this.props;
+    const { setWeight, token } = this.props;
 
     this.setState({
       weightValue: null,
       skipWeight: true,
     }, async () => {
       await setWeight(null);
+
+      analyticsService({
+        uuid: token,
+        event: WEIGHT_PAGE_WEIGHT_SKIP,
+      });
 
       this.toNextScreen();
     });

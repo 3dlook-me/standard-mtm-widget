@@ -427,6 +427,7 @@ class Upload extends Component {
       await this.flow.updateState({
         measurements,
         bodyType: person.volume_params.body_type,
+        softValidation,
       });
 
       if (isFromDesktopToMobile) {

@@ -139,6 +139,7 @@ class Results extends BaseMobileFlow {
       softValidation,
       units,
       gender,
+      isMobile,
     } = this.props;
 
     return (
@@ -164,6 +165,7 @@ class Results extends BaseMobileFlow {
               units={units}
               gender={gender}
               softValidation={softValidation}
+              isDesktop={!isMobile}
             />
           ) : null }
 

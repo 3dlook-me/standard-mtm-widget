@@ -135,6 +135,7 @@ class QRCodeContainer extends Component {
       flowId,
       isMobile,
       setRecommendations,
+      setSoftValidation,
       setPersonId,
       origin,
       setBodyType,
@@ -213,7 +214,9 @@ class QRCodeContainer extends Component {
                   measurements,
                   saiaPersonId,
                   bodyType,
+                  softValidation,
                 } = flowState.state;
+                setSoftValidation(softValidation);
                 setRecommendations(recommendations);
 
                 send('recommendations', recommendations, origin);

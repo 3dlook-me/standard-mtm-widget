@@ -30,7 +30,7 @@ import './SoftValidation.scss';
 /**
  * SoftValidation component
  */
-const SoftValidation = ({ className, retake, units, gender, softValidation }) => (
+const SoftValidation = ({ className, retake, units, gender, softValidation, isDesktop }) => (
   <div className={classNames('soft-validation', className)}>
     <p className="soft-validation__warning">Results may not be accurate for the following reasons</p>
 
@@ -84,13 +84,17 @@ const SoftValidation = ({ className, retake, units, gender, softValidation }) =>
       </SoftValidationItem>
     ) : null }
 
-    <button className="button soft-validation__btn" type="button" onClick={() => retake()}>
-      <img src={retakeIcon} alt="" />
-      <span>
-        {'Retake '}
-        {(softValidation.looseTop || softValidation.looseBottom || softValidation.looseTopAndBottom) ? 'both photos' : 'front photo'}
-      </span>
-    </button>
+    {(!isDesktop) ? (
+      <button className="button soft-validation__btn" type="button" onClick={() => retake()}>
+        <img src={retakeIcon} alt="" />
+        <span>
+          {'Retake '}
+          {(softValidation.looseTop || softValidation.looseBottom || softValidation.looseTopAndBottom) ? 'both photos' : 'front photo'}
+        </span>
+      </button>
+    ) : (
+      null
+    )}
 
     <div className="soft-validation__decor" />
   </div>

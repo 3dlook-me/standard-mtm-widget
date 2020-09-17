@@ -73,6 +73,8 @@ export const INITIAL_STATE = {
   isNetwork: true,
 
   photosFromGallery: false,
+
+  flowIsPending: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -365,6 +367,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         taskId: action.payload,
+      };
+
+    case CONSTANTS.SET_FLOW_IS_PENDING:
+      return {
+        ...state,
+        flowIsPending: action.payload,
       };
 
     default:

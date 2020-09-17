@@ -47,6 +47,7 @@ export const CONSTANTS = {
   SET_IS_TABLE_FLOW: 'SET_IS_TABLE_FLOW',
   SET_IS_TABLE_FLOW_DISABLED: 'SET_IS_TABLE_FLOW_DISABLED',
   SET_TASK_ID: 'SET_TASK_ID',
+  SET_FLOW_IS_PENDING: 'SET_FLOW_IS_PENDING',
 };
 
 /**
@@ -508,6 +509,16 @@ export const setTaskId = (id) => ({
   payload: id,
 });
 
+/**
+ * Set flow is pending
+ *
+ * @param {boolean} isPending - isPending
+ */
+export const setFlowIsPending = (isPending) => ({
+  type: CONSTANTS.SET_FLOW_IS_PENDING,
+  payload: isPending,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -553,5 +564,6 @@ export default {
   setIsTableFlowDisabled,
   addFrontDeviceCoordinates,
   addSideDeviceCoordinates,
-  setTaskId
+  setTaskId,
+  setFlowIsPending,
 };

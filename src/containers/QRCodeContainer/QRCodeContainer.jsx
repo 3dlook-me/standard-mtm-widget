@@ -30,10 +30,12 @@ class QRCodeContainer extends Component {
   constructor(props) {
     super(props);
 
+    const { flowIsPending } = props;
+
     this.init(props);
 
     this.state = {
-      isPending: false,
+      isPending: !!flowIsPending,
       isSMSPending: false,
       isSMSSuccess: false,
 
@@ -56,7 +58,13 @@ class QRCodeContainer extends Component {
       phoneCountry,
       phoneUserPart,
       phoneNumber,
+      flowIsPending,
     } = this.props;
+
+    if (flowIsPending) {
+      return;
+    }
+
     const mobileFlowUrl = `${window.location.origin}${window.location.pathname}?key=${token}#/mobile/${flowId}`;
 
     if (phoneCountry && phoneUserPart) {
@@ -150,6 +158,7 @@ class QRCodeContainer extends Component {
       bodyPart,
       returnUrl,
       productId,
+      setFlowIsPending,
     } = props;
 
     if (token && flowId && !this.api && !this.flow) {
@@ -218,6 +227,7 @@ class QRCodeContainer extends Component {
                 } = flowState.state;
                 setSoftValidation(softValidation);
                 setRecommendations(recommendations);
+                setFlowIsPending(false);
 
                 send('recommendations', recommendations, origin);
                 send('data', {

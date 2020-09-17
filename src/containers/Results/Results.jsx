@@ -43,11 +43,31 @@ class Results extends BaseMobileFlow {
 
     const {
       recommendations,
+      isMobile,
+      setFlowIsPending,
+      setProcessingStatus,
     } = this.props;
 
     this.sendSizeRecommendations(recommendations);
 
     gaSuccess();
+
+    if (!isMobile) {
+      this.timer = setInterval(() => {
+        this.flow.get()
+          .then((flowState) => {
+            if (flowState.state.status === 'finished') {
+              return;
+            }
+
+            setFlowIsPending(true);
+            setProcessingStatus('');
+
+            route('/qrcode', true);
+          })
+          .catch((err) => console.log(err));
+      }, 3000);
+    }
   }
 
   componentWillReceiveProps = async (nextProps) => {
@@ -56,6 +76,10 @@ class Results extends BaseMobileFlow {
     } = nextProps;
 
     this.sendSizeRecommendations(recommendations);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   /**
@@ -79,12 +103,17 @@ class Results extends BaseMobileFlow {
     }
   }
 
-  onRetake = () => {
+  onRetake = async () => {
     const {
       addFrontImage,
       addSideImage,
       setTaskId,
     } = this.props;
+
+    await this.flow.updateState({
+      status: 'opened-on-mobile',
+      processStatus: '',
+    });
 
     setTaskId(null);
     addFrontImage(null);

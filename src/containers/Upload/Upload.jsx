@@ -20,8 +20,12 @@ import {
 } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
+  gaOnClickLetsStartFrontFriend,
   gaOpenCameraFrontPhoto,
+  gaOnClickLetsStartSideFriend,
   gaOpenCameraSidePhoto,
+  gaOnClickLetsStartRequirements,
+  gaOnClickDoneRequirements,
 } from '../../helpers/ga';
 import {
   Preloader,
@@ -55,11 +59,6 @@ class Upload extends Component {
       sideImagePose: null,
 
       isPending: false,
-
-      // photoType: 'front',
-      // isPhotoExample: false,
-
-      // activeTab: props.frontImage && !props.sideImage ? 'side' : 'front',
     };
 
     const { setPageReloadStatus } = props;
@@ -132,6 +131,8 @@ class Upload extends Component {
     }
   }
 
+  getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
+
   init(props) {
     const { token } = props;
 
@@ -160,6 +161,10 @@ class Upload extends Component {
       hardValidation,
     } = this.props;
 
+    if (!isTableFlow) {
+      gaOpenCameraFrontPhoto();
+    }
+
     setHeaderIconsStyle('default');
     addFrontImage(file);
 
@@ -172,7 +177,7 @@ class Upload extends Component {
     } else {
       setCamera(null);
     }
-  }
+  };
 
   /**
    * Save side image to state
@@ -185,6 +190,10 @@ class Upload extends Component {
       setCamera,
       isTableFlow,
     } = this.props;
+
+    if (!isTableFlow) {
+      gaOpenCameraSidePhoto();
+    }
 
     setHeaderIconsStyle('default');
 
@@ -204,13 +213,13 @@ class Upload extends Component {
     }
 
     addSideImage(file);
-  }
+  };
 
   turnOffCamera = () => {
     const { setCamera } = this.props;
 
     setCamera(null);
-  }
+  };
 
   /**
    * On next button click handler
@@ -237,9 +246,7 @@ class Upload extends Component {
       deviceCoordinates,
     } = props;
 
-    let {
-      personId,
-    } = props;
+    let { personId } = props;
 
     const {
       setHardValidation,
@@ -419,7 +426,9 @@ class Upload extends Component {
         }
 
         if (isFromDesktopToMobile) {
-          this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });
+          this.flow.updateLocalState({
+            processStatus: 'Photo Upload Completed!',
+          });
         }
 
         setProcessingStatus('Photo Upload Completed!');
@@ -427,7 +436,9 @@ class Upload extends Component {
       }
 
       if (isFromDesktopToMobile) {
-        this.flow.updateLocalState({ processStatus: 'Calculating your Measurements' });
+        this.flow.updateLocalState({
+          processStatus: 'Calculating your Measurements',
+        });
       }
 
       setProcessingStatus('Calculating your Measurements');
@@ -468,7 +479,7 @@ class Upload extends Component {
         await this.flow.widgetDeactivate();
       }
 
-      gaUploadOnContinue();
+      gaUploadOnContinue(this.getFlowPhoto());
 
       route('/results', true);
     } catch (error) {
@@ -508,14 +519,20 @@ class Upload extends Component {
         } else if (error && error.response && error.response.status === 400) {
           route('/not-found', true);
         } else if (error && error.response && error.response.data) {
-          const { detail, brand: brandError, body_part: bodyPartError } = error.response.data;
+          const {
+            detail,
+            brand: brandError,
+            body_part: bodyPartError,
+          } = error.response.data;
           alert(detail || brandError || bodyPartError);
           route('/not-found', true);
         } else {
           if (error.message.includes('is not specified')) {
             const { returnUrl } = this.props;
 
-            alert('Oops...\nThe server lost connection...\nPlease restart widget flow on the desktop or start again on mobile');
+            alert(
+              'Oops...\nThe server lost connection...\nPlease restart widget flow on the desktop or start again on mobile'
+            );
 
             window.location.href = returnUrl;
 
@@ -533,36 +550,40 @@ class Upload extends Component {
         }
       }
     }
-  }
+  };
 
   triggerFrontImage = () => {
-    const { setCamera } = this.props;
+    const { setCamera, isTableFlow } = this.props;
 
-    gaOpenCameraFrontPhoto();
+    if (isTableFlow) {
+      gaOnClickLetsStartRequirements();
+    } else {
+      gaOnClickLetsStartFrontFriend();
+    }
 
     setCamera('front');
-  }
+  };
 
   triggerSideImage = () => {
     const { setCamera } = this.props;
 
-    gaOpenCameraSidePhoto();
+    gaOnClickLetsStartSideFriend();
 
     setCamera('side');
-  }
+  };
 
-  openPhotoExample =(photoType) => {
+  openPhotoExample = (photoType) => {
     this.setState({
       isPhotoExample: true,
       photoType,
     });
-  }
+  };
 
   closePhotoExample = () => {
     this.setState({
       isPhotoExample: false,
     });
-  }
+  };
 
   setOfflineStatus = () => {
     const { setIsNetwork } = this.props;
@@ -572,7 +593,7 @@ class Upload extends Component {
     alert('Check your internet connection and try again');
 
     route('/not-found', true);
-  }
+  };
 
   disableTableFlow = () => {
     const {
@@ -584,7 +605,7 @@ class Upload extends Component {
     setCamera(null);
     setIsTableFlowDisabled(true);
     setIsTableFlow(false);
-  }
+  };
 
   setDeviceCoordinates = (coords) => {
     const {
@@ -598,7 +619,7 @@ class Upload extends Component {
     } else {
       addSideDeviceCoordinates(coords);
     }
-  }
+  };
 
   render() {
     const isDesktop = !isMobileDevice();
@@ -646,7 +667,6 @@ class Upload extends Component {
 
     return (
       <div className="screen active">
-
         {isDesktop ? (
           <div className="tutorial__desktop-msg">
             <h2>Please open this link on your mobile device</h2>
@@ -715,14 +735,15 @@ class Upload extends Component {
           </Fragment>
         )}
 
-        {/* {isPhotoExample ? ( */}
-        {/*  <PhotoExample photoType={photoType} closePhotoExample={this.closePhotoExample} /> */}
-        {/* ) : null} */}
-
-        <Preloader isActive={isPending} status={sendDataStatus} isMobile={isMobile} />
+        <Preloader
+          isActive={isPending}
+          status={sendDataStatus}
+          isMobile={isMobile}
+        />
 
         {camera ? (
           <Camera
+            onClickDone={gaOnClickDoneRequirements}
             type={camera}
             gender={gender}
             saveFront={this.saveFrontFile}

@@ -72,6 +72,7 @@ export const INITIAL_STATE = {
 
   settings: {
     final_page: 'thanks',
+    // final_page: 'measurements',
   },
 
   headerIconsStyle: 'default',

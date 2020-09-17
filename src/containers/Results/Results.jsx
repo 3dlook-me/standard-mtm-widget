@@ -83,10 +83,10 @@ class Results extends BaseMobileFlow {
     const {
       addFrontImage,
       addSideImage,
-      setPersonId,
+      setTaskId,
     } = this.props;
 
-    setPersonId(null);
+    setTaskId(null);
     addFrontImage(null);
     addSideImage(null);
     route('/upload', true);

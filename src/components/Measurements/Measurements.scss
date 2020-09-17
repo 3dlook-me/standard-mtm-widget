@@ -6,6 +6,9 @@
 
   @include breakpoint($mobile) {
     display: block;
+    width: 100%;
+    max-width: 275px;
+    margin: 0 auto;
   }
 
   &__wrapper {
@@ -13,7 +16,7 @@
     overflow: auto;
 
     @include breakpoint($mobile) {
-      padding: 0 72px;
+      padding: 0;
     }
 
     @include breakpoint($iphoneSE) {

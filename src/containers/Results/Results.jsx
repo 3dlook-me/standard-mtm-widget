@@ -108,6 +108,7 @@ class Results extends BaseMobileFlow {
       addFrontImage,
       addSideImage,
       setTaskId,
+      softValidation,
     } = this.props;
 
     await this.flow.updateState({
@@ -115,9 +116,14 @@ class Results extends BaseMobileFlow {
       processStatus: '',
     });
 
+    if (!softValidation.looseTop && !softValidation.looseBottom && !softValidation.looseTopAndBottom) {
+      addFrontImage(null);
+    } else {
+      addFrontImage(null);
+      addSideImage(null);
+    }
+
     setTaskId(null);
-    addFrontImage(null);
-    addSideImage(null);
     route('/upload', true);
   }
 

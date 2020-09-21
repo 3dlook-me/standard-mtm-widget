@@ -17,7 +17,7 @@ import successIcon from '../../images/ic_done.svg';
  * Results page component.
  * Displays results of the flow.
  */
-class Results extends BaseMobileFlow {
+class Results extends Component {
   constructor(props) {
     super(props);
 
@@ -43,8 +43,6 @@ class Results extends BaseMobileFlow {
   }
 
   componentDidMount = async () => {
-    await super.componentDidMount();
-
     const {
       measurements,
       origin,

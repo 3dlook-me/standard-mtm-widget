@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 
 import FlowService from '../../services/flowService';
-import { isMobileDevice } from '../../helpers/utils';
+import { filterCustomMeasurements, isMobileDevice } from '../../helpers/utils';
 
 /**
  * Mobile flow page component
@@ -47,6 +47,7 @@ class BaseMobileFlow extends Component {
       setIsPhotosFromGallery,
       setWidgetId,
       isWidgetDeactivated,
+      setCustomSettings,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -78,11 +79,20 @@ class BaseMobileFlow extends Component {
 
     this.flow.setFlowId(matches.id);
 
+    this.flow.getCustomSettings()
+      .then(async (res) => {
+        await setCustomSettings(res);
+        // console.log(res);
+      })
+      .catch((err) => console.error(err));
+
     return this.flow.get()
       .then((flowStateResult) => {
         const brand = flowStateResult.state.brand || TEST_BRAND;
         const bodyPart = flowStateResult.state.bodyPart || TEST_BODY_PART;
         const photosFromGallery = flowStateResult.state.photosFromGallery || false;
+        const { customSettings } = this.props;
+        const { measurements } = flowStateResult.state;
 
         if (photosFromGallery) {
           setIsPhotosFromGallery(true);
@@ -93,7 +103,17 @@ class BaseMobileFlow extends Component {
           setFlowState(flowStateResult.state);
         }
 
-        setMeasurements(flowStateResult.state.measurements);
+        console.log(measurements);
+
+        if (!Object.keys(customSettings.outputMeasurements).length) {
+          setMeasurements(measurements);
+        } else if (measurements) {
+          setMeasurements({
+            ...measurements,
+            ...(filterCustomMeasurements(measurements, customSettings)),
+          });
+        }
+
         setPersonId(flowStateResult.person || flowStateResult.state.personId);
         setBrand(brand);
         setBodyPart(bodyPart);

@@ -61,6 +61,7 @@ class Welcome extends Component {
       setSettings,
       setIsPhotosFromGallery,
       isDemoWidget,
+      setCustomSettings,
     } = this.props;
 
     const token = matches.key || API_KEY || parseGetParams().key;
@@ -127,6 +128,7 @@ class Welcome extends Component {
             setFlowId(res.uuid);
             setWidgetId(res.id);
             setSettings(res.settings);
+            // setSettings({ results_screen: 'measurements', final_page: 'measurements' });
 
             this.setState({
               isButtonDisabled: false,
@@ -160,6 +162,18 @@ class Welcome extends Component {
           isButtonDisabled: false,
         });
       }
+
+      this.flow.getCustomSettings()
+        .then((res) => {
+          const { redirectLink } = res;
+
+          setCustomSettings(res);
+
+          if (redirectLink) {
+            setReturnUrl(redirectLink);
+          }
+        })
+        .catch((err) => console.error(err));
     }, { once: true });
   }
 

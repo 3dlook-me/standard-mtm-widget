@@ -17,6 +17,7 @@ import {
   wait,
   mobileFlowStatusUpdate,
   isMobileDevice,
+  filterCustomMeasurements,
 } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
@@ -256,6 +257,7 @@ class Upload extends Component {
       isFromDesktopToMobile,
       taskId,
       setTaskId,
+      customSettings,
     } = this.props;
 
     try {
@@ -436,7 +438,16 @@ class Upload extends Component {
 
       await wait(1000);
 
-      const measurements = { ...person };
+      let measurements;
+
+      if (!Object.keys(customSettings.outputMeasurements).length) {
+        measurements = { ...person };
+      } else {
+        measurements = {
+          ...person,
+          ...(filterCustomMeasurements({ ...person }, customSettings)),
+        };
+      }
 
       send('data', measurements, origin);
 

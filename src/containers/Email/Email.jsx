@@ -94,8 +94,20 @@ class Email extends Component {
   /**
    * On next screen event handler
    */
-  onNextScreen = async () => {
+  onNextScreen = () => {
+    const { gender } = this.props.customSettings;
+
     gaOnEmailNext();
+
+    if (gender !== 'all') {
+      const { addGender } = this.props;
+
+      addGender(gender);
+
+      route('/height', false);
+
+      return;
+    }
 
     route('/gender', false);
   }

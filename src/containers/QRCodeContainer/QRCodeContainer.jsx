@@ -176,13 +176,11 @@ class QRCodeContainer extends Component {
       });
 
       if (!isMobile) {
+        let loaderCounter = 0;
+
         this.timer = setInterval(() => {
           this.flow.get()
             .then((flowState) => {
-              if (flowState.state.status === 'close-confirm') {
-                return;
-              }
-
               if (flowState.state.status === 'opened-on-mobile' && flowState.state.lastActiveDate) {
                 this.setState({
                   isPending: true,
@@ -197,11 +195,17 @@ class QRCodeContainer extends Component {
                 const currentTime = this.lastActiveDate.getTime();
                 const widgetWasAliveAt = new Date(flowState.updated).getTime();
 
-                if (currentTime - widgetWasAliveAt > 12000 || currentTime === widgetWasAliveAt) {
-                  this.setState({
-                    isPending: false,
-                  });
+                if (currentTime === widgetWasAliveAt) {
+                  if (loaderCounter < 3) { loaderCounter += 1; }
+
+                  if (loaderCounter === 3) {
+                    this.setState({ isPending: false });
+                  }
+
+                  return;
                 }
+
+                if (loaderCounter !== 0) loaderCounter = 0;
               }
 
               this.lastActiveDate = new Date(flowState.updated);

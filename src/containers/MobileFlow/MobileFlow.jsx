@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { connect } from 'react-redux';
 import { route } from 'preact-router';
+import { detect } from 'detect-browser';
 
 import actions from '../../store/actions';
 import { gaSwitchToMobileFlow } from '../../helpers/ga';
@@ -32,6 +33,10 @@ class MobileFlow extends BaseMobileFlow {
     analyticsService({
       uuid: matches.id,
       event: MOBILE_FLOW_START,
+      data: {
+        device: isMobileDevice() ? 'mobile' : 'web browser',
+        browser: detect().name === 'ios' ? 'safari' : detect().name,
+      },
     });
 
     try {

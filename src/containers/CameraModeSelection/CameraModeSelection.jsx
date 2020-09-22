@@ -11,6 +11,7 @@ import {
   PrivacyBanner,
   Loader,
 } from '../../components';
+import { gaOnNextLetsTakePhotos, gaOnSelectFlow } from '../../helpers/ga';
 
 import './CameraModeSelection.scss';
 import maleFriend from '../../images/male_friend.png';
@@ -71,24 +72,31 @@ class CameraModeSelection extends Component {
     }
   }
 
+  getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
+
   handleClick = (e) => {
     const { setIsTableFlow } = this.props;
     const value = e.target.value === 'table-flow';
 
     setIsTableFlow(value);
-  }
+  };
 
   onBackImageLoad = () => {
     this.setState({
       isBackModeImageLoaded: true,
     });
-  }
+  };
 
   onFrontImageLoad = () => {
     this.setState({
       isFrontModeImageLoaded: true,
     });
-  }
+  };
+
+  onClickNextStep = () => {
+    gaOnSelectFlow(this.getFlowPhoto());
+    gaOnNextLetsTakePhotos();
+  };
 
   render() {
     const isDesktop = !isMobileDevice();
@@ -103,9 +111,7 @@ class CameraModeSelection extends Component {
     const backCameraMode = gender === 'male' ? maleFriend : femaleFriend;
 
     return (
-
       <div className="screen active">
-
         {isDesktop ? (
           <div className="desktop-msg">
             <h2>Please open this link on your mobile device</h2>
@@ -120,15 +126,9 @@ class CameraModeSelection extends Component {
               <PrivacyBanner />
 
               <p className="camera-mode-selection__text">
-                You have two options: ask someone to help you, or
-                {' '}
-                <br />
-                {' '}
-                take photos by yourself in the hands-free mode
-                {' '}
-                <br />
-                {' '}
-                using a voice assistant.
+                You have two options: ask someone to help you, or <br /> take
+                photos by yourself in the hands-free mode <br /> using a voice
+                assistant.
                 <br />
                 <b> How would you like to proceed? </b>
               </p>
@@ -216,6 +216,7 @@ class CameraModeSelection extends Component {
               <Link
                 className="button"
                 href="/how-to-take-photos"
+                onClick={this.onClickNextStep}
               >
                 NEXT
               </Link>

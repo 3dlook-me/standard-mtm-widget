@@ -105,6 +105,7 @@ export const INITIAL_STATE = {
   customSettings: {
     gender: 'all',
     redirectLink: null,
+    is_custom_output_measurements: false,
     outputMeasurements: {
       volumetric: {
         chest: false,

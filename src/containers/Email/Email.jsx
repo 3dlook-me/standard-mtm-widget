@@ -13,8 +13,8 @@ import analyticsService, {
   EMAIL_PAGE_LEAVE,
   EMAIL_PAGE_TERMS_CHECK,
   EMAIL_PAGE_ENTER_EMAIL,
-  EMAIL_PAGE_CLICK_TERMS_CONDITIONS,
-  EMAIL_PAGE_CLICK_PRIVACY_POLICY,
+  CLICK_TERMS_CONDITIONS,
+  CLICK_PRIVACY_POLICY,
   analyticsServiceAsync
 } from '../../services/analyticsService';
 
@@ -167,8 +167,8 @@ class Email extends Component {
       await analyticsServiceAsync({
         uuid: token,
         event: type === 'terms'
-          ? EMAIL_PAGE_CLICK_TERMS_CONDITIONS 
-          : EMAIL_PAGE_CLICK_PRIVACY_POLICY,
+          ? CLICK_TERMS_CONDITIONS 
+          : CLICK_PRIVACY_POLICY,
       });
   
       window.open(

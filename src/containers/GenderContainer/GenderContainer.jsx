@@ -14,6 +14,9 @@ import {
 import analyticsService, {
   GENDER_PAGE_ENTER,
   GENDER_PAGE_LEAVE,
+  analyticsServiceAsync,
+  CLICK_TERMS_CONDITIONS,
+  CLICK_PRIVACY_POLICY,
 } from '../../services/analyticsService';
 import {
   Stepper,
@@ -165,6 +168,25 @@ class GenderContainer extends Component {
     route('/height', false);
   }
 
+  onClickTermsOrPrivacy = (type) => async (event) => {
+    const { token } = this.props;
+
+    if (event.button === 0 || event.button === 1) {
+      await analyticsServiceAsync({
+        uuid: token,
+        event: type === 'terms'
+          ? CLICK_TERMS_CONDITIONS 
+          : CLICK_PRIVACY_POLICY,
+      });
+  
+      window.open(
+        type === 'terms'
+          ? 'https://3dlook.me/terms-of-service/'
+          : 'https://3dlook.me/privacy-policy/',
+        '_blank');
+    }
+  }
+
   render() {
     const { buttonDisabled, isAgreeValid } = this.state;
     const {
@@ -196,9 +218,21 @@ class GenderContainer extends Component {
                 <input type="checkbox" name="agree" id="agree" onChange={this.changeAgree} checked={agree} />
                 <span className="checkbox__icon" />
                 { 'I accept ' }
-                <a href="https://3dlook.me/terms-of-service/" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>
+                <button 
+                  type="button"
+                  className="email__link"
+                  onMouseDown={this.onClickTermsOrPrivacy('terms')}
+                >
+                  Terms and Conditions
+                </button>
                 { ' and ' }
-                <a href="https://3dlook.me/privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                <button
+                  type="button"
+                  className="email__link"
+                  onMouseDown={this.onClickTermsOrPrivacy('privacy')}
+                >
+                  Privacy Policy
+                </button>
               </label>
             </div>
           ) : null }

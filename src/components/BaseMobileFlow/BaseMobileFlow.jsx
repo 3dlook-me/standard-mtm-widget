@@ -79,20 +79,13 @@ class BaseMobileFlow extends Component {
 
     this.flow.setFlowId(matches.id);
 
-    this.flow.getCustomSettings()
-      .then(async (res) => {
-        await setCustomSettings(res);
-        // console.log(res);
-      })
-      .catch((err) => console.error(err));
-
     return this.flow.get()
       .then((flowStateResult) => {
         const brand = flowStateResult.state.brand || TEST_BRAND;
         const bodyPart = flowStateResult.state.bodyPart || TEST_BODY_PART;
         const photosFromGallery = flowStateResult.state.photosFromGallery || false;
-        const { customSettings } = this.props;
         const { measurements } = flowStateResult.state;
+        const { widget_settings } = flowStateResult;
 
         if (photosFromGallery) {
           setIsPhotosFromGallery(true);
@@ -103,17 +96,16 @@ class BaseMobileFlow extends Component {
           setFlowState(flowStateResult.state);
         }
 
-        console.log(measurements);
-
-        if (!Object.keys(customSettings.outputMeasurements).length) {
+        if (!widget_settings.is_custom_output_measurements) {
           setMeasurements(measurements);
         } else if (measurements) {
           setMeasurements({
             ...measurements,
-            ...(filterCustomMeasurements(measurements, customSettings)),
+            ...(filterCustomMeasurements(measurements, widget_settings.output_measurements)),
           });
         }
 
+        setCustomSettings(widget_settings);
         setPersonId(flowStateResult.person || flowStateResult.state.personId);
         setBrand(brand);
         setBodyPart(bodyPart);
@@ -125,7 +117,7 @@ class BaseMobileFlow extends Component {
         addFrontImage(flowStateResult.state.frontImage);
         addSideImage(flowStateResult.state.sideImage);
         setIsFromDesktopToMobile(true);
-        setReturnUrl(flowStateResult.state.returnUrl);
+        setReturnUrl(widget_settings.redirect_link || flowStateResult.state.returnUrl);
         setSettings(flowStateResult.state.settings);
         setWidgetUrl(flowStateResult.state.widgetUrl || window.location.href);
         setBodyType(flowStateResult.state.bodyType);

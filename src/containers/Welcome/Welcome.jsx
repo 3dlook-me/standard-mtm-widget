@@ -125,10 +125,18 @@ class Welcome extends Component {
           ...(photosFromGallery && { photosFromGallery: true }),
         })
           .then((res) => {
+            const { redirectLink } = res.widget_settings;
+
             setFlowId(res.uuid);
             setWidgetId(res.id);
             setSettings(res.settings);
             // setSettings({ results_screen: 'measurements', final_page: 'measurements' });
+
+            setCustomSettings(res.widget_settings);
+
+            if (redirectLink) {
+              setReturnUrl(redirectLink);
+            }
 
             this.setState({
               isButtonDisabled: false,
@@ -162,18 +170,6 @@ class Welcome extends Component {
           isButtonDisabled: false,
         });
       }
-
-      this.flow.getCustomSettings()
-        .then((res) => {
-          const { redirectLink } = res;
-
-          setCustomSettings(res);
-
-          if (redirectLink) {
-            setReturnUrl(redirectLink);
-          }
-        })
-        .catch((err) => console.error(err));
     }, { once: true });
   }
 

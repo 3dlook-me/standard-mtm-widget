@@ -160,6 +160,7 @@ export default class FlowService {
     };
   }
 
+  // TODO remove
   /**
    * Get custom settings
    */

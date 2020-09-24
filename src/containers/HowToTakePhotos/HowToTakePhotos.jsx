@@ -21,6 +21,11 @@ import videoTableMode from '../../video/table-flow-example.mp4';
 import videoFriendMode from '../../video/friend-flow-example.mp4';
 import FlowService from '../../services/flowService';
 import { mobileFlowStatusUpdate } from '../../helpers/utils';
+import analyticsService, {
+  HOW_TO_TAKE_PHOTOS_PAGE_ENTER,
+  HOW_TO_TAKE_PHOTOS_PAGE_LEAVE,
+  HOW_TO_TAKE_PHOTOS_PAGE_REPLAY,
+} from '../../services/analyticsService';
 
 /**
  * HowToTakePhotos video page component
@@ -66,7 +71,16 @@ class HowToTakePhotos extends Component {
       token,
       flowId,
       isDemoWidget,
+      isTableFlow
     } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: HOW_TO_TAKE_PHOTOS_PAGE_ENTER,
+      data: {
+        value: isTableFlow ? 'hands-free' : 'with-friend',
+      }
+    });
 
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
@@ -82,8 +96,18 @@ class HowToTakePhotos extends Component {
   };
 
   componentWillUnmount = () => {
+    const { token, isTableFlow } = this.props;
+
     this.$video.current.removeEventListener('timeupdate', this.handleProgress);
-  };
+
+    analyticsService({
+      uuid: token,
+      event: HOW_TO_TAKE_PHOTOS_PAGE_LEAVE,
+      data: {
+        value: isTableFlow ? 'hands-free' : 'with-friend',
+      }
+    });
+  }
 
   handleProgress = () => {
     const { current } = this.$video;
@@ -100,6 +124,7 @@ class HowToTakePhotos extends Component {
   };
 
   restartVideo = () => {
+    const { token, isTableFlow } = this.props;
     const { current } = this.$video;
 
     if (this.props.isTableFlow) {
@@ -110,7 +135,15 @@ class HowToTakePhotos extends Component {
 
     current.currentTime = 0;
     current.play();
-  };
+
+    analyticsService({
+      uuid: token,
+      event: HOW_TO_TAKE_PHOTOS_PAGE_REPLAY,
+      data: {
+        value: isTableFlow ? 'hands-free' : 'with-friend',
+      }
+    });
+  }
 
   setTableFlowVideoText = (time) => {
     if (time < 3.8) {

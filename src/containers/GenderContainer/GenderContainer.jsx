@@ -11,6 +11,14 @@ import {
   gaDataFemale,
   gaGenderOnContinue,
 } from '../../helpers/ga';
+import analyticsService, {
+  GENDER_PAGE_ENTER,
+  GENDER_PAGE_LEAVE,
+  analyticsServiceAsync,
+  CLICK_TERMS_CONDITIONS,
+  CLICK_PRIVACY_POLICY,
+  CHECK_TERMS_AND_POLICY,
+} from '../../services/analyticsService';
 import {
   Stepper,
   Gender,
@@ -55,7 +63,13 @@ class GenderContainer extends Component {
       gender,
       pageReloadStatus,
       isDemoWidget,
+      token,
     } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: GENDER_PAGE_ENTER,
+    });
 
     if (gender) {
       this.setState({
@@ -100,13 +114,23 @@ class GenderContainer extends Component {
    * Change argee checkbox state handler
    */
   changeAgree = (e) => {
-    const { addAgree } = this.props;
+    const { addAgree, token } = this.props;
 
     addAgree(e.target.checked);
 
     this.setState({
       isAgreeValid: e.target.checked,
     });
+
+    if (e.target.checked) {
+      analyticsService({
+        uuid: token,
+        event: CHECK_TERMS_AND_POLICY,
+        data: {
+          value: e.target.checked,
+        },
+      });
+    }
   }
 
   /**
@@ -145,9 +169,33 @@ class GenderContainer extends Component {
    * Go to the next screen
    */
   next = async () => {
+    const { token } = this.props;
     gaGenderOnContinue();
+    analyticsService({
+      uuid: token,
+      event: GENDER_PAGE_LEAVE,
+    });
 
     route('/height', false);
+  }
+
+  onClickTermsOrPrivacy = (type) => async (event) => {
+    const { token } = this.props;
+
+    if (event.button === 0 || event.button === 1) {
+      await analyticsServiceAsync({
+        uuid: token,
+        event: type === 'terms'
+          ? CLICK_TERMS_CONDITIONS 
+          : CLICK_PRIVACY_POLICY,
+      });
+  
+      window.open(
+        type === 'terms'
+          ? 'https://3dlook.me/terms-of-service/'
+          : 'https://3dlook.me/privacy-policy/',
+        '_blank');
+    }
   }
 
   render() {
@@ -157,6 +205,7 @@ class GenderContainer extends Component {
       agree,
       isSmbFlow,
       isDemoWidget,
+      token,
     } = this.props;
 
     return (
@@ -165,7 +214,12 @@ class GenderContainer extends Component {
           <Stepper steps="9" current={2} />
           <div className="gender__control screen__control">
             <h3 className="screen__label">Select your gender</h3>
-            <Gender className="select-your-gender__gender" change={this.changeGender} gender={gender} />
+            <Gender
+              className="select-your-gender__gender"
+              change={this.changeGender}
+              gender={gender}
+              token={token}
+            />
           </div>
         </div>
         <div className="screen__footer">
@@ -175,9 +229,21 @@ class GenderContainer extends Component {
                 <input type="checkbox" name="agree" id="agree" onChange={this.changeAgree} checked={agree} />
                 <span className="checkbox__icon" />
                 { 'I accept ' }
-                <a href="https://3dlook.me/terms-of-service/" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>
+                <button 
+                  type="button"
+                  className="email__link"
+                  onMouseDown={this.onClickTermsOrPrivacy('terms')}
+                >
+                  Terms and Conditions
+                </button>
                 { ' and ' }
-                <a href="https://3dlook.me/privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                <button
+                  type="button"
+                  className="email__link"
+                  onMouseDown={this.onClickTermsOrPrivacy('privacy')}
+                >
+                  Privacy Policy
+                </button>
               </label>
             </div>
           ) : null }

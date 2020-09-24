@@ -2,6 +2,10 @@
 import { h } from 'preact';
 import { connect } from 'react-redux';
 
+import {
+  RESULT_SCREEN_ENTER,
+  analyticsServiceAsync,
+} from '../../services/analyticsService';
 import { send, objectToUrlParams } from '../../helpers/utils';
 import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
 import { BaseMobileFlow, Measurements, Guide } from '../../components';
@@ -47,14 +51,22 @@ class Results extends BaseMobileFlow {
       measurements,
       origin,
       setIsHeaderTranslucent,
-      isMobile,
+      token,
       isWidgetDeactivated,
       setIsWidgetDeactivated,
+      isMobile
     } = this.props;
 
     setIsHeaderTranslucent(true);
 
-    if (!isMobile && !isWidgetDeactivated) {
+    if (isMobile) {
+      await analyticsServiceAsync({
+        uuid: token,
+        event: RESULT_SCREEN_ENTER,
+      });
+    }
+
+    if (!isWidgetDeactivated) {
       await this.flow.widgetDeactivate();
     }
 
@@ -106,6 +118,7 @@ class Results extends BaseMobileFlow {
       setHelpBtnStatus,
       isSmbFlow,
       isDemoWidget,
+      token,
     } = this.props;
 
     const { openGuide } = this.state;

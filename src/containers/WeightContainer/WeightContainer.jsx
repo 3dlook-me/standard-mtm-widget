@@ -5,6 +5,12 @@ import classNames from 'classnames';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
+import analyticsService, {
+  WEIGHT_PAGE_ENTER,
+  WEIGHT_PAGE_LEAVE,
+  WEIGHT_PAGE_WEIGHT_SELECTED,
+  WEIGHT_PAGE_WEIGHT_SKIP,
+} from '../../services/analyticsService';
 import {
   getWeightKg,
   closeSelectsOnResize,
@@ -75,7 +81,13 @@ class WeightContainer extends Component {
       isMobile,
       pageReloadStatus,
       isDemoWidget,
+      token,
     } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: WEIGHT_PAGE_ENTER,
+    });
 
     // for close select drop on landscape view
     if (isMobile) window.addEventListener('resize', closeSelectsOnResize);
@@ -209,7 +221,25 @@ class WeightContainer extends Component {
       units,
       email,
       settings,
+      token,
     } = this.props;
+    const { weightValue } = this.state;
+    gaOnWeightNext();
+
+    if (weightValue) {
+      analyticsService({
+        uuid: token,
+        event: WEIGHT_PAGE_WEIGHT_SELECTED,
+        data: {
+          value: weightValue,
+        }
+      });
+    }
+
+    analyticsService({
+      uuid: token,
+      event: WEIGHT_PAGE_LEAVE,
+    });
 
     if (isMobile) {
       this.$nextBtn.current.classList.add('button--blocked');
@@ -235,10 +265,15 @@ class WeightContainer extends Component {
   };
 
   skipAndNextHandler = () => {
-    const { setWeight } = this.props;
+    const { setWeight, token } = this.props;
 
     gaOnWeightSkip();
 
+    analyticsService({
+      uuid: token,
+      event: WEIGHT_PAGE_WEIGHT_SKIP,
+    });
+    
     this.setState(
       {
         weightValue: null,
@@ -250,7 +285,7 @@ class WeightContainer extends Component {
         this.toNextScreen();
       }
     );
-  };
+  }
 
   nextButtonClick = async () => {
     gaOnWeightNext();

@@ -1,13 +1,20 @@
 import { h, Component } from 'preact';
-import { connect, Provider } from 'react-redux';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import './Header.scss';
 
 import FlowService from '../../services/flowService';
+import analyticsService, {
+  WIDGET_CLOSE,
+  analyticsServiceAsync,
+  FAQ_PAGE_OPEN,
+  FAQ_PAGE_CLOSE,
+} from '../../services/analyticsService';
 import {
   send,
   objectToUrlParams,
   isMobileDevice,
+  parseGetParams,
 } from '../../helpers/utils';
 import { gaHelpOnClick, gaCloseOnClick } from '../../helpers/ga';
 import actions from '../../store/actions';
@@ -45,7 +52,18 @@ class Header extends Component {
       isMobile,
       isSmbFlow,
       isDemoWidget,
+      matches,
+      isWidgetDeactivated,
+      token
     } = this.props;
+    const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
+
+    if (isWidgetDeactivated || !/result/i.test(window.location.hash)) {
+      await analyticsServiceAsync({
+        uuid,
+        event: WIDGET_CLOSE,
+      });
+    }
 
     if (isMobile) {
       // if (confirm('Are you sure that you want to close widget? ')) {
@@ -65,16 +83,25 @@ class Header extends Component {
    * Help button click
    */
   onHelpButtonClick = () => {
-    const { isHelpActive, setHelpIsActive } = this.props;
+    const {
+      isHelpActive,
+      setHelpIsActive,
+      matches,
+      token
+    } = this.props;
+    const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
+
+    analyticsService({
+      uuid,
+      event: !isHelpActive ? FAQ_PAGE_OPEN : FAQ_PAGE_CLOSE,
+    });
     gaHelpOnClick();
     setHelpIsActive(!isHelpActive);
   };
 
   render() {
     const {
-      headerIconsStyle,
       isHelpActive,
-      helpBtnStatus,
       camera,
       isTableFlow,
       frontImage,

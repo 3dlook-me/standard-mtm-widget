@@ -6,6 +6,12 @@ import { Link } from 'preact-router';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { isMobileDevice, mobileFlowStatusUpdate } from '../../helpers/utils';
+import analyticsService, {
+  CAMERA_MODE_PAGE_ENTER,
+  CAMERA_MODE_PAGE_LEAVE,
+  CAMERA_MODE_PAGE_WITH_FRIEND,
+  CAMERA_MODE_PAGE_HANDS_FREE,
+} from '../../services/analyticsService';
 import {
   Stepper,
   PrivacyBanner,
@@ -41,7 +47,14 @@ class CameraModeSelection extends Component {
   }
 
   componentWillUnmount() {
+    const { token } = this.props;
+
     window.removeEventListener('unload', this.reloadListener);
+
+    analyticsService({
+      uuid: token,
+      event: CAMERA_MODE_PAGE_LEAVE,
+    });
   }
 
   componentDidMount() {
@@ -58,6 +71,11 @@ class CameraModeSelection extends Component {
       flowId,
       isDemoWidget,
     } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: CAMERA_MODE_PAGE_ENTER,
+    });
 
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
@@ -97,6 +115,15 @@ class CameraModeSelection extends Component {
     gaOnSelectFlow(this.getFlowPhoto());
     gaOnNextLetsTakePhotos();
   };
+
+  onClickNextPage = () => {
+    const { isTableFlow, token } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: isTableFlow ? CAMERA_MODE_PAGE_HANDS_FREE : CAMERA_MODE_PAGE_WITH_FRIEND,
+    });
+  }
 
   render() {
     const isDesktop = !isMobileDevice();

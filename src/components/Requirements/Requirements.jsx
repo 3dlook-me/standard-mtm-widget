@@ -6,6 +6,10 @@ import {
 } from 'preact';
 
 import { Loader } from '../Loader';
+import analyticsService, {
+  FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
+  SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+} from '../../services/analyticsService';
 
 import './Requirements.scss';
 import videoTableFlowRequirements from '../../video/table-flow-requirements.mp4';
@@ -26,9 +30,22 @@ class Requirements extends Component {
   }
 
   componentDidMount() {
+    const { isTableFlow, token } = this.props;
     const { current } = this.$videoTF;
 
     if (current) current.play();
+
+    if (isTableFlow) {
+      analyticsService({
+        uuid: token,
+        event: FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
+      });
+
+      analyticsService({
+        uuid: token,
+        event: SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+      });
+    }
   }
 
   onImgExampleLoaded = () => {

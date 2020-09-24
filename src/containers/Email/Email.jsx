@@ -11,7 +11,7 @@ import { Stepper } from '../../components';
 import analyticsService, {
   EMAIL_PAGE_ENTER,
   EMAIL_PAGE_LEAVE,
-  EMAIL_PAGE_TERMS_CHECK,
+  CHECK_TERMS_AND_POLICY,
   EMAIL_PAGE_ENTER_EMAIL,
   CLICK_TERMS_CONDITIONS,
   CLICK_PRIVACY_POLICY,
@@ -102,7 +102,7 @@ class Email extends Component {
     if (e.target.checked) {
       analyticsService({
         uuid: token,
-        event: EMAIL_PAGE_TERMS_CHECK,
+        event: CHECK_TERMS_AND_POLICY,
         data: {
           value: e.target.checked,
         },

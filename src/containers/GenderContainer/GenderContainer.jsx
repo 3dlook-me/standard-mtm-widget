@@ -17,6 +17,7 @@ import analyticsService, {
   analyticsServiceAsync,
   CLICK_TERMS_CONDITIONS,
   CLICK_PRIVACY_POLICY,
+  CHECK_TERMS_AND_POLICY,
 } from '../../services/analyticsService';
 import {
   Stepper,
@@ -113,13 +114,23 @@ class GenderContainer extends Component {
    * Change argee checkbox state handler
    */
   changeAgree = (e) => {
-    const { addAgree } = this.props;
+    const { addAgree, token } = this.props;
 
     addAgree(e.target.checked);
 
     this.setState({
       isAgreeValid: e.target.checked,
     });
+
+    if (e.target.checked) {
+      analyticsService({
+        uuid: token,
+        event: CHECK_TERMS_AND_POLICY,
+        data: {
+          value: e.target.checked,
+        },
+      });
+    }
   }
 
   /**

@@ -8,6 +8,12 @@ import { Link } from 'preact-router';
 
 import actions from '../../store/actions';
 import { Loader, Stepper } from '../../components';
+import {
+  gaOnClickNextHowTakePhotos,
+  gaOnClickReplay,
+  gaOnClickNextAloneTakePhotos,
+  gaOnClickReplayAlone,
+} from '../../helpers/ga';
 
 import './HowToTakePhotos.scss';
 
@@ -52,8 +58,10 @@ class HowToTakePhotos extends Component {
     window.removeEventListener('unload', this.reloadListener);
   }
 
-  componentDidMount =() => {
+  componentDidMount = () => {
     const { current } = this.$video;
+
+    current.play();
 
     current.addEventListener('timeupdate', this.handleProgress);
 
@@ -85,7 +93,7 @@ class HowToTakePhotos extends Component {
 
       mobileFlowStatusUpdate(this.flow, flowState);
     }
-  }
+  };
 
   componentWillUnmount = () => {
     const { token, isTableFlow } = this.props;
@@ -113,11 +121,17 @@ class HowToTakePhotos extends Component {
     }
 
     this.$videoProgress.current.style.flexBasis = `${percent}%`;
-  }
+  };
 
   restartVideo = () => {
     const { token, isTableFlow } = this.props;
     const { current } = this.$video;
+
+    if (this.props.isTableFlow) {
+      gaOnClickReplayAlone();
+    } else {
+      gaOnClickReplay();
+    }
 
     current.currentTime = 0;
     current.play();
@@ -149,7 +163,7 @@ class HowToTakePhotos extends Component {
         videoText: 'Please turn up the volume and follow the voice instructions.',
       });
     }
-  }
+  };
 
   setFriendFlowVideoText = (time) => {
     if (time < 3) {
@@ -161,13 +175,21 @@ class HowToTakePhotos extends Component {
         videoText: 'For the side photo turn to your left.',
       });
     }
-  }
+  };
 
   onVideoLoad = () => {
     this.setState({
       isVideoLoaded: true,
     });
-  }
+  };
+
+  onClickNext = () => {
+    if (this.props.isTableFlow) {
+      return gaOnClickNextAloneTakePhotos();
+    }
+
+    gaOnClickNextHowTakePhotos();
+  };
 
   render() {
     const { isTableFlow } = this.props;
@@ -179,13 +201,10 @@ class HowToTakePhotos extends Component {
         <Stepper steps="9" current="6" />
 
         <div className="screen__content how-to-take-photos">
-
           <div className="how-to-take-photos__content">
             <h3 className="screen__title">how to take photos</h3>
 
-            {!isVideoLoaded ? (
-              <Loader />
-            ) : null}
+            {!isVideoLoaded ? <Loader /> : null}
 
             <div className="how-to-take-photos__video-wrap">
               {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -225,7 +244,9 @@ class HowToTakePhotos extends Component {
         </div>
 
         <div className="screen__footer">
-          <Link className="button" href="/upload">Next</Link>
+          <Link className="button" href="/upload" onClick={this.onClickNext}>
+            Next
+          </Link>
         </div>
       </div>
     );

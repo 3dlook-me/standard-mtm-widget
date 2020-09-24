@@ -113,10 +113,13 @@ class Results extends BaseMobileFlow {
    * @param {number} mtmClientId - mtm client id
    */
   sendMeasurements = async (measurements, mtmClientId, origin) => {
+    const { flowState } = this.props;
+
     await this.flow.updateState({
       status: 'finished',
       measurements,
       mtmClientId,
+      ...flowState,
     });
 
     send('data', measurements, origin);

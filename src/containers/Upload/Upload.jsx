@@ -256,6 +256,7 @@ class Upload extends Component {
       taskId,
       setTaskId,
       setBodyType,
+      setFlowState,
     } = this.props;
 
     try {
@@ -357,6 +358,8 @@ class Upload extends Component {
         await this.flow.updateState({
           personId,
         });
+
+        setFlowState({ ...this.props.flowState, personId });
 
         await wait(1000);
 
@@ -460,6 +463,8 @@ class Upload extends Component {
       await this.flow.updateState({
         softValidation,
       });
+
+      setFlowState({ ...this.props.flowState, softValidation });
 
       gaUploadOnContinue();
 

@@ -11,11 +11,7 @@ $bottom-position: -30px;
   position: relative;
 
   &--with-soft-validation &__soft-validation {
-    margin-top: 29px;
-
-    @include breakpoint($iphoneSE) {
-      margin-top: 10px;
-    }
+    margin-top: 0;
   }
 
   &--with-soft-validation &__title {

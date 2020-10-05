@@ -71,6 +71,7 @@ export const INITIAL_STATE = {
 
   settings: {
     final_page: 'thanks',
+    // final_page: 'measurements',
   },
 
   headerIconsStyle: 'default',
@@ -93,6 +94,8 @@ export const INITIAL_STATE = {
   isSmbFlow: false,
 
   flowIsPending: false,
+  isWidgetDeactivated: false,
+  isDemoWidget: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -238,6 +241,7 @@ export default (state = INITIAL_STATE, action) => {
       };
 
     case CONSTANTS.SET_SOFT_VALIDATION:
+      console.log(action)
       return {
         ...state,
         isSoftValidationPresent: action.payload.looseTop
@@ -448,6 +452,18 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         flowIsPending: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_WIDGET_DEACTIVATED:
+      return {
+        ...state,
+        isWidgetDeactivated: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_DEMO_WIDGET:
+      return {
+        ...state,
+        isDemoWidget: action.payload,
       };
 
     default:

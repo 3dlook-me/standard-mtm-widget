@@ -1,12 +1,16 @@
 import { h } from 'preact';
 import { connect } from 'react-redux';
 import { route } from 'preact-router';
+import { detect } from 'detect-browser';
 
 import actions from '../../store/actions';
 import { gaSwitchToMobileFlow } from '../../helpers/ga';
 import {
   browserValidation, isMobileDevice,
 } from '../../helpers/utils';
+import analyticsService, {
+  MOBILE_FLOW_START,
+} from '../../services/analyticsService';
 import { BaseMobileFlow, Loader } from '../../components';
 
 /**
@@ -24,10 +28,19 @@ class MobileFlow extends BaseMobileFlow {
   }
 
   componentDidMount = async () => {
+    const { matches } = this.props;
+
+    analyticsService({
+      uuid: matches.id,
+      event: MOBILE_FLOW_START,
+      data: {
+        device: isMobileDevice() ? 'mobile' : 'web browser',
+        browser: detect().name === 'ios' ? 'safari' : detect().name,
+      },
+    });
+
     try {
-      const {
-        matches, flowState, setFlowState,
-      } = this.props;
+      const { flowState, setFlowState } = this.props;
 
       window.addEventListener('online', this.pageReload);
 
@@ -55,11 +68,7 @@ class MobileFlow extends BaseMobileFlow {
           status: 'opened-on-mobile',
           processStatus: '',
         });
-      }
 
-      if (flowStateData.state.status === 'finished') {
-        route(`/results?id=${matches.id}`, true);
-      } else {
         // FOR PAGE RELOAD
         if (!flowState) {
           setFlowState({
@@ -79,6 +88,26 @@ class MobileFlow extends BaseMobileFlow {
 
       return Promise.resolve();
     } catch (err) {
+      if (err.response.status === 401
+        && err.response.data.detail === 'Widget is inactive.') {
+        const {
+          setIsWidgetDeactivated,
+          setReturnUrl,
+          setIsFromDesktopToMobile,
+        } = this.props;
+
+        await setIsWidgetDeactivated(true);
+
+        await super.componentDidMount();
+
+        setIsFromDesktopToMobile(false);
+        setReturnUrl('https://mtm.3dlook.me/');
+
+        route('/results', true);
+
+        return Promise.resolve();
+      }
+
       if (err && err.response && err.response.data) {
         console.error(err.response.data.detail);
       } else {

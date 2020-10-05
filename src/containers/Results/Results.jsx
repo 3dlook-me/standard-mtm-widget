@@ -1,12 +1,14 @@
 /* eslint class-methods-use-this: off */
-import { h } from 'preact';
+import { Component, h } from 'preact';
 import { connect } from 'react-redux';
 import { route } from 'preact-router';
 import classNames from 'classnames';
 
 import {
-  send, objectToUrlParams,
-} from '../../helpers/utils';
+  RESULT_SCREEN_ENTER,
+  analyticsServiceAsync,
+} from '../../services/analyticsService';
+import { send, objectToUrlParams } from '../../helpers/utils';
 import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
 import {
   BaseMobileFlow,
@@ -14,7 +16,7 @@ import {
   Guide,
   SoftValidation,
 } from '../../components';
-import actions from '../../store/actions';
+import actions, { setIsFromDesktopToMobile } from '../../store/actions';
 import FlowService from '../../services/flowService';
 
 import './Result.scss';
@@ -24,7 +26,7 @@ import successIcon from '../../images/ic_done.svg';
  * Results page component.
  * Displays results of the flow.
  */
-class Results extends BaseMobileFlow {
+class Results extends Component {
   constructor(props) {
     super(props);
 
@@ -50,21 +52,40 @@ class Results extends BaseMobileFlow {
   }
 
   componentDidMount = async () => {
-    await super.componentDidMount();
-
     const {
       measurements,
-      mtmClientId,
       origin,
       setIsHeaderTranslucent,
+      token,
+      isWidgetDeactivated,
+      setIsWidgetDeactivated,
       isMobile,
       setFlowIsPending,
       setProcessingStatus,
+      isFromDesktopToMobile,
     } = this.props;
 
     setIsHeaderTranslucent(true);
 
-    this.sendMeasurements(measurements, mtmClientId, origin);
+    if (isMobile) {
+      await analyticsServiceAsync({
+        uuid: token,
+        event: RESULT_SCREEN_ENTER,
+      });
+    }
+
+    if (!isWidgetDeactivated) {
+      // make request from desktop or mobile
+      if ((isMobile && !isFromDesktopToMobile) || !isMobile) {
+        // await this.flow.widgetDeactivate();
+      }
+    }
+
+    setIsWidgetDeactivated(false);
+
+    send('data', measurements, origin);
+
+    gaSuccess(this.getFlowPhoto());
 
     gaSuccess();
 
@@ -87,24 +108,19 @@ class Results extends BaseMobileFlow {
   }
 
   componentWillReceiveProps = async (nextProps) => {
-    const {
-      measurements,
-      mtmClientId,
-      origin,
-    } = nextProps;
+    const { measurements, origin } = nextProps;
 
-    this.sendMeasurements(measurements, mtmClientId, origin);
-  }
+    send('data', measurements, origin);
+  };
 
   componentWillUnmount() {
     const { setIsHeaderTranslucent } = this.props;
 
     setIsHeaderTranslucent(false);
-  }
-
-  componentWillUnmount() {
     clearInterval(this.timer);
   }
+
+  getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
 
   /**
    * Send size recommendations to flow api
@@ -131,13 +147,13 @@ class Results extends BaseMobileFlow {
       measurementsType: type,
       measurement: index,
     });
-  }
+  };
 
   helpBtnToggle = (status) => {
     const { setHelpBtnStatus } = this.props;
 
     setHelpBtnStatus(status);
-  }
+  };
 
   onRetake = async () => {
     const {
@@ -147,10 +163,10 @@ class Results extends BaseMobileFlow {
       softValidation,
     } = this.props;
 
-    await this.flow.updateState({
-      status: 'opened-on-mobile',
-      processStatus: '',
-    });
+    // await this.flow.updateState({
+    //   status: 'opened-on-mobile',
+    //   processStatus: '',
+    // });
 
     if (!softValidation.looseTop && !softValidation.looseBottom && !softValidation.looseTopAndBottom) {
       addFrontImage(null);
@@ -175,6 +191,8 @@ class Results extends BaseMobileFlow {
       isOpenReturnUrlDesktop,
       setHelpBtnStatus,
       isSmbFlow,
+      isDemoWidget,
+      token,
     } = this.props;
 
     const { openGuide } = this.state;
@@ -189,7 +207,7 @@ class Results extends BaseMobileFlow {
       return;
     }
 
-    gaResultsOnContinue();
+    gaResultsOnContinue(this.getFlowPhoto());
 
     if (isFromDesktopToMobile) {
       // pass measurements via hash get params to the destination page
@@ -200,7 +218,7 @@ class Results extends BaseMobileFlow {
     }
 
     if (isMobile) {
-      if (measurements && !isSmbFlow) {
+      if (measurements && !isSmbFlow && !isDemoWidget) {
         window.location = `${returnUrl}#/?${objectToUrlParams({
           ...measurements,
           personId,
@@ -214,7 +232,7 @@ class Results extends BaseMobileFlow {
       resetState();
       send('close', {}, origin);
     }
-  }
+  };
 
   render() {
     const {
@@ -227,68 +245,76 @@ class Results extends BaseMobileFlow {
       isMobile,
     } = this.props;
 
-    const { openGuide, measurementsType, measurement } = this.state;
+    const {
+      openGuide,
+      measurementsType,
+      measurement,
+    } = this.state;
 
     const results = settings.final_page;
 
     return (
       <div className="screen screen--result active">
-        <div className={classNames('screen__content', 'result', {
-          'result--with-soft-validation': isSoftValidationPresent,
-        })}
-        >
-          {openGuide ? (
-            <Guide gender={gender} measurementsType={measurementsType} measurement={measurement} />
-          ) : null}
+        <div className="screen__content result">
+          <div className={classNames('screen__content', 'result', {
+            'result--with-soft-validation': isSoftValidationPresent,
+          })}
+          >
+            {openGuide ? (
+              <Guide
+                gender={gender}
+                measurementsType={measurementsType}
+                measurement={measurement}
+              />
+            ) : null}
 
-          <h2 className="screen__subtitle">
-            <span className="success">
-              Complete
-            </span>
-          </h2>
+            <h2 className="screen__subtitle">
+              <span className="success">Complete</span>
+            </h2>
 
-          {(results === 'measurements') ? (
-            <h3 className="screen__title result__title">your Measurements</h3>
-          ) : null}
+            {results === 'measurements' ? (
+              <h3 className="screen__title result__title">your Measurements</h3>
+            ) : null}
 
-          {(isSoftValidationPresent && !openGuide) ? (
-            <SoftValidation
-              className="result__soft-validation"
-              retake={this.onRetake}
-              units={units}
-              gender={gender}
-              softValidation={softValidation}
-              isDesktop={!isMobile}
-            />
-          ) : null }
+            {(isSoftValidationPresent && !openGuide) ? (
+              <SoftValidation
+                className="result__soft-validation"
+                retake={this.onRetake}
+                units={units}
+                gender={gender}
+                softValidation={softValidation}
+                isDesktop={!isMobile}
+              />
+            ) : null }
 
-          {(results === 'measurements') ? (
-            <Measurements
-              measurements={measurements}
-              units={units}
-              openGuide={this.openGuide}
-              helpBtnToggle={this.helpBtnToggle}
-            />
-          ) : null}
+            {results === 'measurements' ? (
+              <Measurements
+                measurements={measurements}
+                units={units}
+                openGuide={this.openGuide}
+                helpBtnToggle={this.helpBtnToggle}
+              />
+            ) : null}
 
-          {(results === 'thanks') ? (
-            <div className="result__thanks">
-              <figure className="result__thanks-icon">
-                <img src={successIcon} alt="success" />
-              </figure>
-              <h3 className="result__thanks-title">Success! You're all set.</h3>
-              <p className="result__thanks-text">
-                We've got your measurements to
-                <br />
-                create your customized wardrobe
-              </p>
-            </div>
-          ) : null}
-        </div>
-        <div className="screen__footer">
-          <button className="button" type="button" onClick={this.onClick}>
-            {openGuide ? 'BACK TO RESULTS' : 'CLOSE'}
-          </button>
+            {results === 'thanks' ? (
+              <div className="result__thanks">
+                <figure className="result__thanks-icon">
+                  <img src={successIcon} alt="success" />
+                </figure>
+                <h3 className="result__thanks-title">Success! You're all set.</h3>
+                <p className="result__thanks-text">
+                  We've got your measurements to
+                  <br />
+                  create your customized wardrobe
+                </p>
+              </div>
+            ) : null}
+          </div>
+          <div className="screen__footer">
+            <button className="button" type="button" onClick={this.onClick}>
+              {openGuide ? 'BACK TO RESULTS' : 'CLOSE'}
+            </button>
+          </div>
         </div>
       </div>
     );

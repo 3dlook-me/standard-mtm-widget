@@ -1,6 +1,18 @@
 import axios from 'axios';
 import { detectOS, browserName } from 'detect-browser';
 
+export const debounce = (func, delay) => {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      timer = null;
+      func(...args);
+    }, delay);
+  };
+};
+
 /**
  * Get stringified GET params from object
  *

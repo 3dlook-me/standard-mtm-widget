@@ -57,6 +57,8 @@ export const CONSTANTS = {
   SET_IS_TABLE_FLOW_DISABLED: 'SET_IS_TABLE_FLOW_DISABLED',
   SET_TASK_ID: 'SET_TASK_ID',
   SET_FLOW_IS_PENDING: 'SET_FLOW_IS_PENDING',
+  SET_IS_WIDGET_DEACTIVATED: 'SET_IS_WIDGET_DEACTIVATED',
+  SET_IS_DEMO_WIDGET: 'SET_IS_DEMO_WIDGET',
 };
 
 /**
@@ -618,6 +620,26 @@ export const setFlowIsPending = (isPending) => ({
   payload: isPending,
 });
 
+/**
+ * Set is widget deactivated
+ *
+ * @param {boolean} isDeactivated - is deactivated
+ */
+export const setIsWidgetDeactivated = (isDeactivated) => ({
+  type: CONSTANTS.SET_IS_WIDGET_DEACTIVATED,
+  payload: isDeactivated,
+});
+
+/**
+ * Set is demo widget
+ *
+ * @param {boolean} isDemo - is demo widget
+ */
+export const setIsDemoWidget = (isDemo) => ({
+  type: CONSTANTS.SET_IS_DEMO_WIDGET,
+  payload: isDemo,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -674,4 +696,6 @@ export default {
   addSideDeviceCoordinates,
   setTaskId,
   setFlowIsPending,
+  setIsWidgetDeactivated,
+  setIsDemoWidget
 };

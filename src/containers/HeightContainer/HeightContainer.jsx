@@ -5,6 +5,12 @@ import { connect } from 'react-redux';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { gaOnHeightNext } from '../../helpers/ga';
+import { mobileFlowStatusUpdate } from '../../helpers/utils';
+import analyticsService, {
+  HEIGHT_PAGE_ENTER,
+  HEIGHT_PAGE_LEAVE,
+  HEIGHT_PAGE_HEIGHT_SELECTED,
+} from '../../services/analyticsService';
 import {
   Height,
   Stepper,
@@ -28,16 +34,49 @@ class HeightContainer extends Component {
 
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
+
+    const { setPageReloadStatus, isDemoWidget } = props;
+
+    if (isDemoWidget) {
+      this.reloadListener = () => {
+        setPageReloadStatus(true);
+      };
+
+      window.addEventListener('unload', this.reloadListener);
+    }
   }
 
   componentDidMount() {
-    const { height } = this.props;
+    const {
+      height,
+      pageReloadStatus,
+      isDemoWidget,
+      token,
+    } = this.props;
 
     if (height && (height >= 150 && height <= 220)) {
       this.setState({
         buttonDisabled: false,
       });
     }
+
+    analyticsService({
+      uuid: token,
+      event: HEIGHT_PAGE_ENTER,
+    });
+
+    // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
+    if (pageReloadStatus && isDemoWidget) {
+      const { setPageReloadStatus, flowState } = this.props;
+
+      setPageReloadStatus(false);
+
+      mobileFlowStatusUpdate(this.flow, flowState);
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('unload', this.reloadListener);
   }
 
   /**
@@ -51,8 +90,13 @@ class HeightContainer extends Component {
    * On next screen event handler
    */
   onNextScreen = async () => {
+    const { token } = this.props;
     gaOnHeightNext();
 
+    analyticsService({
+      uuid: token,
+      event: HEIGHT_PAGE_LEAVE,
+    });
     route('/weight', false);
   };
 
@@ -79,7 +123,7 @@ class HeightContainer extends Component {
    * Change height handler
    */
   changeHeight = (height) => {
-    const { addHeight } = this.props;
+    const { addHeight, token } = this.props;
     const numHeight = parseInt(height, 10);
     let isValueValid = false;
 
@@ -89,6 +133,16 @@ class HeightContainer extends Component {
 
     addHeight(numHeight);
 
+    if (isValueValid) {
+      analyticsService({
+        uuid: token,
+        event: HEIGHT_PAGE_HEIGHT_SELECTED,
+        data: {
+          value: numHeight,
+        },
+      });
+    }
+    
     this.setState({
       isHeightValid: isValueValid,
     });
@@ -110,6 +164,7 @@ class HeightContainer extends Component {
       isMobile,
       height,
       units,
+      token,
     } = this.props;
 
     return (
@@ -127,6 +182,7 @@ class HeightContainer extends Component {
               changeUnits={this.onChangeUnits}
               height={height}
               units={units}
+              token={token}
             />
           </div>
 

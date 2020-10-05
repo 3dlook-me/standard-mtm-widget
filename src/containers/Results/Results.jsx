@@ -54,7 +54,8 @@ class Results extends BaseMobileFlow {
       token,
       isWidgetDeactivated,
       setIsWidgetDeactivated,
-      isMobile
+      isMobile,
+      isFromDesktopToMobile
     } = this.props;
 
     setIsHeaderTranslucent(true);
@@ -67,7 +68,10 @@ class Results extends BaseMobileFlow {
     }
 
     if (!isWidgetDeactivated) {
-      await this.flow.widgetDeactivate();
+      // make request from desktop or mobile
+      if ((isMobile && !isFromDesktopToMobile) || !isMobile) {
+        await this.flow.widgetDeactivate();
+      }
     }
 
     setIsWidgetDeactivated(false);

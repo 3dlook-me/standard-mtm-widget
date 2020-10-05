@@ -2,13 +2,13 @@ import { h, Component, Fragment } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
+import { detect } from 'detect-browser';
 import {
   browserValidation,
   isMobileDevice,
   mobileFlowStatusUpdate,
   parseGetParams,
 } from '../../helpers/utils';
-import { detect } from 'detect-browser';
 import { gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
@@ -68,7 +68,7 @@ class Welcome extends Component {
       isDemoWidget,
       token,
     } = this.props;
-    
+
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key;
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;

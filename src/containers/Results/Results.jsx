@@ -4,19 +4,17 @@ import { connect } from 'react-redux';
 import { route } from 'preact-router';
 import classNames from 'classnames';
 
-import {
+import analyticsService, {
   RESULT_SCREEN_ENTER,
-  analyticsServiceAsync,
 } from '../../services/analyticsService';
 import { send, objectToUrlParams } from '../../helpers/utils';
 import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
 import {
-  BaseMobileFlow,
   Measurements,
   Guide,
   SoftValidation,
 } from '../../components';
-import actions, { setIsFromDesktopToMobile } from '../../store/actions';
+import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 
 import './Result.scss';
@@ -57,28 +55,19 @@ class Results extends Component {
       origin,
       setIsHeaderTranslucent,
       token,
-      isWidgetDeactivated,
       setIsWidgetDeactivated,
       isMobile,
       setFlowIsPending,
       setProcessingStatus,
-      isFromDesktopToMobile,
     } = this.props;
 
     setIsHeaderTranslucent(true);
 
     if (isMobile) {
-      await analyticsServiceAsync({
+      analyticsService({
         uuid: token,
         event: RESULT_SCREEN_ENTER,
       });
-    }
-
-    if (!isWidgetDeactivated) {
-      // make request from desktop or mobile
-      if ((isMobile && !isFromDesktopToMobile) || !isMobile) {
-        // await this.flow.widgetDeactivate();
-      }
     }
 
     setIsWidgetDeactivated(false);
@@ -122,25 +111,6 @@ class Results extends Component {
 
   getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
 
-  /**
-   * Send size recommendations to flow api
-   *
-   * @param {Object} measurements - measurements object
-   * @param {number} mtmClientId - mtm client id
-   */
-  sendMeasurements = async (measurements, mtmClientId, origin) => {
-    const { flowState } = this.props;
-
-    await this.flow.updateState({
-      status: 'finished',
-      measurements,
-      mtmClientId,
-      ...flowState,
-    });
-
-    send('data', measurements, origin);
-  }
-
   openGuide = (index, type) => {
     this.setState({
       openGuide: true,
@@ -163,12 +133,13 @@ class Results extends Component {
       softValidation,
     } = this.props;
 
-    // await this.flow.updateState({
-    //   status: 'opened-on-mobile',
-    //   processStatus: '',
-    // });
+    await this.flow.updateState({
+      status: 'opened-on-mobile',
+      processStatus: '',
+    });
 
-    if (!softValidation.looseTop && !softValidation.looseBottom && !softValidation.looseTopAndBottom) {
+    if (!softValidation.looseTop && !softValidation.looseBottom
+      && !softValidation.looseTopAndBottom) {
       addFrontImage(null);
     } else {
       addFrontImage(null);
@@ -192,7 +163,6 @@ class Results extends Component {
       setHelpBtnStatus,
       isSmbFlow,
       isDemoWidget,
-      token,
     } = this.props;
 
     const { openGuide } = this.state;
@@ -218,6 +188,12 @@ class Results extends Component {
     }
 
     if (isMobile) {
+      try {
+        await this.flow.widgetDeactivate();
+      } catch (err) {
+        console.log(err);
+      }
+
       if (measurements && !isSmbFlow && !isDemoWidget) {
         window.location = `${returnUrl}#/?${objectToUrlParams({
           ...measurements,

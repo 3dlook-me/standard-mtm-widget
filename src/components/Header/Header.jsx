@@ -54,25 +54,36 @@ class Header extends Component {
       isDemoWidget,
       matches,
       isWidgetDeactivated,
-      token
+      token,
     } = this.props;
+
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
 
     if (isWidgetDeactivated || !/result/i.test(window.location.hash)) {
-      await analyticsServiceAsync({
-        uuid,
-        event: WIDGET_CLOSE,
-      });
+      try {
+        await analyticsServiceAsync({
+          uuid,
+          event: WIDGET_CLOSE,
+        });
+      } catch (err) {
+        console.log(err);
+      }
     }
 
     if (isMobile) {
-      // if (confirm('Are you sure that you want to close widget? ')) {
+      if (window.location.hash.includes('results')) {
+        try {
+          await this.flow.widgetDeactivate();
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
       if (measurements && !isSmbFlow && !isDemoWidget) {
         window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
       } else {
         window.location = returnUrl;
       }
-      // }
     } else {
       resetState();
       send('close', {}, origin);
@@ -87,7 +98,7 @@ class Header extends Component {
       isHelpActive,
       setHelpIsActive,
       matches,
-      token
+      token,
     } = this.props;
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
 

@@ -1,20 +1,23 @@
 import axios from 'axios';
 
-export default ({ uuid, event, data = {} }) =>
+export default ({ uuid, event, data = {} }) => {
   axios.post(`${API_HOST}/api/v2/persons/widget/${uuid}/events/`, {
     name: event,
     data,
   }, {
     headers: { Authorization: `UUID ${uuid}` },
   });
+};
 
-export const analyticsServiceAsync = async ({ uuid, event, data = {} }) =>
+export const analyticsServiceAsync = async ({ uuid, event, data = {} }) => {
   await axios.post(`${API_HOST}/api/v2/persons/widget/${uuid}/events/`, {
     name: event,
     data,
   }, {
     headers: { Authorization: `UUID ${uuid}` },
   });
+};
+
 
 // TODO Common events
 export const FAQ_PAGE_OPEN = 'FAQ_PAGE_OPEN';

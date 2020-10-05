@@ -92,7 +92,7 @@
   },
   "dependencies": {
     "@3dlook/camera": "2.0.3",
-    "@3dlook/saia-sdk": "^2.13.0",
+    "@3dlook/saia-sdk": "^2.14.0",
     "@babel/polyfill": "^7.8.3",
     "@babel/runtime": "^7.8.4",
     "axios": "^0.19.2",

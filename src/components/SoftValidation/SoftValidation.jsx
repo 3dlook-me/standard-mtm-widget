@@ -44,7 +44,7 @@ const SoftValidation = ({ className, retake, units, gender, softValidation, isDe
     {/* Loose bottom */}
     {(softValidation && softValidation.looseBottom) ? (
       <SoftValidationItem className="soft-validation__item" image={looseBottomImage}>
-        <p>Your pants are loose Please change into something more form-fitting so we can see your body contour</p>
+        <p>Your pants are loose. Please change into something more form-fitting so we can see your body contour</p>
       </SoftValidationItem>
     ) : null }
 

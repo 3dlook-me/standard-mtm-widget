@@ -415,7 +415,6 @@ class Upload extends Component {
         widgetId,
         unit: units,
         source,
-        photoFlowType,
         ...(email && { email }),
         ...(phoneNumber && { phone: phoneNumber }),
         ...(firstName && { firstName }),
@@ -469,6 +468,7 @@ class Upload extends Component {
 
         taskSetId = await this.api.person.updateAndCalculate(createdPersonId, {
           ...images,
+          photoFlowType,
           deviceCoordinates: { ...deviceCoordinates },
           measurementsType: 'all',
         });

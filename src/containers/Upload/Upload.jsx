@@ -115,7 +115,7 @@ class Upload extends Component {
       isDemoWidget,
       token,
       isTableFlow,
-      frontImage
+      frontImage,
     } = this.props;
 
     if (!isTableFlow) {
@@ -171,19 +171,18 @@ class Upload extends Component {
       });
     }
 
-    if (
-        !isTableFlow &&
-        (!prevProps.sideImage && sideImage || !prevProps.frontImage && frontImage)
-      ) {
+    if (!isTableFlow
+        && ((!prevProps.sideImage && sideImage) || (!prevProps.frontImage && frontImage))) {
+      const event = (!prevProps.sideImage && sideImage && SIDE_PHOTO_PAGE_EXAMPLE_CLOSE)
+        || (!prevProps.frontImage && frontImage && FRONT_PHOTO_PAGE_EXAMPLE_CLOSE);
+
       analyticsService({
         uuid: token,
-        event: 
-          !prevProps.sideImage && sideImage && SIDE_PHOTO_PAGE_EXAMPLE_CLOSE ||
-          !prevProps.frontImage && frontImage && FRONT_PHOTO_PAGE_EXAMPLE_CLOSE,
+        event,
       });
     }
   }
-  
+
   getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
 
   init(props) {
@@ -219,7 +218,7 @@ class Upload extends Component {
       uuid: token,
       event: FRONT_PHOTO_PAGE_PHOTO_TAKEN,
     });
-    
+
     if (!isTableFlow) {
       gaOpenCameraFrontPhoto();
     }
@@ -255,7 +254,7 @@ class Upload extends Component {
       uuid: token,
       event: SIDE_PHOTO_PAGE_PHOTO_TAKEN,
     });
-    
+
     if (!isTableFlow) {
       gaOpenCameraSidePhoto();
     }
@@ -382,7 +381,7 @@ class Upload extends Component {
           uuid: token,
           event: FRONT_PHOTO_PAGE_EXAMPLE_CLOSE,
         });
-  
+
         analyticsService({
           uuid: token,
           event: SIDE_PHOTO_PAGE_EXAMPLE_CLOSE,
@@ -408,6 +407,8 @@ class Upload extends Component {
       if (sideImage !== true) {
         images.sideImage = sideImage;
       }
+
+      const photoFlowType = isTableFlow ? 'hand' : 'friend';
 
       const mtmClientParams = {
         widgetId,
@@ -466,6 +467,7 @@ class Upload extends Component {
 
         taskSetId = await this.api.person.updateAndCalculate(createdPersonId, {
           ...images,
+          photoFlowType,
           deviceCoordinates: { ...deviceCoordinates },
           measurementsType: 'all',
         });
@@ -494,6 +496,7 @@ class Upload extends Component {
           gender,
           height,
           email,
+          photoFlowType,
           ...(weight && { weight }),
           deviceCoordinates: { ...deviceCoordinates },
           ...images,
@@ -623,7 +626,7 @@ class Upload extends Component {
             const { returnUrl } = this.props;
 
             alert(
-              'Oops...\nThe server lost connection...\nPlease restart widget flow on the desktop or start again on mobile'
+              'Oops...\nThe server lost connection...\nPlease restart widget flow on the desktop or start again on mobile',
             );
 
             window.location.href = returnUrl;

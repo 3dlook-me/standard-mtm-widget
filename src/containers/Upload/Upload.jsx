@@ -171,15 +171,14 @@ class Upload extends Component {
       });
     }
 
-    if (
-      !isTableFlow
-        && (!prevProps.sideImage && sideImage || !prevProps.frontImage && frontImage)
-    ) {
+    if (!isTableFlow
+        && ((!prevProps.sideImage && sideImage) || (!prevProps.frontImage && frontImage))) {
+      const event = (!prevProps.sideImage && sideImage && SIDE_PHOTO_PAGE_EXAMPLE_CLOSE)
+        || (!prevProps.frontImage && frontImage && FRONT_PHOTO_PAGE_EXAMPLE_CLOSE);
+
       analyticsService({
         uuid: token,
-        event:
-          !prevProps.sideImage && sideImage && SIDE_PHOTO_PAGE_EXAMPLE_CLOSE
-          || !prevProps.frontImage && frontImage && FRONT_PHOTO_PAGE_EXAMPLE_CLOSE,
+        event,
       });
     }
   }

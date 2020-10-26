@@ -7,7 +7,7 @@ import SaiaMTMButton from './button';
     const publicKey = scriptTag.getAttribute('data-public-key');
     const buttonTitle = scriptTag.getAttribute('data-button-title');
 
-    const uuid = await SaiaMTMButton.createWidget(publicKey);
+    const uuid = await SaiaMTMButton.createWidget(publicKey, window.MTM_WIDGET_OPTIONS);
 
     if (!saiaCont) {
       const cartAdd = document.querySelector("form[action='/cart/add']");

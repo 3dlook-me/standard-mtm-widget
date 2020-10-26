@@ -1,6 +1,7 @@
 import { h, Component, Fragment } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
+import { detect } from 'detect-browser';
 
 import {
   browserValidation,
@@ -8,7 +9,6 @@ import {
   mobileFlowStatusUpdate,
   parseGetParams,
 } from '../../helpers/utils';
-import { detect } from 'detect-browser';
 import { gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
@@ -67,8 +67,13 @@ class Welcome extends Component {
       setIsPhotosFromGallery,
       isDemoWidget,
       token,
+      setUnits,
+      addHeight,
+      setWeightLb,
+      setWeight,
+      setEmail,
     } = this.props;
-    
+
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key;
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;
@@ -117,20 +122,28 @@ class Welcome extends Component {
 
         this.flow = new FlowService(uuid);
         this.flow.setFlowId(uuid);
-        this.flow.updateState({
-          status: 'created',
-          productUrl: matches.product,
-          brand,
-          bodyPart,
-          returnUrl: matches.returnUrl,
-          fakeSize: !!matches.fakeSize,
-          productId: parseInt(matches.productId, 10),
-          ...(photosFromGallery && { photosFromGallery: true }),
-        })
+        this.flow.get()
+          .then(() => this.flow.updateState({
+            status: 'created',
+            productUrl: matches.product,
+            brand,
+            bodyPart,
+            returnUrl: matches.returnUrl,
+            fakeSize: !!matches.fakeSize,
+            productId: parseInt(matches.productId, 10),
+            ...(photosFromGallery && { photosFromGallery: true }),
+          }))
           .then((res) => {
+            const { state } = res;
             setFlowId(res.uuid);
             setWidgetId(res.id);
             setSettings(res.settings);
+            // save to store default values
+            setUnits(state.units);
+            addHeight(state.height);
+            setEmail(state.email);
+            setWeightLb(state.weightLb);
+            setWeight(state.weight);
 
             this.setState({
               isButtonDisabled: false,

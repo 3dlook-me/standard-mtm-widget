@@ -13,5 +13,18 @@
 <!--  <script id="saia-mtm-integration" async src="/integration.js" data-public-key="MTQ1:1kHnHw:HJ50OjzJq9rgxyX-8eCen1TGLnk"></script>-->
 <!--  saia-test-->
   <script id="saia-mtm-integration" async src="/integration.js" data-public-key="Njg2:1jvJd6:JbcnuhaI7pGaYU0L8673zsFvCUY"></script>
+  <script>
+    window.MTM_WIDGET_OPTIONS = {
+      defaultValues: {
+        heightFt: 6,
+        heightIn: 5,
+        weight: 80,
+        email: 'pisa@gmail.com',
+      },
+      onMeasurementsReady: (measurements) => {
+        console.log(measurements);
+      },
+    };
+  </script>
 </body>
 </html>

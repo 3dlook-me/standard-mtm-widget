@@ -155,6 +155,13 @@ export const getHeightCm = (ft = 0, inches = 0) => in2cm(ft2in(ft) + parseInt(in
 export const getWeightKg = (lb) => Math.round(lb * 0.45359237);
 
 /**
+ * Convert kg weight to lb value
+ *
+ * @param {number} lb - weight value
+ */
+export const getWeightLb = (kg) => Math.round(kg / 0.45359237);
+
+/**
  * Check if user device is mobile device
  *
  * @returns {boolean}

@@ -161,4 +161,19 @@ export default class FlowService {
       ...state,
     };
   }
+
+  /**
+   * Check if widget is allowed to be opened
+   */
+  isWidgetAllowed() {
+    return this.axios({
+      url: `${API_HOST}/api/v2/persons/widget/is_allowed/`,
+      method: 'GET',
+      headers: {
+        Authorization: `PUBLIC ${this.key}`,
+      },
+    })
+      .then(() => true)
+      .catch(() => false);
+  }
 }

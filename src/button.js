@@ -360,7 +360,7 @@ class SaiaMTMButton {
 
     // convert default height in ft/in to cm
     let height = parseInt(defaultHeightCm, 10);
-    if (defaultHeightFt && defaultHeightIn) {
+    if (typeof defaultHeightFt === 'number' && typeof defaultHeightIn === 'number') {
       height = Math.round(getHeightCm(defaultHeightFt, defaultHeightIn));
     }
 

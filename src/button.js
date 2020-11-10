@@ -199,7 +199,7 @@ class SaiaMTMButton {
     this.buttonEl.classList.add('saia-mtm-button--pending');
 
     const { publicKey } = this.defaults;
-    const uuid = await this.createWidget(publicKey);
+    const uuid = await SaiaMTMButton.createWidget(publicKey);
 
     this.buttonEl.classList.remove('saia-mtm-button--pending');
 

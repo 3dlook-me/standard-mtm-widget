@@ -30,6 +30,7 @@
     "ga": true,
     "$": true,
     "item": true,
-    "meta": true
+    "meta": true,
+    "MTM_WIDGET_OPTIONS": true
   }
 }

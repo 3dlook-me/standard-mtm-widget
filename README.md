@@ -112,48 +112,48 @@ Then you should upload the content of dist folder to your hosting in the folder,
 <script src="/wp-content/my-widget-build/saia-mtm-button.js"></script>
 ```
 
-After this tag you can initialize the button. Example code:
+After that you will get "Your MTM" button on the page.
+
+## Set default options via global `MTM_WIDGET_OPTIONS` object
+
+To overwrite default options without creating a custom integration script, you could define a global `MTM_WIDGET_OPTIONS` object and set there the same options as in `SaiaMTMButton` constructor.
+
+For example, you want to overwrite default height, weight, and email values and set predefined ones. Also, you would like to set a callback function to get measurements, when they are ready. Let's say, you want to set height in feet and inches. To do this, declare `window.MTM_WIDGET_OPTIONS` object:
 
 ```js
-(async () => {
-  const button = new SaiaMTMButton({
-    // widget container element selector
-    container: '.product-single__meta',
-    // your SAIA API key
-    key: 'fnqiwhf9v9y9ty13bt783yugyiurygb3v78gvt',
-    // widget domain
-    // if you set this url in the configuration file (saia-config.test-store.js), then you may not use this parameter
-    widgetUrl: 'https://test-store.com/wp-content/my-widget-build/index.html',
-    // brand name
-    brand: 'Nike',
-    // body part
-    bodyPart: 'top',
-    // product information
-    product: {
-      // product image url for results page
-      imageUrl: 'https://imagehost.com/images/products/product.jpg',
-      // product description for results page
-      description: 'The Nike Air Rally Women\'s Crew',
-    },
-  });
+window.MTM_WIDGET_OPTIONS = {
+  // overwrite default input values
+  defaultValues: {
+    heightFt: 6,
+    heightIn: 5,
+    weight: 80,
+    email: 'pisa@gmail.com',
+  },
 
-  // init button
-  button.init();
-
-  // try to get size recomendation for user,
-  // that already has passed the widget flow
-  // and has its measurements in localStorage
-  const recomendations = await button.getSize();
-
-  // display size recomendations
-  if (recomendations) {
-    button.displaySize(recomendations);
-  }
-})();
-
+  // callback function that will be called with person object, which contains measurements
+  onMeasurementsReady: (measurements) => {
+    console.log(measurements);
+  },
+};
 ```
 
-After that you will get "Your MTM" button on the page.
+In this example, `weight` supposed to be in pounds. To use the metric system you need to set `heightCm` instead of `heightFt` and `heightIn`.
+
+The widget will catch these options on its initialization step and set them in the corresponding inputs.
+
+## Set custom widget button text
+
+You have an option to set custom widget button text via `data-button-title` attribute. For example, you have a regular integration code for your page from MTM admin panel:
+
+```html
+<script id="saia-mtm-integration" async src="/integration.js" data-public-key="f23$F234f:qwe2323e:FQWERFwerf234"></script>
+```
+
+To set custom button title, set `data-button-title` attribute value like this:
+
+```html
+<script id="saia-mtm-integration" async src="/integration.js" data-public-key="f23$F234f:qwe2323e:FQWERFwerf234" data-button-title="My custom title"></script>
+```
 
 <a name="SaiaMTMButton"></a>
 
@@ -181,7 +181,6 @@ SaiaMTMButton constructor
 | options.container | <code>string</code> | selector for button container |
 | options.key | <code>string</code> | SAIA PF API key |
 | [options.widgetUrl] | <code>string</code> | url to the widget host to open it in the iframe |
-| [options.buttonStyle] | <code>string</code> | button style. Could be 'gradient', 'gradient-reversed', 'black', 'white' |
 | [options.product] | <code>Object</code> | object with product parameters (optional) |
 | [options.product.description] | <code>string</code> | product description. Will be displayed on final results page |
 | [options.product.imageUrl] | <code>string</code> | url to product image Will be displayed on final results page |
@@ -190,6 +189,16 @@ SaiaMTMButton constructor
 | [options.bodyPart] | <code>string</code> | body part name. If brand and bodyPart are set, then product.url is ignored |
 | [options.id] | <code>number</code> \| <code>string</code> | unique id of the button |
 | [options.returnUrl] | <code>string</code> | product page url on which user will be redirected after he pressing close button at results screen after he complite the mobile flow |
+| [options.returnUrlDesktop] | <code>string</code> | should widget open returnUrl on desktop or not |
+| [options.fakeSize] | <code>string</code> | should show fake size result page |
+| [options.productId] | <code>number</code> | shoify product id |
+| [options.buttonTitle] | <code>string</code> | shoify product id |
+| [options.defaultValues] | <code>Object</code> | default values for some widget fields |
+| [options.defaultValues.email] | <code>string</code> | default value for email field |
+| [options.defaultValues.heightCm] | <code>number</code> | default value for height in centimeters. Will also set units field to 'cm'. |
+| [options.defaultValues.heightFt] | <code>number</code> | default value for height in feet and inches. Contains feet part. Should be used in combination with heightIn. Will also set units field to 'in'. |
+| [options.defaultValues.heightIn] | <code>number</code> | default value for height in feet and inches. Contains inches part. Should be used in combination with heightFt. Will also set units field to 'in'. |
+| [options.defaultValues.weight] | <code>number</code> | default value for weight field. If you set heightCm, then weight should contain value in kilograms. If you set heightFt and heightIn, then weight should contain value in pounds. |
 
 <a name="SaiaMTMButton+init"></a>
 

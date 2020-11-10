@@ -1,6 +1,9 @@
 import {
   parseHashParams,
   isMobileDevice,
+  getHeightCm,
+  getWeightKg,
+  getWeightLb,
 } from './helpers/utils';
 import FlowService from './services/flowService';
 
@@ -23,9 +26,24 @@ class SaiaMTMButton {
    * after he pressing close button at results screen after he complite the mobile flow
    * @param {string} [options.returnUrlDesktop] - should widget open returnUrl on desktop or not
    * @param {string} [options.buttonTitle] - shoify product id
+   * @param {Object} [options.defaultValues] - default values for some widget fields
+   * @param {string} [options.defaultValues.email] - default value for email field
+   * @param {number} [options.defaultValues.heightCm] - default value for height in centimeters.
+   * Will also set units field to 'cm'.
+   * @param {number} [options.defaultValues.heightFt] - default value for height in feet and
+   * inches. Contains feet part. Should be used in combination with heightIn.
+   * Will also set units field to 'in'.
+   * @param {number} [options.defaultValues.heightIn] - default value for height in feet and
+   * inches. Contains inches part. Should be used in combination with heightFt.
+   * Will also set units field to 'in'.
+   * @param {number} [options.defaultValues.weight] - default value for weight field.
+   * If you set heightCm, then weight should contain value in kilograms.
+   * If you set heightFt and heightIn, then weight should contain value in pounds.
    */
   constructor(options) {
     uid += 1;
+
+    const globalOptions = window.MTM_WIDGET_OPTIONS || {};
 
     this.defaults = {
       container: '.saia-widget-container',
@@ -34,6 +52,17 @@ class SaiaMTMButton {
       returnUrl: `${window.location.origin}${window.location.pathname}`,
       returnUrlDesktop: false,
       buttonTitle: 'GET MEASURED',
+      defaultValues: {
+        email: null,
+        heightCm: null,
+        heightFt: null,
+        heightIn: null,
+        weight: null,
+        ...globalOptions,
+        ...options,
+      },
+      onMeasurementsReady: () => {},
+      ...globalOptions,
       ...options,
       id: uid,
     };
@@ -94,6 +123,10 @@ class SaiaMTMButton {
           this.modal.querySelector('iframe').src = '';
           break;
         case 'saia-pf-widget.data':
+          if (this.defaults.onMeasurementsReady) {
+            this.defaults.onMeasurementsReady(data);
+          }
+
           if (currentData
               && currentData.persons
               && !currentData.persons.includes(data.personId)) {
@@ -198,14 +231,50 @@ class SaiaMTMButton {
     }
   }
 
-  /**
-   * Create widget flow object
-   *
-   * @param {string} publicKey - user public key
-   */
-  async createWidget(publicKey) {
+  static async createWidget(publicKey, options = {}) {
+    const { defaultValues } = options;
+
+    // default values
+    const defaultHeightCm = (defaultValues) ? defaultValues.heightCm : null;
+    const defaultHeightFt = (defaultValues) ? defaultValues.heightFt : null;
+    const defaultHeightIn = (defaultValues) ? defaultValues.heightIn : null;
+    const defaultWeight = (defaultValues) ? defaultValues.weight : null;
+    const defaultEmail = (defaultValues) ? defaultValues.email : null;
+
+    // get units for default values
+    let units = 'in';
+    if (defaultHeightCm) {
+      units = 'cm';
+    }
+
+    // convert default height in ft/in to cm
+    let height = parseInt(defaultHeightCm, 10);
+    if (typeof defaultHeightFt === 'number' && typeof defaultHeightIn === 'number') {
+      height = Math.round(getHeightCm(defaultHeightFt, defaultHeightIn));
+    }
+
+    // convert weight to kg
+    const defaultWeightNumber = parseInt(defaultWeight, 10);
+    let weightKg;
+    let weightLb;
+
+    if (units === 'in') {
+      weightKg = getWeightKg(defaultWeightNumber);
+      weightLb = defaultWeightNumber;
+    } else {
+      weightKg = defaultWeightNumber;
+      weightLb = getWeightLb(defaultWeightNumber);
+    }
+
     const flowService = new FlowService(publicKey);
-    const widget = await flowService.create();
+    const widget = await flowService.create({
+      // save default values
+      units,
+      height,
+      email: defaultEmail,
+      weight: weightKg,
+      weightLb,
+    });
     const { uuid } = widget;
 
     return Promise.resolve(uuid);

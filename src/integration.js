@@ -26,7 +26,6 @@ import SaiaMTMButton from './button';
 
       button.init(publicKey);
     }
-
   } catch (err) {
     if (err && err.response && err.response.data) {
       console.error(err.response.data.detail);

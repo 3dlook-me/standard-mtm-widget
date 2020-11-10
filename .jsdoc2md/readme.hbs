@@ -1,6 +1,6 @@
-# SAIA Perfect Fit Widget
+# SAIA MTM Widget
 
-Widget, that implements getting garment size for user based on SAIA Perfect Fit API.
+Widget, that implements getting garment size for user based on SAIA MTM API.
 
 ## How to run
 
@@ -102,58 +102,58 @@ dist/
 --widget-assets/
 ....*image assets*
 --index.html
---saia-pf-button.js
+--saia-mtm-button.js
 ..ignore other files
 ```
 
-Then you should upload the content of dist folder to your hosting in the folder, that you have already specified in the configuration file (```WIDGET_ASSETS_URL```). saia-pf-button.js should be included on the pages, on which you want to display a button and widget modal. This file could be included with this code:
+Then you should upload the content of dist folder to your hosting in the folder, that you have already specified in the configuration file (```WIDGET_ASSETS_URL```). saia-mtm-button.js should be included on the pages, on which you want to display a button and widget modal. This file could be included with this code:
 
 ```html
-<script src="/wp-content/my-widget-build/saia-pf-button.js"></script>
+<script src="/wp-content/my-widget-build/saia-mtm-button.js"></script>
 ```
 
-After this tag you can initialize the button. Example code:
+After that you will get "Your MTM" button on the page.
+
+## Set default options via global `MTM_WIDGET_OPTIONS` object
+
+To overwrite default options without creating a custom integration script, you could define a global `MTM_WIDGET_OPTIONS` object and set there the same options as in `SaiaMTMButton` constructor.
+
+For example, you want to overwrite default height, weight, and email values and set predefined ones. Also, you would like to set a callback function to get measurements, when they are ready. Let's say, you want to set height in feet and inches. To do this, declare `window.MTM_WIDGET_OPTIONS` object:
 
 ```js
-(async () => {
-  const button = new SaiaMTMButton({
-    // widget container element selector
-    container: '.product-single__meta',
-    // your SAIA API key
-    key: 'fnqiwhf9v9y9ty13bt783yugyiurygb3v78gvt',
-    // widget domain
-    // if you set this url in the configuration file (saia-config.test-store.js), then you may not use this parameter
-    widgetUrl: 'https://test-store.com/wp-content/my-widget-build/index.html',
-    // brand name
-    brand: 'Nike',
-    // body part
-    bodyPart: 'top',
-    // product information
-    product: {
-      // product image url for results page
-      imageUrl: 'https://imagehost.com/images/products/product.jpg',
-      // product description for results page
-      description: 'The Nike Air Rally Women\'s Crew',
-    },
-  });
+window.MTM_WIDGET_OPTIONS = {
+  // overwrite default input values
+  defaultValues: {
+    heightFt: 6,
+    heightIn: 5,
+    weight: 80,
+    email: 'pisa@gmail.com',
+  },
 
-  // init button
-  button.init();
-
-  // try to get size recomendation for user,
-  // that already has passed the widget flow
-  // and has its measurements in localStorage
-  const recomendations = await button.getSize();
-
-  // display size recomendations
-  if (recomendations) {
-    button.displaySize(recomendations);
-  }
-})();
-
+  // callback function that will be called with person object, which contains measurements
+  onMeasurementsReady: (measurements) => {
+    console.log(measurements);
+  },
+};
 ```
 
-After that you will get "Your perfect fit" button on the page.
+In this example, `weight` supposed to be in pounds. To use the metric system you need to set `heightCm` instead of `heightFt` and `heightIn`.
+
+The widget will catch these options on its initialization step and set them in the corresponding inputs.
+
+## Set custom widget button text
+
+You have an option to set custom widget button text via `data-button-title` attribute. For example, you have a regular integration code for your page from MTM admin panel:
+
+```html
+<script id="saia-mtm-integration" async src="/integration.js" data-public-key="f23$F234f:qwe2323e:FQWERFwerf234"></script>
+```
+
+To set custom button title, set `data-button-title` attribute value like this:
+
+```html
+<script id="saia-mtm-integration" async src="/integration.js" data-public-key="f23$F234f:qwe2323e:FQWERFwerf234" data-button-title="My custom title"></script>
+```
 
 {{>main}}
 

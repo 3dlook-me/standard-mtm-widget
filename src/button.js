@@ -1,7 +1,4 @@
-import API from '@3dlook/saia-sdk/lib/api';
-
 import {
-  transformRecomendations,
   parseHashParams,
   isMobileDevice,
   getHeightCm,
@@ -22,25 +19,12 @@ class SaiaMTMButton {
    *
    * @param {Object} options - parameters
    * @param {string} options.container - selector for button container
-   * @param {string} options.key - SAIA PF API key
+   * @param {string} options.publicKey - user's public key
    * @param {string} [options.widgetUrl] - url to the widget host to open it in the iframe
-   * @param {Object} [options.product] - object with product parameters (optional)
-   * @param {string} [options.product.description] - product description.
-   * Will be displayed on final results page
-   * @param {string} [options.product.imageUrl] - url to product image
-   * Will be displayed on final results page
-   * @param {string} [options.product.url] - url to product. For shopify usage only.
-   * Instead use brand and bodyPart options to determine right sizecharts
-   * @param {string} [options.brand] - brand name. If brand and bodyPart are set,
-   * then product.url is ignored
-   * @param {string} [options.bodyPart] - body part name. If brand and bodyPart are set,
-   * then product.url is ignored
    * @param {number|string} [options.id] - unique id of the button
    * @param {string} [options.returnUrl] - product page url on which user will be redirected
    * after he pressing close button at results screen after he complite the mobile flow
    * @param {string} [options.returnUrlDesktop] - should widget open returnUrl on desktop or not
-   * @param {string} [options.fakeSize] - should show fake size result page
-   * @param {number} [options.productId] - shoify product id
    * @param {string} [options.buttonTitle] - shoify product id
    * @param {Object} [options.defaultValues] - default values for some widget fields
    * @param {string} [options.defaultValues.email] - default value for email field
@@ -63,10 +47,8 @@ class SaiaMTMButton {
 
     this.defaults = {
       container: '.saia-widget-container',
-      key: '',
+      publicKey: '',
       widgetUrl: (typeof WIDGET_HOST !== 'undefined') ? WIDGET_HOST : '',
-      brand: '',
-      bodyPart: '',
       returnUrl: `${window.location.origin}${window.location.pathname}`,
       returnUrlDesktop: false,
       buttonTitle: 'GET MEASURED',
@@ -82,24 +64,15 @@ class SaiaMTMButton {
       onMeasurementsReady: () => {},
       ...globalOptions,
       ...options,
-
-      product: {
-        description: '',
-        imageUrl: '',
-        url: `${window.location.origin}${window.location.pathname}`,
-
-        ...globalOptions.product,
-        ...options.product,
-      },
       id: uid,
     };
 
-    if (!this.defaults.container) {
-      throw new Error('Please provide a container CSS selector');
+    if (!this.defaults.publicKey) {
+      throw new Error('Please provide a public key');
     }
 
-    if (!this.defaults.key) {
-      throw new Error('Please provide API key');
+    if (!this.defaults.container) {
+      throw new Error('Please provide a container CSS selector');
     }
 
     if (!this.defaults.widgetUrl) {
@@ -107,11 +80,8 @@ class SaiaMTMButton {
     }
 
     this.buttonEl = null;
-
-    this.api = new API({
-      host: `${API_HOST}/api/v2/`,
-      key: this.defaults.key || API_KEY,
-    });
+    this.buttonTextEl = null;
+    this.buttonPreloaderEl = null;
   }
 
   /**
@@ -138,8 +108,10 @@ class SaiaMTMButton {
     this.modal = modal;
     this.buttonEl = document.querySelector(`.saia-mtm-button--${this.defaults.id}`);
     this.buttonEl.type = 'button';
+    this.buttonTextEl = this.buttonEl.querySelector('.saia-mtm-button__text');
+    this.buttonPreloaderEl = this.buttonEl.querySelector('.saia-mtm-button__preloader');
 
-    this.buttonEl.addEventListener('click', () => this.showWidget());
+    this.buttonEl.addEventListener('click', async () => { await this.showWidget(); });
 
     window.addEventListener('message', (event) => {
       const { command, data } = event.data;
@@ -221,65 +193,21 @@ class SaiaMTMButton {
   }
 
   /**
-   * Check should we display button for current product page or not
-   */
-  checkButtonVisibility() {
-    if (window.location.href.includes('demo.html')) {
-      return true;
-    }
-
-    if (this.defaults.brand && this.defaults.bodyPart) {
-      return Promise.resolve();
-    }
-
-    return this.api.product.get(this.defaults.product.url)
-      .then((product) => {
-        if (product.length) {
-          return product[0].widget_is_visible;
-        }
-
-        if ('widget_is_visible' in product) {
-          return product.widget_is_visible;
-        }
-
-        return true;
-      });
-  }
-
-  /**
    * Show widget
    */
-  showWidget() {
+  async showWidget() {
+    this.buttonEl.classList.add('saia-mtm-button--pending');
+
+    const { publicKey } = this.defaults;
+    const uuid = await this.createWidget(publicKey);
+
+    this.buttonEl.classList.remove('saia-mtm-button--pending');
+
     if (!this.isMobile) {
       this.modal.classList.toggle('active');
     }
 
-    let url = `${this.defaults.widgetUrl}?key=${this.defaults.key}#/?origin=${window.location.origin}&returnUrl=${this.defaults.returnUrl}&returnUrlDesktop=${this.defaults.returnUrlDesktop}`;
-
-    if (this.defaults.product.url) {
-      url += `&product=${this.defaults.product.url}`;
-    }
-
-    if (this.defaults.product.description) {
-      url += `&product_description=${this.defaults.product.description}`;
-    }
-
-    if (this.defaults.product.imageUrl) {
-      url += `&image=${this.defaults.product.imageUrl}`;
-    }
-
-    if (this.defaults.brand && this.defaults.bodyPart) {
-      url += `&brand=${this.defaults.brand}`;
-      url += `&body_part=${this.defaults.bodyPart}`;
-    }
-
-    if (this.defaults.fakeSize) {
-      url += `&fakeSize=${this.defaults.fakeSize}`;
-    }
-
-    if (this.defaults.productId) {
-      url += `&productId=${this.defaults.productId}`;
-    }
+    let url = `${this.defaults.widgetUrl}?key=${uuid}#/?origin=${window.location.origin}&returnUrl=${this.defaults.returnUrl}&returnUrlDesktop=${this.defaults.returnUrlDesktop}`;
 
     if (this.defaults.photosFromGallery) {
       url += `&photosFromGallery=${this.defaults.photosFromGallery}`;
@@ -290,45 +218,6 @@ class SaiaMTMButton {
     } else {
       window.location = url;
     }
-  }
-
-  /**
-   * Get size for current product if measurements presaved in localstorage
-   *
-   * @async
-   * @returns {Object|null} recomendations
-   */
-  async getSize() {
-    const measurements = JSON.parse(localStorage.getItem('saia-pf-widget-data'));
-
-    if (measurements) {
-      delete measurements.personId;
-
-      let recomendations;
-      let originalRecommendations;
-
-      if (this.defaults.brand && this.defaults.bodyPart) {
-        originalRecommendations = await this.api.sizechart.getSize({
-          ...measurements,
-          brand: this.defaults.brand,
-          body_part: this.defaults.bodyPart,
-        });
-      } else {
-        originalRecommendations = await this.api.product.getRecommendations({
-          ...measurements,
-          url: this.defaults.product.url,
-        });
-      }
-
-
-      if (originalRecommendations) {
-        recomendations = transformRecomendations(originalRecommendations);
-      }
-
-      return recomendations;
-    }
-
-    return null;
   }
 
   /**
@@ -389,6 +278,18 @@ class SaiaMTMButton {
     const { uuid } = widget;
 
     return Promise.resolve(uuid);
+  }
+
+  /**
+   * Check if widget button should be shown on the page
+   *
+   * @param {string} publicKey - user public key
+   */
+  static async isWidgetAllowed(publicKey) {
+    const flowService = new FlowService(publicKey);
+    const isWidgetAllowed = await flowService.isWidgetAllowed();
+
+    return Promise.resolve(isWidgetAllowed);
   }
 }
 

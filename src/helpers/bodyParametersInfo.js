@@ -130,6 +130,16 @@ export const VOLUMETRIC_PARAMS = [
     imageURI: '/volume/thigh.jpg',
   },
   {
+    paramName: 'thigh_1_inch_below_crotch',
+    units: 'cm',
+    name: 'Thigh 1 inch below the crotch',
+    paramGroup: 'volume_params',
+    source: '3DLOOK',
+    equipment: 'Tape measure',
+    definition: 'The widest part of the thigh, 1” below the crotch, directly below the butt. Measure around the thigh at this point, keeping the measuring tape parallel to the floor.',
+    imageURI: '/volume/thigh_1_inch_below_crotch.jpg',
+  },
+  {
     paramName: 'mid_thigh_girth',
     units: 'cm',
     name: 'Mid - thigh girth',
@@ -251,6 +261,16 @@ export const LINEAR_PARAMS = [
     source: 'ISO 8559-1',
     equipment: 'Tape measure',
     definition: 'Vertical distance between the inside leg level and outer ankle point',
+    imageURI: '/linear/inseam.jpg',
+  },
+  {
+    paramName: 'inside_leg_length_to_the_1_inch_above_the_floor',
+    units: 'cm',
+    name: 'Inside leg length to the 1 inch above the floor',
+    paramGroup: 'front_params',
+    source: '3DLOOK',
+    equipment: 'Tape measure',
+    definition: 'Vertical distance from the inside leg level to the 1 inch above the floor.',
     imageURI: '/linear/inseam.jpg',
   },
   {

@@ -101,6 +101,7 @@
     "detect-browser": "^5.0.0",
     "history": "^4.10.1",
     "normalize.css": "^8.0.1",
+    "nosleep.js": "^0.11.0",
     "preact": "^10.3.1",
     "preact-context": "^1.1.4",
     "preact-router": "^3.2.1",

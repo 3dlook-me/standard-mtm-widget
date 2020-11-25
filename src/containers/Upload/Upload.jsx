@@ -7,8 +7,9 @@ import { route } from 'preact-router';
 import API from '@3dlook/saia-sdk/lib/api';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import Camera from '../../components/CustomCamera/CustomCamera';
+import NoSleep from 'nosleep.js';
 
+import Camera from '../../components/CustomCamera/CustomCamera';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { store } from '../../store';
@@ -55,6 +56,8 @@ import sideExample from '../../images/friend_side.png';
 let isPhoneLocked = false;
 let isRefreshed = false;
 
+const noSleep = new NoSleep();
+
 /**
  * Upload page component.
  */
@@ -80,6 +83,7 @@ class Upload extends Component {
     this.reloadListener = () => {
       isRefreshed = true;
       setPageReloadStatus(true);
+      noSleep.disable();
     };
 
     window.addEventListener('unload', this.reloadListener);
@@ -102,6 +106,10 @@ class Upload extends Component {
     document.removeEventListener('webkitvisibilitychange', this.handleVisibilityChange);
     window.removeEventListener('unload', this.reloadListener);
     window.removeEventListener('offline', this.setOfflineStatus);
+
+    if (noSleep._wakeLock) {
+      noSleep.disable();
+    }
   }
 
   componentDidMount() {
@@ -128,6 +136,7 @@ class Upload extends Component {
     }
 
     window.addEventListener('offline', this.setOfflineStatus);
+    document.addEventListener('click', this.disableDeviceScreenLock, { once: true });
 
     // if camera is active when page refreshed
     if (camera) {
@@ -184,6 +193,8 @@ class Upload extends Component {
   }
 
   getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
+
+  disableDeviceScreenLock = () => noSleep.enable();
 
   init(props) {
     const { token } = props;
@@ -360,9 +371,17 @@ class Upload extends Component {
         visibilityChange = 'webkitvisibilitychange';
       }
 
+      if (!noSleep._wakeLock) {
+        noSleep.enable();
+      }
+
       this.handleVisibilityChange = async () => {
         if (document[hidden]) {
           isPhoneLocked = true;
+
+          if (noSleep._wakeLock) {
+            noSleep.disable();
+          }
 
           await window.location.reload();
         }
@@ -526,6 +545,10 @@ class Upload extends Component {
         this.flow.updateLocalState({
           processStatus: 'Calculating your Measurements',
         });
+      }
+
+      if (!noSleep._wakeLock) {
+        noSleep.enable();
       }
 
       setProcessingStatus('Calculating your Measurements');

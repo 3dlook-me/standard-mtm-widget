@@ -80,6 +80,16 @@ export const VOLUMETRIC_PARAMS = [
     imageURI: '/volume/bicep.jpg',
   },
   {
+    paramName: 'upper_bicep_girth',
+    units: 'cm',
+    name: 'Upper bicep girth',
+    paramGroup: 'volume_params',
+    source: '3DLOOK',
+    equipment: 'Tape measure',
+    definition: 'The maximum circumference of the bicep, taken 1" below the armhole bottom.',
+    imageURI: '/volume/upper_bicep_girth.jpg',
+  },
+  {
     paramName: 'knee',
     units: 'cm',
     name: 'Knee girth',

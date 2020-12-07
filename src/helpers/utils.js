@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { detectOS, browserName } from 'detect-browser';
 
+import { flowScreens } from '../configs/flowScreens';
+
 export const debounce = (func, delay) => {
   let timer;
   return (...args) => {
@@ -506,4 +508,30 @@ export const closeSelectsOnResize = () => {
   for (const el of $selects) {
     el.blur();
   }
+};
+
+/**
+ * Convert snake string to camel case
+ * @param {string} str - snake string
+ * @returns {string} - camel case value
+ */
+export const snakeToCamel = (str) => str.replace(
+  /([-_][a-z])/g,
+  (group) => group
+    .toUpperCase()
+    .replace('-', '')
+    .replace('_', ''),
+);
+
+/**
+ * Get male/female friend/table flow asset
+ * @param {boolean} isTableFlow - is table flow
+ * @param {string} gender - gender type
+ * @param {string} role - role of asset in the page
+ */
+export const getAsset = (isTableFlow, gender, role) => {
+  const page = snakeToCamel(window.location.hash).replace('#/', '');
+  const flowType = isTableFlow ? 'tableFlow' : 'friendFlow';
+
+  return flowScreens[page][flowType][gender][role];
 };

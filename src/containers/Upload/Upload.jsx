@@ -17,6 +17,7 @@ import {
   wait,
   mobileFlowStatusUpdate,
   isMobileDevice,
+  getAsset,
 } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
@@ -49,8 +50,6 @@ import {
 } from '../../components';
 
 import './Upload.scss';
-import frontExample from '../../images/friend_front.png';
-import sideExample from '../../images/friend_side.png';
 
 let isPhoneLocked = false;
 let isRefreshed = false;
@@ -753,7 +752,6 @@ class Upload extends Component {
     } = this.props;
 
     let title;
-    let photoBg;
     let frontActive = false;
     let sideActive = false;
 
@@ -763,11 +761,9 @@ class Upload extends Component {
       sideActive = frontImage && !sideImage;
     } else if ((!frontImage && !sideImage) || (!frontImage && sideImage)) {
       title = 'Take Front photo';
-      photoBg = frontExample;
       frontActive = true;
     } else if (frontImage && !sideImage) {
       title = 'Take Side photo';
-      photoBg = sideExample;
       sideActive = true;
     }
 
@@ -817,8 +813,9 @@ class Upload extends Component {
 
               <Requirements
                 isTableFlow={isTableFlow}
-                photoBg={photoBg}
                 token={token}
+                video={isTableFlow && getAsset(true, gender, 'videoExample')}
+                photoBg={!isTableFlow && getAsset(false, gender, frontActive ? 'frontExample' : 'sideExample')}
               />
             </div>
             <div className="screen__footer">
@@ -849,6 +846,7 @@ class Upload extends Component {
           isActive={isPending}
           status={sendDataStatus}
           isMobile={isMobile}
+          gender={gender}
         />
 
         {camera ? (

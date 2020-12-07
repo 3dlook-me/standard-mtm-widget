@@ -119,7 +119,7 @@ class QRCodeContainer extends Component {
       });
     }
   }
-  
+
 
   componentWillUnmount() {
     if (this.unsubscribe) this.unsubscribe();
@@ -296,7 +296,7 @@ class QRCodeContainer extends Component {
         event: SCAN_QR_CODE_PAGE_SMS_SENT,
         data: {
           value: phoneNumber,
-        }
+        },
       });
 
       this.sms.send(phoneNumber, qrCodeUrl)
@@ -387,6 +387,7 @@ class QRCodeContainer extends Component {
       sendDataStatus,
       phoneCountry,
       phoneUserPart,
+      gender,
     } = this.props;
 
     const qrCopyUrl = copyUrl || qrCodeUrl;
@@ -494,10 +495,10 @@ class QRCodeContainer extends Component {
             onClick={this.sendSMS}
             type="button"
             disabled={
-              isSMSPending ||
-              !isPhoneNumberValid ||
-              !phoneNumber ||
-              isSMSSuccess
+              isSMSPending
+              || !isPhoneNumberValid
+              || !phoneNumber
+              || isSMSSuccess
             }
           >
             <img className="spin" src={smsSendingIcon} alt="sms sending" />
@@ -508,7 +509,11 @@ class QRCodeContainer extends Component {
           </button>
         </div>
 
-        <Preloader isActive={isPending} status={sendDataStatus} />
+        <Preloader
+          isActive={isPending}
+          status={sendDataStatus}
+          gender={gender}
+        />
       </div>
     );
   }

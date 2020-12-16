@@ -143,7 +143,7 @@ class Welcome extends Component {
             });
           })
           .catch((err) => {
-            this.widgetIframe = window.parent.document.querySelector('.saia-pf-drop iframe');
+            this.widgetIframe = window.parent.document.querySelector('.saia-mtm-drop iframe');
 
             // condition for preventing appearing the error alert in safari
             // after the widget closes quickly after it is opened

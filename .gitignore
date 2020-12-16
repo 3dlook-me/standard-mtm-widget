@@ -5,3 +5,4 @@ saia-config.development.js
 docs/
 designs/
 .idea/
+.DS_Store

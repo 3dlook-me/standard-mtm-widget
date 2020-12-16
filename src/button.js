@@ -110,6 +110,8 @@ class SaiaMTMButton {
     this.buttonEl = document.querySelector(`.saia-mtm-button--${this.defaults.id}`);
     this.buttonEl.type = 'button';
 
+    this.setCustomSettings();
+
     this.buttonEl.addEventListener('click', () => this.showWidget());
 
     window.addEventListener('message', (event) => {
@@ -309,12 +311,24 @@ class SaiaMTMButton {
     }
   }
 
+  setCustomSettings() {
+    const { button_background_color, button_border_color } = this.defaults.customSettings;
+
+    if (button_background_color) {
+      this.buttonEl.style.backgroundColor = button_background_color;
+    }
+
+    if (button_border_color) {
+      this.buttonEl.style.borderColor = button_border_color;
+    }
+  }
+
   static async createWidget(publicKey) {
     const flowService = new FlowService(publicKey);
     const widget = await flowService.create();
-    const { uuid } = widget;
+    const { uuid, widget_settings } = widget;
 
-    return Promise.resolve(uuid);
+    return Promise.resolve({ uuid, widget_settings });
   }
 }
 

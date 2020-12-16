@@ -5,4 +5,5 @@ saia-config.development.js
 docs/
 designs/
 .idea/
+.npmrc
 .DS_Store

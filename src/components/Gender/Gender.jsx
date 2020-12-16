@@ -1,10 +1,15 @@
 import { h, Component } from 'preact';
 import classNames from 'classnames';
 
+import analyticsService, {
+  GENDER_PAGE_MALE_GENDER_SELECTED,
+  GENDER_PAGE_FEMALE_GENDER_SELECTED,
+} from '../../services/analyticsService';
+
 /**
  * Gender component
  */
-export default class Gender extends Component {
+class Gender extends Component {
   constructor() {
     super();
 
@@ -27,13 +32,17 @@ export default class Gender extends Component {
    * Gender change event handler
    */
   onGenderChange = (e) => {
-    const { change } = this.props;
-
+    const { change, token } = this.props;
     const { value } = e.target;
 
-    this.setState({
-      value,
-    }, () => change(value));
+    analyticsService({
+      uuid: token,
+      event: value === 'male'
+        ? GENDER_PAGE_MALE_GENDER_SELECTED
+        : GENDER_PAGE_FEMALE_GENDER_SELECTED,
+    });
+
+    this.setState({ value }, () => change(value));
   }
 
   render() {
@@ -55,3 +64,5 @@ export default class Gender extends Component {
     );
   }
 }
+
+export default Gender;

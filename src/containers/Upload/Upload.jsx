@@ -7,7 +7,7 @@ import { route } from 'preact-router';
 import API from '@3dlook/saia-sdk/lib/api';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import Camera from '@3dlook/camera/src/Camera';
+import Camera from '../../components/CustomCamera/CustomCamera';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
@@ -17,13 +17,32 @@ import {
   wait,
   mobileFlowStatusUpdate,
   isMobileDevice,
+  getAsset,
   filterCustomMeasurements,
 } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
+  gaOnClickLetsStartFrontFriend,
   gaOpenCameraFrontPhoto,
+  gaOnClickLetsStartSideFriend,
   gaOpenCameraSidePhoto,
+  gaOnClickLetsStartRequirements,
+  gaOnClickDoneRequirements,
 } from '../../helpers/ga';
+import analyticsService, {
+  FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
+  SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+  FRONT_PHOTO_PAGE_EXAMPLE_CLOSE,
+  SIDE_PHOTO_PAGE_EXAMPLE_CLOSE,
+  FRONT_PHOTO_PAGE_OPEN_CAMERA,
+  SIDE_PHOTO_PAGE_OPEN_CAMERA,
+  FRONT_PHOTO_PAGE_PHOTO_TAKEN,
+  SIDE_PHOTO_PAGE_PHOTO_TAKEN,
+  MAGIC_SCREEN_PAGE_ENTER,
+  MAGIC_SCREEN_PAGE_LEAVE,
+  MAGIC_SCREEN_PAGE_SUCCESS,
+  MAGIC_SCREEN_PAGE_FAILED,
+} from '../../services/analyticsService';
 import {
   Preloader,
   Stepper,
@@ -32,8 +51,6 @@ import {
 } from '../../components';
 
 import './Upload.scss';
-import frontExample from '../../images/friend_front.png';
-import sideExample from '../../images/friend_side.png';
 
 let isPhoneLocked = false;
 let isRefreshed = false;
@@ -56,11 +73,6 @@ class Upload extends Component {
       sideImagePose: null,
 
       isPending: false,
-
-      // photoType: 'front',
-      // isPhotoExample: false,
-
-      // activeTab: props.frontImage && !props.sideImage ? 'side' : 'front',
     };
 
     const { setPageReloadStatus } = props;
@@ -97,12 +109,23 @@ class Upload extends Component {
       camera,
       setIsNetwork,
       isNetwork,
-      token,
       flowId,
       pageReloadStatus,
       isFromDesktopToMobile,
       isDemoWidget,
+      token,
+      isTableFlow,
+      frontImage,
     } = this.props;
+
+    if (!isTableFlow) {
+      analyticsService({
+        uuid: token,
+        event: !frontImage
+          ? FRONT_PHOTO_PAGE_EXAMPLE_OPEN
+          : SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+      });
+    }
 
     window.addEventListener('offline', this.setOfflineStatus);
 
@@ -133,6 +156,35 @@ class Upload extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      frontImage,
+      sideImage,
+      isTableFlow,
+      token,
+    } = this.props;
+
+    if (!isTableFlow && !prevProps.frontImage && frontImage && !sideImage) {
+      analyticsService({
+        uuid: token,
+        event: SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+      });
+    }
+
+    if (!isTableFlow
+        && ((!prevProps.sideImage && sideImage) || (!prevProps.frontImage && frontImage))) {
+      const event = (!prevProps.sideImage && sideImage && SIDE_PHOTO_PAGE_EXAMPLE_CLOSE)
+        || (!prevProps.frontImage && frontImage && FRONT_PHOTO_PAGE_EXAMPLE_CLOSE);
+
+      analyticsService({
+        uuid: token,
+        event,
+      });
+    }
+  }
+
+  getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
+
   init(props) {
     const { token } = props;
 
@@ -159,7 +211,17 @@ class Upload extends Component {
       camera,
       isTableFlow,
       hardValidation,
+      token,
     } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: FRONT_PHOTO_PAGE_PHOTO_TAKEN,
+    });
+
+    if (!isTableFlow) {
+      gaOpenCameraFrontPhoto();
+    }
 
     setHeaderIconsStyle('default');
     addFrontImage(file);
@@ -185,7 +247,17 @@ class Upload extends Component {
       setHeaderIconsStyle,
       setCamera,
       isTableFlow,
+      token,
     } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: SIDE_PHOTO_PAGE_PHOTO_TAKEN,
+    });
+
+    if (!isTableFlow) {
+      gaOpenCameraSidePhoto();
+    }
 
     setHeaderIconsStyle('default');
 
@@ -238,9 +310,7 @@ class Upload extends Component {
       deviceCoordinates,
     } = props;
 
-    let {
-      personId,
-    } = props;
+    let { personId } = props;
 
     const {
       setHardValidation,
@@ -257,6 +327,8 @@ class Upload extends Component {
       isFromDesktopToMobile,
       taskId,
       setTaskId,
+      token,
+      isTableFlow,
       customSettings,
     } = this.props;
 
@@ -305,6 +377,23 @@ class Upload extends Component {
         isPending: true,
       });
 
+      if (isTableFlow) {
+        analyticsService({
+          uuid: token,
+          event: FRONT_PHOTO_PAGE_EXAMPLE_CLOSE,
+        });
+
+        analyticsService({
+          uuid: token,
+          event: SIDE_PHOTO_PAGE_EXAMPLE_CLOSE,
+        });
+      }
+
+      analyticsService({
+        uuid: token,
+        event: MAGIC_SCREEN_PAGE_ENTER,
+      });
+
       let taskSetId;
       let mtmClientId;
 
@@ -319,6 +408,8 @@ class Upload extends Component {
       if (sideImage !== true) {
         images.sideImage = sideImage;
       }
+
+      const photoFlowType = isTableFlow ? 'hand' : 'friend';
 
       const mtmClientParams = {
         widgetId,
@@ -377,6 +468,7 @@ class Upload extends Component {
 
         taskSetId = await this.api.person.updateAndCalculate(createdPersonId, {
           ...images,
+          photoFlowType,
           deviceCoordinates: { ...deviceCoordinates },
           measurementsType: 'all',
         });
@@ -405,6 +497,7 @@ class Upload extends Component {
           gender,
           height,
           email,
+          photoFlowType,
           ...(weight && { weight }),
           deviceCoordinates: { ...deviceCoordinates },
           ...images,
@@ -475,14 +568,22 @@ class Upload extends Component {
         person: person.id,
       });
 
-      if (!isFromDesktopToMobile) {
-        await this.flow.widgetDeactivate();
-      }
+      gaUploadOnContinue(this.getFlowPhoto());
 
-      gaUploadOnContinue();
-
+      analyticsService({
+        uuid: token,
+        event: MAGIC_SCREEN_PAGE_LEAVE,
+      });
+      analyticsService({
+        uuid: token,
+        event: MAGIC_SCREEN_PAGE_SUCCESS,
+      });
       route('/results', true);
     } catch (error) {
+      analyticsService({
+        uuid: token,
+        event: MAGIC_SCREEN_PAGE_FAILED,
+      });
       if (!isPhoneLocked) {
         // hard validation part
         if (error && error.response && error.response.data && error.response.data.sub_tasks) {
@@ -519,14 +620,20 @@ class Upload extends Component {
         } else if (error && error.response && error.response.status === 400) {
           route('/not-found', true);
         } else if (error && error.response && error.response.data) {
-          const { detail, brand: brandError, body_part: bodyPartError } = error.response.data;
+          const {
+            detail,
+            brand: brandError,
+            body_part: bodyPartError,
+          } = error.response.data;
           alert(detail || brandError || bodyPartError);
           route('/not-found', true);
         } else {
           if (error.message.includes('is not specified')) {
             const { returnUrl } = this.props;
 
-            alert('Oops...\nThe server lost connection...\nPlease restart widget flow on the desktop or start again on mobile');
+            alert(
+              'Oops...\nThe server lost connection...\nPlease restart widget flow on the desktop or start again on mobile',
+            );
 
             window.location.href = returnUrl;
 
@@ -547,22 +654,36 @@ class Upload extends Component {
   }
 
   triggerFrontImage = () => {
-    const { setCamera } = this.props;
+    const { setCamera, token, isTableFlow } = this.props;
 
-    gaOpenCameraFrontPhoto();
+    if (isTableFlow) {
+      gaOnClickLetsStartRequirements();
+    } else {
+      gaOnClickLetsStartFrontFriend();
+    }
 
     setCamera('front');
+
+    analyticsService({
+      uuid: token,
+      event: FRONT_PHOTO_PAGE_OPEN_CAMERA,
+    });
   }
 
   triggerSideImage = () => {
-    const { setCamera } = this.props;
+    const { setCamera, token } = this.props;
 
-    gaOpenCameraSidePhoto();
+    gaOnClickLetsStartSideFriend();
 
     setCamera('side');
+
+    analyticsService({
+      uuid: token,
+      event: SIDE_PHOTO_PAGE_OPEN_CAMERA,
+    });
   }
 
-  openPhotoExample =(photoType) => {
+  openPhotoExample = (photoType) => {
     this.setState({
       isPhotoExample: true,
       photoType,
@@ -634,10 +755,10 @@ class Upload extends Component {
       isPhotosFromGallery,
       isTableFlow,
       hardValidation,
+      token,
     } = this.props;
 
     let title;
-    let photoBg;
     let frontActive = false;
     let sideActive = false;
 
@@ -647,17 +768,14 @@ class Upload extends Component {
       sideActive = frontImage && !sideImage;
     } else if ((!frontImage && !sideImage) || (!frontImage && sideImage)) {
       title = 'Take Front photo';
-      photoBg = frontExample;
       frontActive = true;
     } else if (frontImage && !sideImage) {
       title = 'Take Side photo';
-      photoBg = sideExample;
       sideActive = true;
     }
 
     return (
       <div className="screen active">
-
         {isDesktop ? (
           <div className="tutorial__desktop-msg">
             <h2>Please open this link on your mobile device</h2>
@@ -700,7 +818,12 @@ class Upload extends Component {
                 </div>
               </h3>
 
-              <Requirements isTableFlow={isTableFlow} photoBg={photoBg} />
+              <Requirements
+                isTableFlow={isTableFlow}
+                token={token}
+                video={isTableFlow && getAsset(true, gender, 'videoExample')}
+                photoBg={!isTableFlow && getAsset(false, gender, frontActive ? 'frontExample' : 'sideExample')}
+              />
             </div>
             <div className="screen__footer">
               <button
@@ -726,14 +849,16 @@ class Upload extends Component {
           </Fragment>
         )}
 
-        {/* {isPhotoExample ? ( */}
-        {/*  <PhotoExample photoType={photoType} closePhotoExample={this.closePhotoExample} /> */}
-        {/* ) : null} */}
-
-        <Preloader isActive={isPending} status={sendDataStatus} isMobile={isMobile} />
+        <Preloader
+          isActive={isPending}
+          status={sendDataStatus}
+          isMobile={isMobile}
+          gender={gender}
+        />
 
         {camera ? (
           <Camera
+            onClickDone={gaOnClickDoneRequirements}
             type={camera}
             gender={gender}
             saveFront={this.saveFrontFile}
@@ -743,6 +868,7 @@ class Upload extends Component {
             disableTableFlow={this.disableTableFlow}
             turnOffCamera={this.turnOffCamera}
             setDeviceCoordinates={this.setDeviceCoordinates}
+            token={token}
           />
         ) : null}
       </div>

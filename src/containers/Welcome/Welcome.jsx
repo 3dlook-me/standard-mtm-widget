@@ -1,6 +1,7 @@
 import { h, Component, Fragment } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
+import { detect } from 'detect-browser';
 
 import {
   browserValidation,
@@ -11,6 +12,10 @@ import {
 import { gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
+import analyticsService, {
+  WELCOME_SCREEN_ENTER,
+  WELCOME_SCREEN_CLOSE,
+} from '../../services/analyticsService';
 import { Browser } from '..';
 
 import './Welcome.scss';
@@ -61,30 +66,34 @@ class Welcome extends Component {
       setSettings,
       setIsPhotosFromGallery,
       isDemoWidget,
+      token,
+      setUnits,
+      addHeight,
+      setWeightLb,
+      setWeight,
+      setEmail,
       setCustomSettings,
     } = this.props;
 
-    const token = matches.key || API_KEY || parseGetParams().key;
+    const uuid = (matches || {}).key || API_KEY || parseGetParams().key;
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;
     const photosFromGallery = matches.photosFromGallery || false;
 
     this.widgetContainer = document.querySelector('.widget-container');
 
-    if (isMobileDevice()) {
-      if (!browserValidation()) {
-        setIsMobile(true);
-        setWidgetUrl(window.location.href);
-        setReturnUrl(matches.returnUrl);
-        setToken(token);
-        setIsFromDesktopToMobile(false);
+    if (isMobileDevice() && !browserValidation()) {
+      setIsMobile(true);
+      setWidgetUrl(window.location.href);
+      setReturnUrl(matches.returnUrl);
+      setToken(uuid);
+      setIsFromDesktopToMobile(false);
 
-        this.setState({
-          invalidBrowser: true,
-        });
+      this.setState({
+        invalidBrowser: true,
+      });
 
-        return;
-      }
+      return;
     }
 
     this.widgetContainer.classList.remove('widget-container--no-bg');
@@ -101,7 +110,7 @@ class Welcome extends Component {
       if (!isSmbFlow && !isDemoWidget) {
         resetState();
 
-        setToken(token);
+        setToken(uuid);
         setBrand(brand);
         setBodyPart(bodyPart);
         setProductUrl(matches.product);
@@ -112,24 +121,32 @@ class Welcome extends Component {
         setFakeSize(!!matches.fakeSize);
         setProductId(parseInt(matches.productId, 10));
 
-        this.flow = new FlowService(token);
-        this.flow.setFlowId(token);
-        this.flow.updateState({
-          status: 'created',
-          productUrl: matches.product,
-          brand,
-          bodyPart,
-          returnUrl: matches.returnUrl,
-          fakeSize: !!matches.fakeSize,
-          productId: parseInt(matches.productId, 10),
-          ...(photosFromGallery && { photosFromGallery: true }),
-        })
+        this.flow = new FlowService(uuid);
+        this.flow.setFlowId(uuid);
+        this.flow.get()
+          .then(() => this.flow.updateState({
+            status: 'created',
+            productUrl: matches.product,
+            brand,
+            bodyPart,
+            returnUrl: matches.returnUrl,
+            fakeSize: !!matches.fakeSize,
+            productId: parseInt(matches.productId, 10),
+            ...(photosFromGallery && { photosFromGallery: true }),
+          }))
           .then((res) => {
+            const { state } = res;
             const { redirectLink } = res.widget_settings;
 
             setFlowId(res.uuid);
             setWidgetId(res.id);
             setSettings(res.settings);
+            // save to store default values
+            setUnits(state.units);
+            addHeight(state.height);
+            setEmail(state.email);
+            setWeightLb(state.weightLb);
+            setWeight(state.weight);
             // setSettings({ results_screen: 'measurements', final_page: 'measurements' });
 
             setCustomSettings(res.widget_settings);
@@ -171,17 +188,33 @@ class Welcome extends Component {
         });
       }
     }, { once: true });
+
+    analyticsService({
+      uuid: uuid || token,
+      event: WELCOME_SCREEN_ENTER,
+      data: {
+        device: isMobileDevice() ? 'mobile' : 'web browser',
+        browser: detect().name === 'ios' ? 'safari' : detect().name,
+      },
+    });
   }
 
   /**
    * On next screen event handler
    */
   onNextScreen = async () => {
+    const { matches, token } = this.props;
     gaWelcomeOnContinue();
 
     const { isSmbFlow, isDemoWidget } = this.props;
     const routeUrl = (isSmbFlow || isDemoWidget) ? '/gender' : '/email';
 
+    const widgetUUID = matches.key || API_KEY || parseGetParams().key;
+
+    analyticsService({
+      uuid: widgetUUID || token,
+      event: WELCOME_SCREEN_CLOSE,
+    });
     route(routeUrl, false);
   }
 

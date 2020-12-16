@@ -33,21 +33,37 @@
       background-color: white;
       color: black;
 
-      svg {
+      svg path {
         fill: black;
       }
     }
 
-    svg {
-      fill: white;
-      transition: fill 0.25s ease-out;
-      display: block;
-      margin-right: 15px;
+    &__preloader {
+      display: none;
+      width: 24px;
+      height: 24px;
+      animation: spin-animation .7s infinite linear;
 
-      @include breakpoint(max-width 1200px) {
-        margin-right: 10px;
-        display: none;
+      path {
+        transition: all ease 300ms;
       }
+
+      @keyframes spin-animation {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    }
+
+    &--pending &__preloader {
+      display: block;
+    }
+
+    &--pending &__text {
+      display: none;
     }
   }
 

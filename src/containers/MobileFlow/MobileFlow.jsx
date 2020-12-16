@@ -1,12 +1,16 @@
 import { h } from 'preact';
 import { connect } from 'react-redux';
 import { route } from 'preact-router';
+import { detect } from 'detect-browser';
 
 import actions from '../../store/actions';
 import { gaSwitchToMobileFlow } from '../../helpers/ga';
 import {
   browserValidation, isMobileDevice,
 } from '../../helpers/utils';
+import analyticsService, {
+  MOBILE_FLOW_START,
+} from '../../services/analyticsService';
 import { BaseMobileFlow, Loader } from '../../components';
 
 /**
@@ -24,6 +28,17 @@ class MobileFlow extends BaseMobileFlow {
   }
 
   componentDidMount = async () => {
+    const { matches } = this.props;
+
+    analyticsService({
+      uuid: matches.id,
+      event: MOBILE_FLOW_START,
+      data: {
+        device: isMobileDevice() ? 'mobile' : 'web browser',
+        browser: detect().name === 'ios' ? 'safari' : detect().name,
+      },
+    });
+
     try {
       const { flowState, setFlowState } = this.props;
 

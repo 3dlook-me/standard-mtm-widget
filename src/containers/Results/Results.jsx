@@ -1,10 +1,12 @@
 /* eslint class-methods-use-this: off */
-import { h, Component } from 'preact';
+import { h } from 'preact';
 import { connect } from 'react-redux';
 
 import {
-  send, objectToUrlParams,
-} from '../../helpers/utils';
+  RESULT_SCREEN_ENTER,
+  analyticsServiceAsync,
+} from '../../services/analyticsService';
+import { send, objectToUrlParams } from '../../helpers/utils';
 import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
 import { BaseMobileFlow, Measurements, Guide } from '../../components';
 import actions from '../../store/actions';
@@ -47,32 +49,41 @@ class Results extends Component {
       measurements,
       origin,
       setIsHeaderTranslucent,
-      isMobile,
+      token,
       isWidgetDeactivated,
       setIsWidgetDeactivated,
+      isMobile,
+      isFromDesktopToMobile
     } = this.props;
 
     setIsHeaderTranslucent(true);
 
-    if (!isMobile && !isWidgetDeactivated) {
-      await this.flow.widgetDeactivate();
+    if (isMobile) {
+      await analyticsServiceAsync({
+        uuid: token,
+        event: RESULT_SCREEN_ENTER,
+      });
+    }
+
+    if (!isWidgetDeactivated) {
+      // make request from desktop or mobile
+      if ((isMobile && !isFromDesktopToMobile) || !isMobile) {
+        await this.flow.widgetDeactivate();
+      }
     }
 
     setIsWidgetDeactivated(false);
 
     send('data', measurements, origin);
 
-    gaSuccess();
-  }
+    gaSuccess(this.getFlowPhoto());
+  };
 
   componentWillReceiveProps = async (nextProps) => {
-    const {
-      measurements,
-      origin,
-    } = nextProps;
+    const { measurements, origin } = nextProps;
 
     send('data', measurements, origin);
-  }
+  };
 
   componentWillUnmount() {
     const { setIsHeaderTranslucent } = this.props;
@@ -80,19 +91,21 @@ class Results extends Component {
     setIsHeaderTranslucent(false);
   }
 
+  getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
+
   openGuide = (index, type) => {
     this.setState({
       openGuide: true,
       measurementsType: type,
       measurement: index,
     });
-  }
+  };
 
   helpBtnToggle = (status) => {
     const { setHelpBtnStatus } = this.props;
 
     setHelpBtnStatus(status);
-  }
+  };
 
   onClick = async () => {
     const {
@@ -107,6 +120,7 @@ class Results extends Component {
       setHelpBtnStatus,
       isSmbFlow,
       isDemoWidget,
+      token,
     } = this.props;
 
     const { openGuide } = this.state;
@@ -121,7 +135,7 @@ class Results extends Component {
       return;
     }
 
-    gaResultsOnContinue();
+    gaResultsOnContinue(this.getFlowPhoto());
 
     if (isFromDesktopToMobile) {
       // pass measurements via hash get params to the destination page
@@ -146,7 +160,7 @@ class Results extends Component {
       resetState();
       send('close', {}, origin);
     }
-  }
+  };
 
   render() {
     const {
@@ -167,22 +181,23 @@ class Results extends Component {
     return (
       <div className="screen screen--result active">
         <div className="screen__content result">
-
           {openGuide ? (
-            <Guide gender={gender} measurementsType={measurementsType} measurement={measurement} />
+            <Guide
+              gender={gender}
+              measurementsType={measurementsType}
+              measurement={measurement}
+            />
           ) : null}
 
           <h2 className="screen__subtitle">
-            <span className="success">
-              Complete
-            </span>
+            <span className="success">Complete</span>
           </h2>
 
-          {(results === 'measurements') ? (
+          {results === 'measurements' ? (
             <h3 className="screen__title result__title">your Measurements</h3>
           ) : null}
 
-          {(results === 'measurements') ? (
+          {results === 'measurements' ? (
             <Measurements
               measurements={measurements}
               units={units}
@@ -191,7 +206,7 @@ class Results extends Component {
             />
           ) : null}
 
-          {(results === 'thanks') ? (
+          {results === 'thanks' ? (
             <div className="result__thanks">
               <figure className="result__thanks-icon">
                 <img src={successIcon} alt="success" />

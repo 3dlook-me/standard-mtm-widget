@@ -1,6 +1,20 @@
 import axios from 'axios';
 import { detectOS, browserName } from 'detect-browser';
 
+import { flowScreens } from '../configs/flowScreens';
+
+export const debounce = (func, delay) => {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      timer = null;
+      func(...args);
+    }, delay);
+  };
+};
+
 /**
  * Get stringified GET params from object
  *
@@ -141,6 +155,13 @@ export const getHeightCm = (ft = 0, inches = 0) => in2cm(ft2in(ft) + parseInt(in
  * @param {number} lb - weight value
  */
 export const getWeightKg = (lb) => Math.round(lb * 0.45359237);
+
+/**
+ * Convert kg weight to lb value
+ *
+ * @param {number} lb - weight value
+ */
+export const getWeightLb = (kg) => Math.round(kg / 0.45359237);
 
 /**
  * Check if user device is mobile device
@@ -527,4 +548,30 @@ export const filterCustomMeasurements = (measurements, customSettings) => {
     front_params,
   };
   /* eslint-enable camelcase */
+};
+
+/**
+ * Convert snake string to camel case
+ * @param {string} str - snake string
+ * @returns {string} - camel case value
+ */
+export const snakeToCamel = (str) => str.replace(
+  /([-_][a-z])/g,
+  (group) => group
+    .toUpperCase()
+    .replace('-', '')
+    .replace('_', ''),
+);
+
+/**
+ * Get male/female friend/table flow asset
+ * @param {boolean} isTableFlow - is table flow
+ * @param {string} gender - gender type
+ * @param {string} role - role of asset in the page
+ */
+export const getAsset = (isTableFlow, gender, role) => {
+  const page = snakeToCamel(window.location.hash).replace('#/', '');
+  const flowType = isTableFlow ? 'tableFlow' : 'friendFlow';
+
+  return flowScreens[page][flowType][gender][role];
 };

@@ -2,11 +2,21 @@ import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import { Link } from 'preact-router';
 
 import actions from '../../store/actions';
 import { gaOnEmailNext } from '../../helpers/ga';
-import { validateEmail } from '../../helpers/utils';
+import { parseGetParams, validateEmail } from '../../helpers/utils';
 import { Stepper } from '../../components';
+import analyticsService, {
+  EMAIL_PAGE_ENTER,
+  EMAIL_PAGE_LEAVE,
+  CHECK_TERMS_AND_POLICY,
+  EMAIL_PAGE_ENTER_EMAIL,
+  CLICK_TERMS_CONDITIONS,
+  CLICK_PRIVACY_POLICY,
+  analyticsServiceAsync
+} from '../../services/analyticsService';
 
 import './Email.scss';
 
@@ -27,7 +37,12 @@ class Email extends Component {
   }
 
   componentDidMount() {
-    const { email, agree } = this.props;
+    const { email, agree, token } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: EMAIL_PAGE_ENTER,
+    });
 
     if (email && agree) {
       this.setState({
@@ -79,10 +94,20 @@ class Email extends Component {
   };
 
   /**
-   * Change argee checkbox state handler
+   * Change agree checkbox state handler
    */
   changeAgree = (e) => {
-    const { addAgree } = this.props;
+    const { addAgree, token } = this.props;
+
+    if (e.target.checked) {
+      analyticsService({
+        uuid: token,
+        event: CHECK_TERMS_AND_POLICY,
+        data: {
+          value: e.target.checked,
+        },
+      });
+    }
 
     addAgree(e.target.checked);
 
@@ -94,10 +119,25 @@ class Email extends Component {
   /**
    * On next screen event handler
    */
-  onNextScreen = () => {
+  onNextScreen = async () => {
+    const { token } = this.props;
     const { gender } = this.props.customSettings;
+    const { email } = this.state;
 
     gaOnEmailNext();
+
+    analyticsService({
+      uuid: token,
+      event: EMAIL_PAGE_ENTER_EMAIL,
+      data: {
+        value: email,
+      },
+    });
+
+    analyticsService({
+      uuid: token,
+      event: EMAIL_PAGE_LEAVE,
+    });
 
     if (gender !== 'all') {
       const { addGender } = this.props;
@@ -130,6 +170,25 @@ class Email extends Component {
       this.setState({
         buttonDisabled: isButtonDisabled,
       });
+    }
+  }
+
+  onClickTermsOrPrivacy = (type) => async (event) => {
+    const { token } = this.props;
+
+    if (event.button === 0 || event.button === 1) {
+      await analyticsServiceAsync({
+        uuid: token,
+        event: type === 'terms'
+          ? CLICK_TERMS_CONDITIONS
+          : CLICK_PRIVACY_POLICY,
+      });
+
+      window.open(
+        type === 'terms'
+          ? 'https://3dlook.me/terms-of-service/'
+          : 'https://3dlook.me/privacy-policy/',
+        '_blank');
     }
   }
 
@@ -167,9 +226,21 @@ class Email extends Component {
               <input type="checkbox" name="agree" id="agree" onChange={this.changeAgree} checked={agree} />
               <span className="checkbox__icon" />
               { 'I accept ' }
-              <a href="https://3dlook.me/terms-of-service/" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>
+              <button
+                type="button"
+                className="email__link"
+                onMouseDown={this.onClickTermsOrPrivacy('terms')}
+              >
+                Terms and Conditions
+              </button>
               { ' and ' }
-              <a href="https://3dlook.me/privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+              <button
+                type="button"
+                className="email__link"
+                onMouseDown={this.onClickTermsOrPrivacy('privacy')}
+              >
+                Privacy Policy
+              </button>
             </label>
           </div>
           <button className="button" onClick={this.onNextScreen} type="button" disabled={buttonDisabled}>Next</button>

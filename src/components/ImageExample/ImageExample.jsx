@@ -1,9 +1,9 @@
 import { h, Component } from 'preact';
 import classNames from 'classnames';
 
+import { getAsset } from '../../helpers/utils';
+
 import './ImageExample.scss';
-import exampleSide from '../../images/HV-side.png';
-import exampleFront from '../../images/HV-front.png';
 
 /**
  * Help component.
@@ -35,7 +35,7 @@ class ImageExample extends Component {
   }
 
   render() {
-    const { type } = this.props;
+    const { type, gender, isTableFlow } = this.props;
     const { imageX, imageY, isImageActive } = this.state;
 
     const imageStyle = {
@@ -66,9 +66,10 @@ class ImageExample extends Component {
                 </g>
               </svg>
             </button>
-            {(type === 'side')
-              ? <img src={exampleSide} alt="Side example" />
-              : <img src={exampleFront} alt="Front example" /> }
+            <img
+              src={getAsset(isTableFlow, gender, type)}
+              alt={`${type === 'side' ? 'Side' : 'Front'} example`}
+            />
           </figure>
         </div>
       </div>

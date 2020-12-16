@@ -10,6 +10,10 @@ import {
   getHeightCm,
   closeSelectsOnResize,
 } from '../../helpers/utils';
+import analyticsService, {
+  HEIGHT_PAGE_METRIC_SELECTED,
+  HEIGHT_PAGE_IMPERIAL_SELECTED,
+} from '../../services/analyticsService';
 
 import './Height.scss';
 
@@ -108,7 +112,7 @@ export default class Height extends Component {
       return 2;
     }
 
-    return data.in || null;
+    return data.in;
   };
 
   /**
@@ -127,7 +131,7 @@ export default class Height extends Component {
    * Switch element click handler
    */
   onSwitchClick = () => {
-    const { changeUnits } = this.props;
+    const { changeUnits, token } = this.props;
     let units;
 
     this.setState((prevState) => {
@@ -136,7 +140,15 @@ export default class Height extends Component {
       return {
         units,
       };
-    }, () => changeUnits(units));
+    }, () => {
+      changeUnits(units);
+      analyticsService({
+        uuid: token,
+        event: units === 'cm'
+          ? HEIGHT_PAGE_METRIC_SELECTED
+          : HEIGHT_PAGE_IMPERIAL_SELECTED,
+      });
+    });
   }
 
   /**

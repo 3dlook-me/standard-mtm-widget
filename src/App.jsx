@@ -8,7 +8,10 @@ import './scss/_index.scss';
 
 import { store } from './store';
 import { gaStart } from './helpers/ga';
-import { updateInternetStatus, browserDetect } from './helpers/utils';
+import { updateInternetStatus, browserDetect, parseGetParams } from './helpers/utils';
+import analyticsService, {
+  WIDGET_OPEN,
+} from './services/analyticsService';
 import { Header, Help } from './components';
 import {
   Welcome,
@@ -42,10 +45,22 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const { matches } = this.props;
+    const uuid = (matches || {}).key
+      || API_KEY
+      || parseGetParams().key
+      || store.getState().token;
     const isSafari = browserDetect() === 'safari';
     window.addEventListener('online', updateInternetStatus);
     window.addEventListener('offline', updateInternetStatus);
 
+    if (uuid) {
+      analyticsService({
+        uuid,
+        event: WIDGET_OPEN,
+      });
+    }
+    
     // iphone bug when portrait after landscape
     if (isSafari) {
       window.addEventListener('resize', () => {
@@ -70,7 +85,7 @@ class App extends Component {
           <p className="landscape-view__txt">Please turn your device</p>
         </div>
         <div className="widget-container widget-container--no-bg">
-          <Header help={this.toggleHelp} />
+          <Header />
           <Help />
 
           <Router history={createHashHistory()}>

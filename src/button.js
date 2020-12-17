@@ -42,6 +42,7 @@ class SaiaMTMButton {
    * @param {Object} options.customSettings - users widget custom settings
    * @param {Object} options.customSettings.button_background_color - button bg color
    * @param {Object} options.customSettings.button_border_color - button border color
+   * @param {Object} options.customSettings.button_text_color - button text color
 
    */
   constructor(options) {
@@ -292,7 +293,11 @@ class SaiaMTMButton {
    * Set custom colors
    */
   setCustomSettings() {
-    const { button_background_color, button_border_color } = this.defaults.customSettings;
+    const {
+      button_background_color,
+      button_border_color,
+      button_text_color,
+    } = this.defaults.customSettings;
 
     if (button_background_color) {
       this.buttonEl.style.backgroundColor = button_background_color;
@@ -300,6 +305,12 @@ class SaiaMTMButton {
 
     if (button_border_color) {
       this.buttonEl.style.borderColor = button_border_color;
+    }
+
+    if (button_text_color) {
+      this.buttonEl.style.color = button_text_color;
+      this.buttonEl.querySelectorAll('svg path')[0]
+        .style.fill = button_text_color;
     }
   }
 

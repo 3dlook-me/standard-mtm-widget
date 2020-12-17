@@ -147,7 +147,6 @@ class Welcome extends Component {
             setEmail(state.email);
             setWeightLb(state.weightLb);
             setWeight(state.weight);
-            // setSettings({ results_screen: 'measurements', final_page: 'measurements' });
 
             setCustomSettings(res.widget_settings);
 

@@ -7,7 +7,7 @@ import SaiaMTMButton from './button';
     const publicKey = scriptTag.getAttribute('data-public-key');
     const buttonTitle = scriptTag.getAttribute('data-button-title');
 
-    const isWidgetAllowed = await SaiaMTMButton.isWidgetAllowed(publicKey);
+    const [isWidgetAllowed, customSettings] = await SaiaMTMButton.getWidgetInfo(publicKey);
 
     if (isWidgetAllowed) {
       if (!saiaCont) {
@@ -22,6 +22,7 @@ import SaiaMTMButton from './button';
         publicKey,
         widgetUrl: WIDGET_HOST,
         buttonTitle: buttonTitle || 'GET MEASURED',
+        customSettings,
       });
 
       button.init(publicKey);

@@ -1,5 +1,5 @@
 /* eslint class-methods-use-this: off */
-import { h } from 'preact';
+import { h, Component } from 'preact';
 import { connect } from 'react-redux';
 
 import {
@@ -53,7 +53,7 @@ class Results extends Component {
       isWidgetDeactivated,
       setIsWidgetDeactivated,
       isMobile,
-      isFromDesktopToMobile
+      isFromDesktopToMobile,
     } = this.props;
 
     setIsHeaderTranslucent(true);
@@ -165,9 +165,9 @@ class Results extends Component {
   render() {
     const {
       measurements,
-      settings,
       units,
       gender,
+      customSettings,
     } = this.props;
 
     const {
@@ -176,7 +176,7 @@ class Results extends Component {
       measurement,
     } = this.state;
 
-    const results = settings.final_page;
+    const finalScreen = customSettings.final_screen || 'thanks';
 
     return (
       <div className="screen screen--result active">
@@ -193,11 +193,11 @@ class Results extends Component {
             <span className="success">Complete</span>
           </h2>
 
-          {results === 'measurements' ? (
+          {finalScreen === 'measurements' ? (
             <h3 className="screen__title result__title">your Measurements</h3>
           ) : null}
 
-          {results === 'measurements' ? (
+          {finalScreen === 'measurements' ? (
             <Measurements
               measurements={measurements}
               units={units}
@@ -206,7 +206,7 @@ class Results extends Component {
             />
           ) : null}
 
-          {results === 'thanks' ? (
+          {finalScreen === 'thanks' ? (
             <div className="result__thanks">
               <figure className="result__thanks-icon">
                 <img src={successIcon} alt="success" />

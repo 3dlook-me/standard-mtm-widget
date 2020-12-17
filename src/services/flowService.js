@@ -160,7 +160,6 @@ export default class FlowService {
     };
   }
 
-  // TODO remove
   /**
    * Get custom settings
    */
@@ -168,17 +167,12 @@ export default class FlowService {
     return this.axios({
       url: `${API_HOST}/api/v2/users/widget_settings/`,
       method: 'GET',
+      headers: {
+        Authorization: `PUBLIC ${this.key}`,
+      },
     })
-      .then((response) => {
-        const { state } = response.data;
-
-        globalState = {
-          ...globalState,
-          ...state,
-        };
-
-        return response.data;
-      });
+      .then((response) => response.data)
+      .catch((err) => console.error(err));
   }
 
   /**

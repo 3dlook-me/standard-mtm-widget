@@ -486,6 +486,7 @@ export default (state = INITIAL_STATE, action) => {
           redirectLink: action.payload.redirect_link,
           outputMeasurements: action.payload.output_measurements,
           is_custom_output_measurements: action.payload.is_custom_output_measurements,
+          final_screen: action.payload.final_screen,
         },
       };
 

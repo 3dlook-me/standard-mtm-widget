@@ -117,7 +117,7 @@ class BaseMobileFlow extends Component {
         addFrontImage(flowStateResult.state.frontImage);
         addSideImage(flowStateResult.state.sideImage);
         setIsFromDesktopToMobile(true);
-        setReturnUrl(widget_settings.redirect_link || flowStateResult.state.returnUrl);
+        setReturnUrl(widget_settings.redirect_link || flowStateResult.state.returnUrl || 'https://3dlook.me/mobile-tailor/');
         setSettings(flowStateResult.state.settings);
         setWidgetUrl(flowStateResult.state.widgetUrl || window.location.href);
         setBodyType(flowStateResult.state.bodyType);

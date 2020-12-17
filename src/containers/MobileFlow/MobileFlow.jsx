@@ -101,7 +101,6 @@ class MobileFlow extends BaseMobileFlow {
         await super.componentDidMount();
 
         setIsFromDesktopToMobile(false);
-        setReturnUrl('https://mtm.3dlook.me/');
 
         route('/results', true);
 

@@ -512,6 +512,9 @@ export const closeSelectsOnResize = () => {
 
 export const filterCustomMeasurements = (measurements, customSettings) => {
   /* eslint-disable camelcase */
+
+  if (!customSettings.outputMeasurements) return;
+
   const { volumetric, linear } = customSettings.outputMeasurements;
   const volume_params = {};
   const front_params = {

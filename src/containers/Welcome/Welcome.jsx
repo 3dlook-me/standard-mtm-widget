@@ -202,11 +202,17 @@ class Welcome extends Component {
    * On next screen event handler
    */
   onNextScreen = async () => {
-    const { matches, token } = this.props;
+    const { matches, token, customSettings } = this.props;
     gaWelcomeOnContinue();
 
     const { isSmbFlow, isDemoWidget } = this.props;
-    const routeUrl = (isSmbFlow || isDemoWidget) ? '/gender' : '/email';
+    let routeUrl;
+
+    if (isSmbFlow || isDemoWidget) {
+      routeUrl = customSettings.gender !== 'all' ? '/height' : 'gender';
+    } else {
+      routeUrl = '/email';
+    }
 
     const widgetUUID = matches.key || API_KEY || parseGetParams().key;
 

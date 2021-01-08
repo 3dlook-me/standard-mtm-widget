@@ -2,20 +2,15 @@ import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import { Link } from 'preact-router';
 
 import actions from '../../store/actions';
 import { gaOnEmailNext } from '../../helpers/ga';
-import { parseGetParams, validateEmail } from '../../helpers/utils';
-import { Stepper } from '../../components';
+import { validateEmail } from '../../helpers/utils';
+import { Stepper, PolicyAgreement } from '../../components';
 import analyticsService, {
   EMAIL_PAGE_ENTER,
   EMAIL_PAGE_LEAVE,
-  CHECK_TERMS_AND_POLICY,
   EMAIL_PAGE_ENTER_EMAIL,
-  CLICK_TERMS_CONDITIONS,
-  CLICK_PRIVACY_POLICY,
-  analyticsServiceAsync
 } from '../../services/analyticsService';
 
 import './Email.scss';
@@ -93,26 +88,9 @@ class Email extends Component {
     }
   };
 
-  /**
-   * Change agree checkbox state handler
-   */
-  changeAgree = (e) => {
-    const { addAgree, token } = this.props;
-
-    if (e.target.checked) {
-      analyticsService({
-        uuid: token,
-        event: CHECK_TERMS_AND_POLICY,
-        data: {
-          value: e.target.checked,
-        },
-      });
-    }
-
-    addAgree(e.target.checked);
-
+  changeAgree = (state) => {
     this.setState({
-      isAgreeValid: e.target.checked,
+      isAgreeValid: state,
     });
   }
 
@@ -173,25 +151,6 @@ class Email extends Component {
     }
   }
 
-  onClickTermsOrPrivacy = (type) => async (event) => {
-    const { token } = this.props;
-
-    if (event.button === 0 || event.button === 1) {
-      await analyticsServiceAsync({
-        uuid: token,
-        event: type === 'terms'
-          ? CLICK_TERMS_CONDITIONS
-          : CLICK_PRIVACY_POLICY,
-      });
-
-      window.open(
-        type === 'terms'
-          ? 'https://3dlook.me/terms-of-service/'
-          : 'https://3dlook.me/privacy-policy/',
-        '_blank');
-    }
-  }
-
   render() {
     const {
       isEmailValid,
@@ -200,7 +159,7 @@ class Email extends Component {
       email,
     } = this.state;
 
-    const { agree, isMobile } = this.props;
+    const { agree, isMobile, token } = this.props;
 
     return (
       <div className="screen active">
@@ -221,28 +180,12 @@ class Email extends Component {
           </div>
         </div>
         <div className="screen__footer">
-          <div className={classNames('email__check', 'checkbox', { checked: agree, 'checkbox--invalid': !isAgreeValid })}>
-            <label htmlFor="agree">
-              <input type="checkbox" name="agree" id="agree" onChange={this.changeAgree} checked={agree} />
-              <span className="checkbox__icon" />
-              { 'I accept ' }
-              <button
-                type="button"
-                className="email__link"
-                onMouseDown={this.onClickTermsOrPrivacy('terms')}
-              >
-                Terms and Conditions
-              </button>
-              { ' and ' }
-              <button
-                type="button"
-                className="email__link"
-                onMouseDown={this.onClickTermsOrPrivacy('privacy')}
-              >
-                Privacy Policy
-              </button>
-            </label>
-          </div>
+          <PolicyAgreement
+            agree={agree}
+            isAgreeValid={isAgreeValid}
+            token={token}
+            changeAgreeState={this.changeAgree}
+          />
           <button className="button" onClick={this.onNextScreen} type="button" disabled={buttonDisabled}>Next</button>
         </div>
       </div>

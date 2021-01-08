@@ -105,6 +105,12 @@ class BaseMobileFlow extends Component {
           });
         }
 
+        if (widget_settings.gender !== 'all') {
+          addGender(widget_settings.gender);
+        } else {
+          addGender(flowStateResult.state.gender);
+        }
+
         setCustomSettings(widget_settings);
         setPersonId(flowStateResult.person || flowStateResult.state.personId);
         setBrand(brand);
@@ -113,7 +119,6 @@ class BaseMobileFlow extends Component {
         setIsMobile(isMobileDevice());
         addHeight(flowStateResult.state.height);
         setWeight(flowStateResult.state.weight);
-        addGender(flowStateResult.state.gender);
         addFrontImage(flowStateResult.state.frontImage);
         addSideImage(flowStateResult.state.sideImage);
         setIsFromDesktopToMobile(true);

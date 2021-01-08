@@ -73,6 +73,7 @@ class Welcome extends Component {
       setWeight,
       setEmail,
       setCustomSettings,
+      addGender,
     } = this.props;
 
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key;
@@ -136,7 +137,7 @@ class Welcome extends Component {
           }))
           .then((res) => {
             const { state } = res;
-            const { redirectLink } = res.widget_settings;
+            const { redirectLink, gender } = res.widget_settings;
 
             setFlowId(res.uuid);
             setWidgetId(res.id);
@@ -149,6 +150,10 @@ class Welcome extends Component {
             setWeight(state.weight);
 
             setCustomSettings(res.widget_settings);
+
+            if (gender !== 'all') {
+              addGender(gender);
+            }
 
             if (redirectLink) {
               setReturnUrl(redirectLink);

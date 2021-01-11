@@ -12,7 +12,8 @@ import analyticsService, {
   HEIGHT_PAGE_HEIGHT_SELECTED,
 } from '../../services/analyticsService';
 import {
-  Height, PolicyAgreement,
+  Height,
+  PolicyAgreement,
   Stepper,
 } from '../../components';
 

@@ -354,6 +354,16 @@ export const LINEAR_PARAMS = [
     imageURI: '/linear/back_neck_point_to_wrist_length.jpg',
   },
   {
+    paramName: 'back_neck_point_to_wrist_length_1_5_inch',
+    units: 'cm',
+    name: 'Back neck point to 1.5" past the wrist point',
+    paramGroup: 'front_params',
+    source: '3DLOOK',
+    equipment: 'Tape measure',
+    definition: 'The distance across the shoulder and down the arm from the back neck point over the shoulder point and the elbow point to 1.5" past the wrist point or wrist bend.',
+    imageURI: '/linear/back_neck_point_to_wrist_length_1_5_inch.jpg',
+  },
+  {
     paramName: 'high_hips',
     units: 'cm',
     name: 'Upper hip breadth',

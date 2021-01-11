@@ -111,6 +111,8 @@ class BaseMobileFlow extends Component {
           addGender(flowStateResult.state.gender);
         }
 
+        console.log('basemobile');
+
         setCustomSettings(widget_settings);
         setPersonId(flowStateResult.person || flowStateResult.state.personId);
         setBrand(brand);
@@ -122,7 +124,7 @@ class BaseMobileFlow extends Component {
         addFrontImage(flowStateResult.state.frontImage);
         addSideImage(flowStateResult.state.sideImage);
         setIsFromDesktopToMobile(true);
-        setReturnUrl(widget_settings.redirect_link || flowStateResult.state.returnUrl || 'https://3dlook.me/mobile-tailor/');
+        setReturnUrl(flowStateResult.state.returnUrl || 'https://3dlook.me/mobile-tailor/');
         setSettings(flowStateResult.state.settings);
         setWidgetUrl(flowStateResult.state.widgetUrl || window.location.href);
         setBodyType(flowStateResult.state.bodyType);

@@ -137,7 +137,7 @@ class Welcome extends Component {
           }))
           .then((res) => {
             const { state } = res;
-            const { redirectLink, gender } = res.widget_settings;
+            const { gender } = res.widget_settings;
 
             setFlowId(res.uuid);
             setWidgetId(res.id);
@@ -153,10 +153,6 @@ class Welcome extends Component {
 
             if (gender !== 'all') {
               addGender(gender);
-            }
-
-            if (redirectLink) {
-              setReturnUrl(redirectLink);
             }
 
             this.setState({

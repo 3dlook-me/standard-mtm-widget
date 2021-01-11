@@ -92,7 +92,6 @@ class MobileFlow extends BaseMobileFlow {
         && err.response.data.detail === 'Widget is inactive.') {
         const {
           setIsWidgetDeactivated,
-          setReturnUrl,
           setIsFromDesktopToMobile,
         } = this.props;
 

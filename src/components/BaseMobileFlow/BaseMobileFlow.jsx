@@ -111,8 +111,6 @@ class BaseMobileFlow extends Component {
           addGender(flowStateResult.state.gender);
         }
 
-        console.log('basemobile');
-
         setCustomSettings(widget_settings);
         setPersonId(flowStateResult.person || flowStateResult.state.personId);
         setBrand(brand);

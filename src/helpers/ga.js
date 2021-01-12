@@ -242,23 +242,23 @@ export const gaSizeNotFound = () => ga('send', {
   eventAction: 'error',
 });
 
-export const gaChangeBrowser = (os) => ga('send', {
+export const gaChangeBrowser = (browser) => ga('send', {
   hitType: 'event',
   eventCategory: 'change_browser',
   eventAction: 'popup_appears',
-  eventLabel: `continue_in_${os}`,
+  eventLabel: `continue_in_${browser}`,
 });
 
-export const gaChangeBrowserCopyLink = (os) => ga('send', {
+export const gaChangeBrowserCopyLink = (browser) => ga('send', {
   hitType: 'event',
   eventCategory: 'change_browser',
   eventAction: 'copy_link',
-  eventLabel: `continue_in_${os}`,
+  eventLabel: `continue_in_${browser}`,
 });
 
-export const gaChangeBrowserClose = (os) => ga('send', {
+export const gaChangeBrowserClose = (browser) => ga('send', {
   hitType: 'event',
   eventCategory: 'change_browser',
   eventAction: 'close_popup',
-  eventLabel: `continue_in_${os}`,
+  eventLabel: `continue_in_${browser}`,
 });

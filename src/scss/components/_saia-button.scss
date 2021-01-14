@@ -28,16 +28,7 @@
     @include breakpoint(max-width 1200px) {
       padding: 5px 10px;
     }
-
-    &:hover {
-      background-color: white;
-      color: black;
-
-      svg path {
-        fill: black;
-      }
-    }
-
+    
     &__preloader {
       display: none;
       width: 24px;

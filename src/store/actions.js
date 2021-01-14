@@ -58,6 +58,7 @@ export const CONSTANTS = {
   SET_TASK_ID: 'SET_TASK_ID',
   SET_IS_WIDGET_DEACTIVATED: 'SET_IS_WIDGET_DEACTIVATED',
   SET_IS_DEMO_WIDGET: 'SET_IS_DEMO_WIDGET',
+  SET_CUSTOM_SETTINGS: 'SET_CUSTOM_SETTINGS',
 };
 
 /**
@@ -629,6 +630,19 @@ export const setIsDemoWidget = (isDemo) => ({
   payload: isDemo,
 });
 
+/**
+ * Set widget custom settings
+ *
+ * @param {Object} settings - settings
+ * @param {string} settings.gender - custom gender
+ * @param {string} settings.redirectLink - custom redirect link
+ * @param {Object} settings.outputMeasurements - custom qty of measurements output
+ */
+export const setCustomSettings = (settings) => ({
+  type: CONSTANTS.SET_CUSTOM_SETTINGS,
+  payload: settings,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -685,5 +699,6 @@ export default {
   addSideDeviceCoordinates,
   setTaskId,
   setIsWidgetDeactivated,
-  setIsDemoWidget
+  setIsDemoWidget,
+  setCustomSettings,
 };

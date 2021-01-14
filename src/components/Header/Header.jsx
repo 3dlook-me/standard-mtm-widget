@@ -54,7 +54,7 @@ class Header extends Component {
       isDemoWidget,
       matches,
       isWidgetDeactivated,
-      token
+      token,
     } = this.props;
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
 
@@ -66,8 +66,9 @@ class Header extends Component {
     }
 
     if (isMobile) {
+      const isMeasurements = Object.entries(measurements.front_params).length !== 0;
       // if (confirm('Are you sure that you want to close widget? ')) {
-      if (measurements && !isSmbFlow && !isDemoWidget) {
+      if (isMeasurements && !isSmbFlow && !isDemoWidget) {
         window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
       } else {
         window.location = returnUrl;
@@ -87,7 +88,7 @@ class Header extends Component {
       isHelpActive,
       setHelpIsActive,
       matches,
-      token
+      token,
     } = this.props;
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
 

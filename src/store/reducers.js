@@ -73,6 +73,7 @@ export const INITIAL_STATE = {
   settings: {
     final_page: 'thanks',
     // final_page: 'measurements',
+    // result_screen: 'measurements',
   },
 
   headerIconsStyle: 'default',
@@ -95,6 +96,25 @@ export const INITIAL_STATE = {
   isSmbFlow: false,
   isWidgetDeactivated: false,
   isDemoWidget: false,
+
+  customSettings: {
+    gender: 'all',
+    redirectLink: null,
+    is_custom_output_measurements: false,
+    outputMeasurements: {
+      volumetric: {
+        chest: false,
+        under_bust_girth: false,
+        upper_chest_girth: false,
+      },
+      linear: {
+        waist_to_knees: true,
+        upper_hip_height: true,
+        shoulders_to_knees: true,
+        waist_to_ankle: true,
+      },
+    },
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -450,6 +470,19 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isDemoWidget: action.payload,
+      };
+
+    case CONSTANTS.SET_CUSTOM_SETTINGS:
+      return {
+        ...state,
+        customSettings: {
+          ...state.customSettings,
+          gender: action.payload.gender,
+          redirectLink: action.payload.redirect_link,
+          outputMeasurements: action.payload.output_measurements,
+          is_custom_output_measurements: action.payload.is_custom_output_measurements,
+          final_screen: action.payload.final_screen,
+        },
       };
 
     default:

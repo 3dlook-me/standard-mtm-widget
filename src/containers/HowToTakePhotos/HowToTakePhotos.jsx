@@ -14,18 +14,15 @@ import {
   gaOnClickNextAloneTakePhotos,
   gaOnClickReplayAlone,
 } from '../../helpers/ga';
-
-import './HowToTakePhotos.scss';
-
-import videoTableMode from '../../video/table-flow-example.mp4';
-import videoFriendMode from '../../video/friend-flow-example.mp4';
 import FlowService from '../../services/flowService';
-import { mobileFlowStatusUpdate } from '../../helpers/utils';
+import { getAsset, mobileFlowStatusUpdate } from '../../helpers/utils';
 import analyticsService, {
   HOW_TO_TAKE_PHOTOS_PAGE_ENTER,
   HOW_TO_TAKE_PHOTOS_PAGE_LEAVE,
   HOW_TO_TAKE_PHOTOS_PAGE_REPLAY,
 } from '../../services/analyticsService';
+
+import './HowToTakePhotos.scss';
 
 /**
  * HowToTakePhotos video page component
@@ -71,7 +68,7 @@ class HowToTakePhotos extends Component {
       token,
       flowId,
       isDemoWidget,
-      isTableFlow
+      isTableFlow,
     } = this.props;
 
     analyticsService({
@@ -79,7 +76,7 @@ class HowToTakePhotos extends Component {
       event: HOW_TO_TAKE_PHOTOS_PAGE_ENTER,
       data: {
         value: isTableFlow ? 'hands-free' : 'with-friend',
-      }
+      },
     });
 
     this.flow = new FlowService(token);
@@ -93,7 +90,7 @@ class HowToTakePhotos extends Component {
 
       mobileFlowStatusUpdate(this.flow, flowState);
     }
-  };
+  }
 
   componentWillUnmount = () => {
     const { token, isTableFlow } = this.props;
@@ -105,7 +102,7 @@ class HowToTakePhotos extends Component {
       event: HOW_TO_TAKE_PHOTOS_PAGE_LEAVE,
       data: {
         value: isTableFlow ? 'hands-free' : 'with-friend',
-      }
+      },
     });
   }
 
@@ -121,7 +118,7 @@ class HowToTakePhotos extends Component {
     }
 
     this.$videoProgress.current.style.flexBasis = `${percent}%`;
-  };
+  }
 
   restartVideo = () => {
     const { token, isTableFlow } = this.props;
@@ -141,7 +138,7 @@ class HowToTakePhotos extends Component {
       event: HOW_TO_TAKE_PHOTOS_PAGE_REPLAY,
       data: {
         value: isTableFlow ? 'hands-free' : 'with-friend',
-      }
+      },
     });
   }
 
@@ -163,7 +160,7 @@ class HowToTakePhotos extends Component {
         videoText: 'Please turn up the volume and follow the voice instructions.',
       });
     }
-  };
+  }
 
   setFriendFlowVideoText = (time) => {
     if (time < 3) {
@@ -175,13 +172,13 @@ class HowToTakePhotos extends Component {
         videoText: 'For the side photo turn to your left.',
       });
     }
-  };
+  }
 
   onVideoLoad = () => {
     this.setState({
       isVideoLoaded: true,
     });
-  };
+  }
 
   onClickNext = () => {
     if (this.props.isTableFlow) {
@@ -189,12 +186,11 @@ class HowToTakePhotos extends Component {
     }
 
     gaOnClickNextHowTakePhotos();
-  };
+  }
 
   render() {
-    const { isTableFlow } = this.props;
+    const { isTableFlow, gender } = this.props;
     const { videoText, isVideoLoaded } = this.state;
-    const videoTrack = isTableFlow ? videoTableMode : videoFriendMode;
 
     return (
       <div className="screen active">
@@ -219,7 +215,7 @@ class HowToTakePhotos extends Component {
                 width="960"
                 height="540"
               >
-                <source src={videoTrack} type="video/mp4" />
+                <source src={getAsset(isTableFlow, gender, 'video')} type="video/mp4" />
               </video>
 
               <div className="how-to-take-photos__progress-bar">

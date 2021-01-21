@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { route } from 'preact-router';
 import classNames from 'classnames';
 
-import analyticsService, {
+import {
   RESULT_SCREEN_ENTER,
+  analyticsServiceAsync,
 } from '../../services/analyticsService';
 import { send, objectToUrlParams } from '../../helpers/utils';
 import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
@@ -14,11 +15,11 @@ import {
   Guide,
   SoftValidation,
 } from '../../components';
-import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 
 import './Result.scss';
 import successIcon from '../../images/ic_done.svg';
+import actions from '../../store/actions';
 
 /**
  * Results page component.
@@ -55,16 +56,18 @@ class Results extends Component {
       origin,
       setIsHeaderTranslucent,
       token,
-      setIsWidgetDeactivated,
-      isMobile,
       setFlowIsPending,
       setProcessingStatus,
+      isWidgetDeactivated,
+      setIsWidgetDeactivated,
+      isMobile,
+      isFromDesktopToMobile,
     } = this.props;
 
     setIsHeaderTranslucent(true);
 
     if (isMobile) {
-      analyticsService({
+      await analyticsServiceAsync({
         uuid: token,
         event: RESULT_SCREEN_ENTER,
       });
@@ -75,8 +78,6 @@ class Results extends Component {
     send('data', measurements, origin);
 
     gaSuccess(this.getFlowPhoto());
-
-    gaSuccess();
 
     if (!isMobile) {
       this.timer = setInterval(() => {
@@ -117,7 +118,7 @@ class Results extends Component {
       measurementsType: type,
       measurement: index,
     });
-  };
+  }
 
   helpBtnToggle = (status) => {
     const { setHelpBtnStatus } = this.props;
@@ -163,6 +164,7 @@ class Results extends Component {
       setHelpBtnStatus,
       isSmbFlow,
       isDemoWidget,
+      token,
     } = this.props;
 
     const { openGuide } = this.state;
@@ -208,17 +210,17 @@ class Results extends Component {
       resetState();
       send('close', {}, origin);
     }
-  };
+  }
 
   render() {
     const {
       measurements,
-      settings,
       isSoftValidationPresent,
       softValidation,
       units,
       gender,
       isMobile,
+      customSettings,
     } = this.props;
 
     const {
@@ -227,7 +229,7 @@ class Results extends Component {
       measurement,
     } = this.state;
 
-    const results = settings.final_page;
+    const finalScreen = customSettings.final_screen || 'thanks';
 
     return (
       <div className="screen screen--result active">
@@ -248,7 +250,7 @@ class Results extends Component {
               <span className="success">Complete</span>
             </h2>
 
-            {results === 'measurements' ? (
+            {finalScreen === 'measurements' ? (
               <h3 className="screen__title result__title">your Measurements</h3>
             ) : null}
 
@@ -263,7 +265,7 @@ class Results extends Component {
               />
             ) : null }
 
-            {results === 'measurements' ? (
+            {finalScreen === 'measurements' ? (
               <Measurements
                 measurements={measurements}
                 units={units}
@@ -272,7 +274,7 @@ class Results extends Component {
               />
             ) : null}
 
-            {results === 'thanks' ? (
+            {finalScreen === 'thanks' ? (
               <div className="result__thanks">
                 <figure className="result__thanks-icon">
                   <img src={successIcon} alt="success" />
@@ -286,11 +288,11 @@ class Results extends Component {
               </div>
             ) : null}
           </div>
-          <div className="screen__footer">
-            <button className="button" type="button" onClick={this.onClick}>
-              {openGuide ? 'BACK TO RESULTS' : 'CLOSE'}
-            </button>
-          </div>
+        </div>
+        <div className="screen__footer">
+          <button className="button" type="button" onClick={this.onClick}>
+            {openGuide ? 'BACK TO RESULTS' : 'CLOSE'}
+          </button>
         </div>
       </div>
     );

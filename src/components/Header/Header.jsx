@@ -71,6 +71,8 @@ class Header extends Component {
     }
 
     if (isMobile) {
+      const isMeasurements = Object.entries(measurements.front_params).length !== 0;
+
       if (window.location.hash.includes('results')) {
         try {
           await this.flow.widgetDeactivate();
@@ -79,7 +81,7 @@ class Header extends Component {
         }
       }
 
-      if (measurements && !isSmbFlow && !isDemoWidget) {
+      if (isMeasurements && !isSmbFlow && !isDemoWidget) {
         window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
       } else {
         window.location = returnUrl;

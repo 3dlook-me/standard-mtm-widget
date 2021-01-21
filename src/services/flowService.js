@@ -64,9 +64,7 @@ export default class FlowService {
         },
       },
     })
-      .then((response) => {
-        return response.data;
-      });
+      .then((response) => response.data);
   }
 
   /**
@@ -160,5 +158,35 @@ export default class FlowService {
       ...globalState,
       ...state,
     };
+  }
+
+  /**
+   * Get custom settings
+   */
+  getCustomSettings() {
+    return this.axios({
+      url: `${API_HOST}/api/v2/users/widget_settings/`,
+      method: 'GET',
+      headers: {
+        Authorization: `PUBLIC ${this.key}`,
+      },
+    })
+      .then((response) => response.data)
+      .catch((err) => console.error(err));
+  }
+
+  /**
+   * Check if widget is allowed to be opened
+   */
+  isWidgetAllowed() {
+    return this.axios({
+      url: `${API_HOST}/api/v2/persons/widget/is_allowed/`,
+      method: 'GET',
+      headers: {
+        Authorization: `PUBLIC ${this.key}`,
+      },
+    })
+      .then(() => true)
+      .catch(() => false);
   }
 }

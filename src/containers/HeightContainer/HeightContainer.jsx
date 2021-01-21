@@ -13,6 +13,7 @@ import analyticsService, {
 } from '../../services/analyticsService';
 import {
   Height,
+  PolicyAgreement,
   Stepper,
 } from '../../components';
 
@@ -26,6 +27,7 @@ class HeightContainer extends Component {
     super(props);
 
     this.state = {
+      isAgreeValid: true,
       isHeightValid: true,
       buttonDisabled: true,
     };
@@ -104,13 +106,14 @@ class HeightContainer extends Component {
    * Set Next button disabled state
    */
   checkButtonState() {
-    const { height } = this.props;
+    const { height, agree } = this.props;
     const {
       buttonDisabled,
       isHeightValid,
+      isAgreeValid,
     } = this.state;
 
-    const isButtonDisabled = !height || !isHeightValid;
+    const isButtonDisabled = !height || !isHeightValid || !isAgreeValid || !agree;
 
     if (isButtonDisabled !== buttonDisabled) {
       this.setState({
@@ -142,7 +145,7 @@ class HeightContainer extends Component {
         },
       });
     }
-    
+
     this.setState({
       isHeightValid: isValueValid,
     });
@@ -154,10 +157,17 @@ class HeightContainer extends Component {
     setUnits(units);
   }
 
+  changeAgree = (state) => {
+    this.setState({
+      isAgreeValid: state,
+    });
+  }
+
   render() {
     const {
       isHeightValid,
       buttonDisabled,
+      isAgreeValid,
     } = this.state;
 
     const {
@@ -165,6 +175,10 @@ class HeightContainer extends Component {
       height,
       units,
       token,
+      agree,
+      isSmbFlow,
+      isDemoWidget,
+      customSettings,
     } = this.props;
 
     return (
@@ -188,6 +202,16 @@ class HeightContainer extends Component {
 
         </div>
         <div className="screen__footer">
+
+          {(isSmbFlow || isDemoWidget) && customSettings.gender !== 'all' ? (
+            <PolicyAgreement
+              agree={agree}
+              isAgreeValid={isAgreeValid}
+              token={token}
+              changeAgreeState={this.changeAgree}
+            />
+          ) : null }
+
           <button className="button" onClick={this.onNextScreen} type="button" disabled={buttonDisabled}>Next</button>
         </div>
       </div>

@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { detectOS, browserName } from 'detect-browser';
 
+import { flowScreens } from '../configs/flowScreens';
+
 export const debounce = (func, delay) => {
   let timer;
   return (...args) => {
@@ -153,6 +155,13 @@ export const getHeightCm = (ft = 0, inches = 0) => in2cm(ft2in(ft) + parseInt(in
  * @param {number} lb - weight value
  */
 export const getWeightKg = (lb) => Math.round(lb * 0.45359237);
+
+/**
+ * Convert kg weight to lb value
+ *
+ * @param {number} lb - weight value
+ */
+export const getWeightLb = (kg) => Math.round(kg / 0.45359237);
 
 /**
  * Check if user device is mobile device
@@ -499,4 +508,73 @@ export const closeSelectsOnResize = () => {
   for (const el of $selects) {
     el.blur();
   }
+};
+
+export const filterCustomMeasurements = (measurements, customSettings) => {
+  /* eslint-disable camelcase */
+
+  if (!customSettings.outputMeasurements) return;
+
+  const { volumetric, linear } = customSettings.outputMeasurements;
+  const volume_params = {};
+  const front_params = {
+    soft_validation: measurements.front_params.soft_validation,
+    clothes_type: measurements.front_params.clothes_type,
+  };
+
+  const side_params = {
+    soft_validation: measurements.side_params.soft_validation,
+    clothes_type: measurements.side_params.clothes_type,
+  };
+
+  for (const key in volumetric) {
+    if (volumetric[key]) {
+      volume_params[key] = measurements.volume_params[key];
+    }
+  }
+
+  for (const key in linear) {
+    if (linear[key]
+      && measurements.front_params[key]) {
+      front_params[key] = measurements.front_params[key];
+    }
+
+    if (linear[key]
+      && measurements.side_params[key]) {
+      side_params[key] = measurements.side_params[key];
+    }
+  }
+
+  return {
+    volume_params,
+    side_params,
+    front_params,
+  };
+  /* eslint-enable camelcase */
+};
+
+/**
+ * Convert snake string to camel case
+ * @param {string} str - snake string
+ * @returns {string} - camel case value
+ */
+export const snakeToCamel = (str) => str.replace(
+  /([-_][a-z])/g,
+  (group) => group
+    .toUpperCase()
+    .replace('-', '')
+    .replace('_', ''),
+);
+
+/**
+ * Get male/female friend/table flow asset
+ * @param {boolean} isTableFlow - is table flow
+ * @param {string} gender - gender type
+ * @param {string} role - role of asset in the page
+ */
+export const getAsset = (isTableFlow, gender, role) => {
+  const page = snakeToCamel(window.location.hash).replace('#/', '');
+  const flowType = isTableFlow ? 'tableFlow' : 'friendFlow';
+
+  return flowScreens[page][flowType][gender][role];
 };

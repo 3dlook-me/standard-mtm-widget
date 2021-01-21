@@ -1,8 +1,8 @@
 import { h, Component, Fragment } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
-
 import { detect } from 'detect-browser';
+
 import {
   browserValidation,
   isMobileDevice,
@@ -67,6 +67,13 @@ class Welcome extends Component {
       setIsPhotosFromGallery,
       isDemoWidget,
       token,
+      setUnits,
+      addHeight,
+      setWeightLb,
+      setWeight,
+      setEmail,
+      setCustomSettings,
+      addGender,
     } = this.props;
 
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key;
@@ -117,27 +124,43 @@ class Welcome extends Component {
 
         this.flow = new FlowService(uuid);
         this.flow.setFlowId(uuid);
-        this.flow.updateState({
-          status: 'created',
-          productUrl: matches.product,
-          brand,
-          bodyPart,
-          returnUrl: matches.returnUrl,
-          fakeSize: !!matches.fakeSize,
-          productId: parseInt(matches.productId, 10),
-          ...(photosFromGallery && { photosFromGallery: true }),
-        })
+        this.flow.get()
+          .then(() => this.flow.updateState({
+            status: 'created',
+            productUrl: matches.product,
+            brand,
+            bodyPart,
+            returnUrl: matches.returnUrl,
+            fakeSize: !!matches.fakeSize,
+            productId: parseInt(matches.productId, 10),
+            ...(photosFromGallery && { photosFromGallery: true }),
+          }))
           .then((res) => {
+            const { state } = res;
+            const { gender } = res.widget_settings;
+
             setFlowId(res.uuid);
             setWidgetId(res.id);
             setSettings(res.settings);
+            // save to store default values
+            setUnits(state.units);
+            addHeight(state.height);
+            setEmail(state.email);
+            setWeightLb(state.weightLb);
+            setWeight(state.weight);
+
+            setCustomSettings(res.widget_settings);
+
+            if (gender !== 'all') {
+              addGender(gender);
+            }
 
             this.setState({
               isButtonDisabled: false,
             });
           })
           .catch((err) => {
-            this.widgetIframe = window.parent.document.querySelector('.saia-pf-drop iframe');
+            this.widgetIframe = window.parent.document.querySelector('.saia-mtm-drop iframe');
 
             // condition for preventing appearing the error alert in safari
             // after the widget closes quickly after it is opened
@@ -180,11 +203,17 @@ class Welcome extends Component {
    * On next screen event handler
    */
   onNextScreen = async () => {
-    const { matches, token } = this.props;
+    const { matches, token, customSettings } = this.props;
     gaWelcomeOnContinue();
 
     const { isSmbFlow, isDemoWidget } = this.props;
-    const routeUrl = (isSmbFlow || isDemoWidget) ? '/gender' : '/email';
+    let routeUrl;
+
+    if (isSmbFlow || isDemoWidget) {
+      routeUrl = customSettings.gender !== 'all' ? '/height' : 'gender';
+    } else {
+      routeUrl = '/email';
+    }
 
     const widgetUUID = matches.key || API_KEY || parseGetParams().key;
 

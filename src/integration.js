@@ -7,23 +7,26 @@ import SaiaMTMButton from './button';
     const publicKey = scriptTag.getAttribute('data-public-key');
     const buttonTitle = scriptTag.getAttribute('data-button-title');
 
-    const uuid = await SaiaMTMButton.createWidget(publicKey);
+    const [isWidgetAllowed, customSettings] = await SaiaMTMButton.getWidgetInfo(publicKey);
 
-    if (!saiaCont) {
-      const cartAdd = document.querySelector("form[action='/cart/add']");
-      const cont = document.createElement('div');
-      cont.className = 'saia-widget-container';
-      const parentDiv = cartAdd.parentNode;
-      parentDiv.insertBefore(cont, cartAdd);
+    if (isWidgetAllowed) {
+      if (!saiaCont) {
+        const cartAdd = document.querySelector("form[action='/cart/add']");
+        const cont = document.createElement('div');
+        cont.className = 'saia-widget-container';
+        const parentDiv = cartAdd.parentNode;
+        parentDiv.insertBefore(cont, cartAdd);
+      }
+
+      const button = new SaiaMTMButton({
+        publicKey,
+        widgetUrl: WIDGET_HOST,
+        buttonTitle: buttonTitle || 'GET MEASURED',
+        customSettings,
+      });
+
+      button.init(publicKey);
     }
-
-    const button = new SaiaMTMButton({
-      key: uuid,
-      widgetUrl: WIDGET_HOST,
-      buttonTitle: buttonTitle || 'GET MEASURED',
-    });
-
-    button.init();
   } catch (err) {
     if (err && err.response && err.response.data) {
       console.error(err.response.data.detail);

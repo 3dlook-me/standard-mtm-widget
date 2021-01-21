@@ -79,6 +79,8 @@ class HardValidation extends Component {
     const {
       hardValidation,
       isMobile,
+      gender,
+      isTableFlow,
     } = this.props;
 
     const {
@@ -169,71 +171,86 @@ class HardValidation extends Component {
             </p>
           ) : null}
 
-          {(topMessageFront)
-            ? (
-              <p className="hard-validation__text">{topMessageFront}</p>
-            ) : null }
+          {topMessageFront ? (
+            <p className="hard-validation__text">{topMessageFront}</p>
+          ) : null }
 
-          {(topMessageSide)
-            ? (
-              <p className="hard-validation__text">{topMessageSide}</p>
-            ) : null }
+          {topMessageSide ? (
+            <p className="hard-validation__text">{topMessageSide}</p>
+          ) : null }
 
-          <img className="hard-validation__image" src={cryingIcon1x} srcSet={`${cryingIcon1x} 1x, ${cryingIcon2x} 2x`} alt="hard validation errors" />
+          <img
+            className="hard-validation__image"
+            src={cryingIcon1x}
+            srcSet={`${cryingIcon1x} 1x, ${cryingIcon2x} 2x`}
+            alt="hard validation errors"
+          />
 
-          {(front && !side)
-            ? (
-              <h4 className="hard-validation__title-2">
-                Retake the front photo.
-                <br />
-                Here are some tips:
-              </h4>
-            )
-            : null }
+          {front && !side ? (
+            <h4 className="hard-validation__title-2">
+              Retake the front photo.
+              <br />
+              Here are some tips:
+            </h4>
+          ) : null }
 
-          {(side && !front)
-            ? (
-              <h4 className="hard-validation__title-2">
-                Retake the side photo.
-                <br />
-                Here are some tips:
-              </h4>
-            )
-            : null }
+          {side && !front ? (
+            <h4 className="hard-validation__title-2">
+              Retake the side photo.
+              <br />
+              Here are some tips:
+            </h4>
+          ) : null }
 
-          {(side && front)
-            ? (
-              <h4 className="hard-validation__title-2">
-                Retake the front and the side photos.
-                <br />
-                Here are some tips:
-              </h4>
-            )
-            : null }
+          {side && front ? (
+            <h4 className="hard-validation__title-2">
+              Retake the front and the side photos.
+              <br />
+              Here are some tips:
+            </h4>
+          ) : null }
 
           <ol className="hard-validation__recommendations">
-            {(front)
-              ? (
-                <li>
-                  {tipMessageFront}
-                  {(sideInTheFront || cannotDetectBodyFront || bodyIsNotFullFront || wrongFrontPose) ? <ImageExample type="front" isMobile={isMobile} /> : null}
-                </li>
-              )
-              : null}
+            {front ? (
+              <li>
+                {tipMessageFront}
+                {(sideInTheFront
+                    || cannotDetectBodyFront
+                    || bodyIsNotFullFront
+                    || wrongFrontPose) ? (
+                      <ImageExample
+                        type="front"
+                        isMobile={isMobile}
+                        gender={gender}
+                        isTableFlow={isTableFlow}
+                      />
+                  ) : null}
+              </li>
+            ) : null}
 
-            {(side)
-              ? (
-                <li>
-                  {tipMessageSide}
-                  {(sideInTheSide || cannotDetectBodySide || bodyIsNotFullSide || wrongSidePose) ? <ImageExample type="side" isMobile={isMobile} /> : null}
-                </li>
-              )
-              : null}
+            {side ? (
+              <li>
+                {tipMessageSide}
+                {(sideInTheSide
+                    || cannotDetectBodySide
+                    || bodyIsNotFullSide
+                    || wrongSidePose) ? (
+                      <ImageExample
+                        type="side"
+                        isMobile={isMobile}
+                        gender={gender}
+                        isTableFlow={isTableFlow}
+                      />
+                  ) : null}
+              </li>
+            ) : null}
           </ol>
 
         </div>
         <div className="screen__footer hard-validation__footer">
-          <button className="button" onClick={this.back} type="button"><span>Retake photo</span></button>
+          <button className="button" onClick={this.back} type="button">
+            <span>Retake photo</span>
+          </button>
         </div>
       </div>
     );

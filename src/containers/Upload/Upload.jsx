@@ -7,8 +7,9 @@ import { route } from 'preact-router';
 import API from '@3dlook/saia-sdk/lib/api';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import Camera from '../../components/CustomCamera/CustomCamera';
+import NoSleep from 'nosleep.js';
 
+import Camera from '../../components/CustomCamera/CustomCamera';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { store } from '../../store';
@@ -17,6 +18,8 @@ import {
   wait,
   mobileFlowStatusUpdate,
   isMobileDevice,
+  getAsset,
+  filterCustomMeasurements,
 } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
@@ -49,11 +52,11 @@ import {
 } from '../../components';
 
 import './Upload.scss';
-import frontExample from '../../images/friend_front.png';
-import sideExample from '../../images/friend_side.png';
 
 let isPhoneLocked = false;
 let isRefreshed = false;
+
+const noSleep = new NoSleep();
 
 /**
  * Upload page component.
@@ -73,11 +76,6 @@ class Upload extends Component {
       sideImagePose: null,
 
       isPending: false,
-
-      // photoType: 'front',
-      // isPhotoExample: false,
-
-      // activeTab: props.frontImage && !props.sideImage ? 'side' : 'front',
     };
 
     const { setPageReloadStatus } = props;
@@ -85,6 +83,7 @@ class Upload extends Component {
     this.reloadListener = () => {
       isRefreshed = true;
       setPageReloadStatus(true);
+      noSleep.disable();
     };
 
     window.addEventListener('unload', this.reloadListener);
@@ -107,6 +106,10 @@ class Upload extends Component {
     document.removeEventListener('webkitvisibilitychange', this.handleVisibilityChange);
     window.removeEventListener('unload', this.reloadListener);
     window.removeEventListener('offline', this.setOfflineStatus);
+
+    if (noSleep._wakeLock) {
+      noSleep.disable();
+    }
   }
 
   componentDidMount() {
@@ -133,6 +136,7 @@ class Upload extends Component {
     }
 
     window.addEventListener('offline', this.setOfflineStatus);
+    document.addEventListener('click', this.disableDeviceScreenLock, { once: true });
 
     // if camera is active when page refreshed
     if (camera) {
@@ -176,20 +180,21 @@ class Upload extends Component {
       });
     }
 
-    if (
-      !isTableFlow
-        && (!prevProps.sideImage && sideImage || !prevProps.frontImage && frontImage)
-    ) {
+    if (!isTableFlow
+        && ((!prevProps.sideImage && sideImage) || (!prevProps.frontImage && frontImage))) {
+      const event = (!prevProps.sideImage && sideImage && SIDE_PHOTO_PAGE_EXAMPLE_CLOSE)
+        || (!prevProps.frontImage && frontImage && FRONT_PHOTO_PAGE_EXAMPLE_CLOSE);
+
       analyticsService({
         uuid: token,
-        event:
-          !prevProps.sideImage && sideImage && SIDE_PHOTO_PAGE_EXAMPLE_CLOSE
-          || !prevProps.frontImage && frontImage && FRONT_PHOTO_PAGE_EXAMPLE_CLOSE,
+        event,
       });
     }
   }
 
   getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
+
+  disableDeviceScreenLock = () => noSleep.enable();
 
   init(props) {
     const { token } = props;
@@ -241,7 +246,7 @@ class Upload extends Component {
     } else {
       setCamera(null);
     }
-  };
+  }
 
   /**
    * Save side image to state
@@ -283,13 +288,13 @@ class Upload extends Component {
     }
 
     addSideImage(file);
-  };
+  }
 
   turnOffCamera = () => {
     const { setCamera } = this.props;
 
     setCamera(null);
-  };
+  }
 
   /**
    * On next button click handler
@@ -334,10 +339,11 @@ class Upload extends Component {
       isFromDesktopToMobile,
       taskId,
       setTaskId,
-      token,
-      isTableFlow,
       setBodyType,
       setFlowState,
+      token,
+      isTableFlow,
+      customSettings,
     } = this.props;
 
     try {
@@ -369,9 +375,17 @@ class Upload extends Component {
         visibilityChange = 'webkitvisibilitychange';
       }
 
+      if (!noSleep._wakeLock) {
+        noSleep.enable();
+      }
+
       this.handleVisibilityChange = async () => {
         if (document[hidden]) {
           isPhoneLocked = true;
+
+          if (noSleep._wakeLock) {
+            noSleep.disable();
+          }
 
           await window.location.reload();
         }
@@ -416,6 +430,8 @@ class Upload extends Component {
       if (sideImage !== true) {
         images.sideImage = sideImage;
       }
+
+      const photoFlowType = isTableFlow ? 'hand' : 'friend';
 
       const mtmClientParams = {
         widgetId,
@@ -476,6 +492,7 @@ class Upload extends Component {
 
         taskSetId = await this.api.person.updateAndCalculate(createdPersonId, {
           ...images,
+          photoFlowType,
           deviceCoordinates: { ...deviceCoordinates },
           measurementsType: 'all',
         });
@@ -504,6 +521,7 @@ class Upload extends Component {
           gender,
           height,
           email,
+          photoFlowType,
           ...(weight && { weight }),
           deviceCoordinates: { ...deviceCoordinates },
           ...images,
@@ -520,9 +538,7 @@ class Upload extends Component {
         }
 
         if (isFromDesktopToMobile) {
-          this.flow.updateLocalState({
-            processStatus: 'Photo Upload Completed!',
-          });
+          this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });
         }
 
         setProcessingStatus('Photo Upload Completed!');
@@ -530,9 +546,11 @@ class Upload extends Component {
       }
 
       if (isFromDesktopToMobile) {
-        this.flow.updateLocalState({
-          processStatus: 'Calculating your Measurements',
-        });
+        this.flow.updateLocalState({ processStatus: 'Calculating your Measurements' });
+      }
+
+      if (!noSleep._wakeLock) {
+        noSleep.enable();
       }
 
       setProcessingStatus('Calculating your Measurements');
@@ -541,7 +559,16 @@ class Upload extends Component {
 
       await wait(1000);
 
-      const measurements = { ...person };
+      let measurements;
+
+      if (!Object.keys(customSettings.outputMeasurements).length) {
+        measurements = { ...person };
+      } else {
+        measurements = {
+          ...person,
+          ...(filterCustomMeasurements({ ...person }, customSettings)),
+        };
+      }
 
       send('data', measurements, origin);
 
@@ -578,8 +605,6 @@ class Upload extends Component {
       gaUploadOnContinue(this.getFlowPhoto());
 
       setFlowState({ ...this.props.flowState, softValidation });
-
-      gaUploadOnContinue();
 
       analyticsService({
         uuid: token,
@@ -631,7 +656,11 @@ class Upload extends Component {
         } else if (error && error.response && error.response.status === 400) {
           route('/not-found', true);
         } else if (error && error.response && error.response.data) {
-          const { detail, brand: brandError, body_part: bodyPartError } = error.response.data;
+          const {
+            detail,
+            brand: brandError,
+            body_part: bodyPartError,
+          } = error.response.data;
           alert(detail || brandError || bodyPartError);
           route('/not-found', true);
         } else {
@@ -656,7 +685,7 @@ class Upload extends Component {
         }
       }
     }
-  };
+  }
 
   triggerFrontImage = () => {
     const { setCamera, token, isTableFlow } = this.props;
@@ -693,13 +722,13 @@ class Upload extends Component {
       isPhotoExample: true,
       photoType,
     });
-  };
+  }
 
   closePhotoExample = () => {
     this.setState({
       isPhotoExample: false,
     });
-  };
+  }
 
   setOfflineStatus = () => {
     const { setIsNetwork } = this.props;
@@ -709,7 +738,7 @@ class Upload extends Component {
     alert('Check your internet connection and try again');
 
     route('/not-found', true);
-  };
+  }
 
   disableTableFlow = () => {
     const {
@@ -721,7 +750,7 @@ class Upload extends Component {
     setCamera(null);
     setIsTableFlowDisabled(true);
     setIsTableFlow(false);
-  };
+  }
 
   setDeviceCoordinates = (coords) => {
     const {
@@ -781,8 +810,6 @@ class Upload extends Component {
       frontImageBody,
       sideImagePose,
       sideImageBody,
-      activeTab,
-      isImageExampleLoaded,
     } = this.state;
 
     const {
@@ -795,11 +822,10 @@ class Upload extends Component {
       isPhotosFromGallery,
       isTableFlow,
       hardValidation,
-      token,
+      token
     } = this.props;
 
     let title;
-    let photoBg;
     let frontActive = false;
     let sideActive = false;
 
@@ -809,11 +835,9 @@ class Upload extends Component {
       sideActive = frontImage && !sideImage;
     } else if ((!frontImage && !sideImage) || (!frontImage && sideImage)) {
       title = 'Take Front photo';
-      photoBg = frontExample;
       frontActive = true;
     } else if (frontImage && !sideImage) {
       title = 'Take Side photo';
-      photoBg = sideExample;
       sideActive = true;
     }
 
@@ -863,8 +887,9 @@ class Upload extends Component {
 
               <Requirements
                 isTableFlow={isTableFlow}
-                photoBg={photoBg}
                 token={token}
+                video={isTableFlow && getAsset(true, gender, 'videoExample')}
+                photoBg={!isTableFlow && getAsset(false, gender, frontActive ? 'frontExample' : 'sideExample')}
               />
             </div>
             <div className="screen__footer">
@@ -891,11 +916,12 @@ class Upload extends Component {
           </Fragment>
         )}
 
-        {/* {isPhotoExample ? ( */}
-        {/*  <PhotoExample photoType={photoType} closePhotoExample={this.closePhotoExample} /> */}
-        {/* ) : null} */}
-
-        <Preloader isActive={isPending} status={sendDataStatus} isMobile={isMobile} />
+        <Preloader
+          isActive={isPending}
+          status={sendDataStatus}
+          isMobile={isMobile}
+          gender={gender}
+        />
 
         {camera ? (
           <Camera

@@ -112,7 +112,7 @@ export default class Height extends Component {
       return 2;
     }
 
-    return data.in || null;
+    return data.in;
   };
 
   /**

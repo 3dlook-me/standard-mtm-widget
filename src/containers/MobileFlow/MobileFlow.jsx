@@ -84,8 +84,6 @@ class MobileFlow extends BaseMobileFlow {
         }, 3000);
 
         route('/camera-mode-selection');
-      } else {
-        route('/results', true);
       }
 
       return Promise.resolve();
@@ -94,7 +92,6 @@ class MobileFlow extends BaseMobileFlow {
         && err.response.data.detail === 'Widget is inactive.') {
         const {
           setIsWidgetDeactivated,
-          setReturnUrl,
           setIsFromDesktopToMobile,
         } = this.props;
 
@@ -103,7 +100,6 @@ class MobileFlow extends BaseMobileFlow {
         await super.componentDidMount();
 
         setIsFromDesktopToMobile(false);
-        setReturnUrl('https://mtm.3dlook.me/');
 
         route('/results', true);
 

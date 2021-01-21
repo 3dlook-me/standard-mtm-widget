@@ -182,7 +182,7 @@ class Upload extends Component {
     }
   }
 
-  getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
+  getFlowType = () => (this.props.isTableFlow ? 'alone' : 'friend');
 
   init(props) {
     const { token } = props;
@@ -218,9 +218,7 @@ class Upload extends Component {
       event: FRONT_PHOTO_PAGE_PHOTO_TAKEN,
     });
 
-    if (!isTableFlow) {
-      gaOpenCameraFrontPhoto();
-    }
+    gaOpenCameraFrontPhoto(this.getFlowType());
 
     setHeaderIconsStyle('default');
     addFrontImage(file);
@@ -254,9 +252,7 @@ class Upload extends Component {
       event: SIDE_PHOTO_PAGE_PHOTO_TAKEN,
     });
 
-    if (!isTableFlow) {
-      gaOpenCameraSidePhoto();
-    }
+    gaOpenCameraSidePhoto(this.getFlowType());
 
     setHeaderIconsStyle('default');
 
@@ -561,7 +557,7 @@ class Upload extends Component {
         person: person.id,
       });
 
-      gaUploadOnContinue(this.getFlowPhoto());
+      gaUploadOnContinue(this.getFlowType());
 
       analyticsService({
         uuid: token,
@@ -664,9 +660,11 @@ class Upload extends Component {
   }
 
   triggerSideImage = () => {
-    const { setCamera, token } = this.props;
+    const { setCamera, token, isTableFlow } = this.props;
 
-    gaOnClickLetsStartSideFriend();
+    if (!isTableFlow) {
+      gaOnClickLetsStartSideFriend();
+    }
 
     setCamera('side');
 

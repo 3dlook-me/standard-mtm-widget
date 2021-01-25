@@ -271,6 +271,8 @@ class Results extends Component {
                 units={units}
                 openGuide={this.openGuide}
                 helpBtnToggle={this.helpBtnToggle}
+                isSoftValidation={isSoftValidationPresent}
+                isCustomMeasurements={customSettings.is_custom_output_measurements}
               />
             ) : null}
 

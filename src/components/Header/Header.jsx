@@ -24,6 +24,11 @@ import actions from '../../store/actions';
  */
 class Header extends Component {
   componentDidMount() {
+    const { flowId, token } = this.props;
+
+    this.flow = new FlowService(token);
+    this.flow.setFlowId(flowId);
+
     if (isMobileDevice()) {
       document.body.classList.add('mobile-device');
     }
@@ -86,10 +91,9 @@ class Header extends Component {
       } else {
         window.location = returnUrl;
       }
-    } else {
-      resetState();
-      send('close', {}, origin);
     }
+    resetState();
+    send('close', {}, origin);
   };
 
   /**

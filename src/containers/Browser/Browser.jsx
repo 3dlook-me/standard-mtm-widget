@@ -2,9 +2,10 @@ import { h, Component } from 'preact';
 import Clipboard from 'clipboard';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import { browserDetect } from '../../helpers/utils';
 
+import { browserDetect } from '../../helpers/utils';
 import actions from '../../store/actions';
+import { gaChangeBrowser, gaChangeBrowserCopyLink } from '../../helpers/ga';
 
 import './Browser.scss';
 import chrome from '../../images/chrome.svg';
@@ -28,9 +29,12 @@ class Browser extends Component {
   }
 
   componentDidMount() {
+    const { browser } = this.state;
     const {
       isFromDesktopToMobile, token, widgetUrl,
     } = this.props;
+
+    gaChangeBrowser(browser.toLowerCase());
 
     if (!isFromDesktopToMobile) {
       this.sms = new SMSService(token);
@@ -58,6 +62,10 @@ class Browser extends Component {
   }
 
   copyWidgetUrl = () => {
+    const { browser } = this.state;
+
+    gaChangeBrowserCopyLink(browser.toLowerCase());
+
     this.setState({
       isCopied: true,
     }, () => {

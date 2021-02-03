@@ -79,8 +79,9 @@ class Header extends Component {
     }
 
     if (isMobile) {
+      const isMeasurements = Object.entries(measurements.front_params).length !== 0;
       // if (confirm('Are you sure that you want to close widget? ')) {
-      if (measurements && !isSmbFlow && !isDemoWidget) {
+      if (isMeasurements && !isSmbFlow && !isDemoWidget) {
         window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
       } else {
         window.location = returnUrl;

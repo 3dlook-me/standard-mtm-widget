@@ -63,8 +63,17 @@ class Measurements extends Component {
   render() {
     const { measurementsLoading } = this.state;
     const { measurements } = this.props;
-    const groups = ['Volumetric measurements', 'Linear measurements'];
-    const parameters = [VOLUMETRIC_PARAMS, LINEAR_PARAMS];
+    let parameters = [VOLUMETRIC_PARAMS, LINEAR_PARAMS];
+    let groups = ['Volumetric measurements', 'Linear measurements'];
+
+    if (Object.keys(measurements.front_params).length <= 2
+      && Object.keys(measurements.side_params).length <= 2) {
+      groups = ['Volumetric measurements'];
+      parameters = [VOLUMETRIC_PARAMS];
+    } else if (Object.keys(measurements.volume_params).length < 1) {
+      groups = ['Linear measurements'];
+      parameters = [LINEAR_PARAMS];
+    }
 
     return (
       <div className="measurements__wrapper">

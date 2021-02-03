@@ -7,8 +7,9 @@ import { route } from 'preact-router';
 import API from '@3dlook/saia-sdk/lib/api';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import Camera from '../../components/CustomCamera/CustomCamera';
+import NoSleep from 'nosleep.js';
 
+import Camera from '../../components/CustomCamera/CustomCamera';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { store } from '../../store';
@@ -18,6 +19,7 @@ import {
   mobileFlowStatusUpdate,
   isMobileDevice,
   getAsset,
+  filterCustomMeasurements,
 } from '../../helpers/utils';
 import {
   gaUploadOnContinue,
@@ -54,6 +56,8 @@ import './Upload.scss';
 let isPhoneLocked = false;
 let isRefreshed = false;
 
+const noSleep = new NoSleep();
+
 /**
  * Upload page component.
  */
@@ -79,6 +83,7 @@ class Upload extends Component {
     this.reloadListener = () => {
       isRefreshed = true;
       setPageReloadStatus(true);
+      noSleep.disable();
     };
 
     window.addEventListener('unload', this.reloadListener);
@@ -101,6 +106,10 @@ class Upload extends Component {
     document.removeEventListener('webkitvisibilitychange', this.handleVisibilityChange);
     window.removeEventListener('unload', this.reloadListener);
     window.removeEventListener('offline', this.setOfflineStatus);
+
+    if (noSleep._wakeLock) {
+      noSleep.disable();
+    }
   }
 
   componentDidMount() {
@@ -127,6 +136,7 @@ class Upload extends Component {
     }
 
     window.addEventListener('offline', this.setOfflineStatus);
+    document.addEventListener('click', this.disableDeviceScreenLock, { once: true });
 
     // if camera is active when page refreshed
     if (camera) {
@@ -184,6 +194,8 @@ class Upload extends Component {
 
   getFlowType = () => (this.props.isTableFlow ? 'alone' : 'friend');
 
+  disableDeviceScreenLock = () => noSleep.enable();
+
   init(props) {
     const { token } = props;
 
@@ -232,7 +244,7 @@ class Upload extends Component {
     } else {
       setCamera(null);
     }
-  };
+  }
 
   /**
    * Save side image to state
@@ -272,13 +284,13 @@ class Upload extends Component {
     }
 
     addSideImage(file);
-  };
+  }
 
   turnOffCamera = () => {
     const { setCamera } = this.props;
 
     setCamera(null);
-  };
+  }
 
   /**
    * On next button click handler
@@ -324,6 +336,7 @@ class Upload extends Component {
       setTaskId,
       token,
       isTableFlow,
+      customSettings,
     } = this.props;
 
     try {
@@ -355,9 +368,17 @@ class Upload extends Component {
         visibilityChange = 'webkitvisibilitychange';
       }
 
+      if (!noSleep._wakeLock) {
+        noSleep.enable();
+      }
+
       this.handleVisibilityChange = async () => {
         if (document[hidden]) {
           isPhoneLocked = true;
+
+          if (noSleep._wakeLock) {
+            noSleep.disable();
+          }
 
           await window.location.reload();
         }
@@ -508,9 +529,7 @@ class Upload extends Component {
         }
 
         if (isFromDesktopToMobile) {
-          this.flow.updateLocalState({
-            processStatus: 'Photo Upload Completed!',
-          });
+          this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });
         }
 
         setProcessingStatus('Photo Upload Completed!');
@@ -518,9 +537,11 @@ class Upload extends Component {
       }
 
       if (isFromDesktopToMobile) {
-        this.flow.updateLocalState({
-          processStatus: 'Calculating your Measurements',
-        });
+        this.flow.updateLocalState({ processStatus: 'Calculating your Measurements' });
+      }
+
+      if (!noSleep._wakeLock) {
+        noSleep.enable();
       }
 
       setProcessingStatus('Calculating your Measurements');
@@ -529,7 +550,16 @@ class Upload extends Component {
 
       await wait(1000);
 
-      const measurements = { ...person };
+      let measurements;
+
+      if (!Object.keys(customSettings.outputMeasurements).length) {
+        measurements = { ...person };
+      } else {
+        measurements = {
+          ...person,
+          ...(filterCustomMeasurements({ ...person }, customSettings)),
+        };
+      }
 
       send('data', measurements, origin);
 
@@ -640,7 +670,7 @@ class Upload extends Component {
         }
       }
     }
-  };
+  }
 
   triggerFrontImage = () => {
     const { setCamera, token, isTableFlow } = this.props;
@@ -679,13 +709,13 @@ class Upload extends Component {
       isPhotoExample: true,
       photoType,
     });
-  };
+  }
 
   closePhotoExample = () => {
     this.setState({
       isPhotoExample: false,
     });
-  };
+  }
 
   setOfflineStatus = () => {
     const { setIsNetwork } = this.props;
@@ -695,7 +725,7 @@ class Upload extends Component {
     alert('Check your internet connection and try again');
 
     route('/not-found', true);
-  };
+  }
 
   disableTableFlow = () => {
     const {
@@ -707,7 +737,7 @@ class Upload extends Component {
     setCamera(null);
     setIsTableFlowDisabled(true);
     setIsTableFlow(false);
-  };
+  }
 
   setDeviceCoordinates = (coords) => {
     const {
@@ -721,7 +751,7 @@ class Upload extends Component {
     } else {
       addSideDeviceCoordinates(coords);
     }
-  };
+  }
 
   render() {
     const isDesktop = !isMobileDevice();

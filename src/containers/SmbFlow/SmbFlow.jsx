@@ -56,9 +56,9 @@ class SmbFlow extends BaseMobileFlow {
         setIsSmbFlow(true);
       }
 
-      setReturnUrl('https://mtm.3dlook.me/');
-
       const flowStateData = await this.flow.get();
+
+      setReturnUrl(flowStateData.widget_settings.redirect_link || 'https://3dlook.me/mobile-tailor/');
 
       if (flowStateData.state.status !== 'finished') {
         await this.flow.updateState({
@@ -100,7 +100,7 @@ class SmbFlow extends BaseMobileFlow {
       // for 401 widget not found to close widget
       setIsSmbFlow(true);
       setIsMobile(true);
-      setReturnUrl('https://mtm.3dlook.me/');
+      setReturnUrl('https://3dlook.me/mobile-tailor/');
 
       if (err.response.status === 401
         && err.response.data.detail === 'Widget is inactive.') {
@@ -113,7 +113,6 @@ class SmbFlow extends BaseMobileFlow {
 
         await super.componentDidMount();
 
-        setReturnUrl('https://mtm.3dlook.me/');
         setIsFromDesktopToMobile(false);
 
         route('/results', true);

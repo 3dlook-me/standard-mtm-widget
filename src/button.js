@@ -39,6 +39,11 @@ class SaiaMTMButton {
    * @param {number} [options.defaultValues.weight] - default value for weight field.
    * If you set heightCm, then weight should contain value in kilograms.
    * If you set heightFt and heightIn, then weight should contain value in pounds.
+   * @param {Object} options.customSettings - users widget custom settings
+   * @param {Object} options.customSettings.button_background_color - button bg color
+   * @param {Object} options.customSettings.button_border_color - button border color
+   * @param {Object} options.customSettings.button_text_color - button text color
+
    */
   constructor(options) {
     uid += 1;
@@ -111,6 +116,10 @@ class SaiaMTMButton {
     this.buttonTextEl = this.buttonEl.querySelector('.saia-mtm-button__text');
     this.buttonPreloaderEl = this.buttonEl.querySelector('.saia-mtm-button__preloader');
 
+    if (this.defaults.customSettings) {
+      this.setCustomSettings();
+    }
+
     this.buttonEl.addEventListener('click', async () => { await this.showWidget(); });
 
     window.addEventListener('message', (event) => {
@@ -128,8 +137,8 @@ class SaiaMTMButton {
           }
 
           if (currentData
-              && currentData.persons
-              && !currentData.persons.includes(data.personId)) {
+            && currentData.persons
+            && !currentData.persons.includes(data.personId)) {
             data.persons = [
               ...currentData.persons,
               currentData.personId,
@@ -281,15 +290,41 @@ class SaiaMTMButton {
   }
 
   /**
-   * Check if widget button should be shown on the page
+   * Set custom colors
+   */
+  setCustomSettings() {
+    const {
+      button_background_color,
+      button_border_color,
+      button_text_color,
+    } = this.defaults.customSettings;
+
+    if (button_background_color) {
+      this.buttonEl.style.backgroundColor = button_background_color;
+    }
+
+    if (button_border_color) {
+      this.buttonEl.style.borderColor = button_border_color;
+    }
+
+    if (button_text_color) {
+      this.buttonEl.style.color = button_text_color;
+      this.buttonEl.querySelectorAll('svg path')[0]
+        .style.fill = button_text_color;
+    }
+  }
+
+  /**
+   * Check if widget button should be shown on the page and get custom settings
    *
    * @param {string} publicKey - user public key
    */
-  static async isWidgetAllowed(publicKey) {
+  static getWidgetInfo(publicKey) {
     const flowService = new FlowService(publicKey);
-    const isWidgetAllowed = await flowService.isWidgetAllowed();
+    const isWidgetAllowed = flowService.isWidgetAllowed();
+    const customSettings = flowService.getCustomSettings();
 
-    return Promise.resolve(isWidgetAllowed);
+    return Promise.all([isWidgetAllowed, customSettings]);
   }
 }
 

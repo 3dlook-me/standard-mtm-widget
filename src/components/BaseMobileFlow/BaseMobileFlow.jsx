@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 
 import FlowService from '../../services/flowService';
-import { isMobileDevice } from '../../helpers/utils';
+import { filterCustomMeasurements, isMobileDevice } from '../../helpers/utils';
 
 /**
  * Mobile flow page component
@@ -47,6 +47,7 @@ class BaseMobileFlow extends Component {
       setIsPhotosFromGallery,
       setWidgetId,
       isWidgetDeactivated,
+      setCustomSettings,
     } = this.props;
 
     if (!isMobileDevice()) {
@@ -83,6 +84,8 @@ class BaseMobileFlow extends Component {
         const brand = flowStateResult.state.brand || TEST_BRAND;
         const bodyPart = flowStateResult.state.bodyPart || TEST_BODY_PART;
         const photosFromGallery = flowStateResult.state.photosFromGallery || false;
+        const { measurements } = flowStateResult.state;
+        const { widget_settings } = flowStateResult;
 
         if (photosFromGallery) {
           setIsPhotosFromGallery(true);
@@ -93,7 +96,22 @@ class BaseMobileFlow extends Component {
           setFlowState(flowStateResult.state);
         }
 
-        setMeasurements(flowStateResult.state.measurements);
+        if (!widget_settings.is_custom_output_measurements) {
+          setMeasurements(measurements);
+        } else if (measurements) {
+          setMeasurements({
+            ...measurements,
+            ...(filterCustomMeasurements(measurements, widget_settings.output_measurements)),
+          });
+        }
+
+        if (widget_settings.gender !== 'all') {
+          addGender(widget_settings.gender);
+        } else {
+          addGender(flowStateResult.state.gender);
+        }
+
+        setCustomSettings(widget_settings);
         setPersonId(flowStateResult.person || flowStateResult.state.personId);
         setBrand(brand);
         setBodyPart(bodyPart);
@@ -101,11 +119,10 @@ class BaseMobileFlow extends Component {
         setIsMobile(isMobileDevice());
         addHeight(flowStateResult.state.height);
         setWeight(flowStateResult.state.weight);
-        addGender(flowStateResult.state.gender);
         addFrontImage(flowStateResult.state.frontImage);
         addSideImage(flowStateResult.state.sideImage);
         setIsFromDesktopToMobile(true);
-        setReturnUrl(flowStateResult.state.returnUrl);
+        setReturnUrl(flowStateResult.state.returnUrl || 'https://3dlook.me/mobile-tailor/');
         setSettings(flowStateResult.state.settings);
         setWidgetUrl(flowStateResult.state.widgetUrl || window.location.href);
         setBodyType(flowStateResult.state.bodyType);

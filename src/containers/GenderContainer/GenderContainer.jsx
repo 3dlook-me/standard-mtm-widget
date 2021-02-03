@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
@@ -14,14 +13,11 @@ import {
 import analyticsService, {
   GENDER_PAGE_ENTER,
   GENDER_PAGE_LEAVE,
-  analyticsServiceAsync,
-  CLICK_TERMS_CONDITIONS,
-  CLICK_PRIVACY_POLICY,
-  CHECK_TERMS_AND_POLICY,
 } from '../../services/analyticsService';
 import {
   Stepper,
   Gender,
+  PolicyAgreement,
 } from '../../components';
 
 import './GenderContainer.scss';
@@ -110,27 +106,10 @@ class GenderContainer extends Component {
     });
   }
 
-  /**
-   * Change argee checkbox state handler
-   */
-  changeAgree = (e) => {
-    const { addAgree, token } = this.props;
-
-    addAgree(e.target.checked);
-
+  changeAgree = (state) => {
     this.setState({
-      isAgreeValid: e.target.checked,
+      isAgreeValid: state,
     });
-
-    if (e.target.checked) {
-      analyticsService({
-        uuid: token,
-        event: CHECK_TERMS_AND_POLICY,
-        data: {
-          value: e.target.checked,
-        },
-      });
-    }
   }
 
   /**
@@ -179,25 +158,6 @@ class GenderContainer extends Component {
     route('/height', false);
   }
 
-  onClickTermsOrPrivacy = (type) => async (event) => {
-    const { token } = this.props;
-
-    if (event.button === 0 || event.button === 1) {
-      await analyticsServiceAsync({
-        uuid: token,
-        event: type === 'terms'
-          ? CLICK_TERMS_CONDITIONS 
-          : CLICK_PRIVACY_POLICY,
-      });
-  
-      window.open(
-        type === 'terms'
-          ? 'https://3dlook.me/terms-of-service/'
-          : 'https://3dlook.me/privacy-policy/',
-        '_blank');
-    }
-  }
-
   render() {
     const { buttonDisabled, isAgreeValid } = this.state;
     const {
@@ -224,28 +184,12 @@ class GenderContainer extends Component {
         </div>
         <div className="screen__footer">
           {(isSmbFlow || isDemoWidget) ? (
-            <div className={classNames('gender__check', 'checkbox', { checked: agree, 'checkbox--invalid': !isAgreeValid })}>
-              <label htmlFor="agree">
-                <input type="checkbox" name="agree" id="agree" onChange={this.changeAgree} checked={agree} />
-                <span className="checkbox__icon" />
-                { 'I accept ' }
-                <button 
-                  type="button"
-                  className="email__link"
-                  onMouseDown={this.onClickTermsOrPrivacy('terms')}
-                >
-                  Terms and Conditions
-                </button>
-                { ' and ' }
-                <button
-                  type="button"
-                  className="email__link"
-                  onMouseDown={this.onClickTermsOrPrivacy('privacy')}
-                >
-                  Privacy Policy
-                </button>
-              </label>
-            </div>
+            <PolicyAgreement
+              agree={agree}
+              isAgreeValid={isAgreeValid}
+              token={token}
+              changeAgreeState={this.changeAgree}
+            />
           ) : null }
           <button className="button" onClick={this.next} type="button" disabled={buttonDisabled}>Next</button>
         </div>

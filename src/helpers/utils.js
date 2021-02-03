@@ -510,6 +510,49 @@ export const closeSelectsOnResize = () => {
   }
 };
 
+export const filterCustomMeasurements = (measurements, customSettings) => {
+  /* eslint-disable camelcase */
+
+  if (!customSettings.outputMeasurements) return;
+
+  const { volumetric, linear } = customSettings.outputMeasurements;
+  const volume_params = {};
+  const front_params = {
+    soft_validation: measurements.front_params.soft_validation,
+    clothes_type: measurements.front_params.clothes_type,
+  };
+
+  const side_params = {
+    soft_validation: measurements.side_params.soft_validation,
+    clothes_type: measurements.side_params.clothes_type,
+  };
+
+  for (const key in volumetric) {
+    if (volumetric[key]) {
+      volume_params[key] = measurements.volume_params[key];
+    }
+  }
+
+  for (const key in linear) {
+    if (linear[key]
+      && measurements.front_params[key]) {
+      front_params[key] = measurements.front_params[key];
+    }
+
+    if (linear[key]
+      && measurements.side_params[key]) {
+      side_params[key] = measurements.side_params[key];
+    }
+  }
+
+  return {
+    volume_params,
+    side_params,
+    front_params,
+  };
+  /* eslint-enable camelcase */
+};
+
 /**
  * Convert snake string to camel case
  * @param {string} str - snake string

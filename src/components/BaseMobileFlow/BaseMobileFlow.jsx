@@ -96,7 +96,7 @@ class BaseMobileFlow extends Component {
           setFlowState(flowStateResult.state);
         }
 
-        if (!widget_settings.is_custom_output_measurements) {
+        if (!widget_settings.is_custom_output_measurements && measurements) {
           setMeasurements(measurements);
         } else if (measurements) {
           setMeasurements({

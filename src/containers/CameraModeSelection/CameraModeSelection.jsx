@@ -17,7 +17,7 @@ import {
   PrivacyBanner,
   Loader,
 } from '../../components';
-import { gaOnNextLetsTakePhotos, gaOnSelectFlow } from '../../helpers/ga';
+import { gaCameraModeSelectionNext } from '../../helpers/ga';
 
 import './CameraModeSelection.scss';
 import maleFriend from '../../images/male_friend.png';
@@ -90,7 +90,7 @@ class CameraModeSelection extends Component {
     }
   }
 
-  getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
+  getFlowType = () => (this.props.isTableFlow ? 'alone' : 'friend');
 
   handleClick = (e) => {
     const { setIsTableFlow } = this.props;
@@ -112,8 +112,7 @@ class CameraModeSelection extends Component {
   };
 
   onClickNextStep = () => {
-    gaOnSelectFlow(this.getFlowPhoto());
-    gaOnNextLetsTakePhotos();
+    gaCameraModeSelectionNext(this.getFlowType());
   };
 
   onClickNextPage = () => {
@@ -153,8 +152,16 @@ class CameraModeSelection extends Component {
               <PrivacyBanner />
 
               <p className="camera-mode-selection__text">
-                You have two options: ask someone to help you, or <br /> take
-                photos by yourself in the hands-free mode <br /> using a voice
+                You have two options: ask someone to help you, or
+                {' '}
+                <br />
+                {' '}
+                take
+                photos by yourself in the hands-free mode
+                {' '}
+                <br />
+                {' '}
+                using a voice
                 assistant.
                 <br />
                 <b> How would you like to proceed? </b>

@@ -95,16 +95,11 @@ export const gaSwitchToMobileFlow = () => ga('send', {
   eventAction: 'switch_to_mobile',
 });
 
-export const gaOnNextLetsTakePhotos = () => ga('send', {
+// eventLabel - friend/alone
+export const gaCameraModeSelectionNext = (eventLabel) => ga('send', {
   hitType: 'event',
   eventCategory: 'lets_take_photos',
   eventAction: 'continue',
-});
-
-export const gaOnSelectFlow = (eventLabel) => ga('send', {
-  hitType: 'event',
-  eventCategory: 'lets_take_photos',
-  eventAction: 'select',
   eventLabel,
 });
 
@@ -139,29 +134,29 @@ export const gaOnClickReplayAlone = () => ga('send', {
 /* Take front photo - friend */
 export const gaOnClickLetsStartFrontFriend = () => ga('send', {
   hitType: 'event',
-  eventCategory: 'Take_front',
+  eventCategory: 'take_front',
   eventAction: 'front',
   eventLabel: 'friend',
 });
-export const gaOpenCameraFrontPhoto = () => ga('send', {
+export const gaOpenCameraFrontPhoto = (eventLabel) => ga('send', {
   hitType: 'event',
   eventCategory: 'camera',
-  eventAction: 'front',
-  eventLabel: 'friend',
+  eventAction: 'front_photo',
+  eventLabel,
 });
 
 /* Take side photo - friend */
 export const gaOnClickLetsStartSideFriend = () => ga('send', {
   hitType: 'event',
-  eventCategory: 'Take_front',
+  eventCategory: 'take_front',
   eventAction: 'side',
   eventLabel: 'friend',
 });
-export const gaOpenCameraSidePhoto = () => ga('send', {
+export const gaOpenCameraSidePhoto = (eventLabel) => ga('send', {
   hitType: 'event',
   eventCategory: 'camera',
-  eventAction: 'side',
-  eventLabel: 'friend',
+  eventAction: 'side_photo',
+  eventLabel,
 });
 
 /* Requirements */
@@ -186,10 +181,11 @@ export const gaSuccess = (eventLabel) => ga('send', {
   eventLabel,
 });
 
-export const gaHardValidationError = () => ga('send', {
+export const gaHardValidationError = (eventLabel) => ga('send', {
   hitType: 'event',
   eventCategory: 'processing',
   eventAction: 'error',
+  eventLabel,
 });
 
 export const gaSoftValidationError = () => ga('send', {
@@ -198,10 +194,11 @@ export const gaSoftValidationError = () => ga('send', {
   eventAction: 'warning',
 });
 
-export const gaRetakePhotoError = () => ga('send', {
+export const gaRetakePhotoError = (eventLabel) => ga('send', {
   hitType: 'event',
   eventCategory: 'photo_error',
   eventAction: 'retake',
+  eventLabel,
 });
 
 export const gaRetakePhotoWarning = () => ga('send', {
@@ -240,4 +237,25 @@ export const gaSizeNotFound = () => ga('send', {
   hitType: 'event',
   eventCategory: 'size_error',
   eventAction: 'error',
+});
+
+export const gaChangeBrowser = (browser) => ga('send', {
+  hitType: 'event',
+  eventCategory: 'change_browser',
+  eventAction: 'popup_appears',
+  eventLabel: `continue_in_${browser}`,
+});
+
+export const gaChangeBrowserCopyLink = (browser) => ga('send', {
+  hitType: 'event',
+  eventCategory: 'change_browser',
+  eventAction: 'copy_link',
+  eventLabel: `continue_in_${browser}`,
+});
+
+export const gaChangeBrowserClose = (browser) => ga('send', {
+  hitType: 'event',
+  eventCategory: 'change_browser',
+  eventAction: 'close_popup',
+  eventLabel: `continue_in_${browser}`,
 });

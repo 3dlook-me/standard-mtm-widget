@@ -9,7 +9,7 @@ import {
   mobileFlowStatusUpdate,
   parseGetParams,
 } from '../../helpers/utils';
-import { gaWelcomeOnContinue } from '../../helpers/ga';
+import { gaStart, gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import analyticsService, {
@@ -103,6 +103,8 @@ class Welcome extends Component {
       this.setState({
         isButtonDisabled: true,
       });
+
+      gaStart();
 
       if (photosFromGallery) {
         setIsPhotosFromGallery(true);

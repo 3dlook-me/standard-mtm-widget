@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import './scss/_index.scss';
 
 import { store } from './store';
-import { gaStart } from './helpers/ga';
 import { updateInternetStatus, browserDetect, parseGetParams } from './helpers/utils';
 import analyticsService, {
   WIDGET_OPEN,
@@ -38,12 +37,6 @@ import landscapeView from './images/landscape-view.svg';
 console.log(`%cVERSION: ${VERSION}, COMMITHASH: ${COMMITHASH}, BRANCH: ${BRANCH}`, 'background: #f00; color: #fff; font-size: 20px;');
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    gaStart();
-  }
-
   componentDidMount() {
     const { matches } = this.props;
     const uuid = (matches || {}).key
@@ -60,7 +53,7 @@ class App extends Component {
         event: WIDGET_OPEN,
       });
     }
-    
+
     // iphone bug when portrait after landscape
     if (isSafari) {
       window.addEventListener('resize', () => {

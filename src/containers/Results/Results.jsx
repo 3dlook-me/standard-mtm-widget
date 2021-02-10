@@ -221,6 +221,7 @@ class Results extends Component {
       gender,
       isMobile,
       customSettings,
+      softValidationRetryCounter,
     } = this.props;
 
     const {
@@ -262,6 +263,7 @@ class Results extends Component {
                 gender={gender}
                 softValidation={softValidation}
                 isDesktop={!isMobile}
+                softValidationRetryCounter={softValidationRetryCounter}
               />
             ) : null }
 

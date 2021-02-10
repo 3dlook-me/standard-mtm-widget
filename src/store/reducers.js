@@ -45,6 +45,7 @@ export const INITIAL_STATE = {
   },
 
   isSoftValidationPresent: false,
+  softValidationRetryCounter: 0,
 
   softValidation: {
     looseTop: false,
@@ -261,14 +262,22 @@ export default (state = INITIAL_STATE, action) => {
       };
 
     case CONSTANTS.SET_SOFT_VALIDATION:
+      /* eslint-disable no-case-declarations */
+      const isSoftValidation = action.payload.looseTop
+        || action.payload.looseBottom
+        || action.payload.looseTopAndBottom
+        || action.payload.wideLegs
+        || action.payload.smallLegs
+        || action.payload.bodyPercentage;
+      const { softValidationRetryCounter } = state;
+      /* eslint-enable no-case-declarations */
+
       return {
         ...state,
-        isSoftValidationPresent: action.payload.looseTop
-          || action.payload.looseBottom
-          || action.payload.looseTopAndBottom
-          || action.payload.wideLegs
-          || action.payload.smallLegs
-          || action.payload.bodyPercentage,
+        isSoftValidationPresent: isSoftValidation,
+        softValidationRetryCounter: isSoftValidation
+          ? softValidationRetryCounter + 1
+          : softValidationRetryCounter,
         softValidation: {
           ...state.softValidation,
           ...action.payload,

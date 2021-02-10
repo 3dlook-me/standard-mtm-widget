@@ -822,7 +822,7 @@ class Upload extends Component {
       isPhotosFromGallery,
       isTableFlow,
       hardValidation,
-      token
+      token,
     } = this.props;
 
     let title;

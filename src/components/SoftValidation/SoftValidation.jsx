@@ -80,7 +80,7 @@ const SoftValidation = ({
         {(units === 'cm') ? (
           <p>Make sure your feet are 15 cm apart!</p>
         ) : (
-          <p>Make sure your feet are 7 inches apart!!</p>
+          <p>Make sure your feet are 7 inches apart!</p>
         )}
       </SoftValidationItem>
     ) : null }

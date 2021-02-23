@@ -29,6 +29,8 @@ import {
   gaOpenCameraSidePhoto,
   gaOnClickLetsStartRequirements,
   gaOnClickDoneRequirements,
+  gaTakePhotoFriendMode,
+  gaTakePhotoAloneMode,
 } from '../../helpers/ga';
 import analyticsService, {
   FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
@@ -688,12 +690,16 @@ class Upload extends Component {
   }
 
   triggerFrontImage = () => {
-    const { setCamera, token, isTableFlow } = this.props;
+    const {
+      setCamera,
+      token,
+      isTableFlow,
+    } = this.props;
 
     if (isTableFlow) {
       gaOnClickLetsStartRequirements();
     } else {
-      gaOnClickLetsStartFrontFriend();
+      gaOnClickLetsStartFrontFriend(this.photoValidationDetect());
     }
 
     setCamera('front');
@@ -707,7 +713,7 @@ class Upload extends Component {
   triggerSideImage = () => {
     const { setCamera, token } = this.props;
 
-    gaOnClickLetsStartSideFriend();
+    gaOnClickLetsStartSideFriend(this.photoValidationDetect());
 
     setCamera('side');
 
@@ -797,6 +803,26 @@ class Upload extends Component {
     }
 
     return softValidation;
+  }
+
+  photoValidationDetect = () => {
+    const { isSoftValidationPresent, hardValidation } = this.props;
+
+    if (hardValidation.front || hardValidation.side) return 'hard';
+
+    if (isSoftValidationPresent) return 'soft';
+
+    return '';
+  }
+
+  takePhotoGAEvent = (photoType) => {
+    const { isTableFlow } = this.props;
+
+    if (isTableFlow) {
+      gaTakePhotoAloneMode(photoType, this.photoValidationDetect());
+    } else {
+      gaTakePhotoFriendMode(photoType, this.photoValidationDetect());
+    }
   }
 
   render() {
@@ -925,6 +951,7 @@ class Upload extends Component {
 
         {camera ? (
           <Camera
+            gaTakePhoto={this.takePhotoGAEvent}
             onClickDone={gaOnClickDoneRequirements}
             type={camera}
             gender={gender}

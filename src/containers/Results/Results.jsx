@@ -8,8 +8,16 @@ import {
   RESULT_SCREEN_ENTER,
   analyticsServiceAsync,
 } from '../../services/analyticsService';
-import { send, objectToUrlParams } from '../../helpers/utils';
-import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
+import {
+  send,
+  objectToUrlParams,
+  getGaEventLabel,
+} from '../../helpers/utils';
+import {
+  gaResultsOnContinue,
+  gaSuccess,
+  gaOnSoftRetakeBtn,
+} from '../../helpers/ga';
 import {
   Measurements,
   Guide,
@@ -132,6 +140,7 @@ class Results extends Component {
       addSideImage,
       setTaskId,
       softValidation,
+      isTableFlow,
     } = this.props;
 
     await this.flow.updateState({
@@ -142,9 +151,13 @@ class Results extends Component {
     if (!softValidation.looseTop && !softValidation.looseBottom
       && !softValidation.looseTopAndBottom) {
       addFrontImage(null);
+
+      gaOnSoftRetakeBtn(getGaEventLabel(isTableFlow), 'front');
     } else {
       addFrontImage(null);
       addSideImage(null);
+
+      gaOnSoftRetakeBtn(getGaEventLabel(isTableFlow), 'both');
     }
 
     setTaskId(null);

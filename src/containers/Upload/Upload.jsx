@@ -697,7 +697,7 @@ class Upload extends Component {
     } = this.props;
 
     if (isTableFlow) {
-      gaOnClickLetsStartRequirements();
+      gaOnClickLetsStartRequirements(this.photoValidationDetect());
     } else {
       gaOnClickLetsStartFrontFriend(this.photoValidationDetect());
     }
@@ -952,7 +952,7 @@ class Upload extends Component {
         {camera ? (
           <Camera
             gaTakePhoto={this.takePhotoGAEvent}
-            onClickDone={gaOnClickDoneRequirements}
+            onClickDone={() => { gaOnClickDoneRequirements(this.photoValidationDetect()); }}
             type={camera}
             gender={gender}
             saveFront={this.saveFrontFile}

@@ -165,17 +165,18 @@ export const gaOpenCameraSidePhoto = () => ga('send', {
 });
 
 /* Requirements */
-export const gaOnClickLetsStartRequirements = () => ga('send', {
+export const gaOnClickLetsStartRequirements = (validationType) => ga('send', {
   hitType: 'event',
   eventCategory: 'alone_requirements',
   eventAction: 'continue',
-  eventLabel: 'alone',
+  eventLabel: `alone ${validationType}`,
 });
-export const gaOnClickDoneRequirements = () => ga('send', {
+
+export const gaOnClickDoneRequirements = (validationType) => ga('send', {
   hitType: 'event',
   eventCategory: 'alone_sound_check',
   eventAction: 'continue',
-  eventLabel: 'alone',
+  eventLabel: `alone ${validationType}`,
 });
 
 /* Result */

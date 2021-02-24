@@ -38,7 +38,7 @@ class HardValidation extends Component {
   }
 
   componentDidMount() {
-    gaHardValidationError();
+    gaHardValidationError(this.getFlowType());
 
     const {
       pageReloadStatus,
@@ -69,10 +69,12 @@ class HardValidation extends Component {
     });
   }
 
+  getFlowType = () => (this.props.isTableFlow ? 'alone' : 'friend');
+
   back = () => {
     route('/upload', true);
 
-    gaRetakePhotoError();
+    gaRetakePhotoError(this.getFlowType());
   }
 
   render() {

@@ -15,8 +15,14 @@ import {
   objectToUrlParams,
   isMobileDevice,
   parseGetParams,
+  browserDetect,
+  browserValidation,
 } from '../../helpers/utils';
-import { gaHelpOnClick, gaCloseOnClick } from '../../helpers/ga';
+import {
+  gaHelpOnClick,
+  gaCloseOnClick,
+  gaChangeBrowserClose,
+} from '../../helpers/ga';
 import actions from '../../store/actions';
 
 /**
@@ -61,6 +67,12 @@ class Header extends Component {
       isWidgetDeactivated,
       token,
     } = this.props;
+
+    if (isMobile && !browserValidation()) {
+      const neededBrowser = browserDetect();
+
+      gaChangeBrowserClose(neededBrowser);
+    }
 
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
 

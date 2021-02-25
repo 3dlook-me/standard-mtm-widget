@@ -54,4 +54,13 @@
       }
     }
   }
+
+  &__link {
+    outline: none;
+    border: 0;
+    background: #fff;
+    color: #9b9b9b;
+    text-decoration: underline;
+    padding: 0;
+  }
 }

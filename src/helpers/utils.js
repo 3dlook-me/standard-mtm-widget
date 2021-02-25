@@ -578,3 +578,11 @@ export const getAsset = (isTableFlow, gender, role) => {
 
   return flowScreens[page][flowType][gender][role];
 };
+
+/**
+ * Return event label name
+ *
+ * @param {boolean} isTableFlow - centimeters
+ * @returns {string} - 'alone' || 'friend'
+ */
+export const getGaEventLabel = (isTableFlow) => (isTableFlow ? 'alone' : 'friend');

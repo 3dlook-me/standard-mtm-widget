@@ -29,6 +29,8 @@ import {
   gaOpenCameraSidePhoto,
   gaOnClickLetsStartRequirements,
   gaOnClickDoneRequirements,
+  gaTakePhotoFriendMode,
+  gaTakePhotoAloneMode,
 } from '../../helpers/ga';
 import analyticsService, {
   FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
@@ -320,6 +322,7 @@ class Upload extends Component {
     let { personId } = props;
 
     const {
+      setSoftValidation,
       setHardValidation,
       addFrontImage,
       addSideImage,
@@ -334,6 +337,8 @@ class Upload extends Component {
       isFromDesktopToMobile,
       taskId,
       setTaskId,
+      setBodyType,
+      setFlowState,
       token,
       isTableFlow,
       customSettings,
@@ -466,6 +471,8 @@ class Upload extends Component {
           personId,
         });
 
+        setFlowState({ ...this.props.flowState, personId });
+
         await wait(1000);
 
         if (isFromDesktopToMobile) {
@@ -563,7 +570,11 @@ class Upload extends Component {
 
       send('data', measurements, origin);
 
+      const softValidation = this.getSoftValidationParams(person);
+
+      setBodyType(person.volume_params.body_type);
       setMeasurements(measurements);
+      setSoftValidation(softValidation);
 
       if (isFromDesktopToMobile) {
         this.flow.updateLocalState({
@@ -571,12 +582,14 @@ class Upload extends Component {
           status: 'finished',
           measurements,
           mtmClientId,
+          softValidation,
         });
       } else {
         await this.flow.updateState({
           status: 'finished',
           measurements,
           mtmClientId,
+          softValidation,
         });
       }
 
@@ -588,6 +601,8 @@ class Upload extends Component {
       });
 
       gaUploadOnContinue(this.getFlowType());
+
+      setFlowState({ ...this.props.flowState, softValidation });
 
       analyticsService({
         uuid: token,
@@ -650,9 +665,7 @@ class Upload extends Component {
           if (error.message.includes('is not specified')) {
             const { returnUrl } = this.props;
 
-            alert(
-              'Oops...\nThe server lost connection...\nPlease restart widget flow on the desktop or start again on mobile',
-            );
+            alert('Oops...\nThe server lost connection...\nPlease restart widget flow on the desktop or start again on mobile');
 
             window.location.href = returnUrl;
 
@@ -673,12 +686,16 @@ class Upload extends Component {
   }
 
   triggerFrontImage = () => {
-    const { setCamera, token, isTableFlow } = this.props;
+    const {
+      setCamera,
+      token,
+      isTableFlow,
+    } = this.props;
 
     if (isTableFlow) {
-      gaOnClickLetsStartRequirements();
+      gaOnClickLetsStartRequirements(this.photoValidationDetect());
     } else {
-      gaOnClickLetsStartFrontFriend();
+      gaOnClickLetsStartFrontFriend(this.photoValidationDetect());
     }
 
     setCamera('front');
@@ -690,11 +707,9 @@ class Upload extends Component {
   }
 
   triggerSideImage = () => {
-    const { setCamera, token, isTableFlow } = this.props;
+    const { setCamera, token } = this.props;
 
-    if (!isTableFlow) {
-      gaOnClickLetsStartSideFriend();
-    }
+    gaOnClickLetsStartSideFriend(this.photoValidationDetect());
 
     setCamera('side');
 
@@ -750,6 +765,59 @@ class Upload extends Component {
       addFrontDeviceCoordinates(coords);
     } else {
       addSideDeviceCoordinates(coords);
+    }
+  };
+
+  getSoftValidationParams = (person) => {
+    const softValidation = {
+      looseTop: false,
+      looseBottom: false,
+      looseTopAndBottom: false,
+      wideLegs: false,
+      smallLegs: false,
+      bodyPercentage: false,
+    };
+
+    if (person) {
+      const {
+        front_params: frontParams,
+      } = person;
+
+      if (frontParams) {
+        if (frontParams.clothes_type && frontParams.clothes_type.types) {
+          const { top, bottom } = frontParams.clothes_type.types;
+
+          softValidation.looseTop = top.code === 't2' && bottom.code !== 'b1';
+          softValidation.looseBottom = bottom.code === 'b1' && top.code !== 't2';
+          softValidation.looseTopAndBottom = top.code === 't2' && bottom.code === 'b1';
+        }
+
+        softValidation.wideLegs = frontParams.legs_distance > 15;
+        softValidation.smallLegs = frontParams.legs_distance < 2;
+        softValidation.bodyPercentage = frontParams.body_area_percentage < 0.5;
+      }
+    }
+
+    return softValidation;
+  }
+
+  photoValidationDetect = () => {
+    const { isSoftValidationPresent, hardValidation } = this.props;
+
+    if (hardValidation.front || hardValidation.side) return 'hard';
+
+    if (isSoftValidationPresent) return 'soft';
+
+    return '';
+  }
+
+  takePhotoGAEvent = (photoType) => {
+    const { isTableFlow } = this.props;
+
+    if (isTableFlow) {
+      gaTakePhotoAloneMode(photoType, this.photoValidationDetect());
+    } else {
+      gaTakePhotoFriendMode(photoType, this.photoValidationDetect());
     }
   }
 
@@ -879,7 +947,8 @@ class Upload extends Component {
 
         {camera ? (
           <Camera
-            onClickDone={gaOnClickDoneRequirements}
+            gaTakePhoto={this.takePhotoGAEvent}
+            onClickDone={() => { gaOnClickDoneRequirements(this.photoValidationDetect()); }}
             type={camera}
             gender={gender}
             saveFront={this.saveFrontFile}

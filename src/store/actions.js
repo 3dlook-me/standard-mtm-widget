@@ -56,6 +56,7 @@ export const CONSTANTS = {
   SET_IS_TABLE_FLOW: 'SET_IS_TABLE_FLOW',
   SET_IS_TABLE_FLOW_DISABLED: 'SET_IS_TABLE_FLOW_DISABLED',
   SET_TASK_ID: 'SET_TASK_ID',
+  SET_FLOW_IS_PENDING: 'SET_FLOW_IS_PENDING',
   SET_IS_WIDGET_DEACTIVATED: 'SET_IS_WIDGET_DEACTIVATED',
   SET_IS_DEMO_WIDGET: 'SET_IS_DEMO_WIDGET',
   SET_CUSTOM_SETTINGS: 'SET_CUSTOM_SETTINGS',
@@ -611,6 +612,16 @@ export const setTaskId = (id) => ({
 });
 
 /**
+ * Set flow is pending
+ *
+ * @param {boolean} isPending - isPending
+ */
+export const setFlowIsPending = (isPending) => ({
+  type: CONSTANTS.SET_FLOW_IS_PENDING,
+  payload: isPending,
+});
+
+/**
  * Set is widget deactivated
  *
  * @param {boolean} isDeactivated - is deactivated
@@ -698,6 +709,7 @@ export default {
   addFrontDeviceCoordinates,
   addSideDeviceCoordinates,
   setTaskId,
+  setFlowIsPending,
   setIsWidgetDeactivated,
   setIsDemoWidget,
   setCustomSettings,

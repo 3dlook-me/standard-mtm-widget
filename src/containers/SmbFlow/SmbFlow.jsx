@@ -87,7 +87,11 @@ class SmbFlow extends BaseMobileFlow {
         }
 
         route('/', true);
+
+        return Promise.resolve();
       }
+
+      route('/results', true);
 
       return Promise.resolve();
     } catch (err) {

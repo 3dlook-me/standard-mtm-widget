@@ -44,16 +44,16 @@ export const INITIAL_STATE = {
     loose: null,
   },
 
+  isSoftValidationPresent: false,
+  softValidationRetryCounter: 0,
+
   softValidation: {
-    front: {
-      bodyAreaPercentage: null,
-      legsDistance: null,
-      messages: [],
-    },
-    side: {
-      bodyAreaPercentage: null,
-      messages: [],
-    },
+    looseTop: false,
+    looseBottom: false,
+    looseTopAndBottom: false,
+    wideLegs: false,
+    smallLegs: false,
+    bodyPercentage: false,
   },
 
   hardValidation: {
@@ -94,6 +94,8 @@ export const INITIAL_STATE = {
   photosFromGallery: false,
 
   isSmbFlow: false,
+
+  flowIsPending: false,
   isWidgetDeactivated: false,
   isDemoWidget: false,
 
@@ -260,8 +262,22 @@ export default (state = INITIAL_STATE, action) => {
       };
 
     case CONSTANTS.SET_SOFT_VALIDATION:
+      /* eslint-disable no-case-declarations */
+      const isSoftValidation = action.payload.looseTop
+        || action.payload.looseBottom
+        || action.payload.looseTopAndBottom
+        || action.payload.wideLegs
+        || action.payload.smallLegs
+        || action.payload.bodyPercentage;
+      const { softValidationRetryCounter } = state;
+      /* eslint-enable no-case-declarations */
+
       return {
         ...state,
+        isSoftValidationPresent: isSoftValidation,
+        softValidationRetryCounter: isSoftValidation
+          ? softValidationRetryCounter + 1
+          : softValidationRetryCounter,
         softValidation: {
           ...state.softValidation,
           ...action.payload,
@@ -458,6 +474,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isTableFlowDisabled: action.payload,
+      };
+
+    case CONSTANTS.SET_FLOW_IS_PENDING:
+      return {
+        ...state,
+        flowIsPending: action.payload,
       };
 
     case CONSTANTS.SET_IS_WIDGET_DEACTIVATED:

@@ -1,19 +1,33 @@
 /* eslint class-methods-use-this: off */
-import { h, Component } from 'preact';
+import { Component, h } from 'preact';
 import { connect } from 'react-redux';
+import { route } from 'preact-router';
+import classNames from 'classnames';
 
 import {
   RESULT_SCREEN_ENTER,
   analyticsServiceAsync,
 } from '../../services/analyticsService';
-import { send, objectToUrlParams } from '../../helpers/utils';
-import { gaResultsOnContinue, gaSuccess } from '../../helpers/ga';
-import { BaseMobileFlow, Measurements, Guide } from '../../components';
-import actions from '../../store/actions';
+import {
+  send,
+  objectToUrlParams,
+  getGaEventLabel,
+} from '../../helpers/utils';
+import {
+  gaResultsOnContinue,
+  gaSuccess,
+  gaOnSoftRetakeBtn,
+} from '../../helpers/ga';
+import {
+  Measurements,
+  Guide,
+  SoftValidation,
+} from '../../components';
 import FlowService from '../../services/flowService';
 
 import './Result.scss';
 import successIcon from '../../images/ic_done.svg';
+import actions from '../../store/actions';
 
 /**
  * Results page component.
@@ -50,6 +64,8 @@ class Results extends Component {
       origin,
       setIsHeaderTranslucent,
       token,
+      setFlowIsPending,
+      setProcessingStatus,
       isWidgetDeactivated,
       setIsWidgetDeactivated,
       isMobile,
@@ -65,19 +81,29 @@ class Results extends Component {
       });
     }
 
-    if (!isWidgetDeactivated) {
-      // make request from desktop or mobile
-      if ((isMobile && !isFromDesktopToMobile) || !isMobile) {
-        await this.flow.widgetDeactivate();
-      }
-    }
-
     setIsWidgetDeactivated(false);
 
     send('data', measurements, origin);
 
     gaSuccess(this.getFlowPhoto());
-  };
+
+    if (!isMobile) {
+      this.timer = setInterval(() => {
+        this.flow.get()
+          .then((flowState) => {
+            if (flowState.state.status === 'finished') {
+              return;
+            }
+
+            setFlowIsPending(true);
+            setProcessingStatus('');
+
+            route('/qrcode', true);
+          })
+          .catch((err) => console.log(err));
+      }, 3000);
+    }
+  }
 
   componentWillReceiveProps = async (nextProps) => {
     const { measurements, origin } = nextProps;
@@ -89,6 +115,7 @@ class Results extends Component {
     const { setIsHeaderTranslucent } = this.props;
 
     setIsHeaderTranslucent(false);
+    clearInterval(this.timer);
   }
 
   getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
@@ -99,13 +126,43 @@ class Results extends Component {
       measurementsType: type,
       measurement: index,
     });
-  };
+  }
 
   helpBtnToggle = (status) => {
     const { setHelpBtnStatus } = this.props;
 
     setHelpBtnStatus(status);
   };
+
+  onRetake = async () => {
+    const {
+      addFrontImage,
+      addSideImage,
+      setTaskId,
+      softValidation,
+      isTableFlow,
+    } = this.props;
+
+    await this.flow.updateState({
+      status: 'opened-on-mobile',
+      processStatus: '',
+    });
+
+    if (!softValidation.looseTop && !softValidation.looseBottom
+      && !softValidation.looseTopAndBottom) {
+      addFrontImage(null);
+
+      gaOnSoftRetakeBtn(getGaEventLabel(isTableFlow), 'front');
+    } else {
+      addFrontImage(null);
+      addSideImage(null);
+
+      gaOnSoftRetakeBtn(getGaEventLabel(isTableFlow), 'both');
+    }
+
+    setTaskId(null);
+    route('/upload', true);
+  }
 
   onClick = async () => {
     const {
@@ -146,6 +203,12 @@ class Results extends Component {
     }
 
     if (isMobile) {
+      try {
+        await this.flow.widgetDeactivate();
+      } catch (err) {
+        console.log(err);
+      }
+
       if (measurements && !isSmbFlow && !isDemoWidget) {
         window.location = `${returnUrl}#/?${objectToUrlParams({
           ...measurements,
@@ -160,14 +223,18 @@ class Results extends Component {
       resetState();
       send('close', {}, origin);
     }
-  };
+  }
 
   render() {
     const {
       measurements,
+      isSoftValidationPresent,
+      softValidation,
       units,
       gender,
+      isMobile,
       customSettings,
+      softValidationRetryCounter,
     } = this.props;
 
     const {
@@ -181,44 +248,63 @@ class Results extends Component {
     return (
       <div className="screen screen--result active">
         <div className="screen__content result">
-          {openGuide ? (
-            <Guide
-              gender={gender}
-              measurementsType={measurementsType}
-              measurement={measurement}
-            />
-          ) : null}
+          <div className={classNames('screen__content', 'result', {
+            'result--with-soft-validation': isSoftValidationPresent,
+          })}
+          >
+            {openGuide ? (
+              <Guide
+                gender={gender}
+                measurementsType={measurementsType}
+                measurement={measurement}
+              />
+            ) : null}
 
-          <h2 className="screen__subtitle">
-            <span className="success">Complete</span>
-          </h2>
+            <h2 className="screen__subtitle">
+              <span className="success">Complete</span>
+            </h2>
 
-          {finalScreen === 'measurements' ? (
-            <h3 className="screen__title result__title">your Measurements</h3>
-          ) : null}
+            {finalScreen === 'measurements' ? (
+              <h3 className="screen__title result__title">your Measurements</h3>
+            ) : null}
 
-          {finalScreen === 'measurements' ? (
-            <Measurements
-              measurements={measurements}
-              units={units}
-              openGuide={this.openGuide}
-              helpBtnToggle={this.helpBtnToggle}
-            />
-          ) : null}
+            {(isSoftValidationPresent && !openGuide) ? (
+              <SoftValidation
+                className="result__soft-validation"
+                retake={this.onRetake}
+                units={units}
+                gender={gender}
+                softValidation={softValidation}
+                isDesktop={!isMobile}
+                softValidationRetryCounter={softValidationRetryCounter}
+              />
+            ) : null }
 
-          {finalScreen === 'thanks' ? (
-            <div className="result__thanks">
-              <figure className="result__thanks-icon">
-                <img src={successIcon} alt="success" />
-              </figure>
-              <h3 className="result__thanks-title">Success! You're all set.</h3>
-              <p className="result__thanks-text">
-                We've got your measurements to
-                <br />
-                create your customized wardrobe
-              </p>
-            </div>
-          ) : null}
+            {finalScreen === 'measurements' ? (
+              <Measurements
+                measurements={measurements}
+                units={units}
+                openGuide={this.openGuide}
+                helpBtnToggle={this.helpBtnToggle}
+                isSoftValidation={isSoftValidationPresent}
+                isCustomMeasurements={customSettings.is_custom_output_measurements}
+              />
+            ) : null}
+
+            {finalScreen === 'thanks' ? (
+              <div className="result__thanks">
+                <figure className="result__thanks-icon">
+                  <img src={successIcon} alt="success" />
+                </figure>
+                <h3 className="result__thanks-title">Success! You're all set.</h3>
+                <p className="result__thanks-text">
+                  We've got your measurements to
+                  <br />
+                  create your customized wardrobe
+                </p>
+              </div>
+            ) : null}
+          </div>
         </div>
         <div className="screen__footer">
           <button className="button" type="button" onClick={this.onClick}>

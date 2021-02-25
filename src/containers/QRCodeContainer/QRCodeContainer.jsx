@@ -36,10 +36,12 @@ class QRCodeContainer extends Component {
   constructor(props) {
     super(props);
 
+    const { flowIsPending } = props;
+
     this.init(props);
 
     this.state = {
-      isPending: false,
+      isPending: !!flowIsPending,
       isSMSPending: false,
       isSMSSuccess: false,
 
@@ -62,7 +64,13 @@ class QRCodeContainer extends Component {
       phoneCountry,
       phoneUserPart,
       phoneNumber,
+      flowIsPending,
     } = this.props;
+
+    if (flowIsPending) {
+      return;
+    }
+
     const mobileFlowUrl = `${window.location.origin}${window.location.pathname}#/mobile/${flowId}`;
 
     analyticsService({
@@ -151,7 +159,7 @@ class QRCodeContainer extends Component {
       setPhoneUserPart(number);
       setPhoneNumber(phoneNumber);
     }
-  };
+  }
 
   async init(props) {
     const {
@@ -159,6 +167,7 @@ class QRCodeContainer extends Component {
       flowId,
       isMobile,
       setMeasurements,
+      setSoftValidation,
       setProcessingStatus,
       settings,
       gender,
@@ -171,6 +180,7 @@ class QRCodeContainer extends Component {
       bodyPart,
       returnUrl,
       productId,
+      setFlowIsPending,
     } = props;
 
     if (token && flowId && !this.api && !this.flow) {
@@ -235,8 +245,13 @@ class QRCodeContainer extends Component {
               this.lastActiveDate = new Date(flowState.updated);
 
               if (flowState.state.status === 'finished') {
-                const { measurements } = flowState.state;
+                const {
+                  measurements,
+                  softValidation,
+                } = flowState.state;
+                setSoftValidation(softValidation);
                 setMeasurements(measurements);
+                setFlowIsPending(false);
 
                 route('/results', true);
               }
@@ -272,11 +287,11 @@ class QRCodeContainer extends Component {
         }, () => clearTimeout(timer));
       }, 3000);
     });
-  };
+  }
 
   showQRCodeHelp = () => {
     route('/qrcode-help');
-  };
+  }
 
   sendSMS = () => {
     const { phoneNumber, qrCodeUrl } = this.state;
@@ -335,7 +350,7 @@ class QRCodeContainer extends Component {
           alert(err.messaage);
         });
     }
-  };
+  }
 
   resendTimer = () => {
     const { resendTime } = this.state;
@@ -367,7 +382,7 @@ class QRCodeContainer extends Component {
     if (!isPending) {
       window.location.reload();
     }
-  };
+  }
 
   render() {
     const {
@@ -416,43 +431,14 @@ class QRCodeContainer extends Component {
             {isShortUrlFetching ? <Loader /> : false}
           </div>
 
-          <button
-            className={classNames('scan-qrcode__btn', {
-              'scan-qrcode__btn--copied': isCopied,
-            })}
-            disabled={isShortUrlFetching}
-            type="button"
-            data-clipboard-text={qrCopyUrl}
-            onClick={this.copyUrl}
-          >
-            {!isCopied ? 'Copy link' : 'Link copied'}
-            <svg
-              width="11px"
-              height="14px"
-              viewBox="0 0 11 14"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+          <button className={classNames('scan-qrcode__btn', { 'scan-qrcode__btn--copied': isCopied })} disabled={isShortUrlFetching} type="button" data-clipboard-text={qrCopyUrl} onClick={this.copyUrl}>
+            {(!isCopied) ? 'Copy link' : 'Link copied'}
+            <svg width="11px" height="14px" viewBox="0 0 11 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                <g
-                  className="qrcode__btn-svg"
-                  transform="translate(-325.000000, -341.000000)"
-                  stroke="#396EC5"
-                  strokeWidth="1.3"
-                >
+                <g className="qrcode__btn-svg" transform="translate(-325.000000, -341.000000)" stroke="#396EC5" strokeWidth="1.3">
                   <g transform="translate(326.000000, 342.000000)">
-                    <path
-                      d="M1.27272727,10 C0.569819409,10 0,9.36040679 0,8.57142857 L0,1.42857143 C0,0.639593215 0.569819409,0 1.27272727,0 L1.27272727,0 L5.72727273,0 C6.43018059,0 7,0.639593215 7,1.42857143 L7,1.42857143"
-                      id="Path"
-                    />
-                    <rect
-                      id="Rectangle"
-                      x="2.65"
-                      y="2.65"
-                      width="6.7"
-                      height="9.7"
-                      rx="2"
-                    />
+                    <path d="M1.27272727,10 C0.569819409,10 0,9.36040679 0,8.57142857 L0,1.42857143 C0,0.639593215 0.569819409,0 1.27272727,0 L1.27272727,0 L5.72727273,0 C6.43018059,0 7,0.639593215 7,1.42857143 L7,1.42857143" id="Path" />
+                    <rect id="Rectangle" x="2.65" y="2.65" width="6.7" height="9.7" rx="2" />
                   </g>
                 </g>
               </g>

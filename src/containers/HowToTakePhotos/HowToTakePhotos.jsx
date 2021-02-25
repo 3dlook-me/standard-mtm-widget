@@ -90,7 +90,7 @@ class HowToTakePhotos extends Component {
 
       mobileFlowStatusUpdate(this.flow, flowState);
     }
-  };
+  }
 
   componentWillUnmount = () => {
     const { token, isTableFlow } = this.props;
@@ -118,7 +118,7 @@ class HowToTakePhotos extends Component {
     }
 
     this.$videoProgress.current.style.flexBasis = `${percent}%`;
-  };
+  }
 
   restartVideo = () => {
     const { token, isTableFlow } = this.props;
@@ -160,7 +160,7 @@ class HowToTakePhotos extends Component {
         videoText: 'Please turn up the volume and follow the voice instructions.',
       });
     }
-  };
+  }
 
   setFriendFlowVideoText = (time) => {
     if (time < 3) {
@@ -172,13 +172,13 @@ class HowToTakePhotos extends Component {
         videoText: 'For the side photo turn to your left.',
       });
     }
-  };
+  }
 
   onVideoLoad = () => {
     this.setState({
       isVideoLoaded: true,
     });
-  };
+  }
 
   onClickNext = () => {
     if (this.props.isTableFlow) {
@@ -186,7 +186,7 @@ class HowToTakePhotos extends Component {
     }
 
     gaOnClickNextHowTakePhotos();
-  };
+  }
 
   render() {
     const { isTableFlow, gender } = this.props;

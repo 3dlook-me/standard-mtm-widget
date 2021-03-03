@@ -792,7 +792,7 @@ class Upload extends Component {
           softValidation.looseTopAndBottom = top.code === 't2' && bottom.code === 'b1';
         }
 
-        softValidation.wideLegs = frontParams.legs_distance > 15;
+        softValidation.wideLegs = frontParams.legs_distance > 20;
         softValidation.smallLegs = frontParams.legs_distance < 2;
         softValidation.bodyPercentage = frontParams.body_area_percentage < 0.5;
       }

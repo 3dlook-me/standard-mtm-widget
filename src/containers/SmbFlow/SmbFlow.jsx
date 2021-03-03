@@ -15,7 +15,6 @@ import { BaseMobileFlow, Loader } from '../../components';
 class SmbFlow extends BaseMobileFlow {
   state = {
     hasActiveSubscription: true,
-    isWidgetArchived: false,
   };
 
   componentWillUnmount() {
@@ -125,13 +124,6 @@ class SmbFlow extends BaseMobileFlow {
         return Promise.resolve();
       }
 
-      if (err.response.status === 401
-        && err.response.data.detail === 'Widget is archived.') {
-        this.setState({ isWidgetArchived: true });
-
-        return Promise.resolve();
-      }
-
       if (err && err.response && err.response.data) {
         console.error(err.response.data.detail);
       } else {
@@ -151,10 +143,10 @@ class SmbFlow extends BaseMobileFlow {
   }
 
   render() {
-    const { hasActiveSubscription, isWidgetArchived } = this.state;
+    const { hasActiveSubscription } = this.state;
     const isDesktop = !isMobileDevice();
 
-    if (!hasActiveSubscription || isWidgetArchived) {
+    if (!hasActiveSubscription) {
       return (
         <div className="screen active">
           <div className="tutorial__desktop-msg">

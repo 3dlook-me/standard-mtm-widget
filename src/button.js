@@ -54,7 +54,7 @@ class SaiaMTMButton {
       container: '.saia-widget-container',
       publicKey: '',
       widgetUrl: (typeof WIDGET_HOST !== 'undefined') ? WIDGET_HOST : '',
-      returnUrl: `${window.location.origin}${window.location.pathname}`,
+      returnUrl: `${window.location.origin}${window.location.pathname}${window.location.search}`,
       returnUrlDesktop: false,
       buttonTitle: 'GET MEASURED',
       defaultValues: {

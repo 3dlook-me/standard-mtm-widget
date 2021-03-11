@@ -97,6 +97,7 @@ export const INITIAL_STATE = {
 
   flowIsPending: false,
   isWidgetDeactivated: false,
+  isWidgetArchived: false,
   isDemoWidget: false,
 
   customSettings: {
@@ -505,6 +506,12 @@ export default (state = INITIAL_STATE, action) => {
           is_custom_output_measurements: action.payload.is_custom_output_measurements,
           final_screen: action.payload.final_screen,
         },
+      };
+
+    case CONSTANTS.SET_IS_WIDGET_ARCHIVED:
+      return {
+        ...state,
+        isWidgetArchived: action.payload,
       };
 
     default:

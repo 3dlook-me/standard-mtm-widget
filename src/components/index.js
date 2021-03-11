@@ -20,3 +20,4 @@ export * from './SoftValidation';
 export * from './SoftValidationItem';
 export * from './Requirements';
 export * from './PolicyAgreement';
+export * from './Msg';

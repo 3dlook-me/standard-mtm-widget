@@ -11,7 +11,11 @@ import { updateInternetStatus, browserDetect, parseGetParams } from './helpers/u
 import analyticsService, {
   WIDGET_OPEN,
 } from './services/analyticsService';
-import { Header, Help } from './components';
+import {
+  Header,
+  Help,
+  Msg,
+} from './components';
 import {
   Welcome,
   Email,
@@ -99,6 +103,7 @@ class App extends Component {
             <MobileFlow path="/mobile/:id" />
             <SmbFlow path="/smb/:id" />
             <Browser path="/browser" />
+            <Msg path="/contact-your-dealer" />
           </Router>
         </div>
       </Provider>

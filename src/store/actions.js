@@ -60,6 +60,7 @@ export const CONSTANTS = {
   SET_IS_WIDGET_DEACTIVATED: 'SET_IS_WIDGET_DEACTIVATED',
   SET_IS_DEMO_WIDGET: 'SET_IS_DEMO_WIDGET',
   SET_CUSTOM_SETTINGS: 'SET_CUSTOM_SETTINGS',
+  SET_IS_WIDGET_ARCHIVED: 'SET_IS_WIDGET_ARCHIVED',
 };
 
 /**
@@ -654,6 +655,16 @@ export const setCustomSettings = (settings) => ({
   payload: settings,
 });
 
+/**
+ * Set is widget archived
+ *
+ * @param {boolean} isArchived - is archived
+ */
+export const setIsWidgetArchived = (isArchived) => ({
+  type: CONSTANTS.SET_IS_WIDGET_ARCHIVED,
+  payload: isArchived,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -713,4 +724,5 @@ export default {
   setIsWidgetDeactivated,
   setIsDemoWidget,
   setCustomSettings,
+  setIsWidgetArchived,
 };

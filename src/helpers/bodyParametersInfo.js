@@ -454,6 +454,16 @@ export const LINEAR_PARAMS = [
     imageURI: '/linear/waist_to_knees.jpg',
   },
   {
+    paramName: 'upper_knee_to_ankle',
+    units: 'cm',
+    name: 'Upper knee girth to ankle girth',
+    paramGroup: 'front_params',
+    source: '3DLOOK',
+    equipment: 'Sliding calliper',
+    definition: 'The measurement is taken starting from 3" above the knee central point to the leg\'s ankle bone.',
+    imageURI: '/linear/upper_knee_to_ankle.jpg',
+  },
+  {
     paramName: 'nape_to_waist_centre_back',
     units: 'cm',
     name: 'Back neck point to waist',

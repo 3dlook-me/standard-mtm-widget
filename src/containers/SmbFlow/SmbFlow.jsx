@@ -32,7 +32,6 @@ class SmbFlow extends BaseMobileFlow {
         setFlowState,
         setIsSmbFlow,
         setIsFromDesktopToMobile,
-        setSource,
         setReturnUrl,
       } = this.props;
 
@@ -41,7 +40,6 @@ class SmbFlow extends BaseMobileFlow {
       await super.componentDidMount();
 
       setIsFromDesktopToMobile(false);
-      setSource('dashboard');
 
       if (!isMobileDevice()) {
         return Promise.resolve();

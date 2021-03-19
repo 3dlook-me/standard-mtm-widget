@@ -33,6 +33,7 @@ class SmbFlow extends BaseMobileFlow {
         setIsSmbFlow,
         setIsFromDesktopToMobile,
         setReturnUrl,
+        setSource,
       } = this.props;
 
       window.addEventListener('online', this.pageReload);
@@ -76,6 +77,7 @@ class SmbFlow extends BaseMobileFlow {
         if (matches.source === 'demo') {
           const { setIsDemoWidget } = this.props;
 
+          setSource('demo');
           setIsDemoWidget(true);
 
           setInterval(() => {

@@ -31,6 +31,7 @@ class SmbFlow extends BaseMobileFlow {
         flowState,
         setFlowState,
         setIsSmbFlow,
+        setIsSmbQRFlow,
         setIsFromDesktopToMobile,
         setReturnUrl,
         setSource,
@@ -54,6 +55,10 @@ class SmbFlow extends BaseMobileFlow {
 
       if (matches.source !== 'demo') {
         setIsSmbFlow(true);
+      }
+
+      if (matches.source === 'qr') {
+        setIsSmbQRFlow(true);
       }
 
       const flowStateData = await this.flow.get();

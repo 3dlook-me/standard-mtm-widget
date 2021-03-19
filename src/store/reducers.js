@@ -94,6 +94,7 @@ export const INITIAL_STATE = {
   photosFromGallery: false,
 
   isSmbFlow: false,
+  isSmbQRFlow: false,
 
   flowIsPending: false,
   isWidgetDeactivated: false,
@@ -457,6 +458,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isSmbFlow: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_SMB_QR_FLOW:
+      return {
+        ...state,
+        isSmbQRFlow: action.payload,
       };
 
     case CONSTANTS.SET_TASK_ID:

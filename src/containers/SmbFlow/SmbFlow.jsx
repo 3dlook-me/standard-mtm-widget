@@ -77,7 +77,7 @@ class SmbFlow extends BaseMobileFlow {
         if (matches.source === 'demo') {
           const { setIsDemoWidget } = this.props;
 
-          setSource('demo');
+          setSource('dashboard');
           setIsDemoWidget(true);
 
           setInterval(() => {

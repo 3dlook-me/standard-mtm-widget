@@ -53,6 +53,7 @@ export const CONSTANTS = {
   SET_PHONE_COUNTRY: 'SET_PHONE_COUNTRY',
   SET_PHONE_USER_PART: 'SET_PHONE_USER_PART',
   SET_IS_SMB_FLOW: 'SET_IS_SMB_FLOW',
+  SET_IS_SMB_QR_FLOW: 'SET_IS_SMB_QR_FLOW',
   SET_IS_TABLE_FLOW: 'SET_IS_TABLE_FLOW',
   SET_IS_TABLE_FLOW_DISABLED: 'SET_IS_TABLE_FLOW_DISABLED',
   SET_TASK_ID: 'SET_TASK_ID',
@@ -574,11 +575,21 @@ export const setPhoneUserPart = (phoneUserPart) => ({
 /**
  * Set is SMB flow
  *
- * @param {string} isSmbFlow - phone user part
+ * @param {string} isSmbFlow - is smb flow
  */
 export const setIsSmbFlow = (isSmbFlow) => ({
   type: CONSTANTS.SET_IS_SMB_FLOW,
   payload: isSmbFlow,
+});
+
+/**
+ * Set is SMB QR flow
+ *
+ * @param {string} isSmbQRFlow - is smb qr flow
+ */
+export const setIsSmbQRFlow = (isSmbQRFlow) => ({
+  type: CONSTANTS.SET_IS_SMB_QR_FLOW,
+  payload: isSmbQRFlow,
 });
 
 
@@ -715,6 +726,7 @@ export default {
   setPhoneCountry,
   setPhoneUserPart,
   setIsSmbFlow,
+  setIsSmbQRFlow,
   setIsTableFlow,
   setIsTableFlowDisabled,
   addFrontDeviceCoordinates,

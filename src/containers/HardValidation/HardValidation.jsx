@@ -103,23 +103,23 @@ class HardValidation extends Component {
     if (front) {
       if (front === 'Side photo in the front') {
         sideInTheFront = true;
-        topMessageFront = 'It seems you uploaded side photo instead of the front one';
-        tipMessageFront = 'Please upload the front photo.';
+        topMessageFront = 'Oops! It looks like you took the side photo instead of the front one';
+        tipMessageFront = 'Please retake the front photo! ';
       } else if (front === 'Can\'t detect the human body') {
         cannotDetectBodyFront = true;
-        topMessageFront = 'We can’t detect your body on the front photo';
-        tipMessageFront = 'Please retake the front photo. Make sure your whole body is present on the photo.';
+        topMessageFront = 'We don\'t seem to be able to detect your body on the front photo';
+        tipMessageFront = 'Please retake the front photo and ensure your whole body can be seen in the photo! ';
       } else if (front === 'The body is not full') {
         bodyIsNotFullFront = true;
-        topMessageFront = 'Your full body should be present on the front photo';
-        tipMessageFront = 'Please retake the front photo. Make sure your whole body is present and the pose is correct.';
+        topMessageFront = 'Sorry! We need to be able to detect your entire body on the front photo!';
+        tipMessageFront = 'Please retake the front photo and ensure your entire body can be seen in the photo, and follow the pose! ';
       } else if (front.indexOf('The pose is wrong, check: ') !== -1) {
         wrongFrontPose = true;
 
         wrongPartsFront = front.replace('The pose is wrong, check: ', '');
         wrongPartsFront = wrongPartsFront.replace(/_/g, ' ');
-        topMessageFront = `The pose on the front photo is a bit off, we couldn’t detect your ${wrongPartsFront}`;
-        tipMessageFront = `Make sure your ${wrongPartsFront} is present on a photo`;
+        topMessageFront = `Oh no! We were not able to detect your ${wrongPartsFront} on the side photo`;
+        tipMessageFront = `Remember, your ${wrongPartsFront} must be seen in the photo! `;
       }
     }
 
@@ -135,23 +135,23 @@ class HardValidation extends Component {
     if (side) {
       if (side === 'Front photo in the side') {
         sideInTheSide = true;
-        topMessageSide = 'It seems you uploaded front photo instead of the side one';
-        tipMessageSide = 'Please upload the side photo.';
+        topMessageSide = 'Oops! It looks like you took the front photo instead of the side one';
+        tipMessageSide = 'Please retake the side photo! ';
       } else if (side === 'Can\'t detect the human body') {
         cannotDetectBodySide = true;
-        topMessageSide = 'We can’t detect your body on the side photo';
-        tipMessageSide = 'Please retake the side photo. Make sure your whole body is present on the photo.';
+        topMessageSide = 'We don\'t seem to be able to detect your body on the side photo';
+        tipMessageSide = 'Please retake the side photo and ensure your whole body can be seen in the photo! ';
       } else if (side === 'The body is not full') {
         bodyIsNotFullSide = true;
-        topMessageSide = 'Your full body should be present on the side photo';
-        tipMessageSide = 'Please retake the side photo. Make sure your whole body is present and the pose is correct.';
+        topMessageSide = 'Sorry! We need to be able to detect your entire body on the side photo!';
+        tipMessageSide = 'Please retake the side photo and ensure your entire body can be seen in the photo, and follow the pose! ';
       } else if (side.indexOf('The pose is wrong, check: ') !== -1) {
         wrongSidePose = true;
 
         wrongPartsSide = side.replace('The pose is wrong, check: ', '');
         wrongPartsSide = wrongPartsSide.replace(/_/g, ' ');
-        topMessageSide = `The pose on the side photo is a bit off, we couldn’t detect your ${wrongPartsSide}`;
-        tipMessageSide = `Make sure your ${wrongPartsSide} is present on a photo`;
+        topMessageSide = `Oh no! We were not able to detect your ${wrongPartsSide} on the side photo`;
+        tipMessageSide = `Remember, your ${wrongPartsSide} must be seen in the photo! `;
       }
     }
 

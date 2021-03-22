@@ -30,6 +30,11 @@ import actions from '../../store/actions';
  */
 class Header extends Component {
   componentDidMount() {
+    const { flowId, token } = this.props;
+
+    this.flow = new FlowService(token);
+    this.flow.setFlowId(flowId);
+
     if (isMobileDevice()) {
       document.body.classList.add('mobile-device');
     }
@@ -72,25 +77,35 @@ class Header extends Component {
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
 
     if (isWidgetDeactivated || !/result/i.test(window.location.hash)) {
-      await analyticsServiceAsync({
-        uuid,
-        event: WIDGET_CLOSE,
-      });
+      try {
+        await analyticsServiceAsync({
+          uuid,
+          event: WIDGET_CLOSE,
+        });
+      } catch (err) {
+        console.log(err);
+      }
     }
 
     if (isMobile) {
       const isMeasurements = Object.entries(measurements.front_params).length !== 0;
-      // if (confirm('Are you sure that you want to close widget? ')) {
+
+      if (window.location.hash.includes('results')) {
+        try {
+          await this.flow.widgetDeactivate();
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
       if (isMeasurements && !isSmbFlow && !isDemoWidget) {
         window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
       } else {
         window.location = returnUrl;
       }
-      // }
-    } else {
-      resetState();
-      send('close', {}, origin);
     }
+    resetState();
+    send('close', {}, origin);
   };
 
   /**

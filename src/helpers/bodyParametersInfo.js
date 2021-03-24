@@ -454,6 +454,16 @@ export const LINEAR_PARAMS = [
     imageURI: '/linear/waist_to_knees.jpg',
   },
   {
+    paramName: 'abdomen_to_upper_knee_length',
+    units: 'cm',
+    name: 'Abdomen to upper knee length',
+    paramGroup: 'front_params',
+    source: '3DLOOK',
+    equipment: 'Sliding calliper',
+    definition: 'Vertical distance from the abdomen level to the upper knee level.',
+    imageURI: '/linear/abdomen_to_upper_knee_length.jpg',
+  },
+  {
     paramName: 'upper_knee_to_ankle',
     units: 'cm',
     name: 'Upper knee girth to ankle girth',

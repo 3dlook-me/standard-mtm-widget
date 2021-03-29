@@ -216,7 +216,11 @@ class SaiaMTMButton {
       this.modal.classList.toggle('active');
     }
 
-    let url = `${this.defaults.widgetUrl}?key=${uuid}#/?origin=${window.location.origin}&returnUrl=${this.defaults.returnUrl}&returnUrlDesktop=${this.defaults.returnUrlDesktop}`;
+    let url = `${this.defaults.widgetUrl}?key=${uuid}#/?origin=${window.location.origin}&returnUrl=${this.defaults.returnUrl}`;
+
+    if (this.defaults.returnUrlDesktop) {
+      url += `&returnUrlDesktop=${this.defaults.returnUrlDesktop}`;
+    }
 
     if (this.defaults.photosFromGallery) {
       url += `&photosFromGallery=${this.defaults.photosFromGallery}`;

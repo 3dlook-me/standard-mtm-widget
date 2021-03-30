@@ -157,7 +157,7 @@ class SmbFlow extends BaseMobileFlow {
   checkSource = async (widget) => {
     const { setIsSmbQRFlow } = this.props;
 
-    await fetch(`https://saia-test.3dlook.me/api/v2/measurements/mtm-clients/${widget.mtm_client}`, {
+    await fetch(`${API_HOST}/api/v2/measurements/mtm-clients/${widget.mtm_client}`, {
       headers: {
         Authorization: `UUID ${widget.uuid}`,
       },

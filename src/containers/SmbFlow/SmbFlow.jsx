@@ -57,11 +57,9 @@ class SmbFlow extends BaseMobileFlow {
         setIsSmbFlow(true);
       }
 
-      if (matches.source === 'qr') {
-        setIsSmbQRFlow(true);
-      }
-
       const flowStateData = await this.flow.get();
+
+      await this.checkSource(flowStateData);
 
       setReturnUrl(flowStateData.widget_settings.redirect_link || 'https://3dlook.me/mobile-tailor/');
 
@@ -153,6 +151,23 @@ class SmbFlow extends BaseMobileFlow {
 
   pageReload = () => {
     window.location.reload();
+  }
+
+  // TODO remove after back refactor and handle source from widget
+  checkSource = async (widget) => {
+    const { setIsSmbQRFlow } = this.props;
+
+    await fetch(`https://saia-test.3dlook.me/api/v2/measurements/mtm-clients/${widget.mtm_client}`, {
+      headers: {
+        Authorization: `UUID ${widget.uuid}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.source === 'qr') {
+          setIsSmbQRFlow(true);
+        }
+      });
   }
 
   render() {

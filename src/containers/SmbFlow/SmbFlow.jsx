@@ -159,7 +159,7 @@ class SmbFlow extends BaseMobileFlow {
 
     if (!widget.mtm_client) return;
 
-    await fetch(`${API_HOST}/api/v2/measurements/mtm-clients/${widget.mtm_client}`, {
+    await fetch(`${API_HOST}/api/v2/measurements/mtm-clients/${widget.mtm_client}/`, {
       headers: {
         Authorization: `UUID ${widget.uuid}`,
       },

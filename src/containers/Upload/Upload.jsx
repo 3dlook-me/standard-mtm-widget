@@ -434,7 +434,6 @@ class Upload extends Component {
       const mtmClientParams = {
         widgetId,
         unit: units,
-        source,
         ...(email && { email }),
         ...(phoneNumber && { phone: phoneNumber }),
         ...(firstName && { firstName }),
@@ -449,7 +448,10 @@ class Upload extends Component {
         setProcessingStatus('Initiating Profile Creation');
 
         if (!mtmClientIdFromState) {
-          mtmClientId = await this.api.mtmClient.create(mtmClientParams);
+          mtmClientId = await this.api.mtmClient.create({
+            ...mtmClientParams,
+            source,
+          });
           setMtmClientId(mtmClientId);
         } else {
           mtmClientId = mtmClientIdFromState;

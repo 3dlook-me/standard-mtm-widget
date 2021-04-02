@@ -288,6 +288,7 @@ class Results extends Component {
                 helpBtnToggle={this.helpBtnToggle}
                 isSoftValidation={isSoftValidationPresent}
                 isCustomMeasurements={customSettings.is_custom_output_measurements}
+                isOpenGuide={openGuide}
               />
             ) : null}
 

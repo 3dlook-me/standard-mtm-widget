@@ -68,6 +68,7 @@ class Measurements extends Component {
       measurements,
       isSoftValidation,
       isCustomMeasurements,
+      isOpenGuide
     } = this.props;
     let parameters = [VOLUMETRIC_PARAMS, LINEAR_PARAMS];
     let groups = ['Volumetric measurements', 'Linear measurements'];
@@ -84,7 +85,7 @@ class Measurements extends Component {
     return (
       <div
         className={cn('measurements__wrapper', {
-          'measurements__wrapper--custom-height': isSoftValidation && isCustomMeasurements,
+          'measurements__wrapper--custom-height': isSoftValidation && isCustomMeasurements && !isOpenGuide,
         })}
       >
 

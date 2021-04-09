@@ -59,7 +59,11 @@ class SmbFlow extends BaseMobileFlow {
 
       const flowStateData = await this.flow.get();
 
-      await this.checkSource(flowStateData);
+      if (matches.source === 'qr') {
+        setIsSmbQRFlow(true);
+      }
+
+      // await this.checkSource(flowStateData);
 
       setReturnUrl(flowStateData.widget_settings.redirect_link || 'https://3dlook.me/mobile-tailor/');
 

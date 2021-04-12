@@ -132,11 +132,11 @@ export const gaOnClickReplayAlone = () => ga('send', {
 });
 
 /* Take front photo - friend */
-export const gaOnClickLetsStartFrontFriend = () => ga('send', {
+export const gaOnClickLetsStartFrontFriend = (validationType) => ga('send', {
   hitType: 'event',
   eventCategory: 'take_front',
   eventAction: 'front',
-  eventLabel: 'friend',
+  eventLabel: `friend ${validationType}`,
 });
 export const gaOpenCameraFrontPhoto = (eventLabel) => ga('send', {
   hitType: 'event',
@@ -146,11 +146,11 @@ export const gaOpenCameraFrontPhoto = (eventLabel) => ga('send', {
 });
 
 /* Take side photo - friend */
-export const gaOnClickLetsStartSideFriend = () => ga('send', {
+export const gaOnClickLetsStartSideFriend = (validationType) => ga('send', {
   hitType: 'event',
   eventCategory: 'take_front',
   eventAction: 'side',
-  eventLabel: 'friend',
+  eventLabel: `friend ${validationType}`,
 });
 export const gaOpenCameraSidePhoto = (eventLabel) => ga('send', {
   hitType: 'event',
@@ -160,17 +160,18 @@ export const gaOpenCameraSidePhoto = (eventLabel) => ga('send', {
 });
 
 /* Requirements */
-export const gaOnClickLetsStartRequirements = () => ga('send', {
+export const gaOnClickLetsStartRequirements = (validationType) => ga('send', {
   hitType: 'event',
   eventCategory: 'alone_requirements',
   eventAction: 'continue',
-  eventLabel: 'alone',
+  eventLabel: `alone ${validationType}`,
 });
-export const gaOnClickDoneRequirements = () => ga('send', {
+
+export const gaOnClickDoneRequirements = (validationType) => ga('send', {
   hitType: 'event',
   eventCategory: 'alone_sound_check',
   eventAction: 'continue',
-  eventLabel: 'alone',
+  eventLabel: `alone ${validationType}`,
 });
 
 /* Result */
@@ -258,4 +259,26 @@ export const gaChangeBrowserClose = (browser) => ga('send', {
   eventCategory: 'change_browser',
   eventAction: 'close_popup',
   eventLabel: `continue_in_${browser}`,
+});
+
+export const gaOnSoftRetakeBtn = (eventLabel, type) => ga('send', {
+  hitType: 'event',
+  eventCategory: 'photo_error_soft',
+  eventAction: `retake_${type}`,
+  eventLabel,
+});
+
+export const gaTakePhotoFriendMode = (photoType, validationType) => ga('send', {
+  hitType: 'event',
+  eventCategory: 'camera',
+  eventAction: `${photoType}_photo`,
+  eventLabel: `friend ${validationType}`,
+});
+
+// photoType - front/side
+export const gaTakePhotoAloneMode = (photoType, validationType) => ga('send', {
+  hitType: 'event',
+  eventCategory: 'camera',
+  eventAction: `${photoType}_photo`,
+  eventLabel: `alone ${validationType}`,
 });

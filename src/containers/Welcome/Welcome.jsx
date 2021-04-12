@@ -205,13 +205,20 @@ class Welcome extends Component {
    * On next screen event handler
    */
   onNextScreen = async () => {
-    const { matches, token, customSettings } = this.props;
     gaWelcomeOnContinue();
 
-    const { isSmbFlow, isDemoWidget } = this.props;
+    const {
+      matches,
+      token,
+      customSettings,
+      isSmbFlow,
+      isDemoWidget,
+      isSmbQRFlow,
+    } = this.props;
+
     let routeUrl;
 
-    if (isSmbFlow || isDemoWidget) {
+    if ((isSmbFlow && !isSmbQRFlow) || isDemoWidget) {
       routeUrl = customSettings.gender !== 'all' ? '/height' : 'gender';
     } else {
       routeUrl = '/email';

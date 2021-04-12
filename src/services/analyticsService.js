@@ -1,20 +1,35 @@
 import axios from 'axios';
+import { route } from 'preact-router';
+import { store } from '../store';
+import { setIsWidgetArchived } from '../store/actions';
 
-export default ({ uuid, event, data = {} }) =>
-  axios.post(`${API_HOST}/api/v2/persons/widget/${uuid}/events/`, {
-    name: event,
-    data,
-  }, {
-    headers: { Authorization: `UUID ${uuid}` },
-  });
+export default ({ uuid, event, data = {} }) => axios.post(`${API_HOST}/api/v2/persons/widget/${uuid}/events/`, {
+  name: event,
+  data,
+}, {
+  headers: { Authorization: `UUID ${uuid}` },
+}).catch((err) => {
+  // TODO refactor: make react-error-boundary component and outside analit service
+  if (err && err.response && err.response.data.detail === 'Widget is archived.') {
+    // store.dispatch(setIsWidgetArchived(true));
 
-export const analyticsServiceAsync = async ({ uuid, event, data = {} }) =>
-  await axios.post(`${API_HOST}/api/v2/persons/widget/${uuid}/events/`, {
-    name: event,
-    data,
-  }, {
-    headers: { Authorization: `UUID ${uuid}` },
-  });
+    route('/contact-your-dealer', true);
+  }
+});
+
+export const analyticsServiceAsync = async ({ uuid, event, data = {} }) => await axios.post(`${API_HOST}/api/v2/persons/widget/${uuid}/events/`, {
+  name: event,
+  data,
+}, {
+  headers: { Authorization: `UUID ${uuid}` },
+}).catch((err) => {
+  // TODO refactor: make react-error-boundary component and outside analit service
+  if (err && err.response && err.response.data.detail === 'Widget is archived.') {
+    // store.dispatch(setIsWidgetArchived(true));
+
+    route('/contact-your-dealer', true);
+  }
+});
 
 // TODO Common events
 export const FAQ_PAGE_OPEN = 'FAQ_PAGE_OPEN';

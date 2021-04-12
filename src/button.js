@@ -54,7 +54,7 @@ class SaiaMTMButton {
       container: '.saia-widget-container',
       publicKey: '',
       widgetUrl: (typeof WIDGET_HOST !== 'undefined') ? WIDGET_HOST : '',
-      returnUrl: `${window.location.origin}${window.location.pathname}`,
+      returnUrl: `${window.location.origin}${window.location.pathname}${window.location.search}`,
       returnUrlDesktop: false,
       buttonTitle: 'GET MEASURED',
       defaultValues: {
@@ -216,7 +216,11 @@ class SaiaMTMButton {
       this.modal.classList.toggle('active');
     }
 
-    let url = `${this.defaults.widgetUrl}?key=${uuid}#/?origin=${window.location.origin}&returnUrl=${this.defaults.returnUrl}&returnUrlDesktop=${this.defaults.returnUrlDesktop}`;
+    let url = `${this.defaults.widgetUrl}?key=${uuid}#/?origin=${window.location.origin}&returnUrl=${this.defaults.returnUrl}`;
+
+    if (this.defaults.returnUrlDesktop) {
+      url += `&returnUrlDesktop=${this.defaults.returnUrlDesktop}`;
+    }
 
     if (this.defaults.photosFromGallery) {
       url += `&photosFromGallery=${this.defaults.photosFromGallery}`;

@@ -53,12 +53,15 @@ export const CONSTANTS = {
   SET_PHONE_COUNTRY: 'SET_PHONE_COUNTRY',
   SET_PHONE_USER_PART: 'SET_PHONE_USER_PART',
   SET_IS_SMB_FLOW: 'SET_IS_SMB_FLOW',
+  SET_IS_SMB_QR_FLOW: 'SET_IS_SMB_QR_FLOW',
   SET_IS_TABLE_FLOW: 'SET_IS_TABLE_FLOW',
   SET_IS_TABLE_FLOW_DISABLED: 'SET_IS_TABLE_FLOW_DISABLED',
   SET_TASK_ID: 'SET_TASK_ID',
+  SET_FLOW_IS_PENDING: 'SET_FLOW_IS_PENDING',
   SET_IS_WIDGET_DEACTIVATED: 'SET_IS_WIDGET_DEACTIVATED',
   SET_IS_DEMO_WIDGET: 'SET_IS_DEMO_WIDGET',
   SET_CUSTOM_SETTINGS: 'SET_CUSTOM_SETTINGS',
+  SET_IS_WIDGET_ARCHIVED: 'SET_IS_WIDGET_ARCHIVED',
 };
 
 /**
@@ -572,11 +575,21 @@ export const setPhoneUserPart = (phoneUserPart) => ({
 /**
  * Set is SMB flow
  *
- * @param {string} isSmbFlow - phone user part
+ * @param {string} isSmbFlow - is smb flow
  */
 export const setIsSmbFlow = (isSmbFlow) => ({
   type: CONSTANTS.SET_IS_SMB_FLOW,
   payload: isSmbFlow,
+});
+
+/**
+ * Set is SMB QR flow
+ *
+ * @param {string} isSmbQRFlow - is smb qr flow
+ */
+export const setIsSmbQRFlow = (isSmbQRFlow) => ({
+  type: CONSTANTS.SET_IS_SMB_QR_FLOW,
+  payload: isSmbQRFlow,
 });
 
 
@@ -611,6 +624,16 @@ export const setTaskId = (id) => ({
 });
 
 /**
+ * Set flow is pending
+ *
+ * @param {boolean} isPending - isPending
+ */
+export const setFlowIsPending = (isPending) => ({
+  type: CONSTANTS.SET_FLOW_IS_PENDING,
+  payload: isPending,
+});
+
+/**
  * Set is widget deactivated
  *
  * @param {boolean} isDeactivated - is deactivated
@@ -641,6 +664,16 @@ export const setIsDemoWidget = (isDemo) => ({
 export const setCustomSettings = (settings) => ({
   type: CONSTANTS.SET_CUSTOM_SETTINGS,
   payload: settings,
+});
+
+/**
+ * Set is widget archived
+ *
+ * @param {boolean} isArchived - is archived
+ */
+export const setIsWidgetArchived = (isArchived) => ({
+  type: CONSTANTS.SET_IS_WIDGET_ARCHIVED,
+  payload: isArchived,
 });
 
 export default {
@@ -693,12 +726,15 @@ export default {
   setPhoneCountry,
   setPhoneUserPart,
   setIsSmbFlow,
+  setIsSmbQRFlow,
   setIsTableFlow,
   setIsTableFlowDisabled,
   addFrontDeviceCoordinates,
   addSideDeviceCoordinates,
   setTaskId,
+  setFlowIsPending,
   setIsWidgetDeactivated,
   setIsDemoWidget,
   setCustomSettings,
+  setIsWidgetArchived,
 };

@@ -1,4 +1,6 @@
 import { Component, h } from 'preact';
+import cn from 'classnames';
+
 import { cm2in } from '../../helpers/utils';
 import './Measurements.scss';
 import { VOLUMETRIC_PARAMS, LINEAR_PARAMS } from '../../helpers/bodyParametersInfo';
@@ -62,7 +64,12 @@ class Measurements extends Component {
 
   render() {
     const { measurementsLoading } = this.state;
-    const { measurements } = this.props;
+    const {
+      measurements,
+      isSoftValidation,
+      isCustomMeasurements,
+      isOpenGuide
+    } = this.props;
     let parameters = [VOLUMETRIC_PARAMS, LINEAR_PARAMS];
     let groups = ['Volumetric measurements', 'Linear measurements'];
 
@@ -76,7 +83,11 @@ class Measurements extends Component {
     }
 
     return (
-      <div className="measurements__wrapper">
+      <div
+        className={cn('measurements__wrapper', {
+          'measurements__wrapper--custom-height': isSoftValidation && isCustomMeasurements && !isOpenGuide,
+        })}
+      >
 
         {measurementsLoading ? (
           <Loader />

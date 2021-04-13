@@ -8,6 +8,7 @@ import {
   isMobileDevice,
   mobileFlowStatusUpdate,
   parseGetParams,
+  changeUrlQuerySymbols,
 } from '../../helpers/utils';
 import { gaStart, gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
@@ -86,7 +87,7 @@ class Welcome extends Component {
     if (isMobileDevice() && !browserValidation()) {
       setIsMobile(true);
       setWidgetUrl(window.location.href);
-      setReturnUrl(matches.returnUrl);
+      setReturnUrl(changeUrlQuerySymbols(matches.returnUrl));
       setToken(uuid);
       setIsFromDesktopToMobile(false);
 
@@ -119,7 +120,7 @@ class Welcome extends Component {
         setProductUrl(matches.product);
         setOrigin(matches.origin);
         setIsMobile(isMobileDevice());
-        setReturnUrl(matches.returnUrl);
+        setReturnUrl(changeUrlQuerySymbols(matches.returnUrl));
         setIsOpenReturnUrlDesktop(!!matches.returnUrlDesktop);
         setFakeSize(!!matches.fakeSize);
         setProductId(parseInt(matches.productId, 10));

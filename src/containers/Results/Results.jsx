@@ -196,7 +196,7 @@ class Results extends Component {
 
     if (isFromDesktopToMobile) {
       // pass measurements via hash get params to the destination page
-      window.location = `${returnUrl}#/?${objectToUrlParams({
+      window.location = `${returnUrl}?${objectToUrlParams({
         ...measurements,
         personId,
       })}`;
@@ -210,7 +210,7 @@ class Results extends Component {
       }
 
       if (measurements && !isSmbFlow && !isDemoWidget) {
-        window.location = `${returnUrl}#/?${objectToUrlParams({
+        window.location = `${returnUrl}?${objectToUrlParams({
           ...measurements,
           personId,
         })}`;
@@ -288,6 +288,7 @@ class Results extends Component {
                 helpBtnToggle={this.helpBtnToggle}
                 isSoftValidation={isSoftValidationPresent}
                 isCustomMeasurements={customSettings.is_custom_output_measurements}
+                isOpenGuide={openGuide}
               />
             ) : null}
 

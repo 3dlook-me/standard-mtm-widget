@@ -166,6 +166,7 @@ class GenderContainer extends Component {
       isSmbFlow,
       isDemoWidget,
       token,
+      isSmbQRFlow,
     } = this.props;
 
     return (
@@ -183,7 +184,7 @@ class GenderContainer extends Component {
           </div>
         </div>
         <div className="screen__footer">
-          {(isSmbFlow || isDemoWidget) ? (
+          {(isSmbFlow && !isSmbQRFlow) || isDemoWidget ? (
             <PolicyAgreement
               agree={agree}
               isAgreeValid={isAgreeValid}

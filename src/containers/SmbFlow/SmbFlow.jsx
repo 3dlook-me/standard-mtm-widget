@@ -31,9 +31,10 @@ class SmbFlow extends BaseMobileFlow {
         flowState,
         setFlowState,
         setIsSmbFlow,
+        setIsSmbQRFlow,
         setIsFromDesktopToMobile,
-        setSource,
         setReturnUrl,
+        setSource,
       } = this.props;
 
       window.addEventListener('online', this.pageReload);
@@ -41,7 +42,6 @@ class SmbFlow extends BaseMobileFlow {
       await super.componentDidMount();
 
       setIsFromDesktopToMobile(false);
-      setSource('dashboard');
 
       if (!isMobileDevice()) {
         return Promise.resolve();
@@ -58,6 +58,8 @@ class SmbFlow extends BaseMobileFlow {
       }
 
       const flowStateData = await this.flow.get();
+
+      await this.checkSource(flowStateData);
 
       setReturnUrl(flowStateData.widget_settings.redirect_link || 'https://3dlook.me/mobile-tailor/');
 
@@ -78,6 +80,7 @@ class SmbFlow extends BaseMobileFlow {
         if (matches.source === 'demo') {
           const { setIsDemoWidget } = this.props;
 
+          setSource('dashboard');
           setIsDemoWidget(true);
 
           setInterval(() => {
@@ -148,6 +151,25 @@ class SmbFlow extends BaseMobileFlow {
 
   pageReload = () => {
     window.location.reload();
+  }
+
+  // TODO remove after back refactor and handle source from widget
+  checkSource = async (widget) => {
+    const { setIsSmbQRFlow } = this.props;
+
+    if (!widget.mtm_client) return;
+
+    await fetch(`${API_HOST}/api/v2/measurements/mtm-clients/${widget.mtm_client}/`, {
+      headers: {
+        Authorization: `UUID ${widget.uuid}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.source === 'qr') {
+          setIsSmbQRFlow(true);
+        }
+      });
   }
 
   render() {

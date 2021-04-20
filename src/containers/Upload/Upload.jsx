@@ -469,8 +469,11 @@ class Upload extends Component {
 
         setPersonId(personId);
 
-        await this.flow.updateState({
-          personId,
+        await this.flow.update({
+          person: personId,
+          state: {
+            personId,
+          },
         });
 
         setFlowState({ ...this.props.flowState, personId });
@@ -597,10 +600,6 @@ class Upload extends Component {
 
       setProcessingStatus('Sending Your Results');
       await wait(1000);
-
-      await this.flow.update({
-        person: person.id,
-      });
 
       gaUploadOnContinue(this.getFlowType());
 

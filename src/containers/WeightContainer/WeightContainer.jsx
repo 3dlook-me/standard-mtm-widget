@@ -232,7 +232,7 @@ class WeightContainer extends Component {
         event: WEIGHT_PAGE_WEIGHT_SELECTED,
         data: {
           value: weightValue,
-        }
+        },
       });
     }
 
@@ -244,19 +244,24 @@ class WeightContainer extends Component {
     if (isMobile) {
       this.$nextBtn.current.classList.add('button--blocked');
 
-      await this.flow.updateState({
-        status: 'set metadata',
-        processStatus: '',
-        gender,
-        height,
-        units,
-        email,
-        settings,
-        ...(weight && { weight }),
+      console.log(email);
+
+      await this.flow.update({
+        ...(email && { email }),
+        state: {
+          status: 'set metadata',
+          processStatus: '',
+          gender,
+          height,
+          units,
+          email,
+          settings,
+          ...(weight && { weight }),
+        },
       })
-      .finally(() => {
-        this.$nextBtn.current.classList.remove('button--blocked');
-      });
+        .finally(() => {
+          this.$nextBtn.current.classList.remove('button--blocked');
+        });
 
       route('/camera-mode-selection', false);
     } else {
@@ -273,7 +278,7 @@ class WeightContainer extends Component {
       uuid: token,
       event: WEIGHT_PAGE_WEIGHT_SKIP,
     });
-    
+
     this.setState(
       {
         weightValue: null,
@@ -283,7 +288,7 @@ class WeightContainer extends Component {
         await setWeight(null);
 
         this.toNextScreen();
-      }
+      },
     );
   }
 
@@ -328,7 +333,9 @@ class WeightContainer extends Component {
                   >
                     {this.weightValues.map((value) => (
                       <option value={value} selected={value === defaultValue}>
-                        {value} {placeholder}
+                        {value}
+                        {' '}
+                        {placeholder}
                       </option>
                     ))}
                   </select>

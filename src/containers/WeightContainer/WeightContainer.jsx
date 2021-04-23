@@ -222,6 +222,7 @@ class WeightContainer extends Component {
       email,
       settings,
       token,
+      phoneNumber,
     } = this.props;
     const { weightValue } = this.state;
     gaOnWeightNext();
@@ -244,9 +245,9 @@ class WeightContainer extends Component {
     if (isMobile) {
       this.$nextBtn.current.classList.add('button--blocked');
 
-      console.log(email);
-
       await this.flow.update({
+        unit: units,
+        ...(phoneNumber && { phone: phoneNumber }),
         ...(email && { email }),
         state: {
           status: 'set metadata',

@@ -430,12 +430,7 @@ class Upload extends Component {
       const photoFlowType = isTableFlow ? 'hand' : 'friend';
 
       const mtmClientParams = {
-        widgetId,
-        unit: units,
-        ...(email && { email }),
-        ...(phoneNumber && { phone: phoneNumber }),
         ...(firstName && { firstName }),
-        ...(notes && { notes }),
       };
 
       await this.api.mtmClient.update(mtmClientId, mtmClientParams);
@@ -459,6 +454,7 @@ class Upload extends Component {
         setPersonId(personId);
 
         await this.flow.update({
+          ...(notes && { notes }),
           person: personId,
           state: {
             personId,

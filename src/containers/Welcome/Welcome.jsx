@@ -75,6 +75,7 @@ class Welcome extends Component {
       setCustomSettings,
       addGender,
       setMtmClientId,
+      source,
     } = this.props;
 
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key;
@@ -131,6 +132,7 @@ class Welcome extends Component {
 
         this.flow.get()
           .then(() => this.flow.update({
+            source,
             mtm_client: matches.mtmClientId,
             state: {
               status: 'created',

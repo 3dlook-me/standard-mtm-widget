@@ -181,6 +181,7 @@ class QRCodeContainer extends Component {
       returnUrl,
       productId,
       setFlowIsPending,
+      phoneNumber,
     } = props;
 
     if (token && flowId && !this.api && !this.flow) {
@@ -192,21 +193,26 @@ class QRCodeContainer extends Component {
       this.flow = new FlowService(token);
       this.flow.setFlowId(flowId);
 
-      await this.flow.updateState({
-        status: 'set metadata',
-        processStatus: '',
-        fakeSize: false,
-        gender,
-        height,
-        units,
-        email,
-        productUrl,
-        brand,
-        bodyPart,
-        returnUrl,
-        productId,
-        settings,
-        ...(weight && { weight }),
+      await this.flow.update({
+        unit: units,
+        ...(phoneNumber && { phone: phoneNumber }),
+        ...(email && { email }),
+        state: {
+          status: 'set metadata',
+          processStatus: '',
+          fakeSize: false,
+          gender,
+          height,
+          units,
+          email,
+          productUrl,
+          brand,
+          bodyPart,
+          returnUrl,
+          productId,
+          settings,
+          ...(weight && { weight }),
+        },
       });
 
       if (!isMobile) {

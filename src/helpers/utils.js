@@ -586,3 +586,11 @@ export const getAsset = (isTableFlow, gender, role) => {
  * @returns {string} - 'alone' || 'friend'
  */
 export const getGaEventLabel = (isTableFlow) => (isTableFlow ? 'alone' : 'friend');
+
+/**
+ * Returns parsed url address withs query symbol "&" instead of "@"
+ *
+ * @param {string} url - url address
+ * @returns {string} - parsed url
+ */
+export const changeUrlQuerySymbols = (url) => url.replaceAll('@', '&');

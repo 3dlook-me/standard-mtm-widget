@@ -203,7 +203,7 @@ export default class FlowService {
         Authorization: `PUBLIC ${this.key}`,
       },
       data: {
-        dsa: url,
+        url,
       },
     })
       .catch((err) => console.error(err));

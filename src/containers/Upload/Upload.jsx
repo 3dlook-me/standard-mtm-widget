@@ -311,9 +311,8 @@ class Upload extends Component {
       gender,
       phoneNumber,
       firstName,
-      source,
       notes,
-      mtmClientId: mtmClientIdFromState,
+      mtmClientId,
       widgetId,
       productUrl,
       deviceCoordinates,
@@ -415,7 +414,6 @@ class Upload extends Component {
       });
 
       let taskSetId;
-      let mtmClientId;
 
       // use only real images
       // ignore booleans for mobile flow
@@ -440,23 +438,14 @@ class Upload extends Component {
         ...(notes && { notes }),
       };
 
+      await this.api.mtmClient.update(mtmClientId, mtmClientParams);
+
       if (!personId) {
         if (isFromDesktopToMobile) {
           this.flow.updateLocalState({ processStatus: 'Initiating Profile Creation' });
         }
 
         setProcessingStatus('Initiating Profile Creation');
-
-        if (!mtmClientIdFromState) {
-          mtmClientId = await this.api.mtmClient.create({
-            ...mtmClientParams,
-            source,
-          });
-          setMtmClientId(mtmClientId);
-        } else {
-          mtmClientId = mtmClientIdFromState;
-          await this.api.mtmClient.update(mtmClientId, mtmClientParams);
-        }
 
         const createdPersonId = await this.api.mtmClient.createPerson(mtmClientId, {
           gender,
@@ -516,9 +505,6 @@ class Upload extends Component {
         }
 
         setProcessingStatus('Photo Uploading');
-
-        mtmClientId = mtmClientIdFromState;
-        await this.api.mtmClient.update(mtmClientId, mtmClientParams);
 
         await this.api.person.update(personId, {
           gender,

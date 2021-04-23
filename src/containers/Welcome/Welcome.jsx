@@ -74,6 +74,7 @@ class Welcome extends Component {
       setEmail,
       setCustomSettings,
       addGender,
+      setMtmClientId,
     } = this.props;
 
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key;
@@ -123,19 +124,24 @@ class Welcome extends Component {
         setIsOpenReturnUrlDesktop(!!matches.returnUrlDesktop);
         setFakeSize(!!matches.fakeSize);
         setProductId(parseInt(matches.productId, 10));
+        setMtmClientId(matches.mtmClientId);
 
         this.flow = new FlowService(uuid);
         this.flow.setFlowId(uuid);
+
         this.flow.get()
-          .then(() => this.flow.updateState({
-            status: 'created',
-            productUrl: matches.product,
-            brand,
-            bodyPart,
-            returnUrl: matches.returnUrl,
-            fakeSize: !!matches.fakeSize,
-            productId: parseInt(matches.productId, 10),
-            ...(photosFromGallery && { photosFromGallery: true }),
+          .then(() => this.flow.update({
+            mtm_client: matches.mtmClientId,
+            state: {
+              status: 'created',
+              productUrl: matches.product,
+              brand,
+              bodyPart,
+              returnUrl: matches.returnUrl,
+              fakeSize: !!matches.fakeSize,
+              productId: parseInt(matches.productId, 10),
+              ...(photosFromGallery && { photosFromGallery: true }),
+            },
           }))
           .then((res) => {
             const { state } = res;

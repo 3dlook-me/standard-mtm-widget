@@ -17,6 +17,7 @@ import analyticsService, {
   WELCOME_SCREEN_CLOSE,
 } from '../../services/analyticsService';
 import { Browser } from '..';
+import { flowStatuses } from '../../configs/flowStatuses';
 
 import './Welcome.scss';
 import mobileBg from '../../images/img_mtm_mobile.png';
@@ -135,7 +136,7 @@ class Welcome extends Component {
             source,
             mtm_client: matches.mtmClientId,
             state: {
-              status: 'created',
+              status: flowStatuses.CREATED,
               productUrl: matches.product,
               brand,
               bodyPart,

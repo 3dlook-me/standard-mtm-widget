@@ -18,6 +18,7 @@ import {
 } from '../../helpers/utils';
 import { Stepper } from '../../components';
 import { gaOnWeightNext, gaOnWeightSkip } from '../../helpers/ga';
+import { flowStatuses } from '../../configs/flowStatuses';
 
 import './WeightContainer.scss';
 
@@ -250,7 +251,7 @@ class WeightContainer extends Component {
         ...(phoneNumber && { phone: phoneNumber }),
         ...(email && { email }),
         state: {
-          status: 'set metadata',
+          status: flowStatuses.SET_METADATA,
           processStatus: '',
           gender,
           height,

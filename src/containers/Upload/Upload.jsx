@@ -52,6 +52,7 @@ import {
   UploadBlock,
   Requirements,
 } from '../../components';
+import { flowStatuses } from '../../configs/flowStatuses';
 
 import './Upload.scss';
 
@@ -566,17 +567,20 @@ class Upload extends Component {
       if (isFromDesktopToMobile) {
         this.flow.updateLocalState({
           processStatus: 'Sending Your Results',
-          status: 'finished',
+          status: flowStatuses.FINISHED,
           measurements,
           mtmClientId,
           softValidation,
         });
       } else {
-        await this.flow.updateState({
-          status: 'finished',
-          measurements,
-          mtmClientId,
-          softValidation,
+        await this.flow.update({
+          widget_flow_status: flowStatuses.FINISHED,
+          state: {
+            status: flowStatuses.FINISHED,
+            measurements,
+            mtmClientId,
+            softValidation,
+          },
         });
       }
 

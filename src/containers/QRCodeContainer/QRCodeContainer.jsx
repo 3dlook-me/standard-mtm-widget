@@ -23,6 +23,7 @@ import {
   Stepper,
   Loader,
 } from '../../components';
+import { flowStatuses } from '../../configs/flowStatuses';
 
 import './QRCodeContainer.scss';
 import smsSendingIcon from '../../images/sms-sending.svg';
@@ -198,7 +199,7 @@ class QRCodeContainer extends Component {
         ...(phoneNumber && { phone: phoneNumber }),
         ...(email && { email }),
         state: {
-          status: 'set metadata',
+          status: flowStatuses.SET_METADATA,
           processStatus: '',
           fakeSize: false,
           gender,
@@ -221,7 +222,7 @@ class QRCodeContainer extends Component {
         this.timer = setInterval(() => {
           this.flow.get()
             .then((flowState) => {
-              if (flowState.state.status === 'opened-on-mobile' && flowState.state.lastActiveDate) {
+              if (flowState.state.status === flowStatuses.OPENED_ON_MOBILE && flowState.state.lastActiveDate) {
                 this.setState({
                   isPending: true,
                 });
@@ -250,7 +251,7 @@ class QRCodeContainer extends Component {
 
               this.lastActiveDate = new Date(flowState.updated);
 
-              if (flowState.state.status === 'finished') {
+              if (flowState.state.status === flowStatuses.FINISHED) {
                 const {
                   measurements,
                   softValidation,

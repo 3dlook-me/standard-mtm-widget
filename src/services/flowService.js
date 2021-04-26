@@ -1,8 +1,10 @@
 import axios from 'axios';
 
+import { flowStatuses } from '../configs/flowStatuses';
+
 // initial flow state value
 const globalInitialValue = {
-  status: 'created',
+  status: flowStatuses.CREATED,
 };
 
 let globalState = {

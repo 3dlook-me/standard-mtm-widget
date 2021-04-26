@@ -24,10 +24,11 @@ import {
   SoftValidation,
 } from '../../components';
 import FlowService from '../../services/flowService';
+import { flowStatuses } from '../../configs/flowStatuses';
+import actions from '../../store/actions';
 
 import './Result.scss';
 import successIcon from '../../images/ic_done.svg';
-import actions from '../../store/actions';
 
 /**
  * Results page component.
@@ -91,7 +92,7 @@ class Results extends Component {
       this.timer = setInterval(() => {
         this.flow.get()
           .then((flowState) => {
-            if (flowState.state.status === 'finished') {
+            if (flowState.state.status === flowStatuses.FINISHED) {
               return;
             }
 
@@ -143,9 +144,12 @@ class Results extends Component {
       isTableFlow,
     } = this.props;
 
-    await this.flow.updateState({
-      status: 'opened-on-mobile',
-      processStatus: '',
+    await this.flow.update({
+      widget_flow_status: flowStatuses.OPENED_ON_MOBILE,
+      state: {
+        status: flowStatuses.OPENED_ON_MOBILE,
+        processStatus: '',
+      },
     });
 
     if (!softValidation.looseTop && !softValidation.looseBottom

@@ -67,13 +67,13 @@ class Results extends Component {
       token,
       setFlowIsPending,
       setProcessingStatus,
-      isWidgetDeactivated,
       setIsWidgetDeactivated,
       isMobile,
-      isFromDesktopToMobile,
     } = this.props;
 
     setIsHeaderTranslucent(true);
+
+    this.removeGuideFromUrl();
 
     if (isMobile) {
       await analyticsServiceAsync({
@@ -122,6 +122,8 @@ class Results extends Component {
   getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
 
   openGuide = (index, type) => {
+    this.setGuideToUrl();
+
     this.setState({
       openGuide: true,
       measurementsType: type,
@@ -181,13 +183,14 @@ class Results extends Component {
       setHelpBtnStatus,
       isSmbFlow,
       isDemoWidget,
-      token,
     } = this.props;
 
     const { openGuide } = this.state;
 
     if (openGuide) {
       setHelpBtnStatus(true);
+
+      this.removeGuideFromUrl();
 
       this.setState({
         openGuide: false,
@@ -200,7 +203,7 @@ class Results extends Component {
 
     if (isFromDesktopToMobile) {
       // pass measurements via hash get params to the destination page
-      window.location = `${returnUrl}#/?${objectToUrlParams({
+      window.location = `${returnUrl}?${objectToUrlParams({
         ...measurements,
         personId,
       })}`;
@@ -214,7 +217,7 @@ class Results extends Component {
       }
 
       if (measurements && !isSmbFlow && !isDemoWidget) {
-        window.location = `${returnUrl}#/?${objectToUrlParams({
+        window.location = `${returnUrl}?${objectToUrlParams({
           ...measurements,
           personId,
         })}`;
@@ -227,6 +230,14 @@ class Results extends Component {
       resetState();
       send('close', {}, origin);
     }
+  }
+
+  setGuideToUrl = () => {
+    window.location.hash = `${window.location.hash}?guide=true`;
+  }
+
+  removeGuideFromUrl = () => {
+    window.location.hash = window.location.hash.replace('?guide=true', '');
   }
 
   render() {
@@ -261,6 +272,7 @@ class Results extends Component {
                 gender={gender}
                 measurementsType={measurementsType}
                 measurement={measurement}
+                close={this.onClick}
               />
             ) : null}
 

@@ -233,7 +233,7 @@ class SaiaMTMButton {
       this.modal.classList.toggle('active');
     }
 
-    let url = `${widgetUrl}?key=${uuid}#/?origin=${window.location.origin}&returnUrl=${returnUrl}&mtmClientId=${mtmClientId}`;
+    let url = `${widgetUrl}?key=${uuid}#/?origin=${window.location.origin}&returnUrl=${returnUrl.replaceAll('&', '@')}&mtmClientId=${mtmClientId}`;
 
     if (returnUrlDesktop) {
       url += `&returnUrlDesktop=${returnUrlDesktop}`;

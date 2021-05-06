@@ -331,8 +331,11 @@ class QRCodeContainer extends Component {
             isSMSSuccess: true,
           });
 
-          return this.flow.updateState({
-            phoneNumber,
+          return this.flow.update({
+            phone: phoneNumber,
+            state: {
+              phoneNumber,
+            },
           });
         })
         .catch((err) => {

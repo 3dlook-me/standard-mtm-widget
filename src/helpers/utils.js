@@ -19,14 +19,16 @@ export const debounce = (func, delay) => {
  * Get stringified GET params from object
  *
  * @param {Object} obj - object with params
+ * @param {string} url - return url
  */
-export const objectToUrlParams = (obj) => {
-  let str = '';
+export const objectToUrlParams = (obj, url) => {
+  let str = url.includes('?') ? '&measurements=true' : '?measurements=true&';
 
   for (const key in obj) {
-    if (str !== '') {
+    if (str !== '?measurements=true&') {
       str += '&';
     }
+
     str += `${key}=${encodeURIComponent(obj[key])}`;
   }
 
@@ -588,9 +590,14 @@ export const getAsset = (isTableFlow, gender, role) => {
 export const getGaEventLabel = (isTableFlow) => (isTableFlow ? 'alone' : 'friend');
 
 /**
- * Returns parsed url address withs query symbol "&" instead of "@"
+ * Returns parsed url address without previous measurements data
  *
  * @param {string} url - url address
- * @returns {string} - parsed url
+ * @returns {string | null} - parsed url
  */
-export const changeUrlQuerySymbols = (url) => url.replaceAll('@', '&');
+export const parseReturnUrl = (url) => {
+  if (!url) return null;
+
+  return url.split('&measurements=true')[0]
+    .split('?measurements=true')[0];
+};

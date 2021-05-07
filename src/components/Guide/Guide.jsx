@@ -13,6 +13,12 @@ class Guide extends Component {
     };
   }
 
+  componentDidMount() {
+    const { close } = this.props;
+
+    window.addEventListener('popstate', close, { once: true });
+  }
+
   handleLoad = () => {
     this.setState({
       imageLoading: false,

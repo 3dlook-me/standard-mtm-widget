@@ -87,7 +87,7 @@ class Welcome extends Component {
     if (isMobileDevice() && !browserValidation()) {
       setIsMobile(true);
       setWidgetUrl(window.location.href);
-      setReturnUrl(changeUrlQuerySymbols(matches.returnUrl));
+      setReturnUrl(matches.returnUrl);
       setToken(uuid);
       setIsFromDesktopToMobile(false);
 

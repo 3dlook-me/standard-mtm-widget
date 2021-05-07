@@ -593,7 +593,11 @@ export const getGaEventLabel = (isTableFlow) => (isTableFlow ? 'alone' : 'friend
  * Returns parsed url address without previous measurements data
  *
  * @param {string} url - url address
- * @returns {string} - parsed url
+ * @returns {string | null} - parsed url
  */
-export const parseReturnUrl = (url) => url.split('&measurements=true')[0]
-  .split('?measurements=true')[0];
+export const parseReturnUrl = (url) => {
+  if (!url) return null;
+
+  return url.split('&measurements=true')[0]
+    .split('?measurements=true')[0];
+};

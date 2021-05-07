@@ -99,7 +99,7 @@ class Header extends Component {
       }
 
       if (isMeasurements && !isSmbFlow && !isDemoWidget) {
-        window.location = `${returnUrl}?${objectToUrlParams(measurements)}`;
+        window.location = `${returnUrl}?${objectToUrlParams(measurements, returnUrl)}`;
       } else {
         window.location = returnUrl;
       }

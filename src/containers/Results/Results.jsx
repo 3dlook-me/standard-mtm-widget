@@ -199,10 +199,10 @@ class Results extends Component {
 
     if (isFromDesktopToMobile) {
       // pass measurements via hash get params to the destination page
-      window.location = `${returnUrl}?${objectToUrlParams({
+      window.location = `${returnUrl}${objectToUrlParams({
         ...measurements,
         personId,
-      })}`;
+      }, returnUrl)}`;
     }
 
     if (isMobile) {
@@ -213,10 +213,10 @@ class Results extends Component {
       }
 
       if (measurements && !isSmbFlow && !isDemoWidget) {
-        window.location = `${returnUrl}?${objectToUrlParams({
+        window.location = `${returnUrl}${objectToUrlParams({
           ...measurements,
           personId,
-        })}`;
+        }, returnUrl)}`;
       } else {
         window.location = returnUrl;
       }

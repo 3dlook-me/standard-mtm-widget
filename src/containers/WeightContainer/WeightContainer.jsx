@@ -18,6 +18,7 @@ import {
 } from '../../helpers/utils';
 import { Stepper } from '../../components';
 import { gaOnWeightNext, gaOnWeightSkip } from '../../helpers/ga';
+import { flowStatuses } from '../../configs/flowStatuses';
 
 import './WeightContainer.scss';
 
@@ -222,6 +223,7 @@ class WeightContainer extends Component {
       email,
       settings,
       token,
+      phoneNumber,
     } = this.props;
     const { weightValue } = this.state;
     gaOnWeightNext();
@@ -232,7 +234,7 @@ class WeightContainer extends Component {
         event: WEIGHT_PAGE_WEIGHT_SELECTED,
         data: {
           value: weightValue,
-        }
+        },
       });
     }
 
@@ -244,19 +246,24 @@ class WeightContainer extends Component {
     if (isMobile) {
       this.$nextBtn.current.classList.add('button--blocked');
 
-      await this.flow.updateState({
-        status: 'set metadata',
-        processStatus: '',
-        gender,
-        height,
-        units,
-        email,
-        settings,
-        ...(weight && { weight }),
+      await this.flow.update({
+        unit: units,
+        ...(phoneNumber && { phone: phoneNumber }),
+        ...(email && { email }),
+        state: {
+          status: flowStatuses.SET_METADATA,
+          processStatus: '',
+          gender,
+          height,
+          units,
+          email,
+          settings,
+          ...(weight && { weight }),
+        },
       })
-      .finally(() => {
-        this.$nextBtn.current.classList.remove('button--blocked');
-      });
+        .finally(() => {
+          this.$nextBtn.current.classList.remove('button--blocked');
+        });
 
       route('/camera-mode-selection', false);
     } else {
@@ -273,7 +280,7 @@ class WeightContainer extends Component {
       uuid: token,
       event: WEIGHT_PAGE_WEIGHT_SKIP,
     });
-    
+
     this.setState(
       {
         weightValue: null,
@@ -283,7 +290,7 @@ class WeightContainer extends Component {
         await setWeight(null);
 
         this.toNextScreen();
-      }
+      },
     );
   }
 
@@ -328,7 +335,9 @@ class WeightContainer extends Component {
                   >
                     {this.weightValues.map((value) => (
                       <option value={value} selected={value === defaultValue}>
-                        {value} {placeholder}
+                        {value}
+                        {' '}
+                        {placeholder}
                       </option>
                     ))}
                   </select>

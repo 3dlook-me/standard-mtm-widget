@@ -12,6 +12,7 @@ import analyticsService, {
   MOBILE_FLOW_START,
 } from '../../services/analyticsService';
 import { BaseMobileFlow, Loader } from '../../components';
+import { flowStatuses } from '../../configs/flowStatuses';
 
 /**
  * Mobile flow page component
@@ -62,18 +63,21 @@ class MobileFlow extends BaseMobileFlow {
 
       const flowStateData = await this.flow.get();
 
-      if (flowStateData.state.status !== 'finished') {
-        await this.flow.updateState({
-          ...flowStateData.state,
-          status: 'opened-on-mobile',
-          processStatus: '',
+      if (flowStateData.state.status !== flowStatuses.FINISHED) {
+        await this.flow.update({
+          widget_flow_status: flowStatuses.OPENED_ON_MOBILE,
+          state: {
+            ...flowStateData.state,
+            status: flowStatuses.OPENED_ON_MOBILE,
+            processStatus: '',
+          },
         });
 
         // FOR PAGE RELOAD
         if (!flowState) {
           setFlowState({
             ...flowStateData.state,
-            status: 'opened-on-mobile',
+            status: flowStatuses.OPENED_ON_MOBILE,
           });
         }
 

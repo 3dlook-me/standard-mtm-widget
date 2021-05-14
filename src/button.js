@@ -70,6 +70,7 @@ class SaiaMTMButton {
       ...globalOptions,
       ...options,
       id: uid,
+      mtmClientId: null,
     };
 
     if (!this.defaults.publicKey) {
@@ -207,8 +208,24 @@ class SaiaMTMButton {
   async showWidget() {
     this.buttonEl.classList.add('saia-mtm-button--pending');
 
-    const { publicKey } = this.defaults;
-    const uuid = await SaiaMTMButton.createWidget(publicKey, this.defaults);
+    const {
+      publicKey,
+      widgetUrl,
+      returnUrl,
+      returnUrlDesktop,
+      photosFromGallery,
+    } = this.defaults;
+
+    const uuid = await this.createWidget(publicKey, this.defaults);
+
+    const { mtmClientId } = this.defaults;
+
+    if (!uuid || !mtmClientId) {
+      this.buttonEl.classList.remove('saia-mtm-button--pending');
+      this.buttonEl.querySelector('.saia-mtm-button__text').innerText = 'Something went wrong';
+
+      return;
+    }
 
     this.buttonEl.classList.remove('saia-mtm-button--pending');
 
@@ -216,14 +233,14 @@ class SaiaMTMButton {
       this.modal.classList.toggle('active');
     }
 
-    let url = `${this.defaults.widgetUrl}?key=${uuid}#/?origin=${window.location.origin}&returnUrl=${encodeURIComponent(this.defaults.returnUrl)}`;
+    let url = `${widgetUrl}?key=${uuid}#/?origin=${window.location.origin}&returnUrl=${encodeURIComponent(returnUrl)}`;
 
-    if (this.defaults.returnUrlDesktop) {
-      url += `&returnUrlDesktop=${this.defaults.returnUrlDesktop}`;
+    if (returnUrlDesktop) {
+      url += `&returnUrlDesktop=${returnUrlDesktop}`;
     }
 
-    if (this.defaults.photosFromGallery) {
-      url += `&photosFromGallery=${this.defaults.photosFromGallery}`;
+    if (photosFromGallery) {
+      url += `&photosFromGallery=${photosFromGallery}`;
     }
 
     if (!this.isMobile) {
@@ -244,7 +261,7 @@ class SaiaMTMButton {
     }
   }
 
-  static async createWidget(publicKey, options = {}) {
+  async createWidget(publicKey, options = {}) {
     const { defaultValues } = options;
 
     // default values
@@ -288,7 +305,12 @@ class SaiaMTMButton {
       weight: weightKg,
       weightLb,
     });
+
     const { uuid } = widget;
+
+    const mtmClient = await this.createMTMClient({ source: 'widget' }, uuid);
+
+    this.defaults.mtmClientId = mtmClient.id;
 
     return Promise.resolve(uuid);
   }
@@ -332,6 +354,19 @@ class SaiaMTMButton {
       .then(() => Promise.resolve());
 
     return Promise.all([isWidgetAllowed, customSettings]);
+  }
+
+  async createMTMClient(data, key) {
+    return fetch(`${API_HOST}/api/v2/measurements/mtm-clients/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `UUID ${key}`,
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((result) => result);
   }
 }
 

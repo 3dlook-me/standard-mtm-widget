@@ -8,6 +8,7 @@ import {
   isMobileDevice,
 } from '../../helpers/utils';
 import { BaseMobileFlow, Loader } from '../../components';
+import { flowStatuses } from '../../configs/flowStatuses';
 
 /**
  * SMB flow page component
@@ -59,21 +60,28 @@ class SmbFlow extends BaseMobileFlow {
 
       const flowStateData = await this.flow.get();
 
-      await this.checkSource(flowStateData);
+      if (matches.source === 'qr') {
+        setIsSmbQRFlow(true);
+      }
+
+      // await this.checkSource(flowStateData);
 
       setReturnUrl(flowStateData.widget_settings.redirect_link || 'https://3dlook.me/mobile-tailor/');
 
-      if (flowStateData.state.status !== 'finished') {
-        await this.flow.updateState({
-          ...flowStateData.state,
-          status: 'opened-on-mobile',
-          processStatus: '',
+      if (flowStateData.state.status !== flowStatuses.FINISHED) {
+        await this.flow.update({
+          widget_flow_status: flowStatuses.OPENED_ON_MOBILE,
+          state: {
+            ...flowStateData.state,
+            status: flowStatuses.OPENED_ON_MOBILE,
+            processStatus: '',
+          },
         });
 
         if (!flowState) {
           setFlowState({
             ...flowStateData.state,
-            status: 'opened-on-mobile',
+            status: flowStatuses.OPENED_ON_MOBILE,
           });
         }
 

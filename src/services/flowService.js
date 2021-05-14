@@ -1,8 +1,10 @@
 import axios from 'axios';
 
+import { flowStatuses } from '../configs/flowStatuses';
+
 // initial flow state value
 const globalInitialValue = {
-  status: 'created',
+  status: flowStatuses.CREATED,
 };
 
 let globalState = {
@@ -96,6 +98,11 @@ export default class FlowService {
    * @param {string} flowId - flow object id
    */
   update(data, flowId = this.flowId) {
+    globalState = {
+      ...globalState,
+      ...data.state,
+    };
+
     return this.axios({
       url: `${API_HOST}/api/v2/persons/widget/${flowId}/`,
       method: 'PATCH',

@@ -18,6 +18,7 @@ import analyticsService, {
   WELCOME_SCREEN_CLOSE,
 } from '../../services/analyticsService';
 import { Browser } from '..';
+import { flowStatuses } from '../../configs/flowStatuses';
 
 import './Welcome.scss';
 import mobileBg from '../../images/img_mtm_mobile.png';
@@ -75,6 +76,8 @@ class Welcome extends Component {
       setEmail,
       setCustomSettings,
       addGender,
+      setMtmClientId,
+      source,
     } = this.props;
 
     const parsedReturnUrl = parseReturnUrl(matches.returnUrl);
@@ -126,19 +129,25 @@ class Welcome extends Component {
         setIsOpenReturnUrlDesktop(!!matches.returnUrlDesktop);
         setFakeSize(!!matches.fakeSize);
         setProductId(parseInt(matches.productId, 10));
+        setMtmClientId(matches.mtmClientId);
 
         this.flow = new FlowService(uuid);
         this.flow.setFlowId(uuid);
+
         this.flow.get()
-          .then(() => this.flow.updateState({
-            status: 'created',
-            productUrl: matches.product,
-            brand,
-            bodyPart,
-            returnUrl: parsedReturnUrl,
-            fakeSize: !!matches.fakeSize,
-            productId: parseInt(matches.productId, 10),
-            ...(photosFromGallery && { photosFromGallery: true }),
+          .then(() => this.flow.update({
+            source,
+            mtm_client: matches.mtmClientId,
+            state: {
+              status: flowStatuses.CREATED,
+              productUrl: matches.product,
+              brand,
+              bodyPart,
+              returnUrl: parsedReturnUrl,
+              fakeSize: !!matches.fakeSize,
+              productId: parseInt(matches.productId, 10),
+              ...(photosFromGallery && { photosFromGallery: true }),
+            },
           }))
           .then((res) => {
             const { state } = res;

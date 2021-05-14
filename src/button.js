@@ -328,6 +328,9 @@ class SaiaMTMButton {
     const isWidgetAllowed = flowService.isWidgetAllowed();
     const customSettings = flowService.getCustomSettings();
 
+    flowService.widgetCheckIn(window.location.href)
+      .then(() => Promise.resolve());
+
     return Promise.all([isWidgetAllowed, customSettings]);
   }
 }

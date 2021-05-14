@@ -189,4 +189,23 @@ export default class FlowService {
       .then(() => true)
       .catch(() => false);
   }
+
+  /**
+   * Set widgets page url to check in
+   *
+   * @param {string} url - widget installed page url
+   */
+  widgetCheckIn(url) {
+    return this.axios({
+      url: `${API_HOST}/api/v2/users/widget_check_in/`,
+      method: 'POST',
+      headers: {
+        Authorization: `PUBLIC ${this.key}`,
+      },
+      data: {
+        url,
+      },
+    })
+      .catch((err) => console.error(err));
+  }
 }

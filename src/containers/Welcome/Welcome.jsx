@@ -8,7 +8,7 @@ import {
   isMobileDevice,
   mobileFlowStatusUpdate,
   parseGetParams,
-  changeUrlQuerySymbols,
+  parseReturnUrl,
 } from '../../helpers/utils';
 import { gaStart, gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
@@ -80,6 +80,8 @@ class Welcome extends Component {
       source,
     } = this.props;
 
+    const parsedReturnUrl = parseReturnUrl(matches.returnUrl);
+
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key;
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;
@@ -90,7 +92,7 @@ class Welcome extends Component {
     if (isMobileDevice() && !browserValidation()) {
       setIsMobile(true);
       setWidgetUrl(window.location.href);
-      setReturnUrl(changeUrlQuerySymbols(matches.returnUrl));
+      setReturnUrl(parsedReturnUrl);
       setToken(uuid);
       setIsFromDesktopToMobile(false);
 
@@ -123,7 +125,7 @@ class Welcome extends Component {
         setProductUrl(matches.product);
         setOrigin(matches.origin);
         setIsMobile(isMobileDevice());
-        setReturnUrl(changeUrlQuerySymbols(matches.returnUrl));
+        setReturnUrl(parsedReturnUrl);
         setIsOpenReturnUrlDesktop(!!matches.returnUrlDesktop);
         setFakeSize(!!matches.fakeSize);
         setProductId(parseInt(matches.productId, 10));
@@ -141,7 +143,7 @@ class Welcome extends Component {
               productUrl: matches.product,
               brand,
               bodyPart,
-              returnUrl: matches.returnUrl,
+              returnUrl: parsedReturnUrl,
               fakeSize: !!matches.fakeSize,
               productId: parseInt(matches.productId, 10),
               ...(photosFromGallery && { photosFromGallery: true }),

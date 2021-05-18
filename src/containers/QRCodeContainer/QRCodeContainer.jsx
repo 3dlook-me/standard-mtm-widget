@@ -23,6 +23,7 @@ import {
   Stepper,
   Loader,
 } from '../../components';
+import { flowStatuses } from '../../configs/flowStatuses';
 
 import './QRCodeContainer.scss';
 import smsSendingIcon from '../../images/sms-sending.svg';
@@ -181,6 +182,7 @@ class QRCodeContainer extends Component {
       returnUrl,
       productId,
       setFlowIsPending,
+      phoneNumber,
     } = props;
 
     if (token && flowId && !this.api && !this.flow) {
@@ -192,21 +194,26 @@ class QRCodeContainer extends Component {
       this.flow = new FlowService(token);
       this.flow.setFlowId(flowId);
 
-      await this.flow.updateState({
-        status: 'set metadata',
-        processStatus: '',
-        fakeSize: false,
-        gender,
-        height,
-        units,
-        email,
-        productUrl,
-        brand,
-        bodyPart,
-        returnUrl,
-        productId,
-        settings,
-        ...(weight && { weight }),
+      await this.flow.update({
+        unit: units,
+        ...(phoneNumber && { phone: phoneNumber }),
+        ...(email && { email }),
+        state: {
+          status: flowStatuses.SET_METADATA,
+          processStatus: '',
+          fakeSize: false,
+          gender,
+          height,
+          units,
+          email,
+          productUrl,
+          brand,
+          bodyPart,
+          returnUrl,
+          productId,
+          settings,
+          ...(weight && { weight }),
+        },
       });
 
       if (!isMobile) {
@@ -215,7 +222,7 @@ class QRCodeContainer extends Component {
         this.timer = setInterval(() => {
           this.flow.get()
             .then((flowState) => {
-              if (flowState.state.status === 'opened-on-mobile' && flowState.state.lastActiveDate) {
+              if (flowState.state.status === flowStatuses.OPENED_ON_MOBILE && flowState.state.lastActiveDate) {
                 this.setState({
                   isPending: true,
                 });
@@ -244,7 +251,7 @@ class QRCodeContainer extends Component {
 
               this.lastActiveDate = new Date(flowState.updated);
 
-              if (flowState.state.status === 'finished') {
+              if (flowState.state.status === flowStatuses.FINISHED) {
                 const {
                   measurements,
                   softValidation,
@@ -324,8 +331,11 @@ class QRCodeContainer extends Component {
             isSMSSuccess: true,
           });
 
-          return this.flow.updateState({
-            phoneNumber,
+          return this.flow.update({
+            phone: phoneNumber,
+            state: {
+              phoneNumber,
+            },
           });
         })
         .catch((err) => {

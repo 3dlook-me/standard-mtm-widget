@@ -578,7 +578,11 @@ export const getAsset = (isTableFlow, gender, role) => {
   const page = snakeToCamel(window.location.hash).replace('#/', '');
   const flowType = isTableFlow ? 'tableFlow' : 'friendFlow';
 
-  return flowScreens[page][flowType][gender][role];
+  const isValid = !!(flowScreens[page]
+    && gender
+    && role);
+
+  return isValid && flowScreens[page][flowType][gender][role];
 };
 
 /**

@@ -52,6 +52,7 @@ import {
   UploadBlock,
   Requirements,
 } from '../../components';
+import { flowStatuses } from '../../configs/flowStatuses';
 
 import './Upload.scss';
 
@@ -311,9 +312,8 @@ class Upload extends Component {
       gender,
       phoneNumber,
       firstName,
-      source,
       notes,
-      mtmClientId: mtmClientIdFromState,
+      mtmClientId,
       widgetId,
       productUrl,
       deviceCoordinates,
@@ -415,7 +415,6 @@ class Upload extends Component {
       });
 
       let taskSetId;
-      let mtmClientId;
 
       // use only real images
       // ignore booleans for mobile flow
@@ -432,13 +431,10 @@ class Upload extends Component {
       const photoFlowType = isTableFlow ? 'hand' : 'friend';
 
       const mtmClientParams = {
-        widgetId,
-        unit: units,
-        ...(email && { email }),
-        ...(phoneNumber && { phone: phoneNumber }),
         ...(firstName && { firstName }),
-        ...(notes && { notes }),
       };
+
+      await this.api.mtmClient.update(mtmClientId, mtmClientParams);
 
       if (!personId) {
         if (isFromDesktopToMobile) {
@@ -446,17 +442,6 @@ class Upload extends Component {
         }
 
         setProcessingStatus('Initiating Profile Creation');
-
-        if (!mtmClientIdFromState) {
-          mtmClientId = await this.api.mtmClient.create({
-            ...mtmClientParams,
-            source,
-          });
-          setMtmClientId(mtmClientId);
-        } else {
-          mtmClientId = mtmClientIdFromState;
-          await this.api.mtmClient.update(mtmClientId, mtmClientParams);
-        }
 
         const createdPersonId = await this.api.mtmClient.createPerson(mtmClientId, {
           gender,
@@ -469,8 +454,12 @@ class Upload extends Component {
 
         setPersonId(personId);
 
-        await this.flow.updateState({
-          personId,
+        await this.flow.update({
+          ...(notes && { notes }),
+          person: personId,
+          state: {
+            personId,
+          },
         });
 
         setFlowState({ ...this.props.flowState, personId });
@@ -513,9 +502,6 @@ class Upload extends Component {
         }
 
         setProcessingStatus('Photo Uploading');
-
-        mtmClientId = mtmClientIdFromState;
-        await this.api.mtmClient.update(mtmClientId, mtmClientParams);
 
         await this.api.person.update(personId, {
           gender,
@@ -581,26 +567,25 @@ class Upload extends Component {
       if (isFromDesktopToMobile) {
         this.flow.updateLocalState({
           processStatus: 'Sending Your Results',
-          status: 'finished',
+          status: flowStatuses.FINISHED,
           measurements,
           mtmClientId,
           softValidation,
         });
       } else {
-        await this.flow.updateState({
-          status: 'finished',
-          measurements,
-          mtmClientId,
-          softValidation,
+        await this.flow.update({
+          widget_flow_status: flowStatuses.FINISHED,
+          state: {
+            status: flowStatuses.FINISHED,
+            measurements,
+            mtmClientId,
+            softValidation,
+          },
         });
       }
 
       setProcessingStatus('Sending Your Results');
       await wait(1000);
-
-      await this.flow.update({
-        person: person.id,
-      });
 
       gaUploadOnContinue(this.getFlowType());
 

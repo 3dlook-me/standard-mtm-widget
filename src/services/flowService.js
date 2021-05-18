@@ -1,8 +1,10 @@
 import axios from 'axios';
 
+import { flowStatuses } from '../configs/flowStatuses';
+
 // initial flow state value
 const globalInitialValue = {
-  status: 'created',
+  status: flowStatuses.CREATED,
 };
 
 let globalState = {
@@ -96,6 +98,11 @@ export default class FlowService {
    * @param {string} flowId - flow object id
    */
   update(data, flowId = this.flowId) {
+    globalState = {
+      ...globalState,
+      ...data.state,
+    };
+
     return this.axios({
       url: `${API_HOST}/api/v2/persons/widget/${flowId}/`,
       method: 'PATCH',
@@ -188,5 +195,24 @@ export default class FlowService {
     })
       .then(() => true)
       .catch(() => false);
+  }
+
+  /**
+   * Set widgets page url to check in
+   *
+   * @param {string} url - widget installed page url
+   */
+  widgetCheckIn(url) {
+    return this.axios({
+      url: `${API_HOST}/api/v2/users/widget_check_in/`,
+      method: 'POST',
+      headers: {
+        Authorization: `PUBLIC ${this.key}`,
+      },
+      data: {
+        url,
+      },
+    })
+      .catch((err) => console.error(err));
   }
 }

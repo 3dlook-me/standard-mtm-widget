@@ -98,7 +98,7 @@ class WeightContainer extends Component {
 
     if (weight) {
       this.setState({
-        weightValue: units !== 'cm' ? weightLb : weight,
+        weightValue: units !== 'cm' ? weightLb : Math.round(weight),
       });
     }
 

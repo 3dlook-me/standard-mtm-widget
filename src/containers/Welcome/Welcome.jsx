@@ -78,6 +78,7 @@ class Welcome extends Component {
       addGender,
       setMtmClientId,
       source,
+      setIsDisabledEmail
     } = this.props;
 
     const parsedReturnUrl = parseReturnUrl(matches.returnUrl);
@@ -162,6 +163,7 @@ class Welcome extends Component {
             setEmail(state.email);
             setWeightLb(state.weightLb);
             setWeight(state.weight);
+            setIsDisabledEmail(state.disabledEmail);
 
             setCustomSettings(res.widget_settings);
 

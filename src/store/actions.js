@@ -62,6 +62,7 @@ export const CONSTANTS = {
   SET_IS_DEMO_WIDGET: 'SET_IS_DEMO_WIDGET',
   SET_CUSTOM_SETTINGS: 'SET_CUSTOM_SETTINGS',
   SET_IS_WIDGET_ARCHIVED: 'SET_IS_WIDGET_ARCHIVED',
+  SET_IS_DISABLED_EMAIL: 'SET_IS_DISABLED_EMAIL',
 };
 
 /**
@@ -676,6 +677,16 @@ export const setIsWidgetArchived = (isArchived) => ({
   payload: isArchived,
 });
 
+/**
+ * Set is disabled email
+ *
+ * @param {boolean} isDisabled - is disabled
+ */
+export const setIsDisabledEmail = (isDisabled) => ({
+  type: CONSTANTS.SET_IS_DISABLED_EMAIL,
+  payload: isDisabled,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -737,4 +748,5 @@ export default {
   setIsDemoWidget,
   setCustomSettings,
   setIsWidgetArchived,
+  setIsDisabledEmail,
 };

@@ -102,6 +102,8 @@ class Email extends Component {
     const { gender } = this.props.customSettings;
     const { email } = this.state;
 
+    console.log(email)
+
     gaOnEmailNext();
 
     analyticsService({
@@ -159,7 +161,12 @@ class Email extends Component {
       email,
     } = this.state;
 
-    const { agree, isMobile, token } = this.props;
+    const {
+      agree,
+      isMobile,
+      token,
+      isDisabledEmail,
+    } = this.props;
 
     return (
       <div className="screen active">
@@ -175,6 +182,7 @@ class Email extends Component {
               type="email"
               placeholder="email@address.com"
               value={email}
+              disabled={isDisabledEmail}
             />
             <p className={classNames('screen__control-error', { active: !isEmailValid })}>Invalid email address</p>
           </div>

@@ -119,6 +119,8 @@ export const INITIAL_STATE = {
       },
     },
   },
+
+  isDisabledEmail: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -519,6 +521,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isWidgetArchived: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_DISABLED_EMAIL:
+      return {
+        ...state,
+        isDisabledEmail: action.payload,
       };
 
     default:

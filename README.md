@@ -118,7 +118,7 @@ After that you will get "Your MTM" button on the page.
 
 To overwrite default options without creating a custom integration script, you could define a global `MTM_WIDGET_OPTIONS` object and set there the same options as in `SaiaMTMButton` constructor.
 
-For example, you want to overwrite default height, weight, and email values and set predefined ones. Also, you would like to set a callback function to get measurements, when they are ready. Let's say, you want to set height in feet and inches. To do this, declare `window.MTM_WIDGET_OPTIONS` object:
+For example, you want to overwrite default height, weight, and email values and set predefined ones. disableInput is option to disable email input (it works only if you preset email in defaultValues object). Also, you would like to set a callback function to get measurements, when they are ready. Let's say, you want to set height in feet and inches. To do this, declare `window.MTM_WIDGET_OPTIONS` object:
 
 ```js
 window.MTM_WIDGET_OPTIONS = {
@@ -128,6 +128,9 @@ window.MTM_WIDGET_OPTIONS = {
     heightIn: 5,
     weight: 80,
     email: 'pisa@gmail.com',
+  },
+  disableInput: {
+    email: true
   },
 
   // callback function that will be called with person object, which contains measurements

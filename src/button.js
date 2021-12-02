@@ -41,6 +41,8 @@ class SaiaMTMButton {
    * If you set heightFt and heightIn, then weight should contain value in pounds.
    * @param {Object} [options.disableInput] - opportunity to disable input fields
    * @param {Boolean} [options.disableInput.email] - opportunity to disable email input
+   * * @param {Object} [options.disableScreen] - opportunity to disable screens
+   * @param {Boolean} [options.disableScreen.email] - opportunity to disable email screen
    * @param {Object} options.customSettings - users widget custom settings
    * @param {Object} options.customSettings.button_background_color - button bg color
    * @param {Object} options.customSettings.button_border_color - button border color
@@ -70,6 +72,10 @@ class SaiaMTMButton {
       disableInput: {
         email: false,
         ...globalOptions.disableInput,
+      },
+      disableScreen: {
+        email: false,
+        ...globalOptions.disableScreen,
       },
       onMeasurementsReady: () => {},
       ...options,
@@ -266,7 +272,7 @@ class SaiaMTMButton {
   }
 
   async createWidget(publicKey, options = {}) {
-    const { defaultValues, disableInput } = options;
+    const { defaultValues, disableInput, disableScreen } = options;
 
     // default values
     const defaultHeightCm = (defaultValues) ? defaultValues.heightCm : null;
@@ -275,7 +281,8 @@ class SaiaMTMButton {
     const defaultWeight = (defaultValues) ? defaultValues.weight : null;
     const defaultEmail = (defaultValues) ? defaultValues.email : null;
 
-    const disabledEmail = (disableInput) ? disableInput.email : null;
+    const disabledEmail = disableInput.email;
+    const disableEmailScreen = disableScreen.email;
 
     // get units for default values
     let units = 'in';
@@ -311,6 +318,7 @@ class SaiaMTMButton {
       weight: weightKg,
       weightLb,
       disabledEmail: defaultEmail && disabledEmail,
+      disableEmailScreen: defaultEmail && disableEmailScreen,
     });
 
     const { uuid } = widget;

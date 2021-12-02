@@ -102,8 +102,6 @@ class Email extends Component {
     const { gender } = this.props.customSettings;
     const { email } = this.state;
 
-    console.log(email)
-
     gaOnEmailNext();
 
     analyticsService({

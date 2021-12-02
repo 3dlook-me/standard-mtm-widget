@@ -121,6 +121,8 @@ export const INITIAL_STATE = {
   },
 
   isDisabledEmail: false,
+  isDisableEmailScreen: false,
+  isSkipEmailScreen: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -527,6 +529,18 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isDisabledEmail: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_DISABLE_EMAIL_SCREEN:
+      return {
+        ...state,
+        isDisableEmailScreen: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_SKIP_EMAIL_SCREEN:
+      return {
+        ...state,
+        isSkipEmailScreen: action.payload,
       };
 
     default:

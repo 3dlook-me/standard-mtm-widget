@@ -3,7 +3,7 @@ import {
   isMobileDevice,
   getHeightCm,
   getWeightKg,
-  getWeightLb,
+  getWeightLb, validateEmail,
 } from './helpers/utils';
 import FlowService from './services/flowService';
 
@@ -317,8 +317,8 @@ class SaiaMTMButton {
       email: defaultEmail,
       weight: weightKg,
       weightLb,
-      disabledEmail: defaultEmail && disabledEmail,
-      disableEmailScreen: defaultEmail && disableEmailScreen,
+      disabledEmail: validateEmail(defaultEmail) && disabledEmail,
+      disableEmailScreen: validateEmail(defaultEmail) && disableEmailScreen,
     });
 
     const { uuid } = widget;

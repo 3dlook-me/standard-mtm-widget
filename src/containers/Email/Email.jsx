@@ -53,7 +53,7 @@ class Email extends Component {
     if (email) {
       this.setState({
         email,
-        isEmailValid: true,
+        isEmailValid: validateEmail(email),
         isEmail: true,
       });
     }

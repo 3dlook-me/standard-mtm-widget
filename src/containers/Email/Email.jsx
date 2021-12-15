@@ -53,7 +53,7 @@ class Email extends Component {
     if (email) {
       this.setState({
         email,
-        isEmailValid: true,
+        isEmailValid: validateEmail(email),
         isEmail: true,
       });
     }
@@ -101,8 +101,6 @@ class Email extends Component {
     const { token } = this.props;
     const { gender } = this.props.customSettings;
     const { email } = this.state;
-
-    console.log(email)
 
     gaOnEmailNext();
 

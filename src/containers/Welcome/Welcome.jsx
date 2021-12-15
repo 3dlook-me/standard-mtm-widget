@@ -78,7 +78,8 @@ class Welcome extends Component {
       addGender,
       setMtmClientId,
       source,
-      setIsDisabledEmail
+      setIsDisabledEmail,
+      setIsDisableEmailScreen,
     } = this.props;
 
     const parsedReturnUrl = parseReturnUrl(matches.returnUrl);
@@ -164,6 +165,7 @@ class Welcome extends Component {
             setWeightLb(state.weightLb);
             setWeight(state.weight);
             setIsDisabledEmail(state.disabledEmail);
+            setIsDisableEmailScreen(state.disableEmailScreen);
 
             setCustomSettings(res.widget_settings);
 
@@ -225,14 +227,22 @@ class Welcome extends Component {
       matches,
       token,
       customSettings,
+      setIsSkipEmailScreen,
+      isDisableEmailScreen,
       isSmbFlow,
-      isDemoWidget,
       isSmbQRFlow,
+      isDemoWidget,
     } = this.props;
+
+    const isSkip = (isSmbFlow && !isSmbQRFlow)
+      || isDemoWidget
+      || isDisableEmailScreen;
+
+    setIsSkipEmailScreen(isSkip);
 
     let routeUrl;
 
-    if ((isSmbFlow && !isSmbQRFlow) || isDemoWidget) {
+    if (isSkip) {
       routeUrl = customSettings.gender !== 'all' ? '/height' : 'gender';
     } else {
       routeUrl = '/email';

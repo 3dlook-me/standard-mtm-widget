@@ -172,7 +172,7 @@ class GenderContainer extends Component {
         <div className="screen__content select-your-gender">
           <Stepper steps="9" current={2} />
           <div className="gender__control screen__control">
-            <h3 className="screen__label">Select your gender</h3>
+            <h3 className="screen__label">HOW DO YOU IDENTIFY ?</h3>
             <Gender
               className="select-your-gender__gender"
               change={this.changeGender}
@@ -189,7 +189,7 @@ class GenderContainer extends Component {
               token={token}
               changeAgreeState={this.changeAgree}
             />
-          ) : null }
+          ) : null}
           <button className="button" onClick={this.next} type="button" disabled={buttonDisabled}>Next</button>
         </div>
       </section>

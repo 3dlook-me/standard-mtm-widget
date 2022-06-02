@@ -98,7 +98,8 @@ class Measurements extends Component {
           {groups.map((group, i) => (
             <div className="measurements__list-wrapper">
               <h4 className="measurements__title">{group}</h4>
-              {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events */}
+              {/* eslint-disable-next-line max-len */}
+              {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions */}
               <ul className="measurements__list" onClick={this.handleClick}>
 
                 {parameters[i].map((e, index) => (

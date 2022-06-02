@@ -61,6 +61,9 @@ class SaiaMTMButton {
       returnUrl: `${window.location.origin}${window.location.pathname}${window.location.search}`,
       returnUrlDesktop: false,
       buttonTitle: 'GET MEASURED',
+      onMeasurementsReady: () => {
+      },
+      ...globalOptions,
       defaultValues: {
         email: null,
         heightCm: null,
@@ -77,7 +80,6 @@ class SaiaMTMButton {
         email: false,
         ...globalOptions.disableScreen,
       },
-      onMeasurementsReady: () => {},
       ...options,
       id: uid,
       mtmClientId: null,
@@ -131,7 +133,9 @@ class SaiaMTMButton {
       this.setCustomSettings();
     }
 
-    this.buttonEl.addEventListener('click', async () => { await this.showWidget(); });
+    this.buttonEl.addEventListener('click', async () => {
+      await this.showWidget();
+    });
 
     window.addEventListener('message', (event) => {
       const { command, data } = event.data;

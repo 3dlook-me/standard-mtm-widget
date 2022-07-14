@@ -943,7 +943,7 @@ class Upload extends Component {
             isTableFlow={isTableFlow}
             hardValidation={hardValidation}
             disableTableFlow={this.disableTableFlow}
-            turnOffCamera={this.turnOffCamera}
+            turnOffCamera={() => {}}
             setDeviceCoordinates={this.setDeviceCoordinates}
             token={token}
           />

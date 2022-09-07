@@ -728,7 +728,7 @@ export const LINEAR_PARAMS = [
     paramName: 'waist_depth',
     units: 'cm',
     name: 'Waist depth',
-    paramGroup: 'front_params',
+    paramGroup: 'side_params',
     source: '3DLOOK',
     equipment: 'Tape measure',
     definition: 'Maximum horizontal depth of the stomach at the waist level.',

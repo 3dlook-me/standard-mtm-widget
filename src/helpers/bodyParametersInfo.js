@@ -725,6 +725,16 @@ export const LINEAR_PARAMS = [
     imageURI: '/linear/torso_height.jpg',
   },
   {
+    paramName: 'waist_depth',
+    units: 'cm',
+    name: 'Waist depth',
+    paramGroup: 'side_params',
+    source: '3DLOOK',
+    equipment: 'Tape measure',
+    definition: 'Maximum horizontal depth of the stomach at the waist level.',
+    imageURI: '/volume/waist_depth.jpg',
+  },
+  {
     paramName: 'front_crotch_length',
     units: 'cm',
     name: 'Front crotch length',

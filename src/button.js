@@ -3,7 +3,7 @@ import {
   isMobileDevice,
   getHeightCm,
   getWeightKg,
-  getWeightLb,
+  getWeightLb, validateEmail,
 } from './helpers/utils';
 import FlowService from './services/flowService';
 
@@ -39,6 +39,10 @@ class SaiaMTMButton {
    * @param {number} [options.defaultValues.weight] - default value for weight field.
    * If you set heightCm, then weight should contain value in kilograms.
    * If you set heightFt and heightIn, then weight should contain value in pounds.
+   * @param {Object} [options.disableInput] - opportunity to disable input fields
+   * @param {Boolean} [options.disableInput.email] - opportunity to disable email input
+   * * @param {Object} [options.disableScreen] - opportunity to disable screens
+   * @param {Boolean} [options.disableScreen.email] - opportunity to disable email screen
    * @param {Object} options.customSettings - users widget custom settings
    * @param {Object} options.customSettings.button_background_color - button bg color
    * @param {Object} options.customSettings.button_border_color - button border color
@@ -57,17 +61,25 @@ class SaiaMTMButton {
       returnUrl: `${window.location.origin}${window.location.pathname}${window.location.search}`,
       returnUrlDesktop: false,
       buttonTitle: 'GET MEASURED',
+      onMeasurementsReady: () => {
+      },
+      ...globalOptions,
       defaultValues: {
         email: null,
         heightCm: null,
         heightFt: null,
         heightIn: null,
         weight: null,
-        ...globalOptions,
-        ...options,
+        ...globalOptions.defaultValues,
       },
-      onMeasurementsReady: () => {},
-      ...globalOptions,
+      disableInput: {
+        email: false,
+        ...globalOptions.disableInput,
+      },
+      disableScreen: {
+        email: false,
+        ...globalOptions.disableScreen,
+      },
       ...options,
       id: uid,
       mtmClientId: null,
@@ -121,7 +133,9 @@ class SaiaMTMButton {
       this.setCustomSettings();
     }
 
-    this.buttonEl.addEventListener('click', async () => { await this.showWidget(); });
+    this.buttonEl.addEventListener('click', async () => {
+      await this.showWidget();
+    });
 
     window.addEventListener('message', (event) => {
       const { command, data } = event.data;
@@ -262,7 +276,7 @@ class SaiaMTMButton {
   }
 
   async createWidget(publicKey, options = {}) {
-    const { defaultValues } = options;
+    const { defaultValues, disableInput, disableScreen } = options;
 
     // default values
     const defaultHeightCm = (defaultValues) ? defaultValues.heightCm : null;
@@ -270,6 +284,9 @@ class SaiaMTMButton {
     const defaultHeightIn = (defaultValues) ? defaultValues.heightIn : null;
     const defaultWeight = (defaultValues) ? defaultValues.weight : null;
     const defaultEmail = (defaultValues) ? defaultValues.email : null;
+
+    const disabledEmail = disableInput.email;
+    const disableEmailScreen = disableScreen.email;
 
     // get units for default values
     let units = 'in';
@@ -304,6 +321,8 @@ class SaiaMTMButton {
       email: defaultEmail,
       weight: weightKg,
       weightLb,
+      disabledEmail: validateEmail(defaultEmail) && disabledEmail,
+      disableEmailScreen: validateEmail(defaultEmail) && disableEmailScreen,
     });
 
     const { uuid } = widget;

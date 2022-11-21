@@ -62,6 +62,9 @@ export const CONSTANTS = {
   SET_IS_DEMO_WIDGET: 'SET_IS_DEMO_WIDGET',
   SET_CUSTOM_SETTINGS: 'SET_CUSTOM_SETTINGS',
   SET_IS_WIDGET_ARCHIVED: 'SET_IS_WIDGET_ARCHIVED',
+  SET_IS_DISABLED_EMAIL: 'SET_IS_DISABLED_EMAIL',
+  SET_IS_DISABLE_EMAIL_SCREEN: 'SET_IS_DISABLE_EMAIL_SCREEN',
+  SET_IS_SKIP_EMAIL_SCREEN: 'SET_IS_SKIP_EMAIL_SCREEN',
 };
 
 /**
@@ -592,7 +595,6 @@ export const setIsSmbQRFlow = (isSmbQRFlow) => ({
   payload: isSmbQRFlow,
 });
 
-
 /**
  * Set is table flow mode
  *
@@ -676,6 +678,36 @@ export const setIsWidgetArchived = (isArchived) => ({
   payload: isArchived,
 });
 
+/**
+ * Set is disabled email
+ *
+ * @param {boolean} isDisabled - is disabled
+ */
+export const setIsDisabledEmail = (isDisabled) => ({
+  type: CONSTANTS.SET_IS_DISABLED_EMAIL,
+  payload: isDisabled,
+});
+
+/**
+ * Set is disable email screen
+ *
+ * @param {boolean} isDisable - is disable
+ */
+export const setIsDisableEmailScreen = (isDisable) => ({
+  type: CONSTANTS.SET_IS_DISABLE_EMAIL_SCREEN,
+  payload: isDisable,
+});
+
+/**
+ * Set is skip email screen
+ *
+ * @param {boolean} isSkip - is skip
+ */
+export const setIsSkipEmailScreen = (isSkip) => ({
+  type: CONSTANTS.SET_IS_SKIP_EMAIL_SCREEN,
+  payload: isSkip,
+});
+
 export default {
   setMeasurements,
   resetState,
@@ -737,4 +769,7 @@ export default {
   setIsDemoWidget,
   setCustomSettings,
   setIsWidgetArchived,
+  setIsDisabledEmail,
+  setIsDisableEmailScreen,
+  setIsSkipEmailScreen,
 };

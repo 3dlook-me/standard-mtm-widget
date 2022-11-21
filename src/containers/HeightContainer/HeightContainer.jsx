@@ -176,10 +176,8 @@ class HeightContainer extends Component {
       units,
       token,
       agree,
-      isSmbFlow,
-      isDemoWidget,
       customSettings,
-      isSmbQRFlow,
+      isSkipEmailScreen,
     } = this.props;
 
     return (
@@ -204,7 +202,7 @@ class HeightContainer extends Component {
         </div>
         <div className="screen__footer">
 
-          {((isSmbFlow && !isSmbQRFlow) || isDemoWidget) && customSettings.gender !== 'all' ? (
+          {isSkipEmailScreen && customSettings.gender !== 'all' ? (
             <PolicyAgreement
               agree={agree}
               isAgreeValid={isAgreeValid}

@@ -31,6 +31,7 @@ class Guide extends Component {
     const person = gender === 'female' ? 'women' : 'men';
     const type = measurementsType === 'volume_params' ? VOLUMETRIC_PARAMS : LINEAR_PARAMS;
     const parameter = type[measurement];
+    const isFemaleDef = person === 'women' && parameter.definitionW;
 
     return (
       <div className="guide">
@@ -38,7 +39,6 @@ class Guide extends Component {
         {imageLoading ? (
           <Loader />
         ) : null}
-
 
         <div className="guide__container">
           <h3 className="screen__title guide__main-title">{parameter.name}</h3>
@@ -62,7 +62,7 @@ class Guide extends Component {
           <div className="guide__description">
             <h4 className="guide__title">Definition:</h4>
             <p className="guide__txt">
-              {parameter.definition}
+              {isFemaleDef ? parameter.definitionW : parameter.definition}
             </p>
           </div>
         </div>

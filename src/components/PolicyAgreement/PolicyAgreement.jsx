@@ -26,14 +26,16 @@ const PolicyAgreement = ({
           ? CLICK_TERMS_CONDITIONS
           : CLICK_PRIVACY_POLICY,
       });
-
-      window.open(
-        type === 'terms'
-          ? 'https://3dlook.me/terms-of-service/'
-          : 'https://3dlook.me/privacy-policy/',
-        '_blank',
-      );
     }
+  };
+
+  const openWindow = (type) => {
+    window.open(
+      type === 'terms'
+        ? 'https://3dlook.me/terms-of-service/'
+        : 'https://3dlook.me/privacy-policy/',
+      '_blank',
+    );
   };
 
   const changeAgree = (e) => {
@@ -71,14 +73,16 @@ const PolicyAgreement = ({
           type="button"
           className="PolicyAgreement__link"
           onMouseDown={onClickTermsOrPrivacy('terms')}
+          onClick={() => openWindow('terms')}
         >
-          Terms and Conditions
+          Terms of Use
         </button>
         { ' and ' }
         <button
           type="button"
           className="PolicyAgreement__link"
           onMouseDown={onClickTermsOrPrivacy('privacy')}
+          onClick={() => openWindow('privacy')}
         >
           Privacy Policy
         </button>

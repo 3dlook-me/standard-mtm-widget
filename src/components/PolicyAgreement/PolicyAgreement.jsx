@@ -32,7 +32,7 @@ const PolicyAgreement = ({
   const openWindow = (type) => {
     window.open(
       type === 'terms'
-        ? 'https://3dlook.me/terms-of-service/'
+        ? 'https://3dlook.me/mt-customer-terms-conditions/'
         : 'https://3dlook.me/privacy-policy/',
       '_blank',
     );

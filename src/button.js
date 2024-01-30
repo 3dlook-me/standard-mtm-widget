@@ -1,5 +1,6 @@
 import {
   parseHashParams,
+  parseGetParams,
   isMobileDevice,
   getHeightCm,
   getWeightKg,
@@ -106,7 +107,7 @@ class SaiaMTMButton {
    * Init widget
    */
   init() {
-    this.checkGetParamsForMeasurements();
+    this.savePersonId();
     const buttonClasses = `saia-mtm-button--${this.defaults.id}`;
     const buttonTemplateClasses = buttonTemplate
       .replace('{{classes}}', buttonClasses)
@@ -153,18 +154,21 @@ class SaiaMTMButton {
 
           if (currentData
             && currentData.persons
-            && !currentData.persons.includes(data.personId)) {
+            && !currentData.persons.includes(data.id)) {
             data.persons = [
               ...currentData.persons,
-              currentData.personId,
+              currentData.id,
             ];
           } else {
             data.persons = [
-              data.personId,
+              data.id,
             ];
           }
 
           localStorage.setItem('saia-pf-widget-data', JSON.stringify(data));
+          if (data.id) {
+            localStorage.setItem('mt-person-id', data.id);
+          }
           break;
         case 'saia-pf-widget.recommendations':
           this.displaySize(data);
@@ -178,41 +182,10 @@ class SaiaMTMButton {
     this.isMobile = isMobileDevice();
   }
 
-  /* eslint class-methods-use-this: off */
-  /**
-   * Get persons data from get parameters and save them to localStorage
-   */
-  checkGetParamsForMeasurements() {
-    const params = parseHashParams();
-
-    if (params.chest
-      && params.height
-      && params.hips
-      && params.waist
-      && params.gender) {
-      const data = {
-        hips: parseFloat(params.hips),
-        chest: parseFloat(params.chest),
-        waist: parseFloat(params.waist),
-        gender: params.gender,
-        height: parseFloat(params.height),
-        personId: parseFloat(params.personId),
-      };
-
-      // optional params
-      if (params.inseam) {
-        data.inseam = parseFloat(params.inseam);
-      }
-
-      if (params.low_hips) {
-        data.low_hips = parseFloat(params.low_hips);
-      }
-
-      if (params.thigh) {
-        data.thigh = parseFloat(params.thigh);
-      }
-
-      localStorage.setItem('saia-pf-widget-data', JSON.stringify(data));
+  savePersonId() {
+    const params = parseGetParams();
+    if (params.id || params.personId) {
+      localStorage.setItem('mt-person-id', params.id || params.personId);
     }
   }
 
@@ -230,11 +203,11 @@ class SaiaMTMButton {
       photosFromGallery,
     } = this.defaults;
 
-    const uuid = await this.createWidget(publicKey, this.defaults);
+    const widget = await this.createWidget(publicKey, this.defaults);
 
     const { mtmClientId } = this.defaults;
 
-    if (!uuid || !mtmClientId) {
+    if (!widget.uuid || !mtmClientId) {
       this.buttonEl.classList.remove('saia-mtm-button--pending');
       this.buttonEl.querySelector('.saia-mtm-button__text').innerText = 'Something went wrong';
 
@@ -247,7 +220,11 @@ class SaiaMTMButton {
       this.modal.classList.toggle('active');
     }
 
-    let url = `${widgetUrl}?key=${uuid}#/?origin=${window.location.origin}&returnUrl=${encodeURIComponent(returnUrl)}&mtmClientId=${mtmClientId}`;
+    let customWidgetUrl = widget.absolute_url
+      ? (new URL(widget.absolute_url)).protocol + '//' + (new URL(widget.absolute_url)).hostname
+      : widgetUrl;
+
+    let url = `${customWidgetUrl}/?key=${widget.uuid}#/?origin=${window.location.origin}&returnUrl=${encodeURIComponent(returnUrl)}&mtmClientId=${mtmClientId}`;
 
     if (returnUrlDesktop) {
       url += `&returnUrlDesktop=${returnUrlDesktop}`;
@@ -331,7 +308,7 @@ class SaiaMTMButton {
 
     this.defaults.mtmClientId = mtmClient.id;
 
-    return Promise.resolve(uuid);
+    return Promise.resolve(widget);
   }
 
   /**

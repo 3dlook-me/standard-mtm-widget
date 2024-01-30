@@ -68,6 +68,7 @@ class Measurements extends Component {
       measurements,
       isSoftValidation,
       isCustomMeasurements,
+      gender,
       isOpenGuide
     } = this.props;
     let parameters = [VOLUMETRIC_PARAMS, LINEAR_PARAMS];
@@ -103,7 +104,7 @@ class Measurements extends Component {
               <ul className="measurements__list" onClick={this.handleClick}>
 
                 {parameters[i].map((e, index) => (
-                  measurements[e.paramGroup] && measurements[e.paramGroup][e.paramName] ? (
+                  measurements[e.paramGroup] && measurements[e.paramGroup][e.paramName] && (!(e.paramName === 'pant_waist' && gender === 'female')) ? (
                     <li className="measurements__measurement">
                       <button
                         className="measurements__measurement-label"

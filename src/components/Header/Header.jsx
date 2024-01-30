@@ -1,34 +1,40 @@
+// eslint-disable-next-line no-unused-vars
 import { h, Component } from 'preact';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import './Header.scss';
 
 import FlowService from '../../services/flowService';
-import analyticsService, {
+import
+// analyticsService,
+{
   WIDGET_CLOSE,
   analyticsServiceAsync,
-  FAQ_PAGE_OPEN,
-  FAQ_PAGE_CLOSE,
+  // FAQ_PAGE_OPEN,
+  // FAQ_PAGE_CLOSE,
 } from '../../services/analyticsService';
 import {
   send,
   objectToUrlParams,
   isMobileDevice,
   parseGetParams,
-  browserDetect,
-  browserValidation,
 } from '../../helpers/utils';
-import {
-  gaHelpOnClick,
-  gaCloseOnClick,
-  gaChangeBrowserClose,
-} from '../../helpers/ga';
 import actions from '../../store/actions';
 
 /**
  * Widget header component
  */
 class Header extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isExitModalActive: false,
+    };
+
+  }
+
   componentDidMount() {
     const { flowId, token } = this.props;
 
@@ -40,6 +46,7 @@ class Header extends Component {
     }
   }
 
+  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(nextProps) {
     const { flowId, token } = nextProps;
 
@@ -53,8 +60,6 @@ class Header extends Component {
    * Close button click
    */
   onCloseButtonClick = async () => {
-    gaCloseOnClick();
-
     const {
       returnUrl,
       origin,
@@ -68,12 +73,6 @@ class Header extends Component {
       token,
     } = this.props;
 
-    if (isMobile && !browserValidation()) {
-      const neededBrowser = browserDetect();
-
-      gaChangeBrowserClose(neededBrowser);
-    }
-
     const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
 
     if (isWidgetDeactivated || !/result/i.test(window.location.hash)) {
@@ -81,8 +80,10 @@ class Header extends Component {
         await analyticsServiceAsync({
           uuid,
           event: WIDGET_CLOSE,
+          data: { screen: window.location.hash },
         });
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.log(err);
       }
     }
@@ -94,6 +95,7 @@ class Header extends Component {
         try {
           await this.flow.widgetDeactivate();
         } catch (err) {
+          // eslint-disable-next-line no-console
           console.log(err);
         }
       }
@@ -103,30 +105,39 @@ class Header extends Component {
       } else {
         window.location = returnUrl;
       }
+    } else {
+      window.location = returnUrl || 'https://3dlook.ai/mobile-tailor/';
     }
     resetState();
     send('close', {}, origin);
   };
 
+  onShowExitModal = () => {
+    this.setState((prevState) => ({ ...prevState, isExitModalActive: !prevState.isExitModalActive }));
+  }
+
   /**
    * Help button click
    */
-  onHelpButtonClick = () => {
-    const {
-      isHelpActive,
-      setHelpIsActive,
-      matches,
-      token,
-    } = this.props;
-    const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
-
-    analyticsService({
-      uuid,
-      event: !isHelpActive ? FAQ_PAGE_OPEN : FAQ_PAGE_CLOSE,
-    });
-    gaHelpOnClick();
-    setHelpIsActive(!isHelpActive);
-  };
+  // temporarily disable
+  // onHelpButtonClick = () => {
+  //   const {
+  //     isHelpActive,
+  //     setHelpIsActive,
+  //     matches,
+  //     token,
+  //   } = this.props;
+  //   const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
+  //
+  //   analyticsService({
+  //     uuid,
+  //     event: !isHelpActive ? INFO_CLICK : FAQ_PAGE_CLOSE,
+  //     data: { screen: window.location.hash },
+  //   });
+  //
+  //   gaHelpOnClick();
+  //   setHelpIsActive(!isHelpActive);
+  // };
 
   render() {
     const {
@@ -137,6 +148,10 @@ class Header extends Component {
       sideImage,
       isHeaderTranslucent,
     } = this.props;
+
+    const {
+      isExitModalActive
+    } = this.state;
 
     return (
       <header
@@ -149,22 +164,26 @@ class Header extends Component {
         })}
       >
         <div className="header__offline-status">Check your internet connection</div>
-        <button className="header__help" onClick={this.onHelpButtonClick} type="button">
-          <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
-            <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-              <g transform="translate(-29.000000, -19.000000)">
-                <g transform="translate(30.000000, 20.000000)">
-                  <text fontFamily="Avenir-Black, Avenir" fontSize="12" fontWeight="700" letterSpacing="1" fill="#DDDDDD">
-                    <tspan x="7.44" y="13">i</tspan>
-                  </text>
-                  <circle className="header__svg-fill header__svg-fill--circle" stroke="#DDDDDD" strokeWidth="1.5" cx="9" cy="9" r="9" />
-                </g>
-              </g>
-            </g>
-          </svg>
-        </button>
 
-        <button className="header__close" onClick={this.onCloseButtonClick} type="button">
+        {/* temporarily disable help button */}
+        {/* <button className="header__help" onClick={this.onHelpButtonClick} type="button"> */}
+        {/*  <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg"> */}
+        {/*    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd"> */}
+        {/*      <g transform="translate(-29.000000, -19.000000)"> */}
+        {/*        <g transform="translate(30.000000, 20.000000)"> */}
+        {/* eslint-disable-next-line max-len */}
+        {/*          <text fontFamily="Avenir-Black, Avenir" fontSize="12" fontWeight="700" letterSpacing="1" fill="#DDDDDD"> */}
+        {/*            <tspan x="7.44" y="13">i</tspan> */}
+        {/*          </text> */}
+        {/* eslint-disable-next-line max-len */}
+        {/*          <circle className="header__svg-fill header__svg-fill--circle" stroke="#DDDDDD" strokeWidth="1.5" cx="9" cy="9" r="9" /> */}
+        {/*        </g> */}
+        {/*      </g> */}
+        {/*    </g> */}
+        {/*  </svg> */}
+        {/* </button> */}
+
+        <button className="header__close" onClick={this.onShowExitModal} type="button">
           <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
               <g transform="translate(-567.000000, -20.000000)" stroke="#000000" strokeWidth="2">
@@ -176,9 +195,19 @@ class Header extends Component {
             </g>
           </svg>
         </button>
+
+        <div className={classNames('header__exit', { active: isExitModalActive })}>
+          <svg className="_close_icon" width="40" height="35" xmlns="http://www.w3.org/2000/svg"><path d="M21.258.332a2.5 2.5 0 01.902.902l17.48 30.008A2.5 2.5 0 0137.48 35H2.52a2.5 2.5 0 01-2.16-3.758L17.84 1.234a2.5 2.5 0 013.418-.902zm.001 18.846H18.74v7.494h2.52v-7.494zm0-4.997H18.74v2.498h2.52v-2.498z" fill="#000000" fill-rule="evenodd" /></svg>
+          <p>
+            Are you sure that you want to close widget?
+          </p>
+          <button onClick={this.onShowExitModal} className="button"> No</button>
+          <button onClick={this.onCloseButtonClick} className="button header__close_btn">Yes</button>
+        </div>
       </header>
     );
   }
 }
 
 export default connect((state) => state, actions)(Header);
+

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
@@ -5,11 +6,6 @@ import { connect } from 'react-redux';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { mobileFlowStatusUpdate } from '../../helpers/utils';
-import {
-  gaDataMale,
-  gaDataFemale,
-  gaGenderOnContinue,
-} from '../../helpers/ga';
 import analyticsService, {
   GENDER_PAGE_ENTER,
   GENDER_PAGE_LEAVE,
@@ -93,12 +89,6 @@ class GenderContainer extends Component {
   changeGender = (gender) => {
     const { addGender } = this.props;
 
-    if (gender === 'male') {
-      gaDataMale();
-    } else {
-      gaDataFemale();
-    }
-
     addGender(gender);
 
     this.setState({
@@ -121,6 +111,7 @@ class GenderContainer extends Component {
       isSmbFlow,
       agree,
       isDemoWidget,
+      isSkipEmailScreen,
     } = this.props;
 
     const {
@@ -131,7 +122,7 @@ class GenderContainer extends Component {
 
     let isButtonDisabled;
 
-    if (isSmbFlow || isDemoWidget) {
+    if (isSmbFlow || isDemoWidget || isSkipEmailScreen) {
       isButtonDisabled = !gender || !isGenderValid || !isAgreeValid || !agree;
     } else {
       isButtonDisabled = !gender || !isGenderValid;
@@ -149,7 +140,6 @@ class GenderContainer extends Component {
    */
   next = async () => {
     const { token } = this.props;
-    gaGenderOnContinue();
     analyticsService({
       uuid: token,
       event: GENDER_PAGE_LEAVE,

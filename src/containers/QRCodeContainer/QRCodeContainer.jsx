@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { h, Component } from 'preact';
 import { route, Link } from 'preact-router';
 import API from '@3dlook/saia-sdk/lib/api';
@@ -16,7 +17,6 @@ import analyticsService, {
   SCAN_QR_CODE_PAGE_LINK_COPIED,
   SCAN_QR_CODE_PAGE_SMS_SENT,
 } from '../../services/analyticsService';
-import { gaCopyUrl, gaSendSms } from '../../helpers/ga';
 import {
   Preloader,
   QRCodeBlock,
@@ -113,6 +113,7 @@ class QRCodeContainer extends Component {
       });
   }
 
+  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(nextProps) {
     this.init(nextProps);
   }
@@ -128,7 +129,6 @@ class QRCodeContainer extends Component {
       });
     }
   }
-
 
   componentWillUnmount() {
     if (this.unsubscribe) this.unsubscribe();
@@ -183,6 +183,8 @@ class QRCodeContainer extends Component {
       productId,
       setFlowIsPending,
       phoneNumber,
+      mtmClientId,
+      firstName,
     } = props;
 
     if (token && flowId && !this.api && !this.flow) {
@@ -190,6 +192,10 @@ class QRCodeContainer extends Component {
         host: `${API_HOST}/api/v2/`,
         key: token,
       });
+
+      this.api.axios.defaults.headers = {
+        Authorization: `UUID ${token}`,
+      };
 
       this.flow = new FlowService(token);
       this.flow.setFlowId(flowId);
@@ -216,12 +222,19 @@ class QRCodeContainer extends Component {
         },
       });
 
+      await this.api.mtmClient.update(mtmClientId, {
+        ...(firstName && {
+          first_name: firstName,
+        }),
+      });
+
       if (!isMobile) {
         let loaderCounter = 0;
 
         this.timer = setInterval(() => {
           this.flow.get()
             .then((flowState) => {
+              // eslint-disable-next-line max-len
               if (flowState.state.status === flowStatuses.OPENED_ON_MOBILE && flowState.state.lastActiveDate) {
                 this.setState({
                   isPending: true,
@@ -270,8 +283,6 @@ class QRCodeContainer extends Component {
   }
 
   copyUrl = () => {
-    gaCopyUrl();
-
     const { onCopy, token } = this.props;
 
     analyticsService({
@@ -323,7 +334,6 @@ class QRCodeContainer extends Component {
 
       this.sms.send(phoneNumber, qrCodeUrl)
         .then(() => {
-          gaSendSms();
           this.resendTimer();
 
           this.setState({
@@ -441,7 +451,7 @@ class QRCodeContainer extends Component {
             {isShortUrlFetching ? <Loader /> : false}
           </div>
 
-          <button className={classNames('scan-qrcode__btn', { 'scan-qrcode__btn--copied': isCopied })} disabled={isShortUrlFetching} type="button" data-clipboard-text={qrCopyUrl} onClick={this.copyUrl}>
+          <button className={classNames('scan-qrcode__btn', { 'scan-qrcode__btn--copied': isCopied })} disabled={isShortUrlFetching} type="button" data-clipboard-text={qrCopyUrl} onClick={() => this.copyUrl()}>
             {(!isCopied) ? 'Copy link' : 'Link copied'}
             <svg width="11px" height="14px" viewBox="0 0 11 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">

@@ -1,4 +1,5 @@
 import {
+  // eslint-disable-next-line no-unused-vars
   h,
   Component,
   Fragment,
@@ -21,17 +22,6 @@ import {
   getAsset,
   filterCustomMeasurements,
 } from '../../helpers/utils';
-import {
-  gaUploadOnContinue,
-  gaOnClickLetsStartFrontFriend,
-  gaOpenCameraFrontPhoto,
-  gaOnClickLetsStartSideFriend,
-  gaOpenCameraSidePhoto,
-  gaOnClickLetsStartRequirements,
-  gaOnClickDoneRequirements,
-  gaTakePhotoFriendMode,
-  gaTakePhotoAloneMode,
-} from '../../helpers/ga';
 import analyticsService, {
   FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
   SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
@@ -92,6 +82,7 @@ class Upload extends Component {
     window.addEventListener('unload', this.reloadListener);
   }
 
+  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(nextProps) {
     this.init(nextProps);
   }
@@ -110,6 +101,7 @@ class Upload extends Component {
     window.removeEventListener('unload', this.reloadListener);
     window.removeEventListener('offline', this.setOfflineStatus);
 
+    // eslint-disable-next-line no-underscore-dangle
     if (noSleep._wakeLock) {
       noSleep.disable();
     }
@@ -126,6 +118,7 @@ class Upload extends Component {
       isDemoWidget,
       token,
       isTableFlow,
+      isRetakeFlow,
       frontImage,
     } = this.props;
 
@@ -135,6 +128,10 @@ class Upload extends Component {
         event: !frontImage
           ? FRONT_PHOTO_PAGE_EXAMPLE_OPEN
           : SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+        data: {
+          flowType: isTableFlow ? 'by myself' : 'with a friend',
+          retake: !!isRetakeFlow,
+        },
       });
     }
 
@@ -184,7 +181,7 @@ class Upload extends Component {
     }
 
     if (!isTableFlow
-        && ((!prevProps.sideImage && sideImage) || (!prevProps.frontImage && frontImage))) {
+      && ((!prevProps.sideImage && sideImage) || (!prevProps.frontImage && frontImage))) {
       const event = (!prevProps.sideImage && sideImage && SIDE_PHOTO_PAGE_EXAMPLE_CLOSE)
         || (!prevProps.frontImage && frontImage && FRONT_PHOTO_PAGE_EXAMPLE_CLOSE);
 
@@ -194,8 +191,6 @@ class Upload extends Component {
       });
     }
   }
-
-  getFlowType = () => (this.props.isTableFlow ? 'alone' : 'friend');
 
   disableDeviceScreenLock = () => noSleep.enable();
 
@@ -224,6 +219,7 @@ class Upload extends Component {
       setCamera,
       camera,
       isTableFlow,
+      isRetakeFlow,
       hardValidation,
       token,
     } = this.props;
@@ -231,9 +227,11 @@ class Upload extends Component {
     analyticsService({
       uuid: token,
       event: FRONT_PHOTO_PAGE_PHOTO_TAKEN,
+      data: {
+        flowType: isTableFlow ? 'by myself' : 'with a friend',
+        retake: !!isRetakeFlow,
+      },
     });
-
-    gaOpenCameraFrontPhoto(this.getFlowType());
 
     setHeaderIconsStyle('default');
     addFrontImage(file);
@@ -259,15 +257,18 @@ class Upload extends Component {
       setHeaderIconsStyle,
       setCamera,
       isTableFlow,
+      isRetakeFlow,
       token,
     } = this.props;
 
     analyticsService({
       uuid: token,
       event: SIDE_PHOTO_PAGE_PHOTO_TAKEN,
+      data: {
+        flowType: isTableFlow ? 'by myself' : 'with a friend',
+        retake: !!isRetakeFlow,
+      },
     });
-
-    gaOpenCameraSidePhoto(this.getFlowType());
 
     setHeaderIconsStyle('default');
 
@@ -310,12 +311,9 @@ class Upload extends Component {
       sideImage,
       height,
       gender,
-      phoneNumber,
       firstName,
       notes,
       mtmClientId,
-      widgetId,
-      productUrl,
       deviceCoordinates,
     } = props;
 
@@ -331,9 +329,7 @@ class Upload extends Component {
       origin,
       email,
       weight,
-      units,
       setProcessingStatus,
-      setMtmClientId,
       isFromDesktopToMobile,
       taskId,
       setTaskId,
@@ -341,6 +337,8 @@ class Upload extends Component {
       setFlowState,
       token,
       isTableFlow,
+      flowState,
+      isRetakeFlow,
       customSettings,
     } = this.props;
 
@@ -373,6 +371,7 @@ class Upload extends Component {
         visibilityChange = 'webkitvisibilitychange';
       }
 
+      // eslint-disable-next-line no-underscore-dangle
       if (!noSleep._wakeLock) {
         noSleep.enable();
       }
@@ -381,6 +380,7 @@ class Upload extends Component {
         if (document[hidden]) {
           isPhoneLocked = true;
 
+          // eslint-disable-next-line no-underscore-dangle
           if (noSleep._wakeLock) {
             noSleep.disable();
           }
@@ -412,6 +412,9 @@ class Upload extends Component {
       analyticsService({
         uuid: token,
         event: MAGIC_SCREEN_PAGE_ENTER,
+        data: {
+          retake: !!isRetakeFlow,
+        },
       });
 
       let taskSetId;
@@ -462,7 +465,7 @@ class Upload extends Component {
           },
         });
 
-        setFlowState({ ...this.props.flowState, personId });
+        setFlowState({ ...flowState, personId });
 
         await wait(1000);
 
@@ -535,6 +538,7 @@ class Upload extends Component {
         this.flow.updateLocalState({ processStatus: 'Calculating your Measurements' });
       }
 
+      // eslint-disable-next-line no-underscore-dangle
       if (!noSleep._wakeLock) {
         noSleep.enable();
       }
@@ -558,7 +562,7 @@ class Upload extends Component {
 
       send('data', measurements, origin);
 
-      const softValidation = this.getSoftValidationParams(person);
+      const softValidation = this.getSoftValidationParams(person, customSettings);
 
       setBodyType(person.volume_params.body_type);
       setMeasurements(measurements);
@@ -587,9 +591,7 @@ class Upload extends Component {
       setProcessingStatus('Sending Your Results');
       await wait(1000);
 
-      gaUploadOnContinue(this.getFlowType());
-
-      setFlowState({ ...this.props.flowState, softValidation });
+      setFlowState({ ...flowState, softValidation });
 
       analyticsService({
         uuid: token,
@@ -604,6 +606,10 @@ class Upload extends Component {
       analyticsService({
         uuid: token,
         event: MAGIC_SCREEN_PAGE_FAILED,
+        data: {
+          errorStatus: error.response.status,
+          hardValidation: error.response.data.sub_tasks,
+        },
       });
       if (!isPhoneLocked) {
         // hard validation part
@@ -638,7 +644,7 @@ class Upload extends Component {
           }
 
           route('/hard-validation', true);
-        } else if (error && error.response && error.response.status === 400) {
+        } else if (error && error.response && s === 400) {
           route('/not-found', true);
         } else if (error && error.response && error.response.data) {
           const {
@@ -646,12 +652,14 @@ class Upload extends Component {
             brand: brandError,
             body_part: bodyPartError,
           } = error.response.data;
+          // eslint-disable-next-line no-alert
           alert(detail || brandError || bodyPartError);
           route('/not-found', true);
         } else {
           if (error.message.includes('is not specified')) {
             const { returnUrl } = this.props;
 
+            // eslint-disable-next-line no-alert
             alert('Oops...\nThe server lost connection...\nPlease restart widget flow on the desktop or start again on mobile');
 
             window.location.href = returnUrl;
@@ -664,6 +672,7 @@ class Upload extends Component {
 
           if (isRefreshed) return;
 
+          // eslint-disable-next-line no-console
           console.error(error);
 
           route('/not-found', true);
@@ -677,45 +686,47 @@ class Upload extends Component {
       setCamera,
       token,
       isTableFlow,
+      isRetakeFlow,
     } = this.props;
-
-    if (isTableFlow) {
-      gaOnClickLetsStartRequirements(this.photoValidationDetect());
-    } else {
-      gaOnClickLetsStartFrontFriend(this.photoValidationDetect());
-    }
 
     setCamera('front');
 
     analyticsService({
       uuid: token,
       event: FRONT_PHOTO_PAGE_OPEN_CAMERA,
+      data: {
+        flowType: isTableFlow ? 'by myself' : 'with a friend',
+        retake: !!isRetakeFlow,
+      },
     });
   }
 
   triggerSideImage = () => {
-    const { setCamera, token } = this.props;
-
-    gaOnClickLetsStartSideFriend(this.photoValidationDetect());
+    const {
+      setCamera,
+      isTableFlow,
+      isRetakeFlow,
+      token,
+    } = this.props;
 
     setCamera('side');
 
     analyticsService({
       uuid: token,
       event: SIDE_PHOTO_PAGE_OPEN_CAMERA,
+      data: {
+        flowType: isTableFlow ? 'by myself' : 'with a friend',
+        retake: !!isRetakeFlow,
+      },
     });
   }
 
   openPhotoExample = (photoType) => {
     this.setState({
+      // eslint-disable-next-line react/no-unused-state
       isPhotoExample: true,
+      // eslint-disable-next-line react/no-unused-state
       photoType,
-    });
-  }
-
-  closePhotoExample = () => {
-    this.setState({
-      isPhotoExample: false,
     });
   }
 
@@ -724,6 +735,7 @@ class Upload extends Component {
 
     setIsNetwork(false);
 
+    // eslint-disable-next-line no-alert
     alert('Check your internet connection and try again');
 
     route('/not-found', true);
@@ -755,7 +767,7 @@ class Upload extends Component {
     }
   };
 
-  getSoftValidationParams = (person) => {
+  getSoftValidationParams = (person, customSettings) => {
     const softValidation = {
       looseTop: false,
       looseBottom: false,
@@ -772,40 +784,29 @@ class Upload extends Component {
 
       if (frontParams) {
         if (frontParams.clothes_type && frontParams.clothes_type.types) {
+          // temporary solution
           const { top, bottom } = frontParams.clothes_type.types;
 
-          softValidation.looseTop = top.code === 't2' && bottom.code !== 'b1';
-          softValidation.looseBottom = bottom.code === 'b1' && top.code !== 't2';
-          softValidation.looseTopAndBottom = top.code === 't2' && bottom.code === 'b1';
+          if (customSettings.show_soft_validation) {
+            softValidation.looseTop = top.code === 't2' && bottom.code !== 'b1';
+            softValidation.looseBottom = bottom.code === 'b1' && top.code !== 't2';
+            softValidation.looseTopAndBottom = top.code === 't2' && bottom.code === 'b1';
+            softValidation.wideLegs = false;
+            softValidation.smallLegs = frontParams.legs_distance < 28;
+            softValidation.bodyPercentage = frontParams.body_area_percentage < 0.7;
+          } else {
+            softValidation.looseTop = false;
+            softValidation.looseBottom = false;
+            softValidation.looseTopAndBottom = false;
+            softValidation.wideLegs = false;
+            softValidation.smallLegs = false;
+            softValidation.bodyPercentage = false;
+          }
         }
-
-        softValidation.wideLegs = frontParams.legs_distance > 20;
-        softValidation.smallLegs = frontParams.legs_distance < 2;
-        softValidation.bodyPercentage = frontParams.body_area_percentage < 0.5;
       }
     }
 
     return softValidation;
-  }
-
-  photoValidationDetect = () => {
-    const { isSoftValidationPresent, hardValidation } = this.props;
-
-    if (hardValidation.front || hardValidation.side) return 'hard';
-
-    if (isSoftValidationPresent) return 'soft';
-
-    return '';
-  }
-
-  takePhotoGAEvent = (photoType) => {
-    const { isTableFlow } = this.props;
-
-    if (isTableFlow) {
-      gaTakePhotoAloneMode(photoType, this.photoValidationDetect());
-    } else {
-      gaTakePhotoFriendMode(photoType, this.photoValidationDetect());
-    }
   }
 
   render() {
@@ -857,73 +858,73 @@ class Upload extends Component {
             <h2>Please open this link on your mobile device</h2>
           </div>
         ) : (
-          <Fragment>
-            <Stepper steps="9" current={frontActive ? 7 : 8} />
+            <Fragment>
+              <Stepper steps="9" current={frontActive ? 7 : 8} />
 
-            <div className="screen__content upload">
-              <h3 className="screen__title upload__title">
-                {title}
+              <div className="screen__content upload">
+                <h3 className="screen__title upload__title">
+                  {title}
 
-                <div className="upload__upload-file">
-                  <UploadBlock
-                    className={classNames({
-                      active: frontActive,
-                    })}
-                    gender={gender}
-                    type="front"
-                    validation={{ pose: frontImagePose, body: frontImageBody }}
-                    change={this.saveFrontFile}
-                    isValid={isFrontImageValid}
-                    value={frontImage}
-                    openPhotoExample={this.openPhotoExample}
-                    photosFromGallery={isPhotosFromGallery}
-                  />
-                  <UploadBlock
-                    className={classNames({
-                      active: sideActive,
-                    })}
-                    gender={gender}
-                    type="side"
-                    validation={{ pose: sideImagePose, body: sideImageBody }}
-                    change={this.saveSideFile}
-                    isValid={isSideImageValid}
-                    value={sideImage}
-                    openPhotoExample={this.openPhotoExample}
-                    photosFromGallery={isPhotosFromGallery}
-                  />
-                </div>
-              </h3>
+                  <div className="upload__upload-file">
+                    <UploadBlock
+                      className={classNames({
+                        active: frontActive,
+                      })}
+                      gender={gender}
+                      type="front"
+                      validation={{ pose: frontImagePose, body: frontImageBody }}
+                      change={this.saveFrontFile}
+                      isValid={isFrontImageValid}
+                      value={frontImage}
+                      openPhotoExample={this.openPhotoExample}
+                      photosFromGallery={isPhotosFromGallery}
+                    />
+                    <UploadBlock
+                      className={classNames({
+                        active: sideActive,
+                      })}
+                      gender={gender}
+                      type="side"
+                      validation={{ pose: sideImagePose, body: sideImageBody }}
+                      change={this.saveSideFile}
+                      isValid={isSideImageValid}
+                      value={sideImage}
+                      openPhotoExample={this.openPhotoExample}
+                      photosFromGallery={isPhotosFromGallery}
+                    />
+                  </div>
+                </h3>
 
-              <Requirements
-                isTableFlow={isTableFlow}
-                token={token}
-                video={isTableFlow && getAsset(true, gender, 'videoExample')}
-                photoBg={!isTableFlow && getAsset(false, gender, frontActive ? 'frontExample' : 'sideExample')}
-              />
-            </div>
-            <div className="screen__footer">
-              <button
-                className={classNames('button', 'upload__front-image-btn', {
-                  active: frontActive,
-                })}
-                onClick={this.triggerFrontImage}
-                type="button"
-              >
-                Let&apos;s start
+                <Requirements
+                  isTableFlow={isTableFlow}
+                  token={token}
+                  video={isTableFlow && getAsset(true, gender, 'videoExample')}
+                  photoBg={!isTableFlow && getAsset(false, gender, frontActive ? 'frontExample' : 'sideExample')}
+                />
+              </div>
+              <div className="screen__footer">
+                <button
+                  className={classNames('button', 'upload__front-image-btn', {
+                    active: frontActive,
+                  })}
+                  onClick={this.triggerFrontImage}
+                  type="button"
+                >
+                  Let&apos;s start
               </button>
 
-              <button
-                className={classNames('button', 'upload__side-image-btn', {
-                  active: sideActive,
-                })}
-                onClick={this.triggerSideImage}
-                type="button"
-              >
-                Let&apos;s start
+                <button
+                  className={classNames('button', 'upload__side-image-btn', {
+                    active: sideActive,
+                  })}
+                  onClick={this.triggerSideImage}
+                  type="button"
+                >
+                  Let&apos;s start
               </button>
-            </div>
-          </Fragment>
-        )}
+              </div>
+            </Fragment>
+          )}
 
         <Preloader
           isActive={isPending}
@@ -934,8 +935,6 @@ class Upload extends Component {
 
         {camera ? (
           <Camera
-            gaTakePhoto={this.takePhotoGAEvent}
-            onClickDone={() => { gaOnClickDoneRequirements(this.photoValidationDetect()); }}
             type={camera}
             gender={gender}
             saveFront={this.saveFrontFile}
@@ -943,7 +942,7 @@ class Upload extends Component {
             isTableFlow={isTableFlow}
             hardValidation={hardValidation}
             disableTableFlow={this.disableTableFlow}
-            turnOffCamera={() => {}}
+            turnOffCamera={this.turnOffCamera}
             setDeviceCoordinates={this.setDeviceCoordinates}
             token={token}
           />

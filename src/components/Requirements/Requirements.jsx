@@ -29,20 +29,27 @@ class Requirements extends Component {
   }
 
   componentDidMount() {
-    const { isTableFlow, token } = this.props;
+    const { isTableFlow, isRetakeFlow, token } = this.props;
     const { current } = this.$videoTF;
 
     if (current) current.play();
 
     if (isTableFlow) {
+      let data = {
+        flowType: isTableFlow ? 'by myself' : 'with a friend',
+        retake: !!isRetakeFlow,
+      };
+
       analyticsService({
         uuid: token,
         event: FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
+        data,
       });
 
       analyticsService({
         uuid: token,
         event: SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
+        data,
       });
     }
   }
@@ -81,27 +88,28 @@ class Requirements extends Component {
             </video>
           </div>
         ) : (
-          <div
-            className="requirements__image-example"
-            style={photoBg ? { backgroundImage: `url(${photoBg})` } : null}
-          >
-            {!isImageExampleLoaded ? (
-              <Fragment>
-                <Loader />
+            <div
+              className="requirements__image-example"
+              style={photoBg ? { backgroundImage: `url(${photoBg})` } : null}
+            >
+              {!isImageExampleLoaded ? (
+                <Fragment>
+                  <Loader />
 
-                <img
-                  className="requirements__image-example-onload-detect"
-                  src={photoBg}
-                  onLoad={this.onImgExampleLoaded}
-                  alt="back"
-                />
-              </Fragment>
-            ) : null}
-          </div>
-        )}
+                  <img
+                    className="requirements__image-example-onload-detect"
+                    src={photoBg}
+                    onLoad={this.onImgExampleLoaded}
+                    alt="back"
+                  />
+                </Fragment>
+              ) : null}
+            </div>
+          )}
       </Fragment>
     );
   }
 }
 
 export default Requirements;
+

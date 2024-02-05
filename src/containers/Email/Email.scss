@@ -70,3 +70,11 @@
     }
   }
 }
+
+.name__control {
+  margin-top: 50px;
+
+  @include breakpoint($iphoneSE) {
+    margin-top: 20px;
+  }
+}

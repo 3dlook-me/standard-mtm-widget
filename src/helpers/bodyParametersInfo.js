@@ -91,6 +91,16 @@ export const VOLUMETRIC_PARAMS = [
     imageURI: '/volume/waist_gray.jpg',
   },
   {
+    paramName: 'pant_waist',
+    units: 'cm',
+    name: 'Pant waist',
+    paramGroup: 'volume_params',
+    source: '3DLOOK',
+    equipment: 'Tape measure',
+    definition: 'Measurement around the top of the pant waist at the height where the customer is wearing the pants.',
+    imageURI: '/volume/pant_waist.jpg',
+  },
+  {
     paramName: 'bicep',
     units: 'cm',
     name: 'Upper-arm girth',

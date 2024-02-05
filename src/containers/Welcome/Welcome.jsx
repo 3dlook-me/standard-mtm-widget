@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { h, Component, Fragment } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
@@ -10,12 +11,12 @@ import {
   parseGetParams,
   parseReturnUrl,
 } from '../../helpers/utils';
-import { gaStart, gaWelcomeOnContinue } from '../../helpers/ga';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import analyticsService, {
   WELCOME_SCREEN_ENTER,
   WELCOME_SCREEN_CLOSE,
+  WIDGET_OPEN,
 } from '../../services/analyticsService';
 import { Browser } from '..';
 import { flowStatuses } from '../../configs/flowStatuses';
@@ -112,8 +113,6 @@ class Welcome extends Component {
         isButtonDisabled: true,
       });
 
-      gaStart();
-
       if (photosFromGallery) {
         setIsPhotosFromGallery(true);
       }
@@ -207,6 +206,13 @@ class Welcome extends Component {
       }
     }, { once: true });
 
+    if (uuid && (!!matches.mtmClientId)) {
+      analyticsService({
+        uuid,
+        event: WIDGET_OPEN,
+      });
+    }
+
     analyticsService({
       uuid: uuid || token,
       event: WELCOME_SCREEN_ENTER,
@@ -215,14 +221,13 @@ class Welcome extends Component {
         browser: detect().name === 'ios' ? 'safari' : detect().name,
       },
     });
+
   }
 
   /**
    * On next screen event handler
    */
   onNextScreen = async () => {
-    gaWelcomeOnContinue();
-
     const {
       matches,
       token,
@@ -270,33 +275,33 @@ class Welcome extends Component {
         { invalidBrowser ? (
           <Browser />
         ) : (
-          <section className="screen active">
-            <div className="screen__content welcome">
-              <picture className="welcome__img">
-                <source media="(max-width: 500px)" srcSet={mobileBg} />
-                <img src={desktopBg} alt="photos_model_perfect-fit" />
-              </picture>
-              <div className="screen__intro">
-                <h4 className="screen__intro-title">
-                  Forget about measuring tape or appointments
+            <section className="screen active">
+              <div className="screen__content welcome">
+                <picture className="welcome__img">
+                  <source media="(max-width: 500px)" srcSet={mobileBg} />
+                  <img src={desktopBg} alt="photos_model_perfect-fit" />
+                </picture>
+                <div className="screen__intro">
+                  <h4 className="screen__intro-title">
+                    Forget about measuring tape or appointments
                 </h4>
-                <p className="screen__intro-txt">
-                  No quiz, no measuring tape, no return hassle – in under a minute!
+                  <p className="screen__intro-txt">
+                    No quiz, no measuring tape, no return hassle – in under a minute!
                 </p>
+                </div>
               </div>
-            </div>
-            <div className="screen__footer">
-              <button className="button" type="button" onClick={this.onNextScreen} disabled={isButtonDisabled}>
-                <img
-                  className="screen__footer-loader"
-                  src={loader}
-                  alt="loader"
-                />
-                <span>next</span>
-              </button>
-            </div>
-          </section>
-        )}
+              <div className="screen__footer">
+                <button className="button" type="button" onClick={this.onNextScreen} disabled={isButtonDisabled}>
+                  <img
+                    className="screen__footer-loader"
+                    src={loader}
+                    alt="loader"
+                  />
+                  <span>next</span>
+                </button>
+              </div>
+            </section>
+          )}
       </Fragment>
     );
   }

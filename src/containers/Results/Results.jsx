@@ -1,8 +1,10 @@
 /* eslint class-methods-use-this: off */
+// eslint-disable-next-line no-unused-vars
 import { Component, h } from 'preact';
 import { connect } from 'react-redux';
 import { route } from 'preact-router';
 import classNames from 'classnames';
+import axios from 'axios';
 
 import {
   RESULT_SCREEN_ENTER,
@@ -11,13 +13,7 @@ import {
 import {
   send,
   objectToUrlParams,
-  getGaEventLabel,
 } from '../../helpers/utils';
-import {
-  gaResultsOnContinue,
-  gaSuccess,
-  gaOnSoftRetakeBtn,
-} from '../../helpers/ga';
 import {
   Measurements,
   Guide,
@@ -46,12 +42,16 @@ class Results extends Component {
 
     const { flowId, token } = this.props;
 
+    this.axios = axios.create();
+    this.axios.defaults.headers = {
+      Authorization: `UUID ${token}`,
+    };
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
 
     // the problem is that if we have soft validation screen
     // then at results screen we have size recommendations in componentDidMount
-    // but if we dont have soft validation errors, then in componentDidMount
+    // but if we don't have soft validation errors, then in componentDidMount
     // size recommendations will be equal null
     // to fix this we need to send patch request
     // only once (in componentDidMount or componentWillReceiveProps)
@@ -69,6 +69,7 @@ class Results extends Component {
       setProcessingStatus,
       setIsWidgetDeactivated,
       isMobile,
+      isRetakeFlow,
     } = this.props;
 
     setIsHeaderTranslucent(true);
@@ -79,14 +80,15 @@ class Results extends Component {
       await analyticsServiceAsync({
         uuid: token,
         event: RESULT_SCREEN_ENTER,
+        data: {
+          retake: !!isRetakeFlow,
+        },
       });
     }
 
     setIsWidgetDeactivated(false);
 
     send('data', measurements, origin);
-
-    gaSuccess(this.getFlowPhoto());
 
     if (!isMobile) {
       this.timer = setInterval(() => {
@@ -101,11 +103,13 @@ class Results extends Component {
 
             route('/qrcode', true);
           })
+          // eslint-disable-next-line no-console
           .catch((err) => console.log(err));
       }, 3000);
     }
   }
 
+  // eslint-disable-next-line react/no-deprecated,no-unused-vars
   componentWillReceiveProps = async (nextProps) => {
     const { measurements, origin } = nextProps;
 
@@ -118,8 +122,6 @@ class Results extends Component {
     setIsHeaderTranslucent(false);
     clearInterval(this.timer);
   }
-
-  getFlowPhoto = () => (this.props.isTableFlow ? 'alone' : 'friend');
 
   openGuide = (index, type) => {
     this.setGuideToUrl();
@@ -143,7 +145,6 @@ class Results extends Component {
       addSideImage,
       setTaskId,
       softValidation,
-      isTableFlow,
     } = this.props;
 
     await this.flow.update({
@@ -157,13 +158,9 @@ class Results extends Component {
     if (!softValidation.looseTop && !softValidation.looseBottom
       && !softValidation.looseTopAndBottom) {
       addFrontImage(null);
-
-      gaOnSoftRetakeBtn(getGaEventLabel(isTableFlow), 'front');
     } else {
       addFrontImage(null);
       addSideImage(null);
-
-      gaOnSoftRetakeBtn(getGaEventLabel(isTableFlow), 'both');
     }
 
     setTaskId(null);
@@ -183,6 +180,7 @@ class Results extends Component {
       setHelpBtnStatus,
       isSmbFlow,
       isDemoWidget,
+      customSettings,
     } = this.props;
 
     const { openGuide } = this.state;
@@ -199,33 +197,39 @@ class Results extends Component {
       return;
     }
 
-    gaResultsOnContinue(this.getFlowPhoto());
+    // eslint-disable-next-line max-len
+    const customizeScreen = customSettings.final_screen_customization_data.allowFinalScreenCustomization;
+    const customizationData = customSettings.final_screen_customization_data;
+
+    // eslint-disable-next-line max-len
+    const customRedirect = customizeScreen && !!customizationData.final_screen_is_custom_redirect && !!customizationData.final_screen_custom_redirect_link ? customizationData.final_screen_custom_redirect_link : returnUrl;
 
     if (isFromDesktopToMobile) {
       // pass measurements via hash get params to the destination page
-      window.location = `${returnUrl}${objectToUrlParams({
+      window.location = `${customRedirect}${objectToUrlParams({
         ...measurements,
         personId,
-      }, returnUrl)}`;
+      }, customRedirect)}`;
     }
 
     if (isMobile) {
       try {
         await this.flow.widgetDeactivate();
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.log(err);
       }
 
       if (measurements && !isSmbFlow && !isDemoWidget) {
-        window.location = `${returnUrl}${objectToUrlParams({
+        window.location = `${customRedirect}${objectToUrlParams({
           ...measurements,
           personId,
-        }, returnUrl)}`;
+        }, customRedirect)}`;
       } else {
-        window.location = returnUrl;
+        window.location = customRedirect;
       }
     } else if (isOpenReturnUrlDesktop) {
-      window.parent.location = returnUrl;
+      window.parent.location = customRedirect;
     } else {
       resetState();
       send('close', {}, origin);
@@ -256,9 +260,17 @@ class Results extends Component {
       openGuide,
       measurementsType,
       measurement,
+      // eslint-disable-next-line camelcase
     } = this.state;
 
-    const finalScreen = customSettings.final_screen || 'thanks';
+    const finalScreen = customSettings.final_screen_customization_data.final_screen || customSettings.final_screen || 'thanks';
+    // eslint-disable-next-line max-len
+    const customizeScreen = customSettings.final_screen_customization_data.allowFinalScreenCustomization;
+    const customizationData = customSettings.final_screen_customization_data;
+    const buttonStyle = {
+      backgroundColor: customizeScreen && !!customizationData.final_screen_button_color ? customizationData.final_screen_button_color : '#343239',
+      color: customizeScreen && !!customizationData.final_screen_button_text_color ? customizationData.final_screen_button_text_color : '#fff',
+    };
 
     return (
       <div className="screen screen--result active">
@@ -281,7 +293,9 @@ class Results extends Component {
             </h2>
 
             {finalScreen === 'measurements' ? (
-              <h3 className="screen__title result__title">your Measurements</h3>
+              <h3 className="screen__title result__title">
+                your Measurements
+              </h3>
             ) : null}
 
             {(isSoftValidationPresent && !openGuide) ? (
@@ -294,38 +308,66 @@ class Results extends Component {
                 isDesktop={!isMobile}
                 softValidationRetryCounter={softValidationRetryCounter}
               />
-            ) : null }
+            ) : null}
 
             {finalScreen === 'measurements' ? (
-              <Measurements
-                measurements={measurements}
-                units={units}
-                openGuide={this.openGuide}
-                helpBtnToggle={this.helpBtnToggle}
-                isSoftValidation={isSoftValidationPresent}
-                isCustomMeasurements={customSettings.is_custom_output_measurements}
-                isOpenGuide={openGuide}
-              />
+              <div>
+                {customizeScreen && customSettings.final_screen_logo
+                  ? (
+                    <img
+                      className="result__measurements-logo"
+                      src={customSettings.final_screen_logo}
+                      alt="logo"
+                    />
+                  ) : null}
+
+                {customizeScreen && customizationData.final_screen_text
+                  ? (
+                    <p className="result__measurements-text">
+                      {customizeScreen && customizationData.final_screen_text}
+                    </p>
+                  ) : null}
+
+                <Measurements
+                  measurements={measurements}
+                  units={units}
+                  openGuide={this.openGuide}
+                  helpBtnToggle={this.helpBtnToggle}
+                  gender={gender}
+                  isSoftValidation={isSoftValidationPresent}
+                  isCustomMeasurements={customSettings.is_custom_output_measurements}
+                  isOpenGuide={openGuide}
+                />
+              </div>
             ) : null}
 
             {finalScreen === 'thanks' ? (
+
               <div className="result__thanks">
+                {customizeScreen && customSettings.final_screen_logo
+                  ? (<img className="result__thanks-logo" src={customSettings.final_screen_logo} alt="logo" />) : null}
                 <figure className="result__thanks-icon">
                   <img src={successIcon} alt="success" />
                 </figure>
-                <h3 className="result__thanks-title">Success! You're all set.</h3>
+                <h3 className="result__thanks-title">
+                  {customizeScreen && customizationData.final_screen_title ? customizationData.final_screen_title : 'CONGRATS!'}
+                </h3>
                 <p className="result__thanks-text">
-                  We've got your measurements to
-                  <br />
-                  create your customized wardrobe
+                  {customizeScreen && customizationData.final_screen_text
+                    ? customizationData.final_screen_text
+                    : 'Your AI scan was a success and your measurements have been captured!'}
                 </p>
               </div>
             ) : null}
           </div>
         </div>
         <div className="screen__footer">
-          <button className="button" type="button" onClick={this.onClick}>
-            {openGuide ? 'BACK TO RESULTS' : 'CLOSE'}
+          <button style={buttonStyle} className="button" type="button" onClick={this.onClick}>
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {openGuide ? 'BACK TO RESULTS'
+              : customizeScreen && customizationData.final_screen_button_text
+                ? customizationData.final_screen_button_text
+                : 'CLOSE'}
           </button>
         </div>
       </div>

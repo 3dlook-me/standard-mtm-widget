@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { h, Component, Fragment } from 'preact';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -17,7 +18,6 @@ import {
   PrivacyBanner,
   Loader,
 } from '../../components';
-import { gaCameraModeSelectionNext } from '../../helpers/ga';
 
 import './CameraModeSelection.scss';
 import maleFriend from '../../images/male_friend.png';
@@ -90,7 +90,11 @@ class CameraModeSelection extends Component {
     }
   }
 
-  getFlowType = () => (this.props.isTableFlow ? 'alone' : 'friend');
+  getFlowType = () => {
+    const { isTableFlow } = this.props;
+
+    return isTableFlow ? 'alone' : 'friend';
+  };
 
   handleClick = (e) => {
     const { setIsTableFlow } = this.props;
@@ -109,10 +113,6 @@ class CameraModeSelection extends Component {
     this.setState({
       isFrontModeImageLoaded: true,
     });
-  };
-
-  onClickNextStep = () => {
-    gaCameraModeSelectionNext(this.getFlowType());
   };
 
   onClickNextPage = () => {
@@ -143,123 +143,123 @@ class CameraModeSelection extends Component {
             <h2>Please open this link on your mobile device</h2>
           </div>
         ) : (
-          <Fragment>
-            <div className="screen__content camera-mode-selection">
-              <Stepper steps="9" current="5" />
+            <Fragment>
+              <div className="screen__content camera-mode-selection">
+                <Stepper steps="9" current="5" />
 
-              <h3 className="screen__title">LET&apos;S TAKE 2 PHOTOS</h3>
+                <h3 className="screen__title">LET&apos;S TAKE 2 PHOTOS</h3>
 
-              <PrivacyBanner />
+                <PrivacyBanner />
 
-              <p className="camera-mode-selection__text">
-                You have two options: ask someone to help you, or
+                <p className="camera-mode-selection__text">
+                  You have two options: ask someone to help you, or
                 {' '}
-                <br />
-                {' '}
+                  <br />
+                  {' '}
                 take
                 photos by yourself in the hands-free mode
                 {' '}
-                <br />
-                {' '}
+                  <br />
+                  {' '}
                 using a voice
                 assistant.
                 <br />
-                <b> How would you like to proceed? </b>
-              </p>
+                  <b> How would you like to proceed? </b>
+                </p>
 
-              <div className="camera-mode-selection__buttons-wrap">
-                <label
-                  className={classNames('camera-mode-selection__button camera-mode-selection__button--back', {
-                    'camera-mode-selection__button--active': !isTableFlow || isTableFlowDisabled,
-                  })}
-                  htmlFor="back-mode-radio"
-                >
-                  <input
-                    type="radio"
-                    value
-                    name="flow-mode"
-                    id="back-mode-radio"
-                    onChange={this.handleClick}
-                  />
-
-                  <div
-                    className="camera-mode-selection__img-wrap"
-                    style={{ backgroundImage: `url(${backCameraMode})` }}
+                <div className="camera-mode-selection__buttons-wrap">
+                  <label
+                    className={classNames('camera-mode-selection__button camera-mode-selection__button--back', {
+                      'camera-mode-selection__button--active': !isTableFlow || isTableFlowDisabled,
+                    })}
+                    htmlFor="back-mode-radio"
                   >
-                    {!isBackModeImageLoaded ? (
-                      <Fragment>
-                        <Loader />
+                    <input
+                      type="radio"
+                      value
+                      name="flow-mode"
+                      id="back-mode-radio"
+                      onChange={this.handleClick}
+                    />
 
-                        <img
-                          className="camera-mode-selection__img-onload-detect"
-                          src={frontCameraMode}
-                          onLoad={this.onBackImageLoad}
-                          alt="back"
-                        />
-                      </Fragment>
-                    ) : null}
-                  </div>
-                  <div className="camera-mode-selection__icon-wrap">
-                    <h4 className="camera-mode-selection__title">
-                      With a friend
+                    <div
+                      className="camera-mode-selection__img-wrap"
+                      style={{ backgroundImage: `url(${backCameraMode})` }}
+                    >
+                      {!isBackModeImageLoaded ? (
+                        <Fragment>
+                          <Loader />
+
+                          <img
+                            className="camera-mode-selection__img-onload-detect"
+                            src={frontCameraMode}
+                            onLoad={this.onBackImageLoad}
+                            alt="back"
+                          />
+                        </Fragment>
+                      ) : null}
+                    </div>
+                    <div className="camera-mode-selection__icon-wrap">
+                      <h4 className="camera-mode-selection__title">
+                        With a friend
                     </h4>
-                  </div>
-                </label>
+                    </div>
+                  </label>
 
-                <label
-                  className={classNames('camera-mode-selection__button camera-mode-selection__button--front', {
-                    'camera-mode-selection__button--active': isTableFlow && !isTableFlowDisabled,
-                    'camera-mode-selection__button--inactive': isTableFlowDisabled,
-                  })}
-                  htmlFor="front-mode-radio"
-                >
-                  <input
-                    type="radio"
-                    name="flow-mode"
-                    id="front-mode-radio"
-                    onChange={this.handleClick}
-                    value="table-flow"
-                  />
-
-                  <div
-                    className="camera-mode-selection__img-wrap"
-                    style={{ backgroundImage: `url(${frontCameraMode})` }}
+                  <label
+                    className={classNames('camera-mode-selection__button camera-mode-selection__button--front', {
+                      'camera-mode-selection__button--active': isTableFlow && !isTableFlowDisabled,
+                      'camera-mode-selection__button--inactive': isTableFlowDisabled,
+                    })}
+                    htmlFor="front-mode-radio"
                   >
-                    {!isFrontModeImageLoaded ? (
-                      <Fragment>
-                        <Loader />
+                    <input
+                      type="radio"
+                      name="flow-mode"
+                      id="front-mode-radio"
+                      onChange={this.handleClick}
+                      value="table-flow"
+                    />
 
-                        <img
-                          className="camera-mode-selection__img-onload-detect"
-                          src={frontCameraMode}
-                          onLoad={this.onFrontImageLoad}
-                          alt="back"
-                        />
-                      </Fragment>
-                    ) : null}
-                  </div>
-                  <div className="camera-mode-selection__icon-wrap">
-                    <h4 className="camera-mode-selection__title">
-                      Hands-free
+                    <div
+                      className="camera-mode-selection__img-wrap"
+                      style={{ backgroundImage: `url(${frontCameraMode})` }}
+                    >
+                      {!isFrontModeImageLoaded ? (
+                        <Fragment>
+                          <Loader />
+
+                          <img
+                            className="camera-mode-selection__img-onload-detect"
+                            src={frontCameraMode}
+                            onLoad={this.onFrontImageLoad}
+                            alt="back"
+                          />
+                        </Fragment>
+                      ) : null}
+                    </div>
+                    <div className="camera-mode-selection__icon-wrap">
+                      <h4 className="camera-mode-selection__title">
+                        Hands-free
                     </h4>
-                  </div>
-                </label>
+                    </div>
+                  </label>
+                </div>
               </div>
-            </div>
-            <div className="screen__footer">
-              <Link
-                className="button"
-                href="/how-to-take-photos"
-                onClick={this.onClickNextStep}
-              >
-                NEXT
+              <div className="screen__footer">
+                <Link
+                  className="button"
+                  href="/how-to-take-photos"
+                >
+                  NEXT
               </Link>
-            </div>
-          </Fragment>
-        )}
+              </div>
+            </Fragment>
+          )}
       </div>
     );
   }
 }
 
 export default connect((state) => state, actions)(CameraModeSelection);
+

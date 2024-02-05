@@ -1,6 +1,9 @@
+/* eslint class-methods-use-this: off */
+// eslint-disable-next-line no-unused-vars
 import { h } from 'preact';
 import { connect } from 'react-redux';
 import { route } from 'preact-router';
+import classNames from 'classnames';
 
 import actions from '../../store/actions';
 import {
@@ -10,6 +13,8 @@ import {
 import { BaseMobileFlow, Loader } from '../../components';
 import { flowStatuses } from '../../configs/flowStatuses';
 
+import './SmbFlow.scss';
+
 /**
  * SMB flow page component
  */
@@ -17,6 +22,9 @@ class SmbFlow extends BaseMobileFlow {
   state = {
     hasActiveSubscription: true,
     isWidgetArchived: false,
+    isLimitReached: false,
+    max_calculations: null,
+    sender_email: null,
   };
 
   componentWillUnmount() {
@@ -143,6 +151,19 @@ class SmbFlow extends BaseMobileFlow {
         return Promise.resolve();
       }
 
+      if (err.response.status === 403 && err.response.data.detail === 'User does not have available calculations.') {
+        const {
+          detail,
+          max_calculations_according_to_active_subscription,
+          email
+        } = err.response.data;
+
+        //if (detail === 'User does not have available calculations.') {
+        this.setLimitMsg(max_calculations_according_to_active_subscription, email);
+        return Promise.resolve();
+        //}
+      }
+
       if (err && err.response && err.response.data) {
         console.error(err.response.data.detail);
       } else {
@@ -180,14 +201,46 @@ class SmbFlow extends BaseMobileFlow {
       });
   }
 
+  setLimitMsg = (max_calculations, email) => {
+    this.setState({
+      isLimitReached: true,
+      max_calculations,
+      sender_email: email,
+    });
+  }
+
+
   render() {
-    const { hasActiveSubscription, isWidgetArchived } = this.state;
+    const {
+      hasActiveSubscription,
+      isWidgetArchived,
+      isLimitReached,
+      max_calculations,
+      sender_email,
+    } = this.state;
     const isDesktop = !isMobileDevice();
 
+    if (isLimitReached) {
+      return (
+        <div className="screen active">
+          <div className={classNames('limit-reached', 'active')}>
+            <figure className="limit-reached__wrap">
+              <div className="limit-reached__wrap--calculations"><span>{max_calculations}</span>/{max_calculations}</div>
+              <div className="limit-reached__wrap--title">Oops! The limit has been reached</div>
+              <p>The measurements can not be calculated.</p>
+              <p>Please reach out the scan link sender to unlock the action</p>
+
+              <a className="button" href={`mailto:${sender_email}`}>Contact sender</a>
+            </figure>
+          </div>
+        </div>
+      )
+    }
     if (!hasActiveSubscription || isWidgetArchived) {
       return (
         <div className="screen active">
           <div className="tutorial__desktop-msg">
+            {/* eslint-disable-next-line max-len */}
             <h2>Sorry! Your measuring process cannot be completed right now. Please contact your brand representative.</h2>
           </div>
         </div>
@@ -201,8 +254,8 @@ class SmbFlow extends BaseMobileFlow {
         </div>
       </div>
     ) : (
-      <Loader />
-    );
+        <Loader />
+      );
   }
 }
 

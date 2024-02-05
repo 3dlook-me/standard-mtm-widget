@@ -1,12 +1,15 @@
+// eslint-disable-next-line no-unused-vars
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-import { gaHardValidationError, gaRetakePhotoError } from '../../helpers/ga';
 import { mobileFlowStatusUpdate } from '../../helpers/utils';
 import { ImageExample } from '../../components';
+import analyticsService, {
+  RETAKE_PHOTO,
+} from '../../services/analyticsService';
 
 import './HardValidation.scss';
 import cryingIcon1x from '../../images/crying.png';
@@ -38,8 +41,6 @@ class HardValidation extends Component {
   }
 
   componentDidMount() {
-    gaHardValidationError(this.getFlowType());
-
     const {
       pageReloadStatus,
       isFromDesktopToMobile,
@@ -59,6 +60,7 @@ class HardValidation extends Component {
     }
   }
 
+  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps = async (nextProps) => {
     const { hardValidation } = nextProps;
     const { front, side } = hardValidation;
@@ -69,12 +71,20 @@ class HardValidation extends Component {
     });
   }
 
-  getFlowType = () => (this.props.isTableFlow ? 'alone' : 'friend');
-
   back = () => {
-    route('/upload', true);
+    const {
+      token,
+      setIsRetakeFlow,
+    } = this.props;
 
-    gaRetakePhotoError(this.getFlowType());
+    analyticsService({
+      uuid: token,
+      event: RETAKE_PHOTO,
+    });
+
+    setIsRetakeFlow(true);
+
+    route('/upload', true);
   }
 
   render() {
@@ -175,11 +185,11 @@ class HardValidation extends Component {
 
           {topMessageFront ? (
             <p className="hard-validation__text">{topMessageFront}</p>
-          ) : null }
+          ) : null}
 
           {topMessageSide ? (
             <p className="hard-validation__text">{topMessageSide}</p>
-          ) : null }
+          ) : null}
 
           <img
             className="hard-validation__image"
@@ -194,7 +204,7 @@ class HardValidation extends Component {
               <br />
               Here are some tips:
             </h4>
-          ) : null }
+          ) : null}
 
           {side && !front ? (
             <h4 className="hard-validation__title-2">
@@ -202,7 +212,7 @@ class HardValidation extends Component {
               <br />
               Here are some tips:
             </h4>
-          ) : null }
+          ) : null}
 
           {side && front ? (
             <h4 className="hard-validation__title-2">
@@ -210,22 +220,22 @@ class HardValidation extends Component {
               <br />
               Here are some tips:
             </h4>
-          ) : null }
+          ) : null}
 
           <ol className="hard-validation__recommendations">
             {front ? (
               <li>
                 {tipMessageFront}
                 {(sideInTheFront
-                    || cannotDetectBodyFront
-                    || bodyIsNotFullFront
-                    || wrongFrontPose) ? (
-                      <ImageExample
-                        type="front"
-                        isMobile={isMobile}
-                        gender={gender}
-                        isTableFlow={isTableFlow}
-                      />
+                  || cannotDetectBodyFront
+                  || bodyIsNotFullFront
+                  || wrongFrontPose) ? (
+                    <ImageExample
+                      type="front"
+                      isMobile={isMobile}
+                      gender={gender}
+                      isTableFlow={isTableFlow}
+                    />
                   ) : null}
               </li>
             ) : null}
@@ -234,15 +244,15 @@ class HardValidation extends Component {
               <li>
                 {tipMessageSide}
                 {(sideInTheSide
-                    || cannotDetectBodySide
-                    || bodyIsNotFullSide
-                    || wrongSidePose) ? (
-                      <ImageExample
-                        type="side"
-                        isMobile={isMobile}
-                        gender={gender}
-                        isTableFlow={isTableFlow}
-                      />
+                  || cannotDetectBodySide
+                  || bodyIsNotFullSide
+                  || wrongSidePose) ? (
+                    <ImageExample
+                      type="side"
+                      isMobile={isMobile}
+                      gender={gender}
+                      isTableFlow={isTableFlow}
+                    />
                   ) : null}
               </li>
             ) : null}

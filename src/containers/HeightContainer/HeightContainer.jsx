@@ -124,9 +124,11 @@ class HeightContainer extends Component {
     const isButtonDisabled = !height || !isHeightValid || !isAgreeValid || !agree;
 
     if (isButtonDisabled !== buttonDisabled) {
-      this.setState({
-        buttonDisabled: isButtonDisabled,
-      });
+      setTimeout(() => {
+        this.setState({
+          buttonDisabled: isButtonDisabled,
+        });
+      }, 100);
     }
   }
 

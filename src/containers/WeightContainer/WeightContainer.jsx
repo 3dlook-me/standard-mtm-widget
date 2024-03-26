@@ -156,9 +156,11 @@ class WeightContainer extends Component {
     const isButtonDisabled = !weight;
 
     if (isButtonDisabled !== buttonDisabled && isWeightValid) {
-      this.setState({
-        buttonDisabled: isButtonDisabled,
-      });
+      setTimeout(() => {
+        this.setState({
+          buttonDisabled: isButtonDisabled,
+        });
+      }, 100);
     }
   }
 

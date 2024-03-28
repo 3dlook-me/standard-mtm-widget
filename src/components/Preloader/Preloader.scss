@@ -77,6 +77,7 @@
 
     @include breakpoint($mobile) {
       margin-bottom: 40px;
+      width: 318px;
     }
 
     @media (max-width: 375px) and (max-height: 580px) {
@@ -166,7 +167,7 @@
     }
 
     @media (max-width: 375px) and (max-height: 580px) {
-     margin-bottom: 16px;
+      margin-bottom: 16px;
     }
   }
 

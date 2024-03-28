@@ -129,9 +129,11 @@ class GenderContainer extends Component {
     }
 
     if (isButtonDisabled !== buttonDisabled) {
-      this.setState({
-        buttonDisabled: isButtonDisabled,
-      });
+      setTimeout(() => {
+        this.setState({
+          buttonDisabled: isButtonDisabled,
+        });
+      }, 100);
     }
   }
 

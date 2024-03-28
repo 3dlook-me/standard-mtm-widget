@@ -179,9 +179,11 @@ class Email extends Component {
     const isButtonDisabled = !agree || !isAgreeValid || !isEmailValid || !isEmail;
 
     if (isButtonDisabled !== buttonDisabled) {
-      this.setState({
-        buttonDisabled: isButtonDisabled,
-      });
+      setTimeout(() => {
+        this.setState({
+          buttonDisabled: isButtonDisabled,
+        });
+      }, 100);
     }
   }
 

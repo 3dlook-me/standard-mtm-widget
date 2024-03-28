@@ -105,6 +105,20 @@ export const INITIAL_STATE = {
     gender: 'all',
     redirectLink: null,
     is_custom_output_measurements: false,
+    show_soft_validation: false,
+    final_screen_logo: '',
+    final_screen_customization_data: {
+      allowFinalScreenCustomization: false,
+      final_screen: 'thanks',
+      final_screen_logo: '',
+      final_screen_title: 'Success! You\'re all set',
+      final_screen_text: 'We\'ve got your measurements to create your customized wardrobe',
+      final_screen_button_color: '#000000',
+      final_screen_button_text_color: '#FFFFFF',
+      final_screen_button_text: 'Close',
+      final_screen_is_custom_redirect: false,
+      final_screen_custom_redirect_link: '',
+    },
     outputMeasurements: {
       volumetric: {
         chest: false,
@@ -516,6 +530,20 @@ export default (state = INITIAL_STATE, action) => {
           outputMeasurements: action.payload.output_measurements,
           is_custom_output_measurements: action.payload.is_custom_output_measurements,
           final_screen: action.payload.final_screen,
+          show_soft_validation: action.payload.show_soft_validation,
+          final_screen_logo: action.payload.final_screen_logo,
+          final_screen_customization_data: {
+            allowFinalScreenCustomization: action.payload.final_screen_customization_data.allowFinalScreenCustomization,
+            final_screen: action.payload.final_screen_customization_data.final_screen,
+            final_screen_logo: action.payload.final_screen_customization_data.final_screen_logo,
+            final_screen_title: action.payload.final_screen_customization_data.final_screen_title,
+            final_screen_text: action.payload.final_screen_customization_data.final_screen_text,
+            final_screen_button_color: action.payload.final_screen_customization_data.final_screen_button_color,
+            final_screen_button_text_color: action.payload.final_screen_customization_data.final_screen_button_text_color,
+            final_screen_button_text: action.payload.final_screen_customization_data.final_screen_button_text,
+            final_screen_is_custom_redirect: action.payload.final_screen_customization_data.final_screen_is_custom_redirect,
+            final_screen_custom_redirect_link: action.payload.final_screen_customization_data.final_screen_custom_redirect_link,
+          },
         },
       };
 

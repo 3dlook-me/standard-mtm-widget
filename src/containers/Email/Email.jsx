@@ -1,10 +1,10 @@
+// eslint-disable-next-line no-unused-vars
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 
 import actions from '../../store/actions';
-import { gaOnEmailNext } from '../../helpers/ga';
 import { validateEmail } from '../../helpers/utils';
 import { Stepper, PolicyAgreement } from '../../components';
 import analyticsService, {
@@ -26,13 +26,21 @@ class Email extends Component {
       isEmail: false,
       isEmailValid: true,
       isAgreeValid: true,
+      // eslint-disable-next-line react/no-unused-state
+      isName: false,
       buttonDisabled: true,
       email: null,
+      firstName: null,
     };
   }
 
   componentDidMount() {
-    const { email, agree, token } = this.props;
+    const {
+      email,
+      agree,
+      token,
+      firstName,
+    } = this.props;
 
     analyticsService({
       uuid: token,
@@ -47,7 +55,7 @@ class Email extends Component {
         isEmail: true,
       });
 
-      return;
+      // return;
     }
 
     if (email) {
@@ -55,6 +63,14 @@ class Email extends Component {
         email,
         isEmailValid: validateEmail(email),
         isEmail: true,
+      });
+    }
+
+    if (firstName) {
+      this.setState({
+        firstName,
+        // eslint-disable-next-line react/no-unused-state
+        isName: true,
       });
     }
   }
@@ -88,6 +104,25 @@ class Email extends Component {
     }
   };
 
+  /**
+ * Change name
+ */
+  changeName = (e) => {
+    const { setFirstName } = this.props;
+    const { value } = e.target;
+    const isName = value.trim().length > 0;
+
+    this.setState({
+      // eslint-disable-next-line react/no-unused-state
+      isName,
+      firstName: value,
+    });
+
+    if (isName) {
+      setFirstName(value);
+    }
+  };
+
   changeAgree = (state) => {
     this.setState({
       isAgreeValid: state,
@@ -98,17 +133,16 @@ class Email extends Component {
    * On next screen event handler
    */
   onNextScreen = async () => {
-    const { token } = this.props;
-    const { gender } = this.props.customSettings;
-    const { email } = this.state;
-
-    gaOnEmailNext();
+    const { token, customSettings } = this.props;
+    const { gender } = customSettings;
+    const { email, firstName } = this.state;
 
     analyticsService({
       uuid: token,
       event: EMAIL_PAGE_ENTER_EMAIL,
       data: {
-        value: email,
+        email,
+        firstName,
       },
     });
 
@@ -145,9 +179,11 @@ class Email extends Component {
     const isButtonDisabled = !agree || !isAgreeValid || !isEmailValid || !isEmail;
 
     if (isButtonDisabled !== buttonDisabled) {
-      this.setState({
-        buttonDisabled: isButtonDisabled,
-      });
+      setTimeout(() => {
+        this.setState({
+          buttonDisabled: isButtonDisabled,
+        });
+      }, 100);
     }
   }
 
@@ -157,6 +193,7 @@ class Email extends Component {
       isAgreeValid,
       buttonDisabled,
       email,
+      firstName,
     } = this.state;
 
     const {
@@ -184,6 +221,18 @@ class Email extends Component {
             />
             <p className={classNames('screen__control-error', { active: !isEmailValid })}>Invalid email address</p>
           </div>
+
+          <div className="name__control screen__control">
+            <h3 className="screen__label">Enter your full name</h3>
+            <input
+              className={classNames('input')}
+              onBlur={!isMobile ? this.changeName : false}
+              onChange={isMobile ? this.changeName : false}
+              type="text"
+              placeholder="Alex Smith"
+              value={firstName}
+            />
+          </div>
         </div>
         <div className="screen__footer">
           <PolicyAgreement
@@ -200,3 +249,4 @@ class Email extends Component {
 }
 
 export default connect((state) => state, actions)(Email);
+

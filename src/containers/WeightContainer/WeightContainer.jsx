@@ -1,6 +1,8 @@
+// eslint-disable-next-line no-unused-vars
 import { h, Component, createRef } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
+import API from '@3dlook/saia-sdk/lib/api';
 import classNames from 'classnames';
 
 import actions from '../../store/actions';
@@ -9,15 +11,16 @@ import analyticsService, {
   WEIGHT_PAGE_ENTER,
   WEIGHT_PAGE_LEAVE,
   WEIGHT_PAGE_WEIGHT_SELECTED,
-  WEIGHT_PAGE_WEIGHT_SKIP,
+  WEIGHT_PAGE_IMPERIAL_SELECTED,
+  WEIGHT_PAGE_METRIC_SELECTED,
 } from '../../services/analyticsService';
 import {
   getWeightKg,
+  getWeightLb,
   closeSelectsOnResize,
   mobileFlowStatusUpdate,
 } from '../../helpers/utils';
 import { Stepper } from '../../components';
-import { gaOnWeightNext, gaOnWeightSkip } from '../../helpers/ga';
 import { flowStatuses } from '../../configs/flowStatuses';
 
 import './WeightContainer.scss';
@@ -32,7 +35,7 @@ class WeightContainer extends Component {
 
   constructor(props) {
     super(props);
-
+    this.init(props);
     const { flowId, token, units } = this.props;
     const minWeight = units === 'cm' ? 30 : 66;
     const maxWeight = units === 'cm' ? 200 : 441;
@@ -46,6 +49,7 @@ class WeightContainer extends Component {
       skipWeight: false,
       minWeight,
       maxWeight,
+      units,
     };
 
     this.flow = new FlowService(token);
@@ -110,11 +114,35 @@ class WeightContainer extends Component {
 
       mobileFlowStatusUpdate(this.flow, flowState);
     }
+
+    this.setState({
+      units,
+    });
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', closeSelectsOnResize);
     window.removeEventListener('unload', this.reloadListener);
+  }
+
+  // eslint-disable-next-line react/no-deprecated
+  componentWillReceiveProps(nextProps) {
+    this.init(nextProps);
+  }
+
+  init(props) {
+    const { token } = props;
+
+    if (token && !this.api) {
+      this.api = new API({
+        host: `${API_HOST}/api/v2/`,
+        key: token,
+      });
+
+      this.api.axios.defaults.headers = {
+        Authorization: `UUID ${token}`,
+      };
+    }
   }
 
   /**
@@ -128,10 +156,70 @@ class WeightContainer extends Component {
     const isButtonDisabled = !weight;
 
     if (isButtonDisabled !== buttonDisabled && isWeightValid) {
-      this.setState({
-        buttonDisabled: isButtonDisabled,
-      });
+      setTimeout(() => {
+        this.setState({
+          buttonDisabled: isButtonDisabled,
+        });
+      }, 100);
     }
+  }
+
+  /**
+ * Units change handler
+ */
+  onUnitsChange = (e) => {
+    const units = e.target.value;
+
+    this.setState({
+      units,
+    });
+  }
+
+  /**
+ * Switch element click handler
+ */
+  onSwitchClick = () => {
+    const {
+      setUnits,
+      weight,
+      weightLb,
+      token,
+    } = this.props;
+    let units;
+
+    this.setState((prevState) => {
+      units = (prevState.units === 'cm') ? 'in' : 'cm';
+
+      return {
+        units,
+      };
+    }, () => {
+      setUnits(units);
+
+      const minWeight = units === 'cm' ? 30 : 66;
+      const maxWeight = units === 'cm' ? 200 : 441;
+
+      this.setState({
+        placeholder: units === 'cm' ? 'kg' : 'lb',
+        minWeight,
+        maxWeight,
+      });
+
+      this.weightValues = [...Array(maxWeight + 1).keys()].slice(minWeight);
+
+      if (weight) {
+        this.setState({
+          weightValue: units !== 'cm' ? weightLb : Math.round(weight),
+        });
+      }
+
+      analyticsService({
+        uuid: token,
+        event: units === 'cm'
+          ? WEIGHT_PAGE_METRIC_SELECTED
+          : WEIGHT_PAGE_IMPERIAL_SELECTED,
+      });
+    });
   }
 
   handleClick = (e) => {
@@ -152,10 +240,13 @@ class WeightContainer extends Component {
       setWeightLb(+value);
     } else {
       setWeight(+value);
+      setWeightLb(getWeightLb(+value));
     }
 
     this.setState({
       weightValue: value,
+      minWeight: units === 'cm' ? 30 : 66,
+      maxWeight: units === 'cm' ? 200 : 441,
     });
   };
 
@@ -175,6 +266,7 @@ class WeightContainer extends Component {
         setWeightLb(+val);
       } else {
         setWeight(+val);
+        setWeightLb(getWeightLb(+val));
       }
 
       this.setState({
@@ -221,12 +313,12 @@ class WeightContainer extends Component {
       isMobile,
       units,
       email,
+      firstName,
       settings,
       token,
       phoneNumber,
     } = this.props;
     const { weightValue } = this.state;
-    gaOnWeightNext();
 
     if (weightValue) {
       analyticsService({
@@ -244,12 +336,15 @@ class WeightContainer extends Component {
     });
 
     if (isMobile) {
+      const { mtmClientId } = this.props;
+
       this.$nextBtn.current.classList.add('button--blocked');
 
       await this.flow.update({
         unit: units,
         ...(phoneNumber && { phone: phoneNumber }),
         ...(email && { email }),
+        ...(firstName && { firstName }),
         state: {
           status: flowStatuses.SET_METADATA,
           processStatus: '',
@@ -260,6 +355,9 @@ class WeightContainer extends Component {
           settings,
           ...(weight && { weight }),
         },
+      });
+      await this.api.mtmClient.update(mtmClientId, {
+        ...(firstName && { first_name: firstName }),
       })
         .finally(() => {
           this.$nextBtn.current.classList.remove('button--blocked');
@@ -271,32 +369,30 @@ class WeightContainer extends Component {
     }
   };
 
-  skipAndNextHandler = () => {
-    const { setWeight, token } = this.props;
+  // skipAndNextHandler = () => {
+  //  const { setWeight, token } = this.props;
 
-    gaOnWeightSkip();
+  //  gaOnWeightSkip();
 
-    analyticsService({
-      uuid: token,
-      event: WEIGHT_PAGE_WEIGHT_SKIP,
-    });
+  //  analyticsService({
+  //    uuid: token,
+  //    event: WEIGHT_PAGE_WEIGHT_SKIP,
+  //  });
 
-    this.setState(
-      {
-        weightValue: null,
-        skipWeight: true,
-      },
-      async () => {
-        await setWeight(null);
+  //  this.setState(
+  //    {
+  //      weightValue: null,
+  //      skipWeight: true,
+  //    },
+  //    async () => {
+  //      await setWeight(null);
 
-        this.toNextScreen();
-      },
-    );
-  }
+  //      this.toNextScreen();
+  //    },
+  //  );
+  // }
 
   nextButtonClick = async () => {
-    gaOnWeightNext();
-
     this.toNextScreen();
   };
 
@@ -346,44 +442,58 @@ class WeightContainer extends Component {
                   </div>
                 </div>
               ) : (
-                <div className="weight-container__input-wrap">
-                  <input
-                    className={classNames('input', {
-                      'input--invalid': !isWeightValid && !skipWeight,
-                    })}
-                    type="number"
-                    placeholder="0"
-                    onBlur={this.changeWeight}
-                    onKeyDown={this.handleClick}
-                    value={weightValue}
-                  />
-                  <div className="weight-container__placeholder">
-                    {placeholder}
+                  <div className="weight-container__input-wrap">
+                    <input
+                      className={classNames('input', {
+                        'input--invalid': !isWeightValid && !skipWeight,
+                      })}
+                      type="number"
+                      placeholder="0"
+                      onBlur={this.changeWeight}
+                      onKeyDown={this.handleClick}
+                      value={weightValue}
+                    />
+                    <div className="weight-container__placeholder">
+                      {placeholder}
+                    </div>
+                    <p
+                      className={classNames('screen__control-error', {
+                        active: !isWeightValid && !skipWeight,
+                      })}
+                    >
+                      {units === 'cm'
+                        ? 'Your weight should be between 30-200 KG'
+                        : 'Your weight should be between 66 and 441 LB'}
+                    </p>
                   </div>
-                  <p
-                    className={classNames('screen__control-error', {
-                      active: !isWeightValid && !skipWeight,
-                    })}
-                  >
-                    {units === 'cm'
-                      ? 'Your weight should be between 30-200 KG'
-                      : 'Your weight should be between 66 and 441 LB'}
-                  </p>
-                </div>
-              )}
+                )}
             </div>
-            <p className="weight-container__txt">
-              We use weight data, so your measurements will be more accurate,
-              but if you want you can
-              <button
-                className="weight-container__skip-btn"
-                type="button"
-                onClick={this.skipAndNextHandler}
-              >
-                skip
+
+            <div className={classNames('height__switcher', { 'height__switcher--cm': units === 'cm', 'height__switcher--in': units === 'in' })}>
+              <label className={classNames('height__switcher-item', 'height__switcher-item--cm', { checked: units === 'cm' })} htmlFor="measure-cm" tabIndex="-1">
+                <input type="radio" name="measure" id="measure-cm" value="cm" onChange={this.onUnitsChange} checked={units === 'cm'} />
+                <div className="height__switcher-info">
+                  <p>Metric system</p>
+                  <p>CM/KG</p>
+                </div>
+              </label>
+
+              <label className={classNames('height__switcher-item', 'height__switcher-item--in', { checked: units === 'in' })} htmlFor="measure-in" tabIndex="-1">
+                <input type="radio" name="measure" id="measure-in" value="in" onChange={this.onUnitsChange} checked={units === 'in'} />
+                <div className="height__switcher-info">
+                  <p>Imperial system</p>
+                  <p>IN/LB</p>
+                </div>
+              </label>
+
+              <button className="height__switcher-switch" onClick={this.onSwitchClick} type="button">
+                <span>
+                  {'Change units to '}
+                  {(units === 'in') ? 'centimeters' : 'feet and inches'}
+                </span>
               </button>
-              this step.
-            </p>
+            </div>
+
           </div>
         </div>
         <div className="screen__footer">
@@ -403,3 +513,4 @@ class WeightContainer extends Component {
 }
 
 export default connect((state) => state, actions)(WeightContainer);
+

@@ -1,4 +1,5 @@
 import {
+  // eslint-disable-next-line no-unused-vars
   h,
   Component,
   createRef,
@@ -8,12 +9,6 @@ import { Link } from 'preact-router';
 
 import actions from '../../store/actions';
 import { Loader, Stepper } from '../../components';
-import {
-  gaOnClickNextHowTakePhotos,
-  gaOnClickReplay,
-  gaOnClickNextAloneTakePhotos,
-  gaOnClickReplayAlone,
-} from '../../helpers/ga';
 import FlowService from '../../services/flowService';
 import { getAsset, mobileFlowStatusUpdate } from '../../helpers/utils';
 import analyticsService, {
@@ -49,10 +44,6 @@ class HowToTakePhotos extends Component {
     };
 
     window.addEventListener('unload', this.reloadListener);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('unload', this.reloadListener);
   }
 
   componentDidMount = () => {
@@ -96,6 +87,7 @@ class HowToTakePhotos extends Component {
     const { token, isTableFlow } = this.props;
 
     this.$video.current.removeEventListener('timeupdate', this.handleProgress);
+    window.removeEventListener('unload', this.reloadListener);
 
     analyticsService({
       uuid: token,
@@ -123,12 +115,6 @@ class HowToTakePhotos extends Component {
   restartVideo = () => {
     const { token, isTableFlow } = this.props;
     const { current } = this.$video;
-
-    if (this.props.isTableFlow) {
-      gaOnClickReplayAlone();
-    } else {
-      gaOnClickReplay();
-    }
 
     current.currentTime = 0;
     current.play();
@@ -178,14 +164,6 @@ class HowToTakePhotos extends Component {
     this.setState({
       isVideoLoaded: true,
     });
-  }
-
-  onClickNext = () => {
-    if (this.props.isTableFlow) {
-      return gaOnClickNextAloneTakePhotos();
-    }
-
-    gaOnClickNextHowTakePhotos();
   }
 
   render() {
@@ -240,7 +218,7 @@ class HowToTakePhotos extends Component {
         </div>
 
         <div className="screen__footer">
-          <Link className="button" href="/upload" onClick={this.onClickNext}>
+          <Link className="button" href="/upload">
             Next
           </Link>
         </div>

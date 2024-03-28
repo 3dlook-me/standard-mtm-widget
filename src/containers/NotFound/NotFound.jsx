@@ -1,11 +1,14 @@
+// eslint-disable-next-line no-unused-vars
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
 import actions from '../../store/actions';
-import { gaSizeNotFound } from '../../helpers/ga';
 import { mobileFlowStatusUpdate } from '../../helpers/utils';
 import FlowService from '../../services/flowService';
+import analyticsService, {
+  NOT_FOUND_PAGE,
+} from '../../services/analyticsService';
 
 import './NotFound.scss';
 import confusedIcon1x from '../../images/confused.png';
@@ -32,8 +35,6 @@ class NotFound extends Component {
   }
 
   componentDidMount = async () => {
-    gaSizeNotFound();
-
     const {
       addFrontImage,
       addSideImage,
@@ -44,6 +45,11 @@ class NotFound extends Component {
       isNetwork,
       isDemoWidget,
     } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: NOT_FOUND_PAGE,
+    });
 
     if (isNetwork) {
       addFrontImage(null);

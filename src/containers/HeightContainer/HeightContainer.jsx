@@ -1,10 +1,10 @@
+// eslint-disable-next-line no-unused-vars
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-import { gaOnHeightNext } from '../../helpers/ga';
 import { mobileFlowStatusUpdate } from '../../helpers/utils';
 import analyticsService, {
   HEIGHT_PAGE_ENTER,
@@ -92,13 +92,21 @@ class HeightContainer extends Component {
    * On next screen event handler
    */
   onNextScreen = async () => {
-    const { token } = this.props;
-    gaOnHeightNext();
+    const { token, height } = this.props;
+
+    analyticsService({
+      uuid: token,
+      event: HEIGHT_PAGE_HEIGHT_SELECTED,
+      data: {
+        height,
+      },
+    });
 
     analyticsService({
       uuid: token,
       event: HEIGHT_PAGE_LEAVE,
     });
+
     route('/weight', false);
   };
 
@@ -116,9 +124,11 @@ class HeightContainer extends Component {
     const isButtonDisabled = !height || !isHeightValid || !isAgreeValid || !agree;
 
     if (isButtonDisabled !== buttonDisabled) {
-      this.setState({
-        buttonDisabled: isButtonDisabled,
-      });
+      setTimeout(() => {
+        this.setState({
+          buttonDisabled: isButtonDisabled,
+        });
+      }, 100);
     }
   }
 
@@ -126,7 +136,7 @@ class HeightContainer extends Component {
    * Change height handler
    */
   changeHeight = (height) => {
-    const { addHeight, token } = this.props;
+    const { addHeight } = this.props;
     const numHeight = parseInt(height, 10);
     let isValueValid = false;
 
@@ -135,16 +145,6 @@ class HeightContainer extends Component {
     }
 
     addHeight(numHeight);
-
-    if (isValueValid) {
-      analyticsService({
-        uuid: token,
-        event: HEIGHT_PAGE_HEIGHT_SELECTED,
-        data: {
-          value: numHeight,
-        },
-      });
-    }
 
     this.setState({
       isHeightValid: isValueValid,
@@ -209,7 +209,7 @@ class HeightContainer extends Component {
               token={token}
               changeAgreeState={this.changeAgree}
             />
-          ) : null }
+          ) : null}
 
           <button className="button" onClick={this.onNextScreen} type="button" disabled={buttonDisabled}>Next</button>
         </div>

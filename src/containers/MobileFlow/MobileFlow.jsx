@@ -1,10 +1,10 @@
+// eslint-disable-next-line no-unused-vars
 import { h } from 'preact';
 import { connect } from 'react-redux';
 import { route } from 'preact-router';
 import { detect } from 'detect-browser';
 
 import actions from '../../store/actions';
-import { gaSwitchToMobileFlow } from '../../helpers/ga';
 import {
   browserValidation, isMobileDevice,
 } from '../../helpers/utils';
@@ -58,8 +58,6 @@ class MobileFlow extends BaseMobileFlow {
 
         return Promise.resolve();
       }
-
-      gaSwitchToMobileFlow();
 
       const flowStateData = await this.flow.get();
 
@@ -115,8 +113,10 @@ class MobileFlow extends BaseMobileFlow {
       }
 
       if (err && err.response && err.response.data) {
+        // eslint-disable-next-line no-console
         console.error(err.response.data.detail);
       } else {
+        // eslint-disable-next-line no-console
         console.error(err.message);
       }
 

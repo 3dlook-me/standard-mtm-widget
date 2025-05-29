@@ -65,6 +65,8 @@ export const CONSTANTS = {
   SET_IS_DISABLED_EMAIL: 'SET_IS_DISABLED_EMAIL',
   SET_IS_DISABLE_EMAIL_SCREEN: 'SET_IS_DISABLE_EMAIL_SCREEN',
   SET_IS_SKIP_EMAIL_SCREEN: 'SET_IS_SKIP_EMAIL_SCREEN',
+  SET_FRONT_REAL_TIME_POSE_VALIDATION: 'SET_FRONT_REAL_TIME_POSE_VALIDATION',
+  SET_SIDE_REAL_TIME_POSE_VALIDATION: 'SET_SIDE_REAL_TIME_POSE_VALIDATION',
 };
 
 /**
@@ -315,6 +317,27 @@ export const setHardValidation = (hardValidation) => ({
   type: CONSTANTS.SET_HARD_VALIDATION,
   payload: hardValidation,
 });
+
+/**
+ * Set real time pose validation status for front photo
+ *
+ * @param {boolean} front - real time pose validation status for front photo
+ */
+export const setIsFrontRealTimePoseValidator = (front) => ({
+  type: CONSTANTS.SET_FRONT_REAL_TIME_POSE_VALIDATION,
+  payload: front,
+});
+
+/**
+ * Set real time pose validation status for side photo
+ *
+ * @param {boolean} side - real time pose validation status for side photo
+ */
+export const setIsSideRealTimePoseValidator = (side) => ({
+  type: CONSTANTS.SET_SIDE_REAL_TIME_POSE_VALIDATION,
+  payload: side,
+});
+
 
 /**
  * Set body type
@@ -772,4 +795,6 @@ export default {
   setIsDisabledEmail,
   setIsDisableEmailScreen,
   setIsSkipEmailScreen,
+  setIsFrontRealTimePoseValidator,
+  setIsSideRealTimePoseValidator,
 };

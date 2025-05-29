@@ -261,7 +261,7 @@ class HardValidation extends Component {
         </div>
         <div className="screen__footer hard-validation__footer">
           <button className="button" onClick={this.back} type="button">
-            <span>Retake photo</span>
+            <span>Retake photos</span>
           </button>
         </div>
       </div>

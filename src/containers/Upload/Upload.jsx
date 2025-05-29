@@ -315,6 +315,7 @@ class Upload extends Component {
       notes,
       mtmClientId,
       deviceCoordinates,
+      isRealTimePoseValidator,
     } = props;
 
     let { personId } = props;
@@ -340,6 +341,8 @@ class Upload extends Component {
       flowState,
       isRetakeFlow,
       customSettings,
+      setIsFrontRealTimePoseValidator,
+      setIsSideRealTimePoseValidator,
     } = this.props;
 
     try {
@@ -487,6 +490,7 @@ class Upload extends Component {
           photoFlowType,
           deviceCoordinates: { ...deviceCoordinates },
           measurementsType: 'all',
+          validateImages: (!(isRealTimePoseValidator.front && isRealTimePoseValidator.side)).toString(),
         });
 
         setTaskId(taskSetId);
@@ -514,6 +518,7 @@ class Upload extends Component {
           ...(weight && { weight }),
           deviceCoordinates: { ...deviceCoordinates },
           ...images,
+          validateImages: (!(isRealTimePoseValidator.front && isRealTimePoseValidator.side)).toString(),
         });
         await wait(1000);
 
@@ -625,6 +630,9 @@ class Upload extends Component {
             side: sideTask.message,
             ...(measurementError && { measurementError: true }),
           });
+
+          setIsFrontRealTimePoseValidator(false);
+          setIsSideRealTimePoseValidator(false);
 
           // reset front image if there is hard validation error
           // in the front image
@@ -767,6 +775,16 @@ class Upload extends Component {
     }
   };
 
+  setFrontValidationStatus = (isFrontRealTimePoseValidation) => {
+    const { setIsFrontRealTimePoseValidator } = this.props;
+    setIsFrontRealTimePoseValidator(isFrontRealTimePoseValidation);
+  }
+
+  setSideValidationStatus = (isSideRealTimePoseValidation) => {
+    const { setIsSideRealTimePoseValidator } = this.props;
+    setIsSideRealTimePoseValidator(!!isSideRealTimePoseValidation);
+  }
+
   getSoftValidationParams = (person, customSettings) => {
     const softValidation = {
       looseTop: false,
@@ -792,8 +810,8 @@ class Upload extends Component {
             softValidation.looseBottom = bottom.code === 'b1' && top.code !== 't2';
             softValidation.looseTopAndBottom = top.code === 't2' && bottom.code === 'b1';
             softValidation.wideLegs = false;
-            softValidation.smallLegs = frontParams.legs_distance < 28;
-            softValidation.bodyPercentage = frontParams.body_area_percentage < 0.7;
+            softValidation.smallLegs = false;
+            softValidation.bodyPercentage = false;
           } else {
             softValidation.looseTop = false;
             softValidation.looseBottom = false;
@@ -944,6 +962,8 @@ class Upload extends Component {
             disableTableFlow={this.disableTableFlow}
             turnOffCamera={this.turnOffCamera}
             setDeviceCoordinates={this.setDeviceCoordinates}
+            isFrontPhotoPoseValidated={this.setFrontValidationStatus}
+            isSidePhotoPoseValidated={this.setSideValidationStatus}
             token={token}
           />
         ) : null}

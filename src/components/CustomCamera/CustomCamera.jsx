@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import Camera from '@3dlook/camera/src/Camera';
+import Camera from '@3dlook-me/camera-rpv/src/Camera';
 
 import analyticsService, {
   CAMERA_ACCESS_DENIED,

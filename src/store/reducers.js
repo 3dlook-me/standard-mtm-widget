@@ -61,6 +61,11 @@ export const INITIAL_STATE = {
     side: null,
   },
 
+  isRealTimePoseValidator: {
+    front: false,
+    side: false,
+  },
+
   email: null,
   units: 'in',
   firstName: null,
@@ -310,6 +315,24 @@ export default (state = INITIAL_STATE, action) => {
         hardValidation: {
           ...state.hardValidation,
           ...action.payload,
+        },
+      };
+
+    case CONSTANTS.SET_FRONT_REAL_TIME_POSE_VALIDATION:
+      return {
+        ...state,
+        isRealTimePoseValidator: {
+          ...state.isRealTimePoseValidator,
+          front: action.payload,
+        },
+      };
+
+    case CONSTANTS.SET_SIDE_REAL_TIME_POSE_VALIDATION:
+      return {
+        ...state,
+        isRealTimePoseValidator: {
+          ...state.isRealTimePoseValidator,
+          side: action.payload,
         },
       };
 

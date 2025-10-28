@@ -10,6 +10,7 @@ const RenameOutputPlugin = require('rename-output-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WebpackCleanPlugin = require('webpack-clean');
 const GitRevisionPlugin = require('git-revision-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
@@ -88,6 +89,12 @@ const plugins = [
   }),
   new HtmlWebpackInlineSourcePlugin(),
   new CleanWebpackPlugin(),
+  new CopyWebpackPlugin([
+    {
+      from: path.resolve(__dirname, 'node_modules/@3dlook-me/camera-rpv-client/dist/widget-assets'),
+      to: 'widget-assets',
+    },
+  ]),
 ];
 
 // set plugins for shopify build

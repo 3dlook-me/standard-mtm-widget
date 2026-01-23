@@ -224,7 +224,7 @@ class SaiaMTMButton {
       ? (new URL(widget.absolute_url)).protocol + '//' + (new URL(widget.absolute_url)).hostname
       : widgetUrl;
 
-    let url = `${customWidgetUrl}/?key=${widget.uuid}#/?origin=${window.location.origin}&returnUrl=${encodeURIComponent(returnUrl)}&mtmClientId=${mtmClientId}`;
+    let url = `${widgetUrl}/#?key=${widget.uuid}&origin=${window.location.origin}&returnUrl=${encodeURIComponent(returnUrl)}&mtmClientId=${mtmClientId}`;
 
     if (returnUrlDesktop) {
       url += `&returnUrlDesktop=${returnUrlDesktop}`;

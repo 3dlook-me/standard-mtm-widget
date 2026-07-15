@@ -2,11 +2,18 @@
 
 html {
   height: 100%;
+  background: #E0E6F9;
 }
 
 body {
-  background: #eee;
+  background: #E0E6F9;
   min-height: 100%;
+
+  @include breakpoint(max-height 530px) {
+    overscroll-behavior-y: auto;
+    overflow: auto;
+  }
+
 
   @include breakpoint(max-width 768px) {
     display: flex;
@@ -45,6 +52,14 @@ body {
       pointer-events: none !important;
     }
   }
+}
+
+.widget-camera__top-icon {
+  display: none !important;
+}
+.widget-camera__tap-screen-button {
+  margin-bottom: 40px !important;
+  font-weight: 500 !important;
 }
 
 button {

@@ -11,8 +11,7 @@ import analyticsService, {
 } from '../../services/analyticsService';
 
 import './NotFound.scss';
-import confusedIcon1x from '../../images/confused.png';
-import confusedIcon2x from '../../images/confused@2x.png';
+import errorIcon from '../../images/error.png';
 
 /**
  * Size not found page component
@@ -76,34 +75,33 @@ class NotFound extends Component {
 
   render() {
     const { isNetwork } = this.props;
-    const btnText = isNetwork ? 'ok' : 'try again';
-    const text = isNetwork ? 'try little bit later.' : 'check your internet connection and try again.';
+    const btnText = isNetwork ? 'Okay' : 'Try again';
+    const text = isNetwork
+      ? 'Something went wrong. Please try again in a minute.'
+      : 'Please check your internet connection and try again.';
 
     return (
       <section className="screen active">
         <div className="screen__content not-found">
-          <h2 className="screen__subtitle">
-            <span className="failure">Error</span>
-          </h2>
+          <div className="not-found__eyebrow">ERROR</div>
 
-          <h3 className="screen__title not-found__title">Oops!</h3>
+          <img className="not-found__image" src={errorIcon} alt="error" />
+
+          <h3 className="screen__title not-found__title">Oops...</h3>
           <p className="not-found__text">
             Something went wrong
           </p>
 
-          {isNetwork ? (
-            <img className="not-found__image" src={confusedIcon1x} srcSet={`${confusedIcon1x} 1x, ${confusedIcon2x} 2x`} alt="not found" />
-          ) : null}
-
-          <p className="not-found__text-2">
-            We can’t calculate your
-            <b> measurements </b>
-            right now.
-            <br />
-            {`Please ${text}`}
-          </p>
+          <div className="not-found__card">
+            <h4 className="not-found__title-2">
+              Can&apos;t calculate
+              <br />
+              measurements
+            </h4>
+            <p className="not-found__text-2">{text}</p>
+          </div>
         </div>
-        <div className="screen__footer">
+        <div className="screen__footer not-found__footer">
           <button className="button" onClick={this.close} type="button">{btnText}</button>
         </div>
       </section>

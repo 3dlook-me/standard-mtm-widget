@@ -15,8 +15,14 @@ class Guide extends Component {
 
   componentDidMount() {
     const { close } = this.props;
-
+    this.loaderContainer = document.querySelector('.loader');
+    this.loaderContainer.classList.add('loader--bg');
     window.addEventListener('popstate', close, { once: true });
+  }
+
+
+  componentWillUnmount() {
+    this.loaderContainer.classList.remove('loader--bg');
   }
 
   handleLoad = () => {

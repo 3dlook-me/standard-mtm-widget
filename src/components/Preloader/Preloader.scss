@@ -8,13 +8,12 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: #fff;
   padding-top: 36px;
 
   @include breakpoint($mobile) {
-    top: 40px;
+    top: 0;
     justify-content: space-between;
-    padding-top: 60px;
+    padding-top: 30px;
   }
 
   @media screen and (max-width: 374px) {
@@ -25,7 +24,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     z-index: 3;
+    box-sizing: border-box;
+    padding: 24px 32px 30px;
+
+    @include breakpoint($mobile) {
+      justify-content: space-evenly;
+      padding: 30px 0 0;
+    }
 
     @media (max-width: 414px) and (max-height: 662px) {
       justify-content: flex-start;
@@ -55,24 +62,33 @@
 
   &__title {
     color: #000000;
-    font-size: 16px;
-    font-weight: bold;
-    line-height: 19px;
+    font-size: 23px;
+    font-weight: 600;
+    line-height: 30px;
     text-align: center;
     margin-bottom: 14px;
-    text-transform: uppercase;
 
     @include breakpoint($mobile) {
-      font-size: 18px;
       margin-bottom: 20px;
     }
   }
 
-  &__title-wrap {
-    margin-bottom: 70px;
+  &__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    max-height: 100%;
+  }
 
-    @media screen and (max-height: 650px) {
-      margin-bottom: 40px;
+  &__title-wrap {
+    margin-bottom: 0;
+
+    p {
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 23px;
     }
 
     @include breakpoint($mobile) {
@@ -97,23 +113,55 @@
 
     @include breakpoint($mobile) {
       max-width: 320px;
-      margin: 0 auto 60px;
+      margin: 0 auto 30px;
       font-size: 14px;
       line-height: 18px;
     }
   }
 
   &__status {
-    color: #396EC5;
-    font-weight: bold;
-    line-height: 16px;
-    height: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    color: #525252;
+    padding: 0 0 28px;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 23px;
 
-    @include breakpoint($mobile) {
-      font-size: 16px;
-      letter-spacing: 0;
-      line-height: 19px;
-      height: auto;
+    span {
+      position: relative;
+      overflow: hidden;
+      border-radius: 72px;
+      background: #000;
+      display: flex;
+      width: auto;
+      min-width: 245px;
+      max-width: calc(100vw - 40px);
+      padding: 6px 15px;
+      justify-content: center;
+      align-items: center;
+      color: #FFF;
+      text-align: center;
+      white-space: nowrap;
+      animation: preloader-status-change 520ms ease both;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -45%;
+        width: 42%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0),
+          rgba(255, 255, 255, 0.22),
+          rgba(255, 255, 255, 0)
+        );
+        animation: preloader-status-highlight 900ms ease-out both;
+      }
     }
   }
 
@@ -205,7 +253,7 @@
   }
 
   &__instructions {
-    margin-top: 160px;
+    margin-top: 0;
     width: 100%;
     max-width: 320px;
     display: none;
@@ -271,6 +319,7 @@
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }
@@ -283,5 +332,27 @@
 
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes preloader-status-change {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes preloader-status-highlight {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(360%);
   }
 }

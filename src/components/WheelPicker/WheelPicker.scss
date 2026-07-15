@@ -1,0 +1,91 @@
+@import '../../scss/utils/index';
+
+.picker-wrapper {
+  text-align: center;
+  padding: 15px 0;
+}
+
+.wheel {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+
+  @include breakpoint($mobile) {
+    height: clamp(280px, calc(var(--app-height, 100vh) - 330px), 420px);
+  }
+
+  @include breakpoint(max-height 720px) {
+    height: 280px;
+  }
+}
+
+.wheel-list {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.wheel-list::-webkit-scrollbar {
+  display: none;
+}
+
+.wheel-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 15px);
+  height: 60px;
+  margin: 0 auto;
+  scroll-snap-align: center;
+  font-size: 35px;
+  color: #000;
+  font-weight: 500;
+  transition: color 0.15s ease-out, opacity 0.15s ease-out, font-size 0.15s ease-out, box-shadow 0.4s ease;
+}
+
+.wheel-item--value {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.wheel-item.active {
+  border-radius: 100px;
+  box-shadow: 0 0 15px 0 rgba(186, 200, 248, 0.30);
+
+  .unit {
+    font-size: 20px;
+  }
+}
+
+.wheel-item.near {
+  opacity: 0.5;
+
+  .unit {
+    font-size: 20px;
+  }
+}
+
+.wheel-item.far {
+  opacity: 0.14;
+  font-size: 28px;
+
+  .unit {
+    font-size: 16px;
+  }
+}
+
+.wheel-item.fade {
+  opacity: 0.09;
+  font-size: 21px;
+  font-size: 23px;
+
+  .unit {
+    font-size: 13px;
+  }
+}
+
+

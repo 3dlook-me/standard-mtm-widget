@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { h } from 'preact';
 
 import Camera from '@3dlook-me/camera-rpv-client';
@@ -8,6 +9,7 @@ import analyticsService, {
 } from '../../services/analyticsService';
 
 export default class CustomCamera extends Camera {
+  // eslint-disable-next-line no-useless-constructor
   constructor(props) {
     super(props);
   }
@@ -23,7 +25,6 @@ export default class CustomCamera extends Camera {
       });
     }
   }
-  
 
   render() {
     return super.render();

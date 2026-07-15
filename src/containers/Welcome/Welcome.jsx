@@ -23,7 +23,7 @@ import { flowStatuses } from '../../configs/flowStatuses';
 
 import './Welcome.scss';
 import mobileBg from '../../images/img_mtm_mobile.png';
-import desktopBg from '../../images/img_mtm.png';
+import desktopBg from '../../images/desktop_welcome.png';
 import loader from '../../images/sms-sending.svg';
 
 /**
@@ -75,11 +75,13 @@ class Welcome extends Component {
       setWeightLb,
       setWeight,
       setEmail,
+      setFirstName,
       setCustomSettings,
       addGender,
       setMtmClientId,
       source,
       setIsDisabledEmail,
+      setIsDisabledFullName,
       setIsDisableEmailScreen,
     } = this.props;
 
@@ -89,8 +91,6 @@ class Welcome extends Component {
     const brand = matches.brand || TEST_BRAND;
     const bodyPart = matches.body_part || TEST_BODY_PART;
     const photosFromGallery = matches.photosFromGallery || false;
-
-    this.widgetContainer = document.querySelector('.widget-container');
 
     if (isMobileDevice() && !browserValidation()) {
       setIsMobile(true);
@@ -106,7 +106,12 @@ class Welcome extends Component {
       return;
     }
 
-    this.widgetContainer.classList.remove('widget-container--no-bg');
+    if (!isMobileDevice()) {
+      document.querySelector('.header__back').classList.add('header__back--hide');
+    } else {
+      this.header = document.querySelector('.header');
+      this.header.classList.add('header--hide');
+    }
 
     window.addEventListener('load', () => {
       this.setState({
@@ -161,9 +166,11 @@ class Welcome extends Component {
             setUnits(state.units);
             addHeight(state.height);
             setEmail(state.email);
+            setFirstName(state.firstName);
             setWeightLb(state.weightLb);
             setWeight(state.weight);
             setIsDisabledEmail(state.disabledEmail);
+            setIsDisabledFullName(state.disabledFullName);
             setIsDisableEmailScreen(state.disableEmailScreen);
 
             setCustomSettings(res.widget_settings);
@@ -263,7 +270,11 @@ class Welcome extends Component {
   }
 
   componentWillUnmount() {
-    this.widgetContainer.classList.add('widget-container--no-bg');
+    if (!isMobileDevice()) {
+      document.querySelector('.header__back').classList.remove('header__back--hide');
+    } else {
+      this.header.classList.remove('header--hide');
+    }
     window.removeEventListener('unload', this.reloadListener);
   }
 
@@ -275,33 +286,31 @@ class Welcome extends Component {
         { invalidBrowser ? (
           <Browser />
         ) : (
-            <section className="screen active">
+            <section className={`screen active ${isMobileDevice() ? 'screen--welcome-mobile' : 'screen--welcome-desktop'}`} style={{ backgroundImage: `url(${isMobileDevice() ? mobileBg : desktopBg})` }}>
               <div className="screen__content welcome">
-                <picture className="welcome__img">
-                  <source media="(max-width: 500px)" srcSet={mobileBg} />
-                  <img src={desktopBg} alt="photos_model_perfect-fit" />
-                </picture>
-                <div className="screen__intro">
-                  <h4 className="screen__intro-title">
-                    Forget about measuring tape or appointments
+   
+              <div className="screen__intro">
+                <h4 className="screen__intro-title">
+                    Two Photos.
+                    One Minute.
                 </h4>
-                  <p className="screen__intro-txt">
-                    No quiz, no measuring tape, no return hassle – in under a minute!
+                <p className="screen__intro-txt">
+                   Wear fitted clothes. We’ll guide you through quick front and side photos for instant measurements.
                 </p>
-                </div>
               </div>
-              <div className="screen__footer">
-                <button className="button" type="button" onClick={this.onNextScreen} disabled={isButtonDisabled}>
-                  <img
-                    className="screen__footer-loader"
-                    src={loader}
-                    alt="loader"
-                  />
-                  <span>next</span>
-                </button>
-              </div>
-            </section>
-          )}
+            </div>
+            <div className="screen__footer">
+              <button className="button" type="button" onClick={this.onNextScreen} disabled={isButtonDisabled}>
+                <img
+                  className="screen__footer-loader"
+                  src={loader}
+                  alt="loader"
+                />
+                <span>Get Started</span>
+              </button>
+            </div>
+          </section>
+        )}
       </Fragment>
     );
   }

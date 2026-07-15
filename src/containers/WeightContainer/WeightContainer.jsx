@@ -21,9 +21,13 @@ import {
   mobileFlowStatusUpdate,
 } from '../../helpers/utils';
 import { Stepper } from '../../components';
+import WheelPicker from '../../components/WheelPicker/WheelPicker';
 import { flowStatuses } from '../../configs/flowStatuses';
+import { isMobileDevice } from '../../helpers/utils';
 
 import './WeightContainer.scss';
+
+const SELECT_VALUE = WheelPicker.selectValue;
 
 /**
  * Size not found page component
@@ -45,7 +49,7 @@ class WeightContainer extends Component {
       isWeightValid: true,
       weightValue: null,
       placeholder: units === 'cm' ? 'kg' : 'lb',
-      defaultValue: units === 'cm' ? 50 : 110,
+      defaultValue: SELECT_VALUE,
       skipWeight: false,
       minWeight,
       maxWeight,
@@ -55,7 +59,7 @@ class WeightContainer extends Component {
     this.flow = new FlowService(token);
     this.flow.setFlowId(flowId);
 
-    this.weightValues = [...Array(maxWeight + 1).keys()].slice(minWeight);
+    this.weightValues = [SELECT_VALUE, ...[...Array(maxWeight + 1).keys()].slice(minWeight)];
 
     const { setPageReloadStatus, isDemoWidget } = props;
 
@@ -205,7 +209,7 @@ class WeightContainer extends Component {
         maxWeight,
       });
 
-      this.weightValues = [...Array(maxWeight + 1).keys()].slice(minWeight);
+      this.weightValues = [SELECT_VALUE, ...[...Array(maxWeight + 1).keys()].slice(minWeight)];
 
       if (weight) {
         this.setState({
@@ -231,9 +235,23 @@ class WeightContainer extends Component {
   /**
    * Set weight from select component
    */
-  handleChange = (e) => {
-    const { value } = e.target;
+  handleChange = (value) => {
     const { setWeight, setWeightLb, units } = this.props;
+
+    if (value === SELECT_VALUE) {
+      setWeight(null);
+      setWeightLb(null);
+
+      this.setState({
+        weightValue: null,
+        buttonDisabled: true,
+        isWeightValid: true,
+        minWeight: units === 'cm' ? 30 : 66,
+        maxWeight: units === 'cm' ? 200 : 441,
+      });
+
+      return;
+    }
 
     if (units !== 'cm') {
       setWeight(getWeightKg(+value));
@@ -298,10 +316,8 @@ class WeightContainer extends Component {
   /**
    * Check is weight valid and set
    */
-  changeWeight = (e) => {
+  changeWeight = (value) => {
     const { minWeight, maxWeight } = this.state;
-    const { value } = e.target;
-
     this.weightValidation(value, minWeight, maxWeight);
   };
 
@@ -310,7 +326,6 @@ class WeightContainer extends Component {
       gender,
       height,
       weight,
-      isMobile,
       units,
       email,
       firstName,
@@ -335,7 +350,7 @@ class WeightContainer extends Component {
       event: WEIGHT_PAGE_LEAVE,
     });
 
-    if (isMobile) {
+    if (isMobileDevice()) {
       const { mtmClientId } = this.props;
 
       this.$nextBtn.current.classList.add('button--blocked');
@@ -369,104 +384,34 @@ class WeightContainer extends Component {
     }
   };
 
-  // skipAndNextHandler = () => {
-  //  const { setWeight, token } = this.props;
-
-  //  gaOnWeightSkip();
-
-  //  analyticsService({
-  //    uuid: token,
-  //    event: WEIGHT_PAGE_WEIGHT_SKIP,
-  //  });
-
-  //  this.setState(
-  //    {
-  //      weightValue: null,
-  //      skipWeight: true,
-  //    },
-  //    async () => {
-  //      await setWeight(null);
-
-  //      this.toNextScreen();
-  //    },
-  //  );
-  // }
-
   nextButtonClick = async () => {
     this.toNextScreen();
   };
 
   render() {
-    const { units, isMobile } = this.props;
+    const { units, weightLb, weight } = this.props;
     const {
       buttonDisabled,
-      isWeightValid,
-      weightValue,
       defaultValue,
-      placeholder,
-      skipWeight,
     } = this.state;
-
+    const value = (units === 'cm' ? Math.round(weight) : weightLb) || defaultValue;
     return (
       <section className="screen active">
         <div className="screen__content weight-container">
-          <Stepper steps="9" current="4" />
+          <Stepper steps="5" current="4" />
 
           <div className="weight-container__control screen__control">
             <h3 className="screen__label">What’s your weight?</h3>
             <div className="weight-container__input-wrap">
-              {isMobile ? (
-                <div className="weight-container__input-wrap">
-                  <input
-                    className="input"
-                    type="text"
-                    placeholder="Select"
-                    value={weightValue}
-                    disabled
-                  />
-                  <select
-                    className="select"
-                    onChange={this.handleChange}
-                    ref={this.$weightEl}
-                  >
-                    {this.weightValues.map((value) => (
-                      <option value={value} selected={value === defaultValue}>
-                        {value}
-                        {' '}
-                        {placeholder}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="weight-container__placeholder">
-                    {placeholder}
-                  </div>
-                </div>
-              ) : (
-                  <div className="weight-container__input-wrap">
-                    <input
-                      className={classNames('input', {
-                        'input--invalid': !isWeightValid && !skipWeight,
-                      })}
-                      type="number"
-                      placeholder="0"
-                      onBlur={this.changeWeight}
-                      onKeyDown={this.handleClick}
-                      value={weightValue}
-                    />
-                    <div className="weight-container__placeholder">
-                      {placeholder}
-                    </div>
-                    <p
-                      className={classNames('screen__control-error', {
-                        active: !isWeightValid && !skipWeight,
-                      })}
-                    >
-                      {units === 'cm'
-                        ? 'Your weight should be between 30-200 KG'
-                        : 'Your weight should be between 66 and 441 LB'}
-                    </p>
-                  </div>
-                )}
+              <div className="picker-wrapper">
+                <WheelPicker
+                  values={this.weightValues}
+                  value={value}
+                  onChange={(v) => this.handleChange(v)}
+                  unit={units}
+                  type='weight'
+                />
+              </div>
             </div>
 
             <div className={classNames('height__switcher', { 'height__switcher--cm': units === 'cm', 'height__switcher--in': units === 'in' })}>
@@ -474,7 +419,7 @@ class WeightContainer extends Component {
                 <input type="radio" name="measure" id="measure-cm" value="cm" onChange={this.onUnitsChange} checked={units === 'cm'} />
                 <div className="height__switcher-info">
                   <p>Metric system</p>
-                  <p>CM/KG</p>
+                  <p>KG</p>
                 </div>
               </label>
 
@@ -482,7 +427,7 @@ class WeightContainer extends Component {
                 <input type="radio" name="measure" id="measure-in" value="in" onChange={this.onUnitsChange} checked={units === 'in'} />
                 <div className="height__switcher-info">
                   <p>Imperial system</p>
-                  <p>IN/LB</p>
+                  <p>LB</p>
                 </div>
               </label>
 
@@ -504,7 +449,7 @@ class WeightContainer extends Component {
             type="button"
             ref={this.$nextBtn}
           >
-            Next
+            Continue
           </button>
         </div>
       </section>
@@ -513,4 +458,3 @@ class WeightContainer extends Component {
 }
 
 export default connect((state) => state, actions)(WeightContainer);
-

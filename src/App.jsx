@@ -7,10 +7,8 @@ import { Provider } from 'react-redux';
 import './scss/_index.scss';
 
 import { store } from './store';
-import { updateInternetStatus, browserDetect, parseGetParams } from './helpers/utils';
-import analyticsService, {
-  WIDGET_OPEN,
-} from './services/analyticsService';
+import { updateInternetStatus, browserDetect } from './helpers/utils';
+import background from './images/background.png';
 import {
   Header,
   Help,
@@ -42,20 +40,17 @@ console.log(`%cVERSION: ${VERSION}, COMMITHASH: ${COMMITHASH}, BRANCH: ${BRANCH}
 
 class App extends Component {
   componentDidMount() {
-    const { matches } = this.props;
-    const uuid = (matches || {}).key
-      || API_KEY
-      || parseGetParams().key
-      || store.getState().token;
     const isSafari = browserDetect() === 'safari';
     window.addEventListener('online', updateInternetStatus);
     window.addEventListener('offline', updateInternetStatus);
 
-    if (uuid) {
-      analyticsService({
-        uuid,
-        event: WIDGET_OPEN,
-      });
+    this.setAppHeight();
+    window.addEventListener('resize', this.setAppHeight);
+    window.addEventListener('orientationchange', this.setAppHeight);
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', this.setAppHeight);
+      window.visualViewport.addEventListener('scroll', this.setAppHeight);
     }
 
     // iphone bug when portrait after landscape
@@ -72,6 +67,31 @@ class App extends Component {
     }
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('online', updateInternetStatus);
+    window.removeEventListener('offline', updateInternetStatus);
+    window.removeEventListener('resize', this.setAppHeight);
+    window.removeEventListener('orientationchange', this.setAppHeight);
+
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', this.setAppHeight);
+      window.visualViewport.removeEventListener('scroll', this.setAppHeight);
+    }
+  }
+
+  setAppHeight = () => {
+    const isKeyboardOpen = window.visualViewport
+      && window.innerHeight - window.visualViewport.height > 120;
+
+    if (isKeyboardOpen) {
+      return;
+    }
+
+    const height = window.innerHeight;
+
+    document.documentElement.style.setProperty('--app-height', `${height}px`);
+  }
+
   render() {
     return (
       <Provider store={store}>
@@ -81,7 +101,7 @@ class App extends Component {
           </figure>
           <p className="landscape-view__txt">Please turn your device</p>
         </div>
-        <div className="widget-container widget-container--no-bg">
+        <div className="widget-container" style={{ backgroundImage: `url(${background})` }}>
           <Header />
           <Help />
 

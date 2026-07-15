@@ -2,50 +2,115 @@
 
 $border-width: 2px;
 
+.select-your-gender {
+  margin-top: 85px;
+  margin-bottom: 70px;
+
+  @include breakpoint($mobile) {
+    margin-bottom: unset;
+    margin-top: unset;
+  }
+}
+
 .gender {
   display: flex;
-  justify-content: space-between;
+  margin: 0 auto;
+  width: 380px;
+
+  @include breakpoint($mobile) {
+    max-width: 200px;
+    flex-direction: column;
+    justify-content: space-between;
+    justify-self: center;
+    margin: unset;
+  }
+
+  @include breakpoint(min-width 501px) {
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 380px;
+  }
 
   input {
     @include visually-hidden();
   }
 
   &__item {
-    height: 50px;
+    height: 145px;
     background: #fff;
-    border: 2px solid $main-color;
-    border-radius: 4px;
+    border: 1.5px solid $main-color;
+    border-radius: 15px;
+    opacity: 0.3;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 180px;
     cursor: pointer;
     font-weight: normal;
     position: relative;
     color: $main-color;
     font-size: 16px;
     line-height: 19px;
+    margin-bottom: 21px;
+
+    &:first-of-type {
+      margin-right: 20px;
+    }
+
+    @include breakpoint($mobile) {
+      width: 100%;
+      height: 132px;
+    }
+
+    @include breakpoint((max-width 500px, max-height 650px)) {
+      height: 150px;
+      margin-bottom: 14px;
+    }
+
+    @include breakpoint(min-width 501px) {
+      flex: 1 1 0;
+      max-width: 180px;
+
+      &:first-of-type {
+        margin-right: 0;
+      }
+    }
+
+    @include breakpoint($iphoneSE) {
+      height: 106px;
+      padding: 10px;
+    }
+
+    @include breakpoint(max-height 530px) {
+      height: 80px;
+    }
+
+    svg {
+      filter: grayscale(100%) contrast(10%);
+    }
 
     &.checked {
-      color: #fff;
-      background: $main-color;
-    }
+      opacity: 1;
+      background: transparent;
 
-    &:first-child {
-      border-right: 0;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-
-    &:last-child {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
+      svg {
+        filter: none;
+      }
     }
 
     span {
       display: inline-block;
       margin-top: 15px;
-      margin-bottom: 8px;
+
+      @include breakpoint((max-width 500px, max-height 650px)) {
+        margin-top: 8px;
+      }
+
+      @include breakpoint(max-height 530px) {
+        margin-top: 5px;
+      }
     }
 
     span,
@@ -56,15 +121,168 @@ $border-width: 2px;
   }
 
   &__control {
-    margin-top: 133px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0px;
     margin-bottom: 14px;
 
-    @include breakpoint($mobile) {
-      margin-top: 80px;
+    @include breakpoint(max-height 700px) {
+      margin-bottom: 0;
     }
+  }
+}
 
-    @include breakpoint($iphoneSE) {
-      margin-top: 20px;
+.info-btn {
+  display: flex;
+  align-items: center;
+  margin: 0 auto 50px;
+  padding: 4px 20px;
+  border: 1px solid #B9B9B9;
+  border-radius: 65px;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 32px;
+  letter-spacing: 0.15px;
+  color: $main-color;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  @include breakpoint($mobile) {
+    margin: 0 auto 65px;
+  }
+
+  @include breakpoint(max-height 700px) {
+    margin: 0 auto 15px;
+  }
+
+  @include breakpoint((max-width 500px, max-height 650px)) {
+    margin-bottom: 10px;
+  }
+}
+
+.gender-screen {
+  @include breakpoint((max-width 500px, max-height 650px)) {
+    justify-content: flex-start !important;
+  }
+
+  .screen__content {
+    @include breakpoint((max-width 500px, max-height 650px)) {
+      padding-top: 18px;
     }
+  }
+
+  .screen__label {
+    @include breakpoint((max-width 500px, max-height 650px)) {
+      margin-bottom: 12px;
+      line-height: 27px;
+    }
+  }
+
+  .screen__footer {
+    @include breakpoint((max-width 500px, max-height 650px)) {
+      padding-top: 10px;
+      padding-bottom: 14px;
+    }
+  }
+}
+
+.info-btn:hover {
+  border-color: #999;
+  background: #f9f9f9;
+}
+
+.info-btn:active {
+  background: #f0f0f0;
+}
+
+.info-btn .icon, .info-block .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: #333;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.info-block .icon {
+  background: #fff;
+  color: #333;
+  border: 1.5px solid black;
+  margin: 0 auto 10px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+
+
+  @include breakpoint($mobile) {
+    position: fixed;
+    align-items: end;
+  }
+}
+
+.info-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 505px;
+  background: #fff;
+  border-radius: 16px;
+  animation: slideUp 0.5s ease;
+  padding: 33px 100px;
+
+
+  @include breakpoint($mobile) {
+    border-radius: 16px 16px 0 0;
+    padding: 18px 29px 41px 29px;
+    width: 100%;
+  }
+}
+
+.handle {
+  display: none;
+  width: 90px;
+  height: 5px;
+  background: #E5E5E5;
+  border-radius: 100px;
+  margin: 0 auto 38px;
+
+  @include breakpoint($mobile) {
+    display: inline-block;
+  }
+}
+
+.info-block p {
+  color: #9199B6;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 23px;
+  margin-bottom: 37px;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
   }
 }

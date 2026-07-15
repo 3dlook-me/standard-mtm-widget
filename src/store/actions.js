@@ -25,6 +25,7 @@ export const CONSTANTS = {
   SET_PERSON_ID: 'SET_PERSON_ID',
   SET_BRAND: 'SET_BRAND',
   SET_BODY_PART: 'SET_BODY_PART',
+  SET_CLOTHING_FITTING_CONFIRMED: 'SET_CLOTHING_FITTING_CONFIRMED',
   SET_PRODUCT_URL: 'SET_PRODUCT_URL',
   SET_RECOMMENDATIONS: 'SET_RECOMMENDATIONS',
   SET_SOFT_VALIDATION: 'SET_SOFT_VALIDATION',
@@ -63,8 +64,10 @@ export const CONSTANTS = {
   SET_CUSTOM_SETTINGS: 'SET_CUSTOM_SETTINGS',
   SET_IS_WIDGET_ARCHIVED: 'SET_IS_WIDGET_ARCHIVED',
   SET_IS_DISABLED_EMAIL: 'SET_IS_DISABLED_EMAIL',
+  SET_IS_DISABLED_FULL_NAME: 'SET_IS_DISABLED_FULL_NAME',
   SET_IS_DISABLE_EMAIL_SCREEN: 'SET_IS_DISABLE_EMAIL_SCREEN',
   SET_IS_SKIP_EMAIL_SCREEN: 'SET_IS_SKIP_EMAIL_SCREEN',
+  SET_IS_RETAKE_FLOW: 'SET_IS_RETAKE_FLOW',
   SET_FRONT_REAL_TIME_POSE_VALIDATION: 'SET_FRONT_REAL_TIME_POSE_VALIDATION',
   SET_SIDE_REAL_TIME_POSE_VALIDATION: 'SET_SIDE_REAL_TIME_POSE_VALIDATION',
 };
@@ -265,6 +268,16 @@ export const setBodyPart = (bodyPart) => ({
 });
 
 /**
+ * Set is Clothing Form Fitting Confirmed action
+ *
+ * @param {boolean} isClothingFormFittingConfirmed - isClothingFormFittingConfirmed
+ */
+export const setIsClothingFormFittingConfirmed = (isClothingFormFittingConfirmed) => ({
+  type: CONSTANTS.SET_CLOTHING_FITTING_CONFIRMED,
+  payload: isClothingFormFittingConfirmed,
+});
+
+/**
  * Set product url
  *
  * @param {string} productUrl - product url
@@ -318,6 +331,7 @@ export const setHardValidation = (hardValidation) => ({
   payload: hardValidation,
 });
 
+
 /**
  * Set real time pose validation status for front photo
  *
@@ -337,7 +351,6 @@ export const setIsSideRealTimePoseValidator = (side) => ({
   type: CONSTANTS.SET_SIDE_REAL_TIME_POSE_VALIDATION,
   payload: side,
 });
-
 
 /**
  * Set body type
@@ -629,6 +642,16 @@ export const setIsTableFlow = (isTableFLow) => ({
 });
 
 /**
+ * Set is retake flow mode
+ *
+ * @param {boolean} isRetakeFLow
+ */
+export const setIsRetakeFlow = (isRetakeFLow) => ({
+  type: CONSTANTS.SET_IS_RETAKE_FLOW,
+  payload: isRetakeFLow,
+});
+
+/**
  * Set is table flow mode disabled
  *
  * @param {boolean} isTableFLow
@@ -708,6 +731,16 @@ export const setIsWidgetArchived = (isArchived) => ({
  */
 export const setIsDisabledEmail = (isDisabled) => ({
   type: CONSTANTS.SET_IS_DISABLED_EMAIL,
+  payload: isDisabled,
+});
+
+/**
+ * Set is disabled full name
+ *
+ * @param {boolean} isDisabled - is disabled
+ */
+export const setIsDisabledFullName = (isDisabled) => ({
+  type: CONSTANTS.SET_IS_DISABLED_FULL_NAME,
   payload: isDisabled,
 });
 
@@ -793,8 +826,11 @@ export default {
   setCustomSettings,
   setIsWidgetArchived,
   setIsDisabledEmail,
+  setIsDisabledFullName,
   setIsDisableEmailScreen,
   setIsSkipEmailScreen,
+  setIsRetakeFlow,
   setIsFrontRealTimePoseValidator,
   setIsSideRealTimePoseValidator,
+  setIsClothingFormFittingConfirmed,
 };

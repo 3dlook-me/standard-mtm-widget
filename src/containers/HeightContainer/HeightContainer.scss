@@ -1,15 +1,15 @@
 @import '../../scss/utils/index';
 
 .height-container {
-  &__control {
-    margin-top: 133px;
+  margin-top: 25px;
 
-    @include breakpoint($mobile) {
-      margin-top: 80px;
-    }
+  @include breakpoint($mobile) {
+    margin-top: unset;
+  }
+}
 
-    @include breakpoint($iphoneSE) {
-      margin-top: 20px;
-    }
+.height-screen--desktop {
+  .PolicyAgreement {
+    margin: 10px 0 15px;
   }
 }

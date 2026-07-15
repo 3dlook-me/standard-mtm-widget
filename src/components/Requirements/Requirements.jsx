@@ -69,7 +69,6 @@ class Requirements extends Component {
     return (
       <Fragment>
         {isTableFlow ? (
-          // <Tabs activeTab={activeTab} />
           <div className="requirements__video-wrap">
             {!isVideoLoaded ? <Loader /> : null}
 
@@ -88,28 +87,27 @@ class Requirements extends Component {
             </video>
           </div>
         ) : (
-            <div
-              className="requirements__image-example"
-              style={photoBg ? { backgroundImage: `url(${photoBg})` } : null}
-            >
-              {!isImageExampleLoaded ? (
-                <Fragment>
-                  <Loader />
+          <div
+            className="requirements__image-example"
+            style={photoBg ? { backgroundImage: `url(${photoBg})` } : null}
+          >
+            {!isImageExampleLoaded ? (
+              <Fragment>
+                <Loader />
 
-                  <img
-                    className="requirements__image-example-onload-detect"
-                    src={photoBg}
-                    onLoad={this.onImgExampleLoaded}
-                    alt="back"
-                  />
-                </Fragment>
-              ) : null}
-            </div>
-          )}
+                <img
+                  className="requirements__image-example-onload-detect"
+                  src={photoBg}
+                  onLoad={this.onImgExampleLoaded}
+                  alt="back"
+                />
+              </Fragment>
+            ) : null}
+          </div>
+        )}
       </Fragment>
     );
   }
 }
 
 export default Requirements;
-

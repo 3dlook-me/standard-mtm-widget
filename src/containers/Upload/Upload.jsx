@@ -1,5 +1,4 @@
 import {
-  // eslint-disable-next-line no-unused-vars
   h,
   Component,
   Fragment,
@@ -7,10 +6,11 @@ import {
 import { route } from 'preact-router';
 import API from '@3dlook/saia-sdk/lib/api';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
+import axios from 'axios';
+
 import NoSleep from 'nosleep.js';
 
-import Camera from '../../components/CustomCamera/CustomCamera';
+import { CameraWrapper } from '../../components/CameraWrapper/CameraWrapper';
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
 import { store } from '../../store';
@@ -19,14 +19,16 @@ import {
   wait,
   mobileFlowStatusUpdate,
   isMobileDevice,
-  getAsset,
   filterCustomMeasurements,
+  getFileSize,
+  getNetworkInfo,
+  isSlowNetwork,
+  getDynamicUploadTimeout,
+  base64ToBlob,
 } from '../../helpers/utils';
+import { savePhoto, deletePhoto, getPhoto } from '../../helpers/photoStorage';
+
 import analyticsService, {
-  FRONT_PHOTO_PAGE_EXAMPLE_OPEN,
-  SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
-  FRONT_PHOTO_PAGE_EXAMPLE_CLOSE,
-  SIDE_PHOTO_PAGE_EXAMPLE_CLOSE,
   FRONT_PHOTO_PAGE_OPEN_CAMERA,
   SIDE_PHOTO_PAGE_OPEN_CAMERA,
   FRONT_PHOTO_PAGE_PHOTO_TAKEN,
@@ -35,16 +37,30 @@ import analyticsService, {
   MAGIC_SCREEN_PAGE_LEAVE,
   MAGIC_SCREEN_PAGE_SUCCESS,
   MAGIC_SCREEN_PAGE_FAILED,
+  MAGIC_SCREEN_PHOTO_UPLOAD_START,
+  MAGIC_SCREEN_PHOTO_UPLOAD_FINISH,
 } from '../../services/analyticsService';
 import {
-  Preloader,
-  Stepper,
-  UploadBlock,
-  Requirements,
+  Preloader
 } from '../../components';
 import { flowStatuses } from '../../configs/flowStatuses';
+import howToStandFront from '../../images/how_to_stand_front.jpg';
+import howToStandFrontMen from '../../images/how_to_stand_front_men.jpg';
+import howToStandSide from '../../images/how_to_stand_side.jpg';
+import howToStandSideMen from '../../images/how_to_stand_side_men.jpg';
 
 import './Upload.scss';
+
+const howToStandImages = {
+  female: {
+    front: howToStandFront,
+    side: howToStandSide,
+  },
+  male: {
+    front: howToStandFrontMen,
+    side: howToStandSideMen,
+  },
+};
 
 let isPhoneLocked = false;
 let isRefreshed = false;
@@ -64,11 +80,23 @@ class Upload extends Component {
       isFrontImageValid: true,
       isSideImageValid: true,
 
-      // image errors
-      frontImagePose: null,
-      sideImagePose: null,
+      frontJustCaptured: false,
 
       isPending: false,
+
+      isSlowNetworkDetected: false,
+
+      standInstructionStep: null,
+      pendingCamera: null,
+      seenStandInstructions: {
+        front: false,
+        side: false,
+      },
+    };
+
+    this.axios = axios.create();
+    this.axios.defaults.headers = {
+      Authorization: `UUID ${this.props.token}`,
     };
 
     const { setPageReloadStatus } = props;
@@ -82,7 +110,6 @@ class Upload extends Component {
     window.addEventListener('unload', this.reloadListener);
   }
 
-  // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(nextProps) {
     this.init(nextProps);
   }
@@ -101,7 +128,6 @@ class Upload extends Component {
     window.removeEventListener('unload', this.reloadListener);
     window.removeEventListener('offline', this.setOfflineStatus);
 
-    // eslint-disable-next-line no-underscore-dangle
     if (noSleep._wakeLock) {
       noSleep.disable();
     }
@@ -117,36 +143,24 @@ class Upload extends Component {
       isFromDesktopToMobile,
       isDemoWidget,
       token,
-      isTableFlow,
       isRetakeFlow,
       frontImage,
+      sideImage,
+      personId,
+      setPersonId,
+      taskId,
+      setTaskId,
     } = this.props;
-
-    if (!isTableFlow) {
-      analyticsService({
-        uuid: token,
-        event: !frontImage
-          ? FRONT_PHOTO_PAGE_EXAMPLE_OPEN
-          : SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
-        data: {
-          flowType: isTableFlow ? 'by myself' : 'with a friend',
-          retake: !!isRetakeFlow,
-        },
-      });
-    }
 
     window.addEventListener('offline', this.setOfflineStatus);
     document.addEventListener('click', this.disableDeviceScreenLock, { once: true });
 
-    // if camera is active when page refreshed
     if (camera) {
       const { setCamera } = this.props;
-
       setCamera(null);
     }
 
     if (!isNetwork) {
-      // after not found page, if was network error
       setIsNetwork(true);
     }
 
@@ -154,43 +168,376 @@ class Upload extends Component {
       this.flow = new FlowService(token);
       this.flow.setFlowId(flowId);
 
-      // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
       if ((pageReloadStatus && isFromDesktopToMobile) || (pageReloadStatus && isDemoWidget)) {
         const { flowState, setPageReloadStatus } = this.props;
-
         setPageReloadStatus(false);
-
         mobileFlowStatusUpdate(this.flow, flowState);
       }
     }
+
+    // ----------------------------------------------------
+    // Restore personId & taskId from localStorage
+    // ----------------------------------------------------
+    let savedPersonId = null;
+    let savedTaskId = null;
+
+    try {
+      if (token) {
+        savedPersonId = localStorage.getItem(`personId_${token}`);
+        savedTaskId = localStorage.getItem(`taskId_${token}`);
+
+        if (savedPersonId && !personId) {
+          setPersonId(savedPersonId);
+        }
+
+        if (savedTaskId && !taskId) {
+          setTaskId(savedTaskId);
+        }
+      }
+    } catch (e) { }
+
+    // ----------------------------------------------------
+    // ALWAYS restore photos from IndexedDB
+    // ----------------------------------------------------
+    if (token && !frontImage && !sideImage) {
+      this.restorePhotos();
+    }
+
+    // ----------------------------------------------------
+    // BACKEND recovery ONLY if NOT retake
+    // ----------------------------------------------------
+    if (token && !isRetakeFlow) {
+      // Case 1: we have person + task → resume calculation
+      if (savedPersonId && savedTaskId) {
+        this.setState({
+          isFrontImageValid: true,
+          isSideImageValid: true,
+          isPending: true,
+        });
+        this.checkTaskSetStatus(savedTaskId, savedPersonId);
+        return;
+      }
+
+      // Case 2: person exists but task missing → inspect person
+      if (savedPersonId && !savedTaskId) {
+        this.checkPersonForTaskSet(savedPersonId);
+        return;
+      }
+    }
+
+    // ----------------------------------------------------
+    // Otherwise — normal UX flow continues
+    // ----------------------------------------------------
+    this.mayStartCamera();
   }
+
 
   componentDidUpdate(prevProps) {
-    const {
-      frontImage,
-      sideImage,
-      isTableFlow,
-      token,
-    } = this.props;
-
-    if (!isTableFlow && !prevProps.frontImage && frontImage && !sideImage) {
-      analyticsService({
-        uuid: token,
-        event: SIDE_PHOTO_PAGE_EXAMPLE_OPEN,
-      });
-    }
-
-    if (!isTableFlow
-      && ((!prevProps.sideImage && sideImage) || (!prevProps.frontImage && frontImage))) {
-      const event = (!prevProps.sideImage && sideImage && SIDE_PHOTO_PAGE_EXAMPLE_CLOSE)
-        || (!prevProps.frontImage && frontImage && FRONT_PHOTO_PAGE_EXAMPLE_CLOSE);
-
-      analyticsService({
-        uuid: token,
-        event,
-      });
+    if (!prevProps.frontImage && this.props.frontImage) {
+      this.setState({ photoStep: 'side' });
     }
   }
+
+  restorePhotos = async () => {
+    const { token, addFrontImage, addSideImage } = this.props;
+
+    const frontBlob = await getPhoto(`frontImage_${token}`);
+    const sideBlob = await getPhoto(`sideImage_${token}`);
+
+    if (frontBlob) {
+      addFrontImage(frontBlob);
+      this.setState({ frontJustCaptured: true });
+    }
+
+    if (sideBlob) addSideImage(sideBlob);
+  };
+
+  // --------------------------------------------------------------
+  // CHECK TASKSET STATUS AFTER PAGE RELOAD (WHEN BOTH IDS RESTORED)
+  // --------------------------------------------------------------
+  checkTaskSetStatus = async (taskSetId, personId) => {
+    console.log('checkTaskSetStatus', taskSetId, personId);
+    try {
+      const person = await this.pollUntilReady(taskSetId, personId);
+
+      await this.finalizeSuccessFlow(person, {
+        source: 'recovery_taskset',
+        skipUploadAnalytics: true,
+      });
+    } catch (err) {
+      if (err?.response?.status === 404) {
+        const { token, setTaskId } = this.props;
+        localStorage.removeItem(`taskId_${token}`);
+        setTaskId(null);
+      }
+    }
+  };
+
+  // --------------------------------------------------------------
+  // NEW: CHECK PERSON IF personId EXISTS BUT taskId IS MISSING
+  // --------------------------------------------------------------
+  checkPersonForTaskSet = async (personId) => {
+    console.log('checkPersonForTaskSet', personId);
+    const {
+      token,
+      setTaskId,
+      setProcessingStatus,
+      deviceCoordinates,
+      isTableFlow,
+      isClothingFormFittingConfirmed,
+      isRealTimePoseValidator,
+    } = this.props;
+
+    this.setState({ isPending: true });
+
+    try {
+      const person = await this.api.person.get(personId);
+
+      // -------- CASE A: task_set already exists --------
+      if (person.task_set) {
+        console.log(' task_set already exists', person.task_set);
+        const measurementTask = person.task_set.sub_tasks?.find(
+          (t) => t.name.includes('measurement')
+        );
+
+        if (measurementTask?.task_id) {
+          const taskSetId = measurementTask.task_id;
+
+          setTaskId(taskSetId);
+          localStorage.setItem(`taskId_${token}`, taskSetId);
+
+          if (person.task_set.is_ready) {
+            await this.finalizeSuccessFlow(person, { skipUploadAnalytics: true });
+            return;
+          }
+
+          this.pollUntilReady(taskSetId, personId);
+          return;
+        }
+      }
+      console.log('no task_set → retry upload from IndexedDB');
+      // -------- CASE B: no task_set → retry upload from IndexedDB --------
+      const frontImage = await getPhoto(`frontImage_${token}`);
+      const sideImage = await getPhoto(`sideImage_${token}`);
+
+      if (!frontImage || !sideImage) {
+        this.setState({ isPending: false });
+        return;
+      }
+
+      setProcessingStatus('Photo Uploading');
+      this.updateDesktopProcessStatus('Photo Uploading');
+
+      const formData = new FormData();
+
+      if (frontImage) {
+        formData.append('front_image', frontImage, 'front.jpg');
+      }
+
+      if (sideImage) {
+        formData.append('side_image', sideImage, 'side.jpg');
+      }
+
+      formData.append('photo_flow', isTableFlow ? 'hand' : 'friend');
+      formData.append('is_clothing_form_fitting_confirmed', isClothingFormFittingConfirmed);
+      formData.append(
+        'phone_position',
+        JSON.stringify(deviceCoordinates || {})
+      );
+      const validateImages =
+        (!(isRealTimePoseValidator.front && isRealTimePoseValidator.side)).toString();
+
+      const response = await this.axios(
+        `${API_HOST}/api/v2/persons/${personId}/`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          params: {
+            measurements_type: 'all',
+            validate_images: validateImages,
+          },
+          data: formData,
+        }
+      );
+      const taskSetUrl = response.headers.location;
+      const taskSetId = /\/queue\/(.*)\//g.exec(taskSetUrl)[1];
+
+      setTaskId(taskSetId);
+      localStorage.setItem(`taskId_${token}`, taskSetId);
+
+      this.pollUntilReady(taskSetId, personId);
+    } catch (err) {
+      console.error(err);
+      this.setState({ isPending: false });
+    }
+  };
+
+  // --------------------------------------------------------------
+  // POLLING UNTIL task_set is ready
+  // --------------------------------------------------------------
+  pollUntilReady = async (taskSetId, personId) => {
+    console.log('pollUntilReady', taskSetId, personId);
+    try {
+      const person = await this.api.queue.getResults(taskSetId, 2000, personId);
+      if (person) {
+        await this.finalizeSuccessFlow(person, { skipUploadAnalytics: true });
+        return;
+      }
+    } catch (e) {
+      const handled = await this.handleHardValidationError(error);
+
+      if (handled) return;
+
+      if (error?.response?.status !== 422) {
+        console.error(error);
+        return;
+      }
+    }
+
+    setTimeout(() => this.pollUntilReady(taskSetId, personId), 1000);
+  };
+
+  // --------------------------------------------------------------
+  // HANDLE ALREADY FINISHED RESULTS (REUSE EXISTING LOGIC)
+  // --------------------------------------------------------------
+
+  mayStartCamera = () => {
+    const { frontImage, sideImage, isRetakeFlow, hardValidation } = this.props;
+
+    if (isRetakeFlow) {
+      const { front, side } = hardValidation || {};
+
+      if (!front && side) {
+        this.prepareCameraStart('side');
+        return;
+      }
+
+      if (front && !side) {
+        this.prepareCameraStart('front');
+        return;
+      }
+
+      this.prepareCameraStart('front');
+      return;
+    }
+
+    if (frontImage && !sideImage) {
+      this.prepareCameraStart('side');
+      return;
+    }
+
+    if (!frontImage) {
+      this.prepareCameraStart('front');
+    }
+  };
+
+  getUseRtpvCamera = () => {
+    const { settings } = this.props;
+
+    return !(settings && settings.is_rtpv_disabled);
+  }
+
+  shouldShowStandInstructions = () => {
+    return !this.getUseRtpvCamera();
+  }
+
+  prepareCameraStart = (camera) => {
+    const { isTableFlow } = this.props;
+    const { seenStandInstructions } = this.state;
+
+    if (!this.shouldShowStandInstructions()) {
+      this.startCamera(camera);
+      return;
+    }
+
+    if (isTableFlow && camera === 'front' && !seenStandInstructions.front) {
+      this.setState({
+        standInstructionStep: 'front',
+        pendingCamera: 'front',
+      });
+      return;
+    }
+
+    if (!isTableFlow && !seenStandInstructions[camera]) {
+      this.setState({
+        standInstructionStep: camera,
+        pendingCamera: camera,
+      });
+      return;
+    }
+
+    this.startCamera(camera);
+  }
+
+  continueStandInstruction = () => {
+    const { isTableFlow } = this.props;
+    const {
+      standInstructionStep,
+      pendingCamera,
+      seenStandInstructions,
+    } = this.state;
+
+    if (isTableFlow && standInstructionStep === 'front' && !seenStandInstructions.side) {
+      this.setState({
+        standInstructionStep: 'side',
+        seenStandInstructions: {
+          ...seenStandInstructions,
+          front: true,
+        },
+      });
+      return;
+    }
+
+    this.setState({
+      standInstructionStep: null,
+      pendingCamera: null,
+      seenStandInstructions: {
+        ...seenStandInstructions,
+        [standInstructionStep]: true,
+      },
+    }, () => this.startCamera(pendingCamera));
+  }
+
+  startCamera = (camera) => {
+    if (camera === 'front') {
+      this.triggerFrontImage();
+      return;
+    }
+
+    this.triggerSideImage();
+  }
+
+  handleExistingResults = (person) => {
+    const {
+      setMeasurements,
+      setBodyType,
+      setFlowState,
+      customSettings,
+      flowState,
+    } = this.props;
+
+    let measurements;
+    if (!Object.keys(customSettings.outputMeasurements).length) {
+      measurements = { ...person };
+    } else {
+      measurements = {
+        ...person,
+        ...(filterCustomMeasurements({ ...person }, customSettings)),
+      };
+    }
+
+    if (person.volume_params) {
+      setBodyType(person.volume_params.body_type);
+    }
+
+    setMeasurements(measurements);
+
+    setFlowState({ ...flowState});
+
+    this.finalizeSuccessFlow(person, { skipUploadAnalytics: true });
+  };
 
   disableDeviceScreenLock = () => noSleep.enable();
 
@@ -212,17 +559,27 @@ class Upload extends Component {
   /**
    * Save front image to state
    */
-  saveFrontFile = (file) => {
+  saveFrontFile = async (file) => {
+    this.setState({ frontJustCaptured: true });
+
     const {
       addFrontImage,
       setHeaderIconsStyle,
-      setCamera,
-      camera,
       isTableFlow,
       isRetakeFlow,
       hardValidation,
       token,
+      isMobile,
     } = this.props;
+
+  
+    const blob = await base64ToBlob(file);
+
+    savePhoto(`frontImage_${token}`, blob).catch((e) => {
+      console.warn('Failed to save front photo to IndexedDB', e);
+    });
+
+    addFrontImage(blob);
 
     analyticsService({
       uuid: token,
@@ -234,32 +591,46 @@ class Upload extends Component {
     });
 
     setHeaderIconsStyle('default');
-    addFrontImage(file);
+ 
 
-    if (isTableFlow) {
-      if (camera) {
-        if (!(hardValidation.front && !hardValidation.side)) {
-          this.triggerSideImage();
+    const delay = isTableFlow ? 1500 : 0;
+
+    setTimeout(() => {
+
+      if (isRetakeFlow && hardValidation?.front && !hardValidation?.side && this.props.sideImage) {
+        if (isMobile) {
+          const state = store.getState();
+          this.onNextButtonClick(null, state);
         }
+        return;
       }
-    } else {
-      setCamera(null);
-    }
-  }
+      if (!(hardValidation?.front && !hardValidation?.side)) {
+          this.prepareCameraStart('side');
+      }
+    }, delay);
+  };
 
-  /**
-   * Save side image to state
-   */
-  saveSideFile = (file) => {
+
+  saveSideFile = async (file) => {
     const {
       addSideImage,
       isMobile,
       setHeaderIconsStyle,
-      setCamera,
       isTableFlow,
       isRetakeFlow,
       token,
     } = this.props;
+
+
+    const blob = await base64ToBlob(file);
+
+    try {
+      await savePhoto(`sideImage_${token}`, blob);
+    } catch (e) {
+      console.warn('Failed to save side photo to IndexedDB', e);
+    }
+
+
 
     analyticsService({
       uuid: token,
@@ -270,37 +641,30 @@ class Upload extends Component {
       },
     });
 
+    addSideImage(blob);
+
     setHeaderIconsStyle('default');
 
-    if (!isTableFlow) {
-      setCamera(null);
-    }
-
     if (isMobile) {
-      this.unsubscribe = store.subscribe(() => {
-        const state = store.getState();
-
-        if (state.frontImage && state.sideImage) {
-          this.unsubscribe();
-          this.onNextButtonClick(null, state);
-        }
-      });
+      const state = store.getState();
+      this.onNextButtonClick(null, state);
     }
 
-    addSideImage(file);
   }
 
   turnOffCamera = () => {
     const { setCamera } = this.props;
-
     setCamera(null);
   }
 
-  /**
-   * On next button click handler
-   *
-   * @async
-   */
+  updateDesktopProcessStatus = (status) => {
+    const { isFromDesktopToMobile } = this.props;
+
+    if (isFromDesktopToMobile && this.flow) {
+      this.flow.updateLocalState({ processStatus: status });
+    }
+  };
+
   onNextButtonClick = async (e, props = this.props) => {
     if (e) {
       e.preventDefault();
@@ -316,56 +680,40 @@ class Upload extends Component {
       mtmClientId,
       deviceCoordinates,
       isRealTimePoseValidator,
+      isClothingFormFittingConfirmed,
+      setIsHeaderTranslucent,
     } = props;
 
     let { personId } = props;
 
     const {
-      setSoftValidation,
-      setHardValidation,
-      addFrontImage,
-      addSideImage,
       setPersonId,
-      setMeasurements,
-      origin,
       email,
       weight,
       setProcessingStatus,
-      isFromDesktopToMobile,
-      taskId,
       setTaskId,
-      setBodyType,
       setFlowState,
       token,
       isTableFlow,
       flowState,
       isRetakeFlow,
       customSettings,
-      setIsFrontRealTimePoseValidator,
-      setIsSideRealTimePoseValidator,
     } = this.props;
 
     try {
       if (!frontImage) {
-        this.setState({
-          isFrontImageValid: false,
-        });
+        this.setState({ isFrontImageValid: false });
       }
-
       if (!sideImage) {
-        this.setState({
-          isSideImageValid: false,
-        });
+        this.setState({ isSideImageValid: false });
       }
-
       if (!frontImage || !sideImage) {
         return;
       }
 
-      // is phone locked detect
+      // Detect lock event
       let hidden;
       let visibilityChange;
-
       if (typeof document.hidden !== 'undefined') {
         hidden = 'hidden';
         visibilityChange = 'visibilitychange';
@@ -374,7 +722,6 @@ class Upload extends Component {
         visibilityChange = 'webkitvisibilitychange';
       }
 
-      // eslint-disable-next-line no-underscore-dangle
       if (!noSleep._wakeLock) {
         noSleep.enable();
       }
@@ -382,17 +729,15 @@ class Upload extends Component {
       this.handleVisibilityChange = async () => {
         if (document[hidden]) {
           isPhoneLocked = true;
-
-          // eslint-disable-next-line no-underscore-dangle
-          if (noSleep._wakeLock) {
-            noSleep.disable();
-          }
-
+          if (noSleep._wakeLock) noSleep.disable();
           await window.location.reload();
         }
       };
 
       document.addEventListener(visibilityChange, this.handleVisibilityChange);
+
+      setProcessingStatus('Photo Uploading');
+      this.updateDesktopProcessStatus('Photo Uploading');
 
       this.setState({
         isFrontImageValid: !!frontImage,
@@ -400,16 +745,8 @@ class Upload extends Component {
         isPending: true,
       });
 
-      if (isTableFlow) {
-        analyticsService({
-          uuid: token,
-          event: FRONT_PHOTO_PAGE_EXAMPLE_CLOSE,
-        });
-
-        analyticsService({
-          uuid: token,
-          event: SIDE_PHOTO_PAGE_EXAMPLE_CLOSE,
-        });
+      if (setIsHeaderTranslucent) {
+        setIsHeaderTranslucent(true);
       }
 
       analyticsService({
@@ -420,19 +757,56 @@ class Upload extends Component {
         },
       });
 
+
+      const frontSize = getFileSize(frontImage);
+      const sideSize = getFileSize(sideImage);
+      const totalSize = frontSize + sideSize;
+
+      const dynamicTimeout = getDynamicUploadTimeout(totalSize);
+
+      this.uploadStartedAt = performance.now();
+      this.totalUploadBytes = totalSize;
+
+      this.slowNetworkTimer = setTimeout(() => {
+        this.setState({ isSlowNetworkDetected: true });
+
+        analyticsService({
+          uuid: token,
+          event: 'MAGIC_SCREEN_SLOW_NETWORK_TRIGGERED',
+          data: {
+            totalPhotosSizeBytes: totalSize,
+            timeoutMs: dynamicTimeout,
+            flowType: isTableFlow ? 'by myself' : 'with a friend',
+            retake: !!isRetakeFlow,
+          },
+        });
+      }, dynamicTimeout);
+
+
+      const networkInfo = getNetworkInfo();
+
+      analyticsService({
+        uuid: token,
+        event: MAGIC_SCREEN_PHOTO_UPLOAD_START,
+        data: {
+          step: 'before_upload',
+          totalPhotosSize: totalSize,
+          frontImageSizeBytes: frontSize,
+          sideImageSizeBytes: sideSize,
+          network: networkInfo,
+          isSlowNetwork: isSlowNetwork(networkInfo),
+          retake: !!isRetakeFlow,
+          flowType: isTableFlow ? 'by myself' : 'with a friend',
+        },
+      });
+
+
       let taskSetId;
 
-      // use only real images
-      // ignore booleans for mobile flow
-      const images = {};
-
-      if (frontImage !== true) {
-        images.frontImage = frontImage;
-      }
-
-      if (sideImage !== true) {
-        images.sideImage = sideImage;
-      }
+      const images = {
+        ...(frontImage && { frontImage }),
+        ...(sideImage && { sideImage }),
+      };
 
       const photoFlowType = isTableFlow ? 'hand' : 'friend';
 
@@ -442,120 +816,175 @@ class Upload extends Component {
 
       await this.api.mtmClient.update(mtmClientId, mtmClientParams);
 
+      // ----------------------------------------------------------
+      // CREATE PERSON OR REUSE EXISTING ONE
+      // ----------------------------------------------------------
       if (!personId) {
-        if (isFromDesktopToMobile) {
-          this.flow.updateLocalState({ processStatus: 'Initiating Profile Creation' });
+        setProcessingStatus('Initiating Profile Creation');
+        this.updateDesktopProcessStatus('Initiating Profile Creation');
+
+        let savedPersonId = localStorage.getItem(`personId_${token}`);
+        if (!savedPersonId) {
+          const createdPersonId = await this.api.mtmClient.createPerson(mtmClientId, {
+            gender,
+            height,
+            email,
+            ...(weight && { weight }),
+          });
+          savedPersonId = createdPersonId;
+          setPersonId(savedPersonId);
+          localStorage.setItem(`personId_${token}`, savedPersonId);
         }
 
-        setProcessingStatus('Initiating Profile Creation');
-
-        const createdPersonId = await this.api.mtmClient.createPerson(mtmClientId, {
-          gender,
-          height,
-          email,
-          ...(weight && { weight }),
-        });
-
-        personId = createdPersonId;
-
-        setPersonId(personId);
+        personId = savedPersonId;
 
         await this.flow.update({
           ...(notes && { notes }),
           person: personId,
-          state: {
-            personId,
-          },
+          state: { personId },
         });
 
         setFlowState({ ...flowState, personId });
 
         await wait(1000);
-
-        if (isFromDesktopToMobile) {
-          this.flow.updateLocalState({ processStatus: 'Profile Creation Completed!' });
-        }
-
-        setProcessingStatus('Profile Creation Completed!');
-        await wait(1000);
-
-        if (isFromDesktopToMobile) {
-          this.flow.updateLocalState({ processStatus: 'Photo Uploading' });
-        }
-
         setProcessingStatus('Photo Uploading');
+        this.updateDesktopProcessStatus('Photo Uploading');
 
-        taskSetId = await this.api.person.updateAndCalculate(createdPersonId, {
-          ...images,
-          photoFlowType,
-          deviceCoordinates: { ...deviceCoordinates },
-          measurementsType: 'all',
-          validateImages: (!(isRealTimePoseValidator.front && isRealTimePoseValidator.side)).toString(),
-        });
+        const formData = new FormData();
+
+        if (images.frontImage) {
+          formData.append('front_image', images.frontImage, 'front.jpg');
+        }
+
+        if (images.sideImage) {
+          formData.append('side_image', images.sideImage, 'side.jpg');
+        }
+
+        formData.append('photo_flow', photoFlowType);
+        formData.append('is_clothing_form_fitting_confirmed', isClothingFormFittingConfirmed);
+        formData.append(
+          'phone_position',
+          JSON.stringify(deviceCoordinates || {})
+        );
+        const validateImages =
+          (!(isRealTimePoseValidator.front && isRealTimePoseValidator.side)).toString();
+
+
+        const response = await this.axios(
+          `${API_HOST}/api/v2/persons/${personId}/`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            params: {
+              measurements_type: 'all',
+              validate_images: validateImages,
+            },
+            data: formData,
+          }
+        );
+
+        const taskSetUrl = response.headers.location;
+        taskSetId = /\/queue\/(.*)\//g.exec(taskSetUrl)[1];
 
         setTaskId(taskSetId);
+        localStorage.setItem(`taskId_${token}`, taskSetId);
 
-        await wait(1000);
-
-        if (isFromDesktopToMobile) {
-          this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });
-        }
-
-        setProcessingStatus('Photo Upload Completed!');
         await wait(1000);
       } else {
-        if (isFromDesktopToMobile) {
-          this.flow.updateLocalState({ processStatus: 'Photo Uploading' });
-        }
 
+        // EXISTING PERSON → create new taskSet - upload photos and trigger calculation
+        console.log('create new taskSet for existing person - upload photos and trigger calculation', personId);
         setProcessingStatus('Photo Uploading');
+        this.updateDesktopProcessStatus('Photo Uploading');
 
-        await this.api.person.update(personId, {
-          gender,
-          height,
-          email,
-          photoFlowType,
-          ...(weight && { weight }),
-          deviceCoordinates: { ...deviceCoordinates },
-          ...images,
-          validateImages: (!(isRealTimePoseValidator.front && isRealTimePoseValidator.side)).toString(),
-        });
-        await wait(1000);
+        const validateImages =
+          (!(isRealTimePoseValidator.front && isRealTimePoseValidator.side)).toString();
 
-        // do not calculate again id page reload
-        if (!taskId) {
-          taskSetId = await this.api.person.calculate(personId);
+        const formData = new FormData();
 
-          setTaskId(taskSetId);
-        } else {
-          taskSetId = taskId;
+        if (images.frontImage) {
+          formData.append('front_image', images.frontImage, 'front.jpg');
+        }
+        if (images.sideImage) {
+          formData.append('side_image', images.sideImage, 'side.jpg');
         }
 
-        if (isFromDesktopToMobile) {
-          this.flow.updateLocalState({ processStatus: 'Photo Upload Completed!' });
+        formData.append('gender', gender);
+        formData.append('height', height);
+        if (weight != null) {
+          formData.append('weight', weight);
         }
 
-        setProcessingStatus('Photo Upload Completed!');
+        formData.append('photo_flow', photoFlowType);
+        formData.append('is_clothing_form_fitting_confirmed', isClothingFormFittingConfirmed);
+
+        if (deviceCoordinates) {
+          formData.append('phone_position', JSON.stringify(deviceCoordinates));
+        }
+
+ 
+        // 1 upload photos
+        await this.axios(
+          `${API_HOST}/api/v2/persons/${personId}/`,
+     {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            params: {
+              validate_images: validateImages,
+            },
+            data: formData,
+          }
+        );
+
+        // 2 start calculation
+        const calcResponse = await this.axios(
+          `${API_HOST}/api/v2/persons/${personId}/calculate/`,
+          {
+            method: 'GET',
+            params: {
+              validate_images: validateImages,
+              measurements_type: 'all',
+            },
+          }
+        );
+
+        const taskSetUrl = calcResponse.headers.location;
+        taskSetId = /\/queue\/(.*)\//g.exec(taskSetUrl)[1];
+
+        setTaskId(taskSetId);
+        localStorage.setItem(`taskId_${token}`, taskSetId);
+
         await wait(1000);
       }
 
-      if (isFromDesktopToMobile) {
-        this.flow.updateLocalState({ processStatus: 'Calculating your Measurements' });
-      }
-
-      // eslint-disable-next-line no-underscore-dangle
-      if (!noSleep._wakeLock) {
-        noSleep.enable();
-      }
+      if (!noSleep._wakeLock) noSleep.enable();
 
       setProcessingStatus('Calculating your Measurements');
+      this.updateDesktopProcessStatus('Calculating your Measurements');
+
+      analyticsService({
+        uuid: token,
+        event: MAGIC_SCREEN_PHOTO_UPLOAD_FINISH,
+        data: {
+          step: 'upload_photo_success',
+          totalFilesSizeBytes: totalSize,
+          frontImageSizeBytes: frontSize,
+          sideImageSizeBytes: sideSize,
+          taskSetId,
+          retake: !!isRetakeFlow,
+        },
+      });
+      clearTimeout(this.slowNetworkTimer);
 
       const person = await this.api.queue.getResults(taskSetId, 4000, personId);
 
       await wait(1000);
 
       let measurements;
-
       if (!Object.keys(customSettings.outputMeasurements).length) {
         measurements = { ...person };
       } else {
@@ -565,137 +994,28 @@ class Upload extends Component {
         };
       }
 
-      send('data', measurements, origin);
-
-      const softValidation = this.getSoftValidationParams(person, customSettings);
-
-      setBodyType(person.volume_params.body_type);
-      setMeasurements(measurements);
-      setSoftValidation(softValidation);
-
-      if (isFromDesktopToMobile) {
-        this.flow.updateLocalState({
-          processStatus: 'Sending Your Results',
-          status: flowStatuses.FINISHED,
-          measurements,
-          mtmClientId,
-          softValidation,
-        });
-      } else {
-        await this.flow.update({
-          widget_flow_status: flowStatuses.FINISHED,
-          state: {
-            status: flowStatuses.FINISHED,
-            measurements,
-            mtmClientId,
-            softValidation,
-          },
-        });
-      }
-
-      setProcessingStatus('Sending Your Results');
-      await wait(1000);
-
-      setFlowState({ ...flowState, softValidation });
-
-      analyticsService({
-        uuid: token,
-        event: MAGIC_SCREEN_PAGE_LEAVE,
-      });
-      analyticsService({
-        uuid: token,
-        event: MAGIC_SCREEN_PAGE_SUCCESS,
-      });
-      route('/results', true);
+      await this.finalizeSuccessFlow(person);
     } catch (error) {
+      clearTimeout(this.slowNetworkTimer);
+
       analyticsService({
         uuid: token,
         event: MAGIC_SCREEN_PAGE_FAILED,
-        data: {
-          errorStatus: error.response.status,
-          hardValidation: error.response.data.sub_tasks,
-        },
+        data: { error },
       });
+
+      console.log(error);
+
       if (!isPhoneLocked) {
-        // hard validation part
-        if (error && error.response && error.response.data && error.response.data.sub_tasks) {
-          const subTasks = error.response.data.sub_tasks;
+        if (await this.handleHardValidationError(error)) return;
 
-          const frontTask = subTasks.filter((item) => item.name.indexOf('front_') !== -1)[0];
-          const sideTask = subTasks.filter((item) => item.name.indexOf('side_') !== -1)[0];
-          const measurementError = subTasks.filter((item) => item.name.indexOf('measurement_') !== -1)[0];
-
-          setHardValidation({
-            front: frontTask.message,
-            side: sideTask.message,
-            ...(measurementError && { measurementError: true }),
-          });
-
-          setIsFrontRealTimePoseValidator(false);
-          setIsSideRealTimePoseValidator(false);
-
-          // reset front image if there is hard validation error
-          // in the front image
-          if (frontTask.message) {
-            addFrontImage(null);
-          }
-
-          // reset side image if there is hard validation error
-          // in the side image
-          if (sideTask.message) {
-            addSideImage(null);
-          }
-
-          if (measurementError) {
-            addFrontImage(null);
-            addSideImage(null);
-          }
-
-          route('/hard-validation', true);
-        } else if (error && error.response && s === 400) {
-          route('/not-found', true);
-        } else if (error && error.response && error.response.data) {
-          const {
-            detail,
-            brand: brandError,
-            body_part: bodyPartError,
-          } = error.response.data;
-          // eslint-disable-next-line no-alert
-          alert(detail || brandError || bodyPartError);
-          route('/not-found', true);
-        } else {
-          if (error.message.includes('is not specified')) {
-            const { returnUrl } = this.props;
-
-            // eslint-disable-next-line no-alert
-            alert('Oops...\nThe server lost connection...\nPlease restart widget flow on the desktop or start again on mobile');
-
-            window.location.href = returnUrl;
-
-            return;
-          }
-
-          // for iphone after page reload
-          await wait(2000);
-
-          if (isRefreshed) return;
-
-          // eslint-disable-next-line no-console
-          console.error(error);
-
-          route('/not-found', true);
-        }
+        route('/not-found', true);
       }
     }
   }
 
   triggerFrontImage = () => {
-    const {
-      setCamera,
-      token,
-      isTableFlow,
-      isRetakeFlow,
-    } = this.props;
+    const { setCamera, token, isTableFlow, isRetakeFlow } = this.props;
 
     setCamera('front');
 
@@ -710,12 +1030,7 @@ class Upload extends Component {
   }
 
   triggerSideImage = () => {
-    const {
-      setCamera,
-      isTableFlow,
-      isRetakeFlow,
-      token,
-    } = this.props;
+    const { setCamera, isTableFlow, isRetakeFlow, token } = this.props;
 
     setCamera('side');
 
@@ -729,11 +1044,119 @@ class Upload extends Component {
     });
   }
 
+  handleHardValidationError = async (error) => {
+    const {
+      token,
+      addFrontImage,
+      addSideImage,
+      setHardValidation,
+      setIsFrontRealTimePoseValidator,
+      setIsSideRealTimePoseValidator,
+    } = this.props;
+
+    if (!error?.response?.data?.sub_tasks) return false;
+
+    const subTasks = error.response.data.sub_tasks;
+
+    const frontTask = subTasks.find((i) => i.name.includes('front_'));
+    const sideTask = subTasks.find((i) => i.name.includes('side_'));
+    const measurementError = subTasks.find((i) => i.name.includes('measurement_'));
+
+    setHardValidation({
+      front: frontTask?.message || null,
+      side: sideTask?.message || null,
+      ...(measurementError && { measurementError: true }),
+    });
+
+    setIsFrontRealTimePoseValidator(false);
+    setIsSideRealTimePoseValidator(false);
+
+    if (frontTask?.message) {
+      addFrontImage(null);
+      await deletePhoto(`frontImage_${token}`);
+    }
+
+    if (sideTask?.message) {
+      addSideImage(null);
+      await deletePhoto(`sideImage_${token}`);
+    }
+
+    if (measurementError?.message) {
+      addFrontImage(null);
+      addSideImage(null);
+      await deletePhoto(`frontImage_${token}`);
+      await deletePhoto(`sideImage_${token}`);
+    }
+
+    route('/hard-validation', true);
+
+    return true;
+  };
+
+  finalizeSuccessFlow = async (person, { source = 'normal', skipUploadAnalytics = false } = {}) => {
+    console.log('finalizeSuccessFlow');
+    const {
+      origin,
+      token,
+      setMeasurements,
+      setSoftValidation,
+      setBodyType,
+      setFlowState,
+      flowState,
+      mtmClientId,
+      customSettings,
+    } = this.props;
+
+    this.setProcessingStatus?.('Calculating your Measurements');
+    this.updateDesktopProcessStatus('Calculating your Measurements');
+
+    let measurements;
+    if (!Object.keys(customSettings.outputMeasurements).length) {
+      measurements = { ...person };
+    } else {
+      measurements = {
+        ...person,
+        ...(filterCustomMeasurements({ ...person }, customSettings)),
+      };
+    }
+
+    send('data', measurements, origin);
+
+    if (person.volume_params) {
+      setBodyType(person.volume_params.body_type);
+    }
+
+    setMeasurements(measurements);
+    await this.flow?.update({
+      widget_flow_status: flowStatuses.FINISHED,
+      state: {
+        status: flowStatuses.FINISHED,
+        measurements,
+        mtmClientId,
+      },
+    });
+
+    this.setProcessingStatus?.('Sending Your Results');
+    this.updateDesktopProcessStatus('Sending Your Results');
+
+    await wait(500);
+
+    setFlowState({ ...flowState });
+
+    analyticsService({ uuid: token, event: MAGIC_SCREEN_PAGE_LEAVE });
+    analyticsService({ uuid: token, event: MAGIC_SCREEN_PAGE_SUCCESS });
+
+    await deletePhoto(`frontImage_${token}`);
+    await deletePhoto(`sideImage_${token}`);
+
+    route('/results', true);
+  };
+
+
+
   openPhotoExample = (photoType) => {
     this.setState({
-      // eslint-disable-next-line react/no-unused-state
       isPhotoExample: true,
-      // eslint-disable-next-line react/no-unused-state
       photoType,
     });
   }
@@ -742,19 +1165,12 @@ class Upload extends Component {
     const { setIsNetwork } = this.props;
 
     setIsNetwork(false);
-
-    // eslint-disable-next-line no-alert
     alert('Check your internet connection and try again');
-
     route('/not-found', true);
   }
 
   disableTableFlow = () => {
-    const {
-      setIsTableFlowDisabled,
-      setIsTableFlow,
-      setCamera,
-    } = this.props;
+    const { setIsTableFlowDisabled, setIsTableFlow, setCamera } = this.props;
 
     setCamera(null);
     setIsTableFlowDisabled(true);
@@ -785,89 +1201,27 @@ class Upload extends Component {
     setIsSideRealTimePoseValidator(!!isSideRealTimePoseValidation);
   }
 
-  getSoftValidationParams = (person, customSettings) => {
-    const softValidation = {
-      looseTop: false,
-      looseBottom: false,
-      looseTopAndBottom: false,
-      wideLegs: false,
-      smallLegs: false,
-      bodyPercentage: false,
-    };
-
-    if (person) {
-      const {
-        front_params: frontParams,
-      } = person;
-
-      if (frontParams) {
-        if (frontParams.clothes_type && frontParams.clothes_type.types) {
-          // temporary solution
-          const { top, bottom } = frontParams.clothes_type.types;
-
-          if (customSettings.show_soft_validation) {
-            softValidation.looseTop = top.code === 't2' && bottom.code !== 'b1';
-            softValidation.looseBottom = bottom.code === 'b1' && top.code !== 't2';
-            softValidation.looseTopAndBottom = top.code === 't2' && bottom.code === 'b1';
-            softValidation.wideLegs = false;
-            softValidation.smallLegs = false;
-            softValidation.bodyPercentage = false;
-          } else {
-            softValidation.looseTop = false;
-            softValidation.looseBottom = false;
-            softValidation.looseTopAndBottom = false;
-            softValidation.wideLegs = false;
-            softValidation.smallLegs = false;
-            softValidation.bodyPercentage = false;
-          }
-        }
-      }
-    }
-
-    return softValidation;
-  }
-
   render() {
     const isDesktop = !isMobileDevice();
 
     const {
       isPending,
-      isFrontImageValid,
-      isSideImageValid,
-      frontImagePose,
-      frontImageBody,
-      sideImagePose,
-      sideImageBody,
+      isSlowNetworkDetected,
+      standInstructionStep,
     } = this.state;
 
     const {
-      frontImage,
-      sideImage,
       gender,
       camera,
       sendDataStatus,
       isMobile,
-      isPhotosFromGallery,
       isTableFlow,
-      hardValidation,
       token,
+      hardValidation,
     } = this.props;
 
-    let title;
-    let frontActive = false;
-    let sideActive = false;
-
-    if (isTableFlow) {
-      title = 'requirements';
-      frontActive = (!frontImage && !sideImage) || (!frontImage && sideImage);
-      sideActive = frontImage && !sideImage;
-    } else if ((!frontImage && !sideImage) || (!frontImage && sideImage)) {
-      title = 'Take Front photo';
-      frontActive = true;
-    } else if (frontImage && !sideImage) {
-      title = 'Take Side photo';
-      sideActive = true;
-    }
+    const useRtpv = this.getUseRtpvCamera();
+    const standImages = howToStandImages[gender] || howToStandImages.female;
 
     return (
       <div className="screen active">
@@ -875,74 +1229,12 @@ class Upload extends Component {
           <div className="tutorial__desktop-msg">
             <h2>Please open this link on your mobile device</h2>
           </div>
-        ) : (
-            <Fragment>
-              <Stepper steps="9" current={frontActive ? 7 : 8} />
-
-              <div className="screen__content upload">
-                <h3 className="screen__title upload__title">
-                  {title}
-
-                  <div className="upload__upload-file">
-                    <UploadBlock
-                      className={classNames({
-                        active: frontActive,
-                      })}
-                      gender={gender}
-                      type="front"
-                      validation={{ pose: frontImagePose, body: frontImageBody }}
-                      change={this.saveFrontFile}
-                      isValid={isFrontImageValid}
-                      value={frontImage}
-                      openPhotoExample={this.openPhotoExample}
-                      photosFromGallery={isPhotosFromGallery}
-                    />
-                    <UploadBlock
-                      className={classNames({
-                        active: sideActive,
-                      })}
-                      gender={gender}
-                      type="side"
-                      validation={{ pose: sideImagePose, body: sideImageBody }}
-                      change={this.saveSideFile}
-                      isValid={isSideImageValid}
-                      value={sideImage}
-                      openPhotoExample={this.openPhotoExample}
-                      photosFromGallery={isPhotosFromGallery}
-                    />
-                  </div>
-                </h3>
-
-                <Requirements
-                  isTableFlow={isTableFlow}
-                  token={token}
-                  video={isTableFlow && getAsset(true, gender, 'videoExample')}
-                  photoBg={!isTableFlow && getAsset(false, gender, frontActive ? 'frontExample' : 'sideExample')}
-                />
-              </div>
-              <div className="screen__footer">
-                <button
-                  className={classNames('button', 'upload__front-image-btn', {
-                    active: frontActive,
-                  })}
-                  onClick={this.triggerFrontImage}
-                  type="button"
-                >
-                  Let&apos;s start
-              </button>
-
-                <button
-                  className={classNames('button', 'upload__side-image-btn', {
-                    active: sideActive,
-                  })}
-                  onClick={this.triggerSideImage}
-                  type="button"
-                >
-                  Let&apos;s start
-              </button>
-              </div>
-            </Fragment>
-          )}
+        ) : null}
+        {isMobile && isSlowNetworkDetected && (
+          <div className="upload__slow-network-hint">
+            Your connection seems slow. Please keep this page open — <strong>we’re still uploading your photos</strong>.
+          </div>
+        )}
 
         <Preloader
           isActive={isPending}
@@ -951,9 +1243,33 @@ class Upload extends Component {
           gender={gender}
         />
 
-        {camera ? (
-          <Camera
-            type={camera}
+        {standInstructionStep ? (
+          <Fragment>
+            <div
+              className="screen__content upload-stand-instruction"
+              style={{
+                backgroundImage: `url(${standInstructionStep === 'front' ? standImages.front : standImages.side})`,
+              }}
+            >
+              <h3 className="screen__label">How to stand</h3>
+            </div>
+
+            <div className="screen__footer upload-stand-instruction__footer">
+              <button
+                className="button"
+                onClick={this.continueStandInstruction}
+              >
+                Continue
+              </button>
+            </div>
+          </Fragment>
+        ) : null}
+
+        {camera && !standInstructionStep ? (
+          <CameraWrapper
+            key={!isTableFlow ? camera : undefined}
+            useRtpvCamera={useRtpv}
+            camera={camera}
             gender={gender}
             saveFront={this.saveFrontFile}
             saveSide={this.saveSideFile}
@@ -962,11 +1278,13 @@ class Upload extends Component {
             disableTableFlow={this.disableTableFlow}
             turnOffCamera={this.turnOffCamera}
             setDeviceCoordinates={this.setDeviceCoordinates}
-            isFrontPhotoPoseValidated={this.setFrontValidationStatus}
-            isSidePhotoPoseValidated={this.setSideValidationStatus}
+            setFrontValidationStatus={this.setFrontValidationStatus}
+            setSideValidationStatus={this.setSideValidationStatus}
             token={token}
           />
         ) : null}
+
+
       </div>
     );
   }

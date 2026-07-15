@@ -1,12 +1,16 @@
 @import '../../scss/utils/index';
 
 .PolicyAgreement {
-  margin-bottom: 20px;
+  margin: 22px 0 40px;
+
+  @include breakpoint($mobile) {
+    margin: 0 30px 40px 0;
+  }
 
   &__link {
     outline: none;
     border: 0;
-    background: #fff;
+    background: transparent;
     color: #9b9b9b;
     text-decoration: underline;
     padding: 0;

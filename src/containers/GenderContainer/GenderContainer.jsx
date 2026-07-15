@@ -2,6 +2,7 @@
 import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
@@ -29,6 +30,7 @@ class GenderContainer extends Component {
       isAgreeValid: true,
       isGenderValid: true,
       buttonDisabled: true,
+      isInfo: false,
     };
 
     const { flowId, token } = this.props;
@@ -150,8 +152,16 @@ class GenderContainer extends Component {
     route('/height', false);
   }
 
+  toggleInfo = () => {
+    setTimeout(() => {
+      this.setState({
+        isInfo: !this.state.isInfo,
+      })
+    }, 400);
+  }
+
   render() {
-    const { buttonDisabled, isAgreeValid } = this.state;
+    const { buttonDisabled, isAgreeValid, isInfo } = this.state;
     const {
       gender,
       agree,
@@ -160,11 +170,15 @@ class GenderContainer extends Component {
     } = this.props;
 
     return (
-      <section className="screen active">
+      <section className="screen active gender-screen">
         <div className="screen__content select-your-gender">
-          <Stepper steps="9" current={2} />
+          <Stepper steps="5" current={2} />
           <div className="gender__control screen__control">
-            <h3 className="screen__label">HOW DO YOU IDENTIFY ?</h3>
+            <h3 className="screen__label">Specify gender for accurate measurements</h3>
+            <button class="info-btn" onClick={this.toggleInfo}>
+              <span class="icon">i</span>
+              <span class="label">Why?</span>
+            </button>
             <Gender
               className="select-your-gender__gender"
               change={this.changeGender}
@@ -182,8 +196,21 @@ class GenderContainer extends Component {
               changeAgreeState={this.changeAgree}
             />
           ) : null}
-          <button className="button" onClick={this.next} type="button" disabled={buttonDisabled}>Next</button>
+          <button className="button" onClick={this.next} type="button" disabled={buttonDisabled}>Continue</button>
         </div>
+        {isInfo ?
+          (<div className="overlay">
+            <div className="info-block">
+              <div className="handle"></div>
+              <span class="icon">i</span>
+              <h3 className="screen__label">Why are we asking?</h3>
+              <p>
+                Accurate gender information is crucial for optimal algorithmic calibration
+                and precise measurement accuracy
+              </p>
+              <button className="button" onClick={this.toggleInfo}>Got it</button>
+            </div>
+          </div>) : null}
       </section>
     );
   }

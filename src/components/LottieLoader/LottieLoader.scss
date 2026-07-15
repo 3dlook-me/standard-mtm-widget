@@ -6,12 +6,16 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  margin-top: 60px;
 }
 
 .lottie-loader {
-  width: 237px;
-  height: 197px;
+  width: 300px;
+  height: 300px;
+
+  @include breakpoint($mobile) {
+    width: 75vw;
+    height: 75vw;
+  }
 }
 
 .progress-bar {
@@ -26,5 +30,5 @@
   height: 6px;
   background-color: #E6E6F0;
   border-radius: 10px;
-  margin: 34px 0 60px;
+  margin: 34px 0 30px;
 }

@@ -13,6 +13,20 @@ const buttonTemplate = require('./templates/button.html');
 const modalTemplate = require('./templates/modal-drop.html');
 
 let uid = 0;
+const FULL_NAME_MAX_LENGTH = 150;
+
+const normalizeFullName = (fullName) => {
+  if (typeof fullName !== 'string') {
+    return null;
+  }
+
+  const normalizedFullName = fullName.trim();
+
+  return normalizedFullName
+    && normalizedFullName.length <= FULL_NAME_MAX_LENGTH
+    ? normalizedFullName
+    : null;
+};
 
 class SaiaMTMButton {
   /**
@@ -29,6 +43,7 @@ class SaiaMTMButton {
    * @param {string} [options.buttonTitle] - shoify product id
    * @param {Object} [options.defaultValues] - default values for some widget fields
    * @param {string} [options.defaultValues.email] - default value for email field
+   * @param {string} [options.defaultValues.full_name] - default value for full name field
    * @param {number} [options.defaultValues.heightCm] - default value for height in centimeters.
    * Will also set units field to 'cm'.
    * @param {number} [options.defaultValues.heightFt] - default value for height in feet and
@@ -42,8 +57,9 @@ class SaiaMTMButton {
    * If you set heightFt and heightIn, then weight should contain value in pounds.
    * @param {Object} [options.disableInput] - opportunity to disable input fields
    * @param {Boolean} [options.disableInput.email] - opportunity to disable email input
+   * @param {Boolean} [options.disableInput.full_name] - opportunity to disable full name input
    * * @param {Object} [options.disableScreen] - opportunity to disable screens
-   * @param {Boolean} [options.disableScreen.email] - opportunity to disable email screen
+   * @param {Boolean} [options.disableScreen.email] - opportunity to disable email and full name screen
    * @param {Object} options.customSettings - users widget custom settings
    * @param {Object} options.customSettings.button_background_color - button bg color
    * @param {Object} options.customSettings.button_border_color - button border color
@@ -67,6 +83,7 @@ class SaiaMTMButton {
       ...globalOptions,
       defaultValues: {
         email: null,
+        full_name: null,
         heightCm: null,
         heightFt: null,
         heightIn: null,
@@ -75,6 +92,7 @@ class SaiaMTMButton {
       },
       disableInput: {
         email: false,
+        full_name: false,
         ...globalOptions.disableInput,
       },
       disableScreen: {
@@ -164,8 +182,9 @@ class SaiaMTMButton {
               data.id,
             ];
           }
-
-          localStorage.setItem('saia-pf-widget-data', JSON.stringify(data));
+          if (Object.keys(data.front_params).length) {
+            localStorage.setItem('saia-pf-widget-data', JSON.stringify(data));
+          }
           if (data.id) {
             localStorage.setItem('mt-person-id', data.id);
           }
@@ -186,9 +205,17 @@ class SaiaMTMButton {
     const params = parseGetParams();
     if (params.id || params.personId) {
       localStorage.setItem('mt-person-id', params.id || params.personId);
+      this.savePersonData(params.uuid) ;
     }
   }
 
+  async savePersonData(uuid) {
+    const flowService = new FlowService(uuid);
+    const widget = await flowService.get(uuid);;
+    localStorage.setItem('saia-pf-widget-data', JSON.stringify({
+      ...widget.state.measurements, softValidation: widget.state.softValidation }));
+  }
+  
   /**
    * Show widget
    */
@@ -219,11 +246,11 @@ class SaiaMTMButton {
     if (!this.isMobile) {
       this.modal.classList.toggle('active');
     }
-
+   
     let customWidgetUrl = widget.absolute_url
-      ? (new URL(widget.absolute_url)).protocol + '//' + (new URL(widget.absolute_url)).hostname
+      ? (new URL(widget.absolute_url)).protocol + '//' + (new URL(widget.absolute_url )).hostname
       : widgetUrl;
-
+ 
     let url = `${customWidgetUrl}/?key=${widget.uuid}#/?origin=${window.location.origin}&returnUrl=${encodeURIComponent(returnUrl)}&mtmClientId=${mtmClientId}`;
 
     if (returnUrlDesktop) {
@@ -261,8 +288,12 @@ class SaiaMTMButton {
     const defaultHeightIn = (defaultValues) ? defaultValues.heightIn : null;
     const defaultWeight = (defaultValues) ? defaultValues.weight : null;
     const defaultEmail = (defaultValues) ? defaultValues.email : null;
+    const defaultFullName = (defaultValues)
+      ? normalizeFullName(defaultValues.full_name)
+      : null;
 
     const disabledEmail = disableInput.email;
+    const disabledFullName = disableInput.full_name;
     const disableEmailScreen = disableScreen.email;
 
     // get units for default values
@@ -272,20 +303,22 @@ class SaiaMTMButton {
     }
 
     // convert default height in ft/in to cm
-    let height = parseInt(defaultHeightCm, 10);
+    let height = Number.isFinite(parseInt(defaultHeightCm, 10))
+      ? parseInt(defaultHeightCm, 10)
+      : null;
     if (typeof defaultHeightFt === 'number' && typeof defaultHeightIn === 'number') {
       height = Math.round(getHeightCm(defaultHeightFt, defaultHeightIn));
     }
 
     // convert weight to kg
     const defaultWeightNumber = parseInt(defaultWeight, 10);
-    let weightKg;
-    let weightLb;
+    let weightKg = null;
+    let weightLb = null;
 
-    if (units === 'in') {
+    if (Number.isFinite(defaultWeightNumber) && units === 'in') {
       weightKg = getWeightKg(defaultWeightNumber);
       weightLb = defaultWeightNumber;
-    } else {
+    } else if (Number.isFinite(defaultWeightNumber)) {
       weightKg = defaultWeightNumber;
       weightLb = getWeightLb(defaultWeightNumber);
     }
@@ -296,9 +329,11 @@ class SaiaMTMButton {
       units,
       height,
       email: defaultEmail,
+      firstName: defaultFullName,
       weight: weightKg,
       weightLb,
       disabledEmail: validateEmail(defaultEmail) && disabledEmail,
+      disabledFullName: !!defaultFullName && disabledFullName,
       disableEmailScreen: validateEmail(defaultEmail) && disableEmailScreen,
     });
 

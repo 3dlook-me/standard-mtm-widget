@@ -1,9 +1,27 @@
 import { h, Component } from 'preact';
 import classNames from 'classnames';
+import { store } from '../../store';
+import analyticsService, {
+  SEE_EXAMPLE
+} from '../../services/analyticsService';
 
-import { getAsset } from '../../helpers/utils';
+import howToStandFront from '../../images/how_to_stand_front.jpg';
+import howToStandFrontMen from '../../images/how_to_stand_front_men.jpg';
+import howToStandSide from '../../images/how_to_stand_side.jpg';
+import howToStandSideMen from '../../images/how_to_stand_side_men.jpg';
 
 import './ImageExample.scss';
+
+const howToStandImages = {
+  female: {
+    front: howToStandFront,
+    side: howToStandSide,
+  },
+  male: {
+    front: howToStandFrontMen,
+    side: howToStandSideMen,
+  },
+};
 
 /**
  * Help component.
@@ -29,14 +47,22 @@ class ImageExample extends Component {
    *
    */
   onClick = () => {
+
+    analyticsService({
+      uuid: store.getState().token,
+      event: SEE_EXAMPLE,
+    });
+
     this.setState({
       isImageActive: true,
     });
   }
 
   render() {
-    const { type, gender, isTableFlow } = this.props;
+    const { gender, type } = this.props;
     const { imageX, imageY, isImageActive } = this.state;
+    const images = howToStandImages[gender] || howToStandImages.female;
+    const imageSrc = type === 'side' ? images.side : images.front;
 
     const imageStyle = {
       top: imageY,
@@ -67,7 +93,7 @@ class ImageExample extends Component {
               </svg>
             </button>
             <img
-              src={getAsset(isTableFlow, gender, type)}
+              src={imageSrc}
               alt={`${type === 'side' ? 'Side' : 'Front'} example`}
             />
           </figure>

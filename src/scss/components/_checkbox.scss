@@ -3,7 +3,6 @@
 .checkbox {
   font-size: rem(11px);
   display: flex;
-  justify-content: center;
 
   @include breakpoint((max-width 320px, max-height 568px)) {
     font-size: rem(10px);
@@ -41,10 +40,6 @@
       pointer-events: none;
     }
   }
-
-  // &:focus-within &__icon {
-  //   outline: -webkit-focus-ring-color auto 5px;
-  // }
 
   &.checked &__icon {
     background: $main-color;

@@ -17,6 +17,10 @@
     height: 60px;
     animation: loader-spin 1s linear infinite;
   }
+
+  &--bg {
+    background: radial-gradient(106.37% 59.1% at 50.13% 40.9%, rgb(255, 255, 255) 0%, rgb(221, 227, 251));
+  }
 }
 
 @keyframes loader-spin {

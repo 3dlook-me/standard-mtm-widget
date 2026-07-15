@@ -38,6 +38,12 @@ const shouldGenSourceMap = mode !== 'production';
  */
 const sass = {
   loader: 'sass-loader',
+  options: {
+    sassOptions: {
+      quietDeps: true,
+      silenceDeprecations: ['legacy-js-api', 'import', 'global-builtin'],
+    },
+  },
 };
 
 const css = {

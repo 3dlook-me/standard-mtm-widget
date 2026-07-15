@@ -5,13 +5,9 @@ import classNames from 'classnames';
 import './Header.scss';
 
 import FlowService from '../../services/flowService';
-import
-// analyticsService,
-{
+import {
   WIDGET_CLOSE,
   analyticsServiceAsync,
-  // FAQ_PAGE_OPEN,
-  // FAQ_PAGE_CLOSE,
 } from '../../services/analyticsService';
 import {
   send,
@@ -101,7 +97,7 @@ class Header extends Component {
       }
 
       if (isMeasurements && !isSmbFlow && !isDemoWidget) {
-        window.location = `${returnUrl}?${objectToUrlParams(measurements, returnUrl)}`;
+        window.location = `${returnUrl}?${objectToUrlParams(measurements, returnUrl)}&uuid=${uuid}`;
       } else {
         window.location = returnUrl;
       }
@@ -116,28 +112,9 @@ class Header extends Component {
     this.setState((prevState) => ({ ...prevState, isExitModalActive: !prevState.isExitModalActive }));
   }
 
-  /**
-   * Help button click
-   */
-  // temporarily disable
-  // onHelpButtonClick = () => {
-  //   const {
-  //     isHelpActive,
-  //     setHelpIsActive,
-  //     matches,
-  //     token,
-  //   } = this.props;
-  //   const uuid = (matches || {}).key || API_KEY || parseGetParams().key || token;
-  //
-  //   analyticsService({
-  //     uuid,
-  //     event: !isHelpActive ? INFO_CLICK : FAQ_PAGE_CLOSE,
-  //     data: { screen: window.location.hash },
-  //   });
-  //
-  //   gaHelpOnClick();
-  //   setHelpIsActive(!isHelpActive);
-  // };
+  onBack = () => {
+    window.history.back();
+  }
 
   render() {
     const {
@@ -149,40 +126,27 @@ class Header extends Component {
       isHeaderTranslucent,
     } = this.props;
 
-    const {
-      isExitModalActive
-    } = this.state;
+  const {
+    isExitModalActive
+  } = this.state;
 
     return (
       <header
         className={classNames('header', {
           active: isHelpActive,
           'header--default': !camera,
-          'header--white': camera && !isTableFlow,
-          'header--table-flow-camera': (camera && isTableFlow) && !(frontImage && sideImage),
+          'header--white': camera,
+          'header--table-flow-camera': camera,
           'header--translucent': isHeaderTranslucent,
         })}
       >
         <div className="header__offline-status">Check your internet connection</div>
 
-        {/* temporarily disable help button */}
-        {/* <button className="header__help" onClick={this.onHelpButtonClick} type="button"> */}
-        {/*  <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg"> */}
-        {/*    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd"> */}
-        {/*      <g transform="translate(-29.000000, -19.000000)"> */}
-        {/*        <g transform="translate(30.000000, 20.000000)"> */}
-        {/* eslint-disable-next-line max-len */}
-        {/*          <text fontFamily="Avenir-Black, Avenir" fontSize="12" fontWeight="700" letterSpacing="1" fill="#DDDDDD"> */}
-        {/*            <tspan x="7.44" y="13">i</tspan> */}
-        {/*          </text> */}
-        {/* eslint-disable-next-line max-len */}
-        {/*          <circle className="header__svg-fill header__svg-fill--circle" stroke="#DDDDDD" strokeWidth="1.5" cx="9" cy="9" r="9" /> */}
-        {/*        </g> */}
-        {/*      </g> */}
-        {/*    </g> */}
-        {/*  </svg> */}
-        {/* </button> */}
-
+        <button className="header__back" onClick={this.onBack} type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M10.5 3L1.5 11.5M1.5 11.5L10.5 21M1.5 11.5H22.5" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        </button>
         <button className="header__close" onClick={this.onShowExitModal} type="button">
           <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
@@ -210,4 +174,3 @@ class Header extends Component {
 }
 
 export default connect((state) => state, actions)(Header);
-

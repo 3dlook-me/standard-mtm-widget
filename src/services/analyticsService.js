@@ -1,7 +1,5 @@
 import axios from 'axios';
 import { route } from 'preact-router';
-import { store } from '../store';
-import { setIsWidgetArchived } from '../store/actions';
 
 export default ({ uuid, event, data = {} }) => axios.post(`${API_HOST}/api/v2/persons/widget/${uuid}/events/`, {
   name: event,
@@ -11,8 +9,6 @@ export default ({ uuid, event, data = {} }) => axios.post(`${API_HOST}/api/v2/pe
 }).catch((err) => {
   // TODO refactor: make react-error-boundary component and outside analit service
   if (err && err.response && err.response.data.detail === 'Widget is archived.') {
-    // store.dispatch(setIsWidgetArchived(true));
-
     route('/contact-your-dealer', true);
   }
 });
@@ -25,8 +21,6 @@ export const analyticsServiceAsync = async ({ uuid, event, data = {} }) => await
 }).catch((err) => {
   // TODO refactor: make react-error-boundary component and outside analit service
   if (err && err.response && err.response.data.detail === 'Widget is archived.') {
-    // store.dispatch(setIsWidgetArchived(true));
-
     route('/contact-your-dealer', true);
   }
 });
@@ -114,6 +108,9 @@ export const MAGIC_SCREEN_PAGE_ENTER = 'MAGIC_SCREEN_PAGE_ENTER';
 export const MAGIC_SCREEN_PAGE_LEAVE = 'MAGIC_SCREEN_PAGE_LEAVE';
 export const MAGIC_SCREEN_PAGE_SUCCESS = 'MAGIC_SCREEN_PAGE_SUCCESS';
 export const MAGIC_SCREEN_PAGE_FAILED = 'MAGIC_SCREEN_PAGE_FAILED';
+
+export const MAGIC_SCREEN_PHOTO_UPLOAD_START = 'MAGIC_SCREEN_PHOTO_UPLOAD_START';
+export const MAGIC_SCREEN_PHOTO_UPLOAD_FINISH = 'MAGIC_SCREEN_PHOTO_UPLOAD_FINISH';
 
 // TODO Results screen
 export const RESULT_SCREEN_ENTER = 'RESULT_SCREEN_ENTER';

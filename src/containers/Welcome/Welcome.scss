@@ -1,14 +1,10 @@
 @import '../../scss/utils/index';
 
 .welcome {
-  padding-top: 60px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-
-  @include breakpoint($mobile) {
-    padding-top: 82px;
-  }
+  align-items: center;
 
   + .screen__footer {
     .button {
@@ -62,3 +58,14 @@
     }
   }
 }
+
+.screen {
+  background-size: cover;
+  background-position: center;
+
+  &.active.screen--welcome-desktop {
+    background-position: bottom;
+  }
+}
+
+

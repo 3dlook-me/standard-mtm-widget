@@ -1,23 +1,112 @@
+@import '../../scss/utils/index';
+
 .not-found {
-  &__title {
-    margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  width: 100%;
+  padding: 18px 12px 0;
+
+  @include breakpoint($mobile) {
+    padding-top: 18px;
   }
 
-  &__text {
+  &__eyebrow {
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    z-index: 9;
+    transform: translateX(-50%);
+    color: #FF000F;
     text-align: center;
-    margin-bottom: 60px;
-  }
-
-  &__text-2 {
-    text-align: center;
-    margin-top: 50px;
-
-    span {
-      font-weight: bold;
-    }
+    font-family: Jost, Urbanist, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 32px;
+    letter-spacing: 0.7px;
   }
 
   &__image {
-    margin: 0 auto;
+    width: 60px;
+    height: 60px;
+    margin: 10vh auto 8px;
+    object-fit: contain;
+  }
+
+  &__title {
+    margin: 0 0 5px;
+    color: #000;
+    text-align: center;
+    font-family: Urbanist;
+    font-size: 23px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 140%;
+  }
+
+  &__text {
+    margin: 0;
+    color: #000;
+    text-align: center;
+    font-family: Urbanist;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 125%;
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
+    margin-top: 10vh;
+    margin-bottom: 24px;
+    padding: 0 10px;
+  }
+
+  &__title-2 {
+    margin: 0 0 10px;
+    color: #000;
+    text-align: center;
+    font-family: Urbanist;
+    font-size: 23px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
+  }
+
+  &__text-2 {
+    margin: 0;
+    color: #000;
+    text-align: center;
+    font-family: Urbanist;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 125%;
+  }
+
+  &__footer {
+    width: 100%;
+
+    .button {
+      background: #222;
+      border-radius: 10px;
+      text-transform: none;
+    }
+  }
+
+  @include breakpoint(max-height 500px) {
+    &__image {
+      margin-top: 32px;
+    }
+
+    &__card {
+      margin-top: 32px;
+    }
   }
 }

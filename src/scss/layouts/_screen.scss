@@ -1,3 +1,5 @@
+@import "../utils/index";
+
 $success: #69BE0C;
 $warning: #FF9F00;
 $failure: $error-border-color;
@@ -8,83 +10,103 @@ $failure: $error-border-color;
   margin: 0 auto;
 
   &__content {
-    margin: 0 auto;
-    width: 100%;
-    flex-grow: 1;
-    padding-top: 36px;
+    width: 320px;
+
+    @include breakpoint($mobile) {
+      margin: 0 auto;
+      width: 100%;
+      min-height: 0;
+      flex-grow: 1;
+      padding-top: 36px;
+    }
+
+    @include breakpoint((max-width 768px, max-height 500px)) {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    @include breakpoint($iphoneSE) {
+      padding-top: 0;
+    }
   }
 
   &__intro {
     width: 100%;
-    padding: 0 26px;
+    max-width: 430px;
+    padding: 0 40px;
     margin: 0 auto 40px;
-
-    @include breakpoint($mobile) {
-      margin: auto auto 0;
-      padding: 0 24px;
-    }
+    position: absolute;
+    text-align: center;
   }
 
   &__intro-title {
     text-transform: uppercase;
-    font-weight: bold;
-    text-align: center;
     margin-bottom: 14px;
     color: $main-color;
-    font-size: 21px;
-    line-height: 24px;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 47px;
+    letter-spacing: 0.4px;
 
-    @include breakpoint($mobile) {
-      font-size: 17px;
-      line-height: 20px;
+    @include breakpoint($iphoneSE) {
+      font-size: 32px;
     }
   }
 
   &__intro-txt {
-    font-size: 16px;
-    line-height: 19px;
-    text-align: center;
-    color: #686868;
-
-    @include breakpoint($mobile) {
-      font-size: 14px;
-      line-height: 18px;
-    }
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 27px;
+    letter-spacing: 0.18px;
+    opacity: 0.57;
   }
 
   &__footer {
-    margin-top: auto;
     padding-top: 0;
-    padding-bottom: 50px;
+    padding-bottom: 20px;
 
     @include breakpoint($mobile) {
-      padding-top: 30px;
+      flex-shrink: 0;
+      margin-top: auto;
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    @include breakpoint($iphoneSE) {
+      padding-top: 20px;
       padding-bottom: 20px;
     }
 
     .button {
       margin: 0 auto;
-      font-weight: 300;
     }
   }
 
   &__title {
-    text-transform: uppercase;
     font-weight: bold;
     font-size: rem(16px);
     text-align: center;
   }
 
   &__label {
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: rem(14px);
-    margin-bottom: 9px;
+    font-size: 23px;
+    margin-bottom: 20px;
+    font-weight: 500;
+    line-height: 30px;
+    text-align: center;
+  }
+
+  &--no-bg {
+    background-image: unset;
   }
 
   &__control {
-    margin: 0 auto;
-    width: 275px;
+    @include breakpoint($mobile) {
+      margin: 0 auto;
+      width: calc(100vw - 60px);
+    }
   }
 
   &__control-error {
@@ -127,8 +149,6 @@ $failure: $error-border-color;
     span {
       &.success {
         color: $success;
-
-
       }
 
       &.warning {
@@ -174,12 +194,22 @@ $failure: $error-border-color;
   &.active {
     display: flex;
     flex-direction: column;
+    align-items: center;
     flex-grow: 1;
+    min-height: 0;
+    background-size: cover;
+
+    @include breakpoint($mobile) {
+      justify-content: center;
+    }
+
+    @include breakpoint((max-width 768px, max-height 500px)) {
+      justify-content: flex-start;
+    }
   }
 
   &__footer-loader {
     animation: footer-loader-spin 3s linear infinite;
-    
   }
 }
 

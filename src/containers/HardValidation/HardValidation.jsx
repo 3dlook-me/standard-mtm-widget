@@ -12,8 +12,7 @@ import analyticsService, {
 } from '../../services/analyticsService';
 
 import './HardValidation.scss';
-import cryingIcon1x from '../../images/crying.png';
-import cryingIcon2x from '../../images/crying@2x.png';
+import errorIcon from '../../images/error.png';
 
 /**
  * Hard validation page component
@@ -46,9 +45,11 @@ class HardValidation extends Component {
       isFromDesktopToMobile,
       setTaskId,
       isDemoWidget,
+      token,
     } = this.props;
 
     setTaskId(null);
+    localStorage.removeItem(`taskId_${token}`);
 
     // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
     if ((pageReloadStatus && isFromDesktopToMobile) || (pageReloadStatus && isDemoWidget)) {
@@ -65,10 +66,18 @@ class HardValidation extends Component {
     const { hardValidation } = nextProps;
     const { front, side } = hardValidation;
 
-    await this.flow.updateState({
-      frontImage: !front,
-      sideImage: !side,
-    });
+    if (front && side) {
+      // both invalid → full retake
+      await this.flow.updateState({
+        frontImage: null,
+        sideImage: null,
+      });
+    } else {
+      await this.flow.updateState({
+        frontImage: !front,
+        sideImage: !side,
+      });
+    }
   }
 
   back = () => {
@@ -113,7 +122,7 @@ class HardValidation extends Component {
     if (front) {
       if (front === 'Side photo in the front') {
         sideInTheFront = true;
-        topMessageFront = 'Oops! It looks like you took the side photo instead of the front one';
+        topMessageFront = 'It looks like you took the side photo instead of the front one';
         tipMessageFront = 'Please retake the front photo! ';
       } else if (front === 'Can\'t detect the human body') {
         cannotDetectBodyFront = true;
@@ -145,7 +154,7 @@ class HardValidation extends Component {
     if (side) {
       if (side === 'Front photo in the side') {
         sideInTheSide = true;
-        topMessageSide = 'Oops! It looks like you took the front photo instead of the side one';
+        topMessageSide = 'It looks like you took the front photo instead of the side one';
         tipMessageSide = 'Please retake the side photo! ';
       } else if (side === 'Can\'t detect the human body') {
         cannotDetectBodySide = true;
@@ -165,16 +174,31 @@ class HardValidation extends Component {
       }
     }
 
+    let retakeButtonText = 'Retake photos';
+
+    if (front && !side) {
+      retakeButtonText = 'Retake front photo';
+    } else if (side && !front) {
+      retakeButtonText = 'Retake side photo';
+    }
+
+    const isSingleError = (front && !side) || (side && !front);
+
     return (
-      <div className="screen active">
+      <div className="screen active hard-validation-screen">
         <div className="screen__content hard-validation">
-          <h2 className="screen__subtitle">
-            <span className="failure">Error</span>
-          </h2>
 
-          <h3 className="screen__title hard-validation__title">Oops!</h3>
+          <div className="hard-validation__eyebrow">ERROR</div>
 
-          {measurementError ? (
+          <img
+            className="hard-validation__image"
+            src={errorIcon}
+            alt="hard validation errors"
+          />
+
+          <h3 className="screen__title hard-validation__title">Oops...</h3>
+
+          {measurementError && !front && !side ? (
             <p className="hard-validation__text">
               Something went wrong.
               <br />
@@ -185,83 +209,81 @@ class HardValidation extends Component {
 
           {topMessageFront ? (
             <p className="hard-validation__text">{topMessageFront}</p>
-          ) : null}
+          ) : null }
 
           {topMessageSide ? (
             <p className="hard-validation__text">{topMessageSide}</p>
-          ) : null}
+          ) : null }
 
-          <img
-            className="hard-validation__image"
-            src={cryingIcon1x}
-            srcSet={`${cryingIcon1x} 1x, ${cryingIcon2x} 2x`}
-            alt="hard validation errors"
-          />
+          <div className={`hard-validation__card ${isSingleError ? 'hard-validation__card--single-error' : ''}`}>
+            {front && !side ? (
+              <h4 className="hard-validation__title-2">
+                Retake the front photo.
+                <br />
+                Here are some tips:
+              </h4>
+            ) : null }
 
-          {front && !side ? (
-            <h4 className="hard-validation__title-2">
-              Retake the front photo.
-              <br />
-              Here are some tips:
-            </h4>
-          ) : null}
+            {side && !front ? (
+              <h4 className="hard-validation__title-2">
+                Retake the side photo.
+                <br />
+                Here are some tips:
+              </h4>
+            ) : null }
 
-          {side && !front ? (
-            <h4 className="hard-validation__title-2">
-              Retake the side photo.
-              <br />
-              Here are some tips:
-            </h4>
-          ) : null}
+            {side && front ? (
+              <h4 className="hard-validation__title-2">
+                Retake both photos.
+                <br />
+                Here are some tips:
+              </h4>
+            ) : null }
 
-          {side && front ? (
-            <h4 className="hard-validation__title-2">
-              Retake the front and the side photos.
-              <br />
-              Here are some tips:
-            </h4>
-          ) : null}
+            <ol className="hard-validation__recommendations">
+              {front ? (
+                <li>
+                  {tipMessageFront}
+                  {(sideInTheFront
+                      || cannotDetectBodyFront
+                      || bodyIsNotFullFront
+                      || wrongFrontPose) ? (
+                        <ImageExample
+                          type="front"
+                          isMobile={isMobile}
+                          gender={gender}
+                          isTableFlow={isTableFlow}
+                        />
+                    ) : null}
+                </li>
+              ) : null}
 
-          <ol className="hard-validation__recommendations">
-            {front ? (
-              <li>
-                {tipMessageFront}
-                {(sideInTheFront
-                  || cannotDetectBodyFront
-                  || bodyIsNotFullFront
-                  || wrongFrontPose) ? (
-                    <ImageExample
-                      type="front"
-                      isMobile={isMobile}
-                      gender={gender}
-                      isTableFlow={isTableFlow}
-                    />
-                  ) : null}
-              </li>
-            ) : null}
-
-            {side ? (
-              <li>
-                {tipMessageSide}
-                {(sideInTheSide
-                  || cannotDetectBodySide
-                  || bodyIsNotFullSide
-                  || wrongSidePose) ? (
-                    <ImageExample
-                      type="side"
-                      isMobile={isMobile}
-                      gender={gender}
-                      isTableFlow={isTableFlow}
-                    />
-                  ) : null}
-              </li>
-            ) : null}
-          </ol>
+              {side ? (
+                <li>
+                  {tipMessageSide}
+                  {(sideInTheSide
+                      || cannotDetectBodySide
+                      || bodyIsNotFullSide
+                      || wrongSidePose) ? (
+                        <ImageExample
+                          type="side"
+                          isMobile={isMobile}
+                          gender={gender}
+                          isTableFlow={isTableFlow}
+                        />
+                    ) : null}
+                </li>
+              ) : null}
+            </ol>
+          </div>
 
         </div>
         <div className="screen__footer hard-validation__footer">
           <button className="button" onClick={this.back} type="button">
-            <span>Retake photos</span>
+<svg className="button__button-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="19" viewBox="0 0 15 19" fill="none">
+  <path d="M7.5 3.69231V0L2.8125 4.61538L7.5 9.23077V5.53846C10.6031 5.53846 13.125 8.02154 13.125 11.0769C13.125 14.1323 10.6031 16.6154 7.5 16.6154C4.39687 16.6154 1.875 14.1323 1.875 11.0769H0C0 15.1569 3.35625 18.4615 7.5 18.4615C11.6438 18.4615 15 15.1569 15 11.0769C15 6.99692 11.6438 3.69231 7.5 3.69231Z" fill="white"/>
+</svg>
+            <span>{retakeButtonText}</span>
           </button>
         </div>
       </div>

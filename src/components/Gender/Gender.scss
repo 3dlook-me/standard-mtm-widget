@@ -2,72 +2,80 @@
 
 $border-width: 2px;
 
-.gender {
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: space-between;
-  max-width: 240px;
+  align-items: flex-end;
+  justify-content: center;
+}
 
-  input {
-    @include visually-hidden();
+.bottom-sheet {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  padding: 16px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  animation: slideUp 0.3s ease;
+}
+
+.handle {
+  width: 40px;
+  height: 4px;
+  background: #ccc;
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+
+.content {
+  text-align: center;
+}
+
+.content .icon {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.content h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: #000;
+}
+
+.content p {
+  font-size: 14px;
+  color: #6B6BB2;
+  margin: 0 0 20px;
+  line-height: 1.4;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 12px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.primary-btn:hover {
+  background: #333;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
   }
 
-  &--invalid &__item {
-    border-color: $error-border-color;
-    background-color: $error-background-color;
-  }
-
-  &__item {
-    height: 127px;
-    background: linear-gradient(223.12deg, #FF8D32 0%, #FFB764 100%);
-    border-radius: 25px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-transform: uppercase;
-    width: 100%;
-    cursor: pointer;
-    font-weight: normal;
-    position: relative;
-    color: #000;
-
-    &.checked {
-      color: #fff;
-
-      &:after {
-        display: none;
-      }
-    }
-
-    // &:focus-within {
-    //   outline: -webkit-focus-ring-color auto 5px;
-    // }
-
-    &:after {
-      content: '';
-      position: absolute;
-      display: block;
-      top: $border-width;
-      left: $border-width;
-      bottom: $border-width;
-      right: $border-width;
-      background: #fff;
-      border-radius: 23px;
-    }
-
-    &:first-of-type {
-      margin-right: 28px;
-    }
-
-    span {
-      display: inline-block;
-      margin-top: 15px;
-      margin-bottom: 8px;
-    }
-
-    span,
-    img {
-      position: relative;
-      z-index: 1;
-    }
+  to {
+    transform: translateY(0);
   }
 }

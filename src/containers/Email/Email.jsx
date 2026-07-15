@@ -29,6 +29,7 @@ class Email extends Component {
       // eslint-disable-next-line react/no-unused-state
       isName: false,
       buttonDisabled: true,
+      isKeyboardActive: false,
       email: null,
       firstName: null,
     };
@@ -55,7 +56,6 @@ class Email extends Component {
         isEmail: true,
       });
 
-      // return;
     }
 
     if (email) {
@@ -72,6 +72,25 @@ class Email extends Component {
         // eslint-disable-next-line react/no-unused-state
         isName: true,
       });
+    }
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', this.setEmailViewportHeight);
+      window.visualViewport.addEventListener('scroll', this.setEmailViewportHeight);
+    }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.inputFocusTimeout);
+    clearTimeout(this.inputBlurTimeout);
+
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', this.setEmailViewportHeight);
+      window.visualViewport.removeEventListener('scroll', this.setEmailViewportHeight);
+    }
+
+    if (this.emailScreen) {
+      this.emailScreen.style.removeProperty('--email-screen-height');
     }
   }
 
@@ -122,6 +141,91 @@ class Email extends Component {
       setFirstName(value);
     }
   };
+
+  handleInputFocus = (e) => {
+    const { isMobile } = this.props;
+
+    if (!isMobile) {
+      return;
+    }
+
+    const { target } = e;
+
+    clearTimeout(this.inputFocusTimeout);
+    clearTimeout(this.inputBlurTimeout);
+
+    this.setState({ isKeyboardActive: true }, () => {
+      this.inputFocusTimeout = setTimeout(() => {
+        this.setEmailViewportHeight();
+
+        if (target && target.scrollIntoView) {
+          try {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'nearest',
+              inline: 'nearest',
+            });
+          } catch (err) {
+            target.scrollIntoView(false);
+          }
+        }
+      }, 350);
+    });
+  }
+
+  handleInputBlur = () => {
+    const { isMobile } = this.props;
+
+    if (!isMobile) {
+      return;
+    }
+
+    clearTimeout(this.inputBlurTimeout);
+
+    this.inputBlurTimeout = setTimeout(() => {
+      const { activeElement } = document;
+      const { tagName } = activeElement || {};
+      const isEmailInputActive = this.emailScreen
+        && activeElement
+        && this.emailScreen.contains(activeElement)
+        && /^(INPUT|TEXTAREA|SELECT)$/.test(tagName);
+
+      if (!isEmailInputActive) {
+        if (this.emailScreen) {
+          this.emailScreen.style.removeProperty('--email-screen-height');
+        }
+
+        this.setState({ isKeyboardActive: false });
+      }
+    }, 200);
+  }
+
+  setEmailViewportHeight = () => {
+    const { isMobile } = this.props;
+    const { isKeyboardActive } = this.state;
+
+    if (!isMobile || !this.emailScreen || !window.visualViewport) {
+      return;
+    }
+
+    const isKeyboardOpen = window.innerHeight - window.visualViewport.height > 120;
+
+    if (isKeyboardOpen) {
+      this.emailScreen.style.setProperty('--email-screen-height', '100%');
+
+      if (!isKeyboardActive) {
+        this.setState({ isKeyboardActive: true });
+      }
+
+      return;
+    }
+
+    this.emailScreen.style.removeProperty('--email-screen-height');
+
+    if (isKeyboardActive) {
+      this.setState({ isKeyboardActive: false });
+    }
+  }
 
   changeAgree = (state) => {
     this.setState({
@@ -192,6 +296,7 @@ class Email extends Component {
       isEmailValid,
       isAgreeValid,
       buttonDisabled,
+      isKeyboardActive,
       email,
       firstName,
     } = this.state;
@@ -201,47 +306,58 @@ class Email extends Component {
       isMobile,
       token,
       isDisabledEmail,
+      isDisabledFullName,
     } = this.props;
 
     return (
-      <div className="screen active">
-        <div className="screen__content email">
-          <Stepper steps="9" current="1" />
+      <div
+        className={classNames('screen active email-screen', {
+          'email-screen--keyboard': isKeyboardActive,
+        })}
+        ref={(el) => { this.emailScreen = el; }}
+      >
+        <div className="email-screen__body">
+          <div className="screen__content email">
+            <Stepper steps="5" current="1" />
 
-          <div className="email__control screen__control">
-            <h3 className="screen__label">Enter your email</h3>
-            <input
-              className={classNames('input', { 'input--invalid': !isEmailValid })}
-              onBlur={!isMobile ? this.changeEmail : false}
-              onChange={isMobile ? this.changeEmail : false}
-              type="email"
-              placeholder="email@address.com"
-              value={email}
-              disabled={isDisabledEmail}
-            />
-            <p className={classNames('screen__control-error', { active: !isEmailValid })}>Invalid email address</p>
-          </div>
+            <div className="email__control screen__control">
+              <h3 className="email__label screen__label">Enter your email</h3>
+              <input
+                className={classNames('input', { 'input--invalid': !isEmailValid })}
+                onFocus={this.handleInputFocus}
+                onBlur={!isMobile ? this.changeEmail : this.handleInputBlur}
+                onChange={isMobile ? this.changeEmail : false}
+                type="email"
+                placeholder="email@address.com"
+                value={email}
+                disabled={isDisabledEmail}
+              />
+              <p className={classNames('screen__control-error', { active: !isEmailValid })}>Invalid email address</p>
+            </div>
 
-          <div className="name__control screen__control">
-            <h3 className="screen__label">Enter your full name</h3>
-            <input
-              className={classNames('input')}
-              onBlur={!isMobile ? this.changeName : false}
-              onChange={isMobile ? this.changeName : false}
-              type="text"
-              placeholder="Alex Smith"
-              value={firstName}
-            />
+            <div className="name__control screen__control">
+              <h3 className="email__label screen__label">Enter your full name</h3>
+              <input
+                className={classNames('input')}
+                onFocus={this.handleInputFocus}
+                onBlur={!isMobile ? this.changeName : this.handleInputBlur}
+                onChange={isMobile ? this.changeName : false}
+                type="text"
+                placeholder="Alex Smith"
+                value={firstName}
+                disabled={isDisabledFullName}
+              />
+            </div>
           </div>
-        </div>
-        <div className="screen__footer">
-          <PolicyAgreement
-            agree={agree}
-            isAgreeValid={isAgreeValid}
-            token={token}
-            changeAgreeState={this.changeAgree}
-          />
-          <button className="button" onClick={this.onNextScreen} type="button" disabled={buttonDisabled}>Next</button>
+          <div className="screen__footer">
+            <PolicyAgreement
+              agree={agree}
+              isAgreeValid={isAgreeValid}
+              token={token}
+              changeAgreeState={this.changeAgree}
+            />
+            <button className="button" onClick={this.onNextScreen} type="button" disabled={buttonDisabled}>Continue</button>
+          </div>
         </div>
       </div>
     );
@@ -249,4 +365,3 @@ class Email extends Component {
 }
 
 export default connect((state) => state, actions)(Email);
-

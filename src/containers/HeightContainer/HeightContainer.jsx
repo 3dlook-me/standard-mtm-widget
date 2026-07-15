@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import actions from '../../store/actions';
 import FlowService from '../../services/flowService';
-import { mobileFlowStatusUpdate } from '../../helpers/utils';
+import { isMobileDevice, mobileFlowStatusUpdate } from '../../helpers/utils';
 import analyticsService, {
   HEIGHT_PAGE_ENTER,
   HEIGHT_PAGE_LEAVE,
@@ -114,14 +114,22 @@ class HeightContainer extends Component {
    * Set Next button disabled state
    */
   checkButtonState() {
-    const { height, agree } = this.props;
+    const {
+      height,
+      agree,
+      customSettings,
+      isSkipEmailScreen,
+    } = this.props;
     const {
       buttonDisabled,
       isHeightValid,
       isAgreeValid,
     } = this.state;
 
-    const isButtonDisabled = !height || !isHeightValid || !isAgreeValid || !agree;
+    const shouldAcceptTerms = isSkipEmailScreen && customSettings.gender !== 'all';
+    const isButtonDisabled = !height
+      || !isHeightValid
+      || (shouldAcceptTerms && (!isAgreeValid || !agree));
 
     if (isButtonDisabled !== buttonDisabled) {
       setTimeout(() => {
@@ -179,11 +187,12 @@ class HeightContainer extends Component {
       customSettings,
       isSkipEmailScreen,
     } = this.props;
+    const heightScreenClassName = `screen active height-screen${isMobileDevice() ? '' : ' height-screen--desktop'}`;
 
     return (
-      <div className="screen active">
+      <div className={heightScreenClassName}>
         <div className="screen__content height-container">
-          <Stepper steps="9" current={3} />
+          <Stepper steps="5" current={3} />
 
           <div className="height-container__control screen__control">
             <h3 className="screen__label">How tall are you?</h3>
@@ -211,7 +220,7 @@ class HeightContainer extends Component {
             />
           ) : null}
 
-          <button className="button" onClick={this.onNextScreen} type="button" disabled={buttonDisabled}>Next</button>
+          <button className="button" onClick={this.onNextScreen} type="button" disabled={buttonDisabled}>Continue</button>
         </div>
       </div>
     );

@@ -6,14 +6,19 @@ import './Stepper.scss';
  * Stepper component
  */
 const Stepper = ({ steps, current }) => (
+
   <div className="stepper">
-    <span className="visually-hidden">
-      {'Current step #'}
-      {current}
-      {' of '}
-      {steps}
-    </span>
-    <div className="stepper__progress" style={{ width: 200 / steps * current }} />
+    {Array.from({ length: steps }).map((_, index) => {
+      const stepNumber = index + 1;
+      const isCompleted = stepNumber <= current;
+
+      return (
+        <div
+          key={index}
+          className={`step ${isCompleted ? "completed" : ""}`}
+        />
+      );
+    })}
   </div>
 );
 

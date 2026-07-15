@@ -13,17 +13,16 @@ import analyticsService, {
   CAMERA_MODE_PAGE_WITH_FRIEND,
   CAMERA_MODE_PAGE_HANDS_FREE,
 } from '../../services/analyticsService';
+import { Stepper } from '../../components';
 import {
-  Stepper,
-  PrivacyBanner,
-  Loader,
-} from '../../components';
+  preloadRtpvCamera,
+  preloadDefaultCamera,
+} from '../../components/CameraWrapper/cameraLoader';
 
 import './CameraModeSelection.scss';
-import maleFriend from '../../images/male_friend.png';
-import maleAlone from '../../images/male_alone.png';
-import femaleFriend from '../../images/female_friend.png';
-import femaleAlone from '../../images/female_alone.png';
+import selfMode from '../../images/hands_free_no_rtpv.png';
+import selfModeRtpv from '../../images/hands_free.png';
+import friendMode from '../../images/friend_mode.png';
 
 /**
  * CameraModeSelection component
@@ -58,10 +57,21 @@ class CameraModeSelection extends Component {
   }
 
   componentDidMount() {
+    const useRtpvCamera = !(
+      this.props.settings && this.props.settings.is_rtpv_disabled
+    );
     const isDesktop = !isMobileDevice();
 
     if (isDesktop) {
-      document.querySelector('.header__close').classList.add('header__close--hide');
+      document
+        .querySelector('.header__close')
+        .classList.add('header__close--hide');
+    } else {
+      if (useRtpvCamera) {
+        preloadRtpvCamera();
+      } else {
+        preloadDefaultCamera();
+      }
     }
 
     const {
@@ -81,7 +91,10 @@ class CameraModeSelection extends Component {
     this.flow.setFlowId(flowId);
 
     // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
-    if ((pageReloadStatus && isFromDesktopToMobile) || (pageReloadStatus && isDemoWidget)) {
+    if (
+      (pageReloadStatus && isFromDesktopToMobile) ||
+      (pageReloadStatus && isDemoWidget)
+    ) {
       const { setPageReloadStatus, flowState } = this.props;
 
       setPageReloadStatus(false);
@@ -103,38 +116,21 @@ class CameraModeSelection extends Component {
     setIsTableFlow(value);
   };
 
-  onBackImageLoad = () => {
-    this.setState({
-      isBackModeImageLoaded: true,
-    });
-  };
-
-  onFrontImageLoad = () => {
-    this.setState({
-      isFrontModeImageLoaded: true,
-    });
-  };
-
   onClickNextPage = () => {
     const { isTableFlow, token } = this.props;
 
     analyticsService({
       uuid: token,
-      event: isTableFlow ? CAMERA_MODE_PAGE_HANDS_FREE : CAMERA_MODE_PAGE_WITH_FRIEND,
+      event: isTableFlow
+        ? CAMERA_MODE_PAGE_HANDS_FREE
+        : CAMERA_MODE_PAGE_WITH_FRIEND,
     });
-  }
+  };
 
   render() {
     const isDesktop = !isMobileDevice();
-    const { isBackModeImageLoaded, isFrontModeImageLoaded } = this.state;
-    const {
-      isTableFlow,
-      isTableFlowDisabled,
-      gender,
-    } = this.props;
-
-    const frontCameraMode = gender === 'male' ? maleAlone : femaleAlone;
-    const backCameraMode = gender === 'male' ? maleFriend : femaleFriend;
+    const { isTableFlow, isTableFlowDisabled, settings } = this.props;
+    const useRtpvCamera = !(settings && settings.is_rtpv_disabled);
 
     return (
       <div className="screen active">
@@ -143,123 +139,96 @@ class CameraModeSelection extends Component {
             <h2>Please open this link on your mobile device</h2>
           </div>
         ) : (
-            <Fragment>
-              <div className="screen__content camera-mode-selection">
-                <Stepper steps="9" current="5" />
+          <Fragment>
+            <div className="screen__content camera-mode-selection">
+              <Stepper steps="5" current="5" />
 
-                <h3 className="screen__title">LET&apos;S TAKE 2 PHOTOS</h3>
+              <h3 className="screen__label">
+                How would you like <br />
+                to take your photos?
+              </h3>
 
-                <PrivacyBanner />
 
-                <p className="camera-mode-selection__text">
-                  You have two options: ask someone to help you, or
-                {' '}
-                  <br />
-                  {' '}
-                take
-                photos by yourself in the hands-free mode
-                {' '}
-                  <br />
-                  {' '}
-                using a voice
-                assistant.
-                <br />
-                  <b> How would you like to proceed? </b>
+              <div className="camera-mode-selection__buttons-wrap">
+                <label
+                  className={classNames(
+                    'camera-mode-selection__button camera-mode-selection__button--front',
+                    {
+                      'camera-mode-selection__button--active':
+                        isTableFlow && !isTableFlowDisabled,
+                      'camera-mode-selection__button--inactive':
+                        isTableFlowDisabled,
+                    },
+                  )}
+                  htmlFor="front-mode-radio"
+                >
+                  <div className="camera-mode-selection__self"></div>
+                  <div
+                    className="camera-mode-selection__self--bg"
+                    style={{
+                      backgroundImage: `url(${useRtpvCamera ? selfModeRtpv : selfMode})`,
+                    }}
+                  ></div>
+                  <input
+                    type="radio"
+                    name="flow-mode"
+                    id="front-mode-radio"
+                    onChange={this.handleClick}
+                    value="table-flow"
+                  />
+                  <h4 className="camera-mode-selection__title">Hands-free</h4>
+                </label>
+                <p
+                  className={classNames('camera-mode-selection__mode-desc', {
+                    'camera-mode-selection__mode-desc--active':
+                      isTableFlow && !isTableFlowDisabled,
+                  })}
+                >
+                  Take both photos by yourself with voice guidance.
                 </p>
 
-                <div className="camera-mode-selection__buttons-wrap">
-                  <label
-                    className={classNames('camera-mode-selection__button camera-mode-selection__button--back', {
-                      'camera-mode-selection__button--active': !isTableFlow || isTableFlowDisabled,
-                    })}
-                    htmlFor="back-mode-radio"
-                  >
-                    <input
-                      type="radio"
-                      value
-                      name="flow-mode"
-                      id="back-mode-radio"
-                      onChange={this.handleClick}
-                    />
-
-                    <div
-                      className="camera-mode-selection__img-wrap"
-                      style={{ backgroundImage: `url(${backCameraMode})` }}
-                    >
-                      {!isBackModeImageLoaded ? (
-                        <Fragment>
-                          <Loader />
-
-                          <img
-                            className="camera-mode-selection__img-onload-detect"
-                            src={frontCameraMode}
-                            onLoad={this.onBackImageLoad}
-                            alt="back"
-                          />
-                        </Fragment>
-                      ) : null}
-                    </div>
-                    <div className="camera-mode-selection__icon-wrap">
-                      <h4 className="camera-mode-selection__title">
-                        With a friend
-                    </h4>
-                    </div>
-                  </label>
-
-                  <label
-                    className={classNames('camera-mode-selection__button camera-mode-selection__button--front', {
-                      'camera-mode-selection__button--active': isTableFlow && !isTableFlowDisabled,
-                      'camera-mode-selection__button--inactive': isTableFlowDisabled,
-                    })}
-                    htmlFor="front-mode-radio"
-                  >
-                    <input
-                      type="radio"
-                      name="flow-mode"
-                      id="front-mode-radio"
-                      onChange={this.handleClick}
-                      value="table-flow"
-                    />
-
-                    <div
-                      className="camera-mode-selection__img-wrap"
-                      style={{ backgroundImage: `url(${frontCameraMode})` }}
-                    >
-                      {!isFrontModeImageLoaded ? (
-                        <Fragment>
-                          <Loader />
-
-                          <img
-                            className="camera-mode-selection__img-onload-detect"
-                            src={frontCameraMode}
-                            onLoad={this.onFrontImageLoad}
-                            alt="back"
-                          />
-                        </Fragment>
-                      ) : null}
-                    </div>
-                    <div className="camera-mode-selection__icon-wrap">
-                      <h4 className="camera-mode-selection__title">
-                        Hands-free
-                    </h4>
-                    </div>
-                  </label>
-                </div>
-              </div>
-              <div className="screen__footer">
-                <Link
-                  className="button"
-                  href="/how-to-take-photos"
+                <label
+                  className={classNames(
+                    'camera-mode-selection__button camera-mode-selection__button--back camera-mode-selection__friend--bg',
+                    {
+                      'camera-mode-selection__button--active':
+                        !isTableFlow || isTableFlowDisabled,
+                    },
+                  )}
+                  style={{ backgroundImage: `url(${friendMode})` }}
+                  htmlFor="back-mode-radio"
                 >
-                  NEXT
-              </Link>
+                  <input
+                    type="radio"
+                    value
+                    name="flow-mode"
+                    id="back-mode-radio"
+                    onChange={this.handleClick}
+                  />
+                  <h4 className="camera-mode-selection__title">
+                    With a friend
+                  </h4>
+                </label>
+                <p
+                  className={classNames('camera-mode-selection__mode-desc', {
+                    'camera-mode-selection__mode-desc--active':
+                      !isTableFlow || isTableFlowDisabled,
+                  })}
+                >
+                  Have someone take both photos while <br /> you stand in place.
+                </p>
               </div>
-            </Fragment>
-          )}
+            </div>
+            <div className="screen__footer">
+              <Link className="button" href="/how-to-take-photos">
+                Continue
+              </Link>
+            </div>
+          </Fragment>
+        )}
       </div>
     );
   }
 }
 
 export default connect((state) => state, actions)(CameraModeSelection);
-

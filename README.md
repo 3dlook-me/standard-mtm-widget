@@ -1,6 +1,6 @@
 # SAIA MTM Widget
 
-Widget, that implements getting garment size for user based on SAIA MTM API.
+Widget, that implements getting measurements for user based on SAIA MTM API.
 
 ## How to run
 
@@ -118,7 +118,7 @@ After that you will get "Your MTM" button on the page.
 
 To overwrite default options without creating a custom integration script, you could define a global `MTM_WIDGET_OPTIONS` object and set there the same options as in `SaiaMTMButton` constructor.
 
-For example, you want to overwrite default height, weight, and email values and set predefined ones. disableInput is option to disable email input (it works only if you preset email in defaultValues object). disableScreen is option to disable email screen (it works only if you preset email in defaultValues object) Also, you would like to set a callback function to get measurements, when they are ready. Let's say, you want to set height in feet and inches. To do this, declare `window.MTM_WIDGET_OPTIONS` object:
+For example, you want to overwrite default height, weight, email, and full name values and set predefined ones. `disableInput` can disable the email or full name input if you preset that value in the `defaultValues` object. `disableScreen.email` controls the shared Email + Full name screen and works only if you preset a valid email in `defaultValues`. Also, you would like to set a callback function to get measurements, when they are ready. Let's say, you want to set height in feet and inches. To do this, declare `window.MTM_WIDGET_OPTIONS` object:
 
 ```js
 window.MTM_WIDGET_OPTIONS = {
@@ -128,9 +128,11 @@ window.MTM_WIDGET_OPTIONS = {
     heightIn: 5,
     weight: 80,
     email: 'pisa@gmail.com',
+    full_name: 'Alex Smith',
   },
   disableInput: {
-    email: true
+    email: true,
+    full_name: true
   },
   disableScreen: {
     email: true
@@ -145,7 +147,7 @@ window.MTM_WIDGET_OPTIONS = {
 
 In this example, `weight` supposed to be in pounds. To use the metric system you need to set `heightCm` instead of `heightFt` and `heightIn`.
 
-The widget will catch these options on its initialization step and set them in the corresponding inputs.
+The widget will catch these options on its initialization step and set them in the corresponding inputs. `full_name` is optional and must be a non-empty string up to 150 characters after trimming. If the shared Email + Full name screen is skipped, Terms of Use and Privacy Policy acceptance moves to the next available data entry screen.
 
 ## Set custom widget button text
 
@@ -201,10 +203,16 @@ SaiaMTMButton constructor
 | [options.buttonTitle] | <code>string</code> | shoify product id |
 | [options.defaultValues] | <code>Object</code> | default values for some widget fields |
 | [options.defaultValues.email] | <code>string</code> | default value for email field |
+| [options.defaultValues.full_name] | <code>string</code> | default value for full name field |
 | [options.defaultValues.heightCm] | <code>number</code> | default value for height in centimeters. Will also set units field to 'cm'. |
 | [options.defaultValues.heightFt] | <code>number</code> | default value for height in feet and inches. Contains feet part. Should be used in combination with heightIn. Will also set units field to 'in'. |
 | [options.defaultValues.heightIn] | <code>number</code> | default value for height in feet and inches. Contains inches part. Should be used in combination with heightFt. Will also set units field to 'in'. |
 | [options.defaultValues.weight] | <code>number</code> | default value for weight field. If you set heightCm, then weight should contain value in kilograms. If you set heightFt and heightIn, then weight should contain value in pounds. |
+| [options.disableInput] | <code>Object</code> | opportunity to disable input fields |
+| [options.disableInput.email] | <code>Boolean</code> | opportunity to disable email input |
+| [options.disableInput.full_name] | <code>Boolean</code> | opportunity to disable full name input |
+| [options.disableScreen] | <code>Object</code> | opportunity to disable screens |
+| [options.disableScreen.email] | <code>Boolean</code> | opportunity to disable shared Email + Full name screen |
 
 <a name="SaiaMTMButton+init"></a>
 

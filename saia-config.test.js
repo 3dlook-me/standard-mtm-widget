@@ -3,7 +3,7 @@ module.exports = {
   API_DENIM_HOST: 'https://wlb-denim-test.3dlook.me',
   API_HOST: 'https://saia-test.3dlook.me',
   // client api key
-  API_KEY: '31146d0e3da5ba6f2133f70f2b9a795285492e25',
+  API_KEY: '',
   // shopify host url
   SHOPIFY_HOST: 'shopify-test.3dlook.me',
   // widget host url

@@ -61,6 +61,8 @@ export const INITIAL_STATE = {
     side: null,
   },
 
+  isClothingFormFittingConfirmed: false,
+
   isRealTimePoseValidator: {
     front: false,
     side: false,
@@ -77,14 +79,13 @@ export const INITIAL_STATE = {
 
   settings: {
     final_page: 'thanks',
-    // final_page: 'measurements',
-    // result_screen: 'measurements',
+    is_rtpv_disabled: false,
   },
 
   headerIconsStyle: 'default',
   isHeaderTranslucent: false,
   camera: null,
-  isTableFlow: false,
+  isTableFlow: true,
   isTableFlowDisabled: false,
   isHelpActive: false,
   isOpenReturnUrlDesktop: false,
@@ -93,6 +94,8 @@ export const INITIAL_STATE = {
   helpBtnStatus: true,
 
   isNetwork: true,
+
+  isRetakeFlow: false,
 
   source: 'widget',
 
@@ -118,6 +121,7 @@ export const INITIAL_STATE = {
       final_screen_logo: '',
       final_screen_title: 'Success! You\'re all set',
       final_screen_text: 'We\'ve got your measurements to create your customized wardrobe',
+      final_screen_measurements_text: 'Here are your body measurements:',
       final_screen_button_color: '#000000',
       final_screen_button_text_color: '#FFFFFF',
       final_screen_button_text: 'Close',
@@ -140,6 +144,7 @@ export const INITIAL_STATE = {
   },
 
   isDisabledEmail: false,
+  isDisabledFullName: false,
   isDisableEmailScreen: false,
   isSkipEmailScreen: false,
 };
@@ -203,6 +208,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         sideImage: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_RETAKE_FLOW:
+      return {
+        ...state,
+        isRetakeFlow: action.payload,
       };
 
     case CONSTANTS.ADD_FRONT_COORDINATES:
@@ -340,6 +351,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         bodyType: action.payload,
+      };
+
+    case CONSTANTS.SET_CLOTHING_FITTING_CONFIRMED:
+      return {
+        ...state,
+        isClothingFormFittingConfirmed: action.payload,
       };
 
     case CONSTANTS.SET_EMAIL:
@@ -561,6 +578,7 @@ export default (state = INITIAL_STATE, action) => {
             final_screen_logo: action.payload.final_screen_customization_data.final_screen_logo,
             final_screen_title: action.payload.final_screen_customization_data.final_screen_title,
             final_screen_text: action.payload.final_screen_customization_data.final_screen_text,
+            final_screen_measurements_text: action.payload.final_screen_customization_data.final_screen_measurements_text,
             final_screen_button_color: action.payload.final_screen_customization_data.final_screen_button_color,
             final_screen_button_text_color: action.payload.final_screen_customization_data.final_screen_button_text_color,
             final_screen_button_text: action.payload.final_screen_customization_data.final_screen_button_text,
@@ -580,6 +598,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isDisabledEmail: action.payload,
+      };
+
+    case CONSTANTS.SET_IS_DISABLED_FULL_NAME:
+      return {
+        ...state,
+        isDisabledFullName: action.payload,
       };
 
     case CONSTANTS.SET_IS_DISABLE_EMAIL_SCREEN:

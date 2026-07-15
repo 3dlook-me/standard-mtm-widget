@@ -1,12 +1,17 @@
 @import '../../scss/utils/index';
 
 .email {
+  margin-top: 100px;
+
+  @include breakpoint($mobile) {
+    margin-top: unset;
+  }
+
   &__control {
-    margin-top: 133px;
     margin-bottom: 14px;
 
     @include breakpoint($mobile) {
-      margin-top: 80px;
+      margin-top: 40px;
     }
 
     @include breakpoint($iphoneSE) {
@@ -71,10 +76,101 @@
   }
 }
 
-.name__control {
-  margin-top: 50px;
+.email__label {
+  font-size: 17px;
+  text-align: left;
+}
 
-  @include breakpoint($iphoneSE) {
-    margin-top: 20px;
+.email-screen {
+  @include breakpoint($mobile) {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  &__body {
+    display: contents;
+  }
+}
+
+.email-screen--keyboard {
+  @include breakpoint($mobile) {
+    justify-content: flex-start !important;
+    padding-bottom: 8px;
+  }
+
+  .email-screen__body {
+    @include breakpoint($mobile) {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 12px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  .screen__content {
+    @include breakpoint($mobile) {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 0;
+      padding-top: 8px;
+      overflow: visible;
+    }
+  }
+
+  .email__control {
+    @include breakpoint($mobile) {
+      margin-top: 10px;
+      margin-bottom: 8px;
+    }
+  }
+
+  .name__control {
+    @include breakpoint($mobile) {
+      margin-top: 0;
+      margin-bottom: 14px;
+    }
+  }
+
+  .email__label {
+    @include breakpoint($mobile) {
+      margin-bottom: 8px;
+      line-height: 22px;
+    }
+  }
+
+  .input {
+    @include breakpoint($mobile) {
+      height: 48px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+  }
+
+  .screen__footer {
+    @include breakpoint($mobile) {
+      flex-shrink: 0;
+      margin-top: 0;
+      padding-top: 10px;
+      padding-bottom: 0;
+    }
+
+    .button {
+      @include breakpoint($mobile) {
+        height: 48px;
+      }
+    }
+  }
+
+  .PolicyAgreement {
+    @include breakpoint($mobile) {
+      margin: 0 30px 10px 0;
+    }
+  }
+}
+
+.button {
+  @media (min-width: 600px) {
+    width: 320px;
   }
 }

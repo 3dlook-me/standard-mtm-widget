@@ -16,32 +16,37 @@ import phone from '../../images/phone-for-loader.svg';
 const Preloader = ({
   isActive, status, isMobile, gender,
 }) => (
-    <div className={`preloader ${isActive ? 'active' : ''}`}>
+  <div className={`preloader ${isActive ? 'active' : ''}`}>
 
-      <div className={classNames('preloader__instructions',
-        { 'preloader__instructions--active': !isMobile && status === '' })}
-      >
-        <div className="preloader__instructions-phone-wrap">
-          <img className="preloader__instructions-phone" src={phone} alt="phone" />
-          <img className="preloader__instructions-spinner" src={spinner} alt="spinner" />
-        </div>
-        <p>Follow instructions on
+   <div className={classNames('preloader__instructions',
+     { 'preloader__instructions--active': !isMobile && status === '' })}
+   >
+    <div className="preloader__instructions-phone-wrap">
+      <img className="preloader__instructions-phone" src={phone} alt="phone" />
+      <img className="preloader__instructions-spinner" src={spinner} alt="spinner" />
+    </div>
+    <p>Follow instructions on
        <b> your mobile phone</b>
-          <br />
+       <br />
        to generate your measurements
       </p>
-      </div>
+   </div>
 
 
       {isActive ?
-        <div>
+        <div className="preloader__body">
           <LottieLoader isMobile={isMobile} />
 
           <div className="preloader__title-wrap">
-            <h2 className="preloader__title screen__title">Don't miss the magic - stay on!</h2>
+            {status ?
+              <div className="preloader__status">
+                Status
+                <span key={status}>{status}</span>
+              </div>
+              : null }
+            <h2 className="preloader__title screen__title">Please stay on this screen — <br />AI magic in progress.</h2>
             {isMobile ? (
-              <p>AI magic is at work, so stay on the page for your
-              best fit. It takes less than a minute</p>
+              <p>We’re processing your scan. It’ll be done in under a minute.</p>
             ) : (
                 <p className="preloader__text">
                   <span>
@@ -53,8 +58,8 @@ const Preloader = ({
               )}
           </div>
         </div>
-        : null}
-    </div>
-  );
+        : null }
+  </div>
+);
 
 export default Preloader;

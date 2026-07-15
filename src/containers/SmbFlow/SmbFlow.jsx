@@ -40,6 +40,7 @@ class SmbFlow extends BaseMobileFlow {
         flowState,
         setFlowState,
         setIsSmbFlow,
+        setSettings,
         setIsSmbQRFlow,
         setIsFromDesktopToMobile,
         setReturnUrl,
@@ -72,9 +73,8 @@ class SmbFlow extends BaseMobileFlow {
         setIsSmbQRFlow(true);
       }
 
-      // await this.checkSource(flowStateData);
-
       setReturnUrl(flowStateData.widget_settings.redirect_link || 'https://3dlook.me/mobile-tailor/');
+      setSettings(flowStateData.settings);
 
       if (flowStateData.state.status !== flowStatuses.FINISHED) {
         await this.flow.update({
@@ -158,10 +158,8 @@ class SmbFlow extends BaseMobileFlow {
           email
         } = err.response.data;
 
-        //if (detail === 'User does not have available calculations.') {
         this.setLimitMsg(max_calculations_according_to_active_subscription, email);
         return Promise.resolve();
-        //}
       }
 
       if (err && err.response && err.response.data) {
@@ -222,18 +220,18 @@ class SmbFlow extends BaseMobileFlow {
 
     if (isLimitReached) {
       return (
-        <div className="screen active">
-          <div className={classNames('limit-reached', 'active')}>
-            <figure className="limit-reached__wrap">
-              <div className="limit-reached__wrap--calculations"><span>{max_calculations}</span>/{max_calculations}</div>
-              <div className="limit-reached__wrap--title">Oops! The limit has been reached</div>
-              <p>The measurements can not be calculated.</p>
-              <p>Please reach out the scan link sender to unlock the action</p>
+       <div className="screen active">
+        <div className={classNames('limit-reached', 'active')}>
+          <figure className="limit-reached__wrap">
+            <div className="limit-reached__wrap--calculations"><span>{max_calculations}</span>/{max_calculations}</div>
+            <div className="limit-reached__wrap--title">Oops! The limit has been reached</div>
+            <p>The measurements can not be calculated.</p>
+            <p>Please reach out the scan link sender to unlock the action</p>
 
               <a className="button" href={`mailto:${sender_email}`}>Contact sender</a>
-            </figure>
+          </figure>
           </div>
-        </div>
+       </div>
       )
     }
     if (!hasActiveSubscription || isWidgetArchived) {
@@ -254,8 +252,8 @@ class SmbFlow extends BaseMobileFlow {
         </div>
       </div>
     ) : (
-        <Loader />
-      );
+      <Loader />
+    );
   }
 }
 

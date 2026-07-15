@@ -6,15 +6,29 @@
   align-items: center;
   text-align: center;
 
-  &__title,
-  &__title-2 {
-    font-size: 16px;
-    margin-top: 15px;
+  &__title {
+    font-size: 23px;
+    font-weight: 600;
+    line-height: 30px;
   }
 
   &__title-2 {
     margin-top: 47px;
     margin-bottom: 9px;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  &__text {
+    color: #909090;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 28px;
+    letter-spacing: 0.18px;
+
+    &:last-of-type {
+      margin-bottom: 30px;
+    }
   }
 
   &__qrcode {
@@ -49,12 +63,17 @@
   }
 
   &__btn {
-    color: #396EC5;
-    text-decoration: underline;
-    background: transparent;
     border: 0;
-    padding: 0;
-    font-size: rem(11px);
+    padding: 11px 23px;
+    font-size: 17px;
+    border-radius: 47px;
+    background: #F4F4F4;
+    font-style: normal;
+    font-weight: 500;
+
+    span {
+      margin-left: 4px;
+    }
 
     &--copied {
       color: #DDDDDD;
@@ -225,8 +244,8 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
-

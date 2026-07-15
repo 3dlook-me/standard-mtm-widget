@@ -2,39 +2,36 @@ import {
   // eslint-disable-next-line no-unused-vars
   h,
   Component,
-  createRef,
+  Fragment,
 } from 'preact';
 import { connect } from 'react-redux';
-import { Link } from 'preact-router';
+import { route } from 'preact-router';
+import classNames from 'classnames';
 
 import actions from '../../store/actions';
-import { Loader, Stepper } from '../../components';
 import FlowService from '../../services/flowService';
-import { getAsset, mobileFlowStatusUpdate } from '../../helpers/utils';
+import { mobileFlowStatusUpdate } from '../../helpers/utils';
 import analyticsService, {
   HOW_TO_TAKE_PHOTOS_PAGE_ENTER,
   HOW_TO_TAKE_PHOTOS_PAGE_LEAVE,
-  HOW_TO_TAKE_PHOTOS_PAGE_REPLAY,
 } from '../../services/analyticsService';
 
+import Pose from './steps/Pose';
+import BeforeStart from './steps/BeforeStart';
+import BackgroundRequirements from './steps/BackgroundRequirements';
+import ClothingRequirements from './steps/ClothingRequirements';
+import ClothingVerification from './steps/ClothingVerification';
+import LightingRequirements from './steps/LightingRequirements';
 import './HowToTakePhotos.scss';
 
-/**
- * HowToTakePhotos video page component
- */
 class HowToTakePhotos extends Component {
-  $video = createRef();
-
-  $videoProgress = createRef();
+  historyStateKey = 'howToTakePhotosStep';
 
   constructor(props) {
     super(props);
 
     this.state = {
-      videoText: props.isTableFlow
-        ? 'Stand your device upright on a table. \n You can use an object to help hold it up.'
-        : 'Ask someone to help take 2 photos of you. \n Keep the device at 90° angle at the waistline.',
-      isVideoLoaded: false,
+      currentStep: 0
     };
 
     const { setPageReloadStatus } = props;
@@ -44,14 +41,89 @@ class HowToTakePhotos extends Component {
     };
 
     window.addEventListener('unload', this.reloadListener);
-  }
+
+  };
+
+  getUseRtpvCamera = () => {
+
+    const { settings } = this.props;
+
+    return !(settings && settings.is_rtpv_disabled);
+  };
+
+  getSteps = () => [
+    { id: 'clothing' },
+    { id: 'background' },
+    { id: 'lighting' },
+    { id: 'verify' },
+    { id: 'before-start' },
+  ];
+
+  getStepComponent = (step) => {
+    if (step.id === 'before-start') return BeforeStart;
+    if (step.id === 'background') return BackgroundRequirements;
+    if (step.id === 'lighting') {
+      return this.getUseRtpvCamera() ? Pose : LightingRequirements;
+    }
+    if (step.id === 'clothing') return ClothingRequirements;
+    if (step.id === 'verify') return ClothingVerification;
+  };
+
+
+  nextStep = () => {
+    const steps = this.getSteps();
+
+    if (this.state.currentStep < steps.length - 1) {
+      const nextStep = this.state.currentStep + 1;
+
+      this.setState({ currentStep: nextStep }, () => {
+        this.updateHistoryStep(nextStep, false);
+      });
+    } else {
+      route('/upload', false);
+    }
+  };
+
+  updateHistoryStep = (stepIndex, shouldReplace = false) => {
+    const historyState = {
+      ...(window.history.state || {}),
+      [this.historyStateKey]: stepIndex,
+    };
+
+    if (shouldReplace) {
+      window.history.replaceState(historyState, '');
+    } else {
+      window.history.pushState(historyState, '');
+    }
+  };
+
+  onPopState = (event) => {
+    const stepIndex = event.state && event.state[this.historyStateKey];
+
+    if (typeof stepIndex === 'number') {
+      this.setState({ currentStep: stepIndex });
+    }
+  };
+
+  setConfirmed = (isConfirmed) => {
+    const { setIsClothingFormFittingConfirmed} = this.props;
+
+    setIsClothingFormFittingConfirmed(isConfirmed);
+    this.nextStep();
+  };
 
   componentDidMount = () => {
-    const { current } = this.$video;
+    this.widgetContainer = document.querySelector('.widget-container');
+    this.widgetContainer.classList.add('widget-container--no-bg');
+    window.addEventListener('popstate', this.onPopState);
 
-    current.play();
+    const historyStep = window.history.state && window.history.state[this.historyStateKey];
 
-    current.addEventListener('timeupdate', this.handleProgress);
+    if (typeof historyStep === 'number') {
+      this.setState({ currentStep: historyStep });
+    } else {
+      this.updateHistoryStep(this.state.currentStep, true);
+    }
 
     const {
       isFromDesktopToMobile,
@@ -75,19 +147,16 @@ class HowToTakePhotos extends Component {
 
     // PAGE RELOAD: update flowState and set lastActiveDate for desktop loader
     if ((pageReloadStatus && isFromDesktopToMobile) || (pageReloadStatus && isDemoWidget)) {
-      const { setPageReloadStatus, flowState } = this.props;
-
-      setPageReloadStatus(false);
-
+      const { flowState } = this.props;
       mobileFlowStatusUpdate(this.flow, flowState);
     }
   }
 
   componentWillUnmount = () => {
-    const { token, isTableFlow } = this.props;
+    this.widgetContainer.classList.remove('widget-container--no-bg');
+    window.removeEventListener('popstate', this.onPopState);
 
-    this.$video.current.removeEventListener('timeupdate', this.handleProgress);
-    window.removeEventListener('unload', this.reloadListener);
+    const { token, isTableFlow } = this.props;
 
     analyticsService({
       uuid: token,
@@ -98,133 +167,59 @@ class HowToTakePhotos extends Component {
     });
   }
 
-  handleProgress = () => {
-    const { current } = this.$video;
-    const { isTableFlow } = this.props;
-    const percent = (current.currentTime / current.duration) * 100;
-
-    if (isTableFlow) {
-      this.setTableFlowVideoText(current.currentTime);
-    } else {
-      this.setFriendFlowVideoText(current.currentTime);
-    }
-
-    this.$videoProgress.current.style.flexBasis = `${percent}%`;
-  }
-
-  restartVideo = () => {
-    const { token, isTableFlow } = this.props;
-    const { current } = this.$video;
-
-    current.currentTime = 0;
-    current.play();
-
-    analyticsService({
-      uuid: token,
-      event: HOW_TO_TAKE_PHOTOS_PAGE_REPLAY,
-      data: {
-        value: isTableFlow ? 'hands-free' : 'with-friend',
-      },
-    });
-  }
-
-  setTableFlowVideoText = (time) => {
-    if (time < 3.8) {
-      this.setState({
-        videoText: 'Stand your device upright on a table. \n You can use an object to help hold it up.',
-      });
-    } else if (time > 3.8 && time < 7) {
-      this.setState({
-        videoText: 'Angle the phone so that the arrows line up on the green',
-      });
-    } else if (time > 7 && time < 13.5) {
-      this.setState({
-        videoText: 'Take 3 to 4 steps away from your device.',
-      });
-    } else if (time > 13.5) {
-      this.setState({
-        videoText: 'Please turn up the volume and follow the voice instructions.',
-      });
-    }
-  }
-
-  setFriendFlowVideoText = (time) => {
-    if (time < 3) {
-      this.setState({
-        videoText: 'Ask someone to help take 2 photos of you. \n Keep the device at 90° angle at the waistline.',
-      });
-    } else if (time > 3) {
-      this.setState({
-        videoText: 'For the side photo turn to your left.',
-      });
-    }
-  }
-
-  onVideoLoad = () => {
-    this.setState({
-      isVideoLoaded: true,
-    });
-  }
-
   render() {
-    const { isTableFlow, gender } = this.props;
-    const { videoText, isVideoLoaded } = this.state;
+    const { gender, isTableFlow } = this.props;
+    const useRtpvCamera = this.getUseRtpvCamera();
+    const step = this.getSteps()[this.state.currentStep];
+    const Step = this.getStepComponent(step);
 
     return (
-      <div className="screen active">
-        <Stepper steps="9" current="6" />
-
+      <div
+        className={classNames(
+          'screen',
+          'active',
+          `step--${step.id}`,
+          {
+            'step--self': isTableFlow,
+            'step--friend': !isTableFlow,
+            'step--male': gender === 'male',
+            'step--female': gender === 'female',
+            'step--rtpv': useRtpvCamera,
+            'step--without-rtpv': !useRtpvCamera,
+          }
+        )}
+      >
         <div className="screen__content how-to-take-photos">
           <div className="how-to-take-photos__content">
-            <h3 className="screen__title">how to take photos</h3>
-
-            {!isVideoLoaded ? <Loader /> : null}
-
-            <div className="how-to-take-photos__video-wrap">
-              {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-              <video
-                className="how-to-take-photos__video"
-                ref={this.$video}
-                muted
-                preload="auto"
-                playsInline
-                autoPlay
-                onPlay={this.onVideoLoad}
-                width="960"
-                height="540"
-              >
-                <source src={getAsset(isTableFlow, gender, 'video')} type="video/mp4" />
-              </video>
-
-              <div className="how-to-take-photos__progress-bar">
-                <div
-                  className="how-to-take-photos__progress"
-                  ref={this.$videoProgress}
-                />
-              </div>
-            </div>
-            <div className="how-to-take-photos__btn-wrap">
-              <p>{videoText}</p>
-              <button
-                className="how-to-take-photos__btn"
-                onClick={this.restartVideo}
-                type="button"
-              >
-                <i>&#8635;</i>
-                <span>Replay</span>
-              </button>
-            </div>
+            <Step
+              gender={gender}
+              isTableFlow={isTableFlow}
+              useRtpvCamera={useRtpvCamera}
+              onNext={this.nextStep}
+            />
           </div>
         </div>
 
         <div className="screen__footer">
-          <Link className="button" href="/upload">
-            Next
-          </Link>
+          {step.id !== 'verify' ? <button className="button" onClick={this.nextStep}>
+            Continue
+     </button>
+            : <Fragment>
+              <button className="button" onClick={() => this.setConfirmed(true)}>
+                Yes, my clothes are form-fitting
+      </button>
+
+              <button className="button button_verify" onClick={() => this.setConfirmed(false)}>
+                No, but I wish to proceed
+                <span>(I understand results may be less accurate)</span>
+      </button>
+              </Fragment>
+            }
         </div>
       </div>
     );
   }
+   
 }
 
 export default connect((state) => state, actions)(HowToTakePhotos);

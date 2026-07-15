@@ -104,7 +104,7 @@ class Measurements extends Component {
               <ul className="measurements__list" onClick={this.handleClick}>
 
                 {parameters[i].map((e, index) => (
-                  measurements[e.paramGroup] && measurements[e.paramGroup][e.paramName] && (!(e.paramName === 'pant_waist' && gender === 'female')) ? (
+                  measurements[e.paramGroup] && measurements[e.paramGroup][e.paramName] ? (
                     <li className="measurements__measurement">
                       <button
                         className="measurements__measurement-label"

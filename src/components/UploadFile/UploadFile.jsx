@@ -6,8 +6,21 @@ import { getOrientation, fixOrientation } from '../../helpers/utils';
 import { Loader } from '..';
 
 import './UploadFile.scss';
-import frontPhoto from '../../images/fornt_photo.png';
-import sidePhoto from '../../images/side_photo.png';
+import frontPhoto from '../../images/how_to_stand_front.jpg';
+import frontPhotoMen from '../../images/how_to_stand_front_men.jpg';
+import sidePhoto from '../../images/how_to_stand_side.jpg';
+import sidePhotoMen from '../../images/how_to_stand_side_men.jpg';
+
+const placeholderImages = {
+  female: {
+    front: frontPhoto,
+    side: sidePhoto,
+  },
+  male: {
+    front: frontPhotoMen,
+    side: sidePhotoMen,
+  },
+};
 
 const environment = process.env.NODE_ENV;
 
@@ -125,6 +138,7 @@ export default class UploadFile extends Component {
 
   render() {
     const {
+      gender,
       type,
       isValid,
     } = this.props;
@@ -139,6 +153,8 @@ export default class UploadFile extends Component {
       {
         'upload-file--invalid': !isValid,
       });
+    const images = placeholderImages[gender] || placeholderImages.female;
+    const image = type === 'front' ? images.front : images.side;
 
     return (
       <label
@@ -163,13 +179,13 @@ export default class UploadFile extends Component {
         />
         <div
           className="upload-file__image upload-file__image--placeholder"
-          style={{ backgroundImage: `url(${type === 'front' ? frontPhoto : sidePhoto})` }}
+          style={{ backgroundImage: `url(${image})` }}
         >
 
           {!isImageLoaded ? (
             <Fragment>
               <Loader />
-              <img className="upload-file__img-onload-detect" src={type === 'front' ? frontPhoto : sidePhoto} onLoad={this.onImageLoad} alt="example" />
+              <img className="upload-file__img-onload-detect" src={image} onLoad={this.onImageLoad} alt="example" />
             </Fragment>
           ) : null}
         </div>
